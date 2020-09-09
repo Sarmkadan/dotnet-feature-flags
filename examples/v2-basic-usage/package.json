@@ -1,0 +1,12 @@
+{
+  "name": "v2-basic-usage",
+  "version": "2.0.0",
+  "main": "Program.cs",
+  "scripts": {
+    "start": "dotnet run",
+    "build": "dotnet build"
+  },
+  "dependencies": {
+    "FeatureFlags": "2.0.0"
+  }
+}
