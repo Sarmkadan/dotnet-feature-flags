@@ -1,0 +1,42 @@
+# Build output directories
+bin/
+obj/
+
+# Git
+.git/
+.gitignore
+
+# Test and development files
+tests/
+docs/
+examples/
+
+# IDE specific files
+.idea/
+.vscode/
+*.user
+*.suo
+*.userosscache
+
+# Build and package files
+*.nupkg
+*.zip
+*.tar.gz
+
+# Runtime data
+logs/
+.DS_Store
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.test
+
+# Docker
+.dockerignore
+Dockerfile*
+
+# Misc
+Thumbs.db
+*.bak
