@@ -67,7 +67,7 @@ namespace FeatureFlags.BackgroundJobs;
 /// <summary>
 /// Configuration options for audit log cleanup.
 /// </summary>
-public class AuditLogCleanupOptions
+public sealed class AuditLogCleanupOptions
 {
     public int RetentionDays { get; set; } = 90;
     public int CleanupIntervalHours { get; set; } = 24;
@@ -131,7 +131,7 @@ public class AuditLogCleanupOptions
 /// <summary>
 /// Configuration options for webhook retries.
 /// </summary>
-public class WebhookRetryOptions
+public sealed class WebhookRetryOptions
 {
     public int CheckIntervalSeconds { get; set; } = 300; // 5 minutes
     public int MaxRetries { get; set; } = 3;
@@ -210,7 +210,7 @@ public class WebhookRetryOptions
 /// <summary>
 /// Configuration options for cache synchronization.
 /// </summary>
-public class CacheSyncOptions
+public sealed class CacheSyncOptions
 {
     public int SyncIntervalSeconds { get; set; } = 300;
     public int CacheTtlMinutes { get; set; } = 5;

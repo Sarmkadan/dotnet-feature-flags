@@ -15,7 +15,7 @@ namespace FeatureFlags.Tests.Formatters;
 /// Unit tests for CSV export and import functionality.
 /// Tests serialization and deserialization of feature flags.
 /// </summary>
-public class CsvFormatterTests
+public sealed class CsvFormatterTests
 {
     [Fact]
     public void ExportFeatureFlags_ProducesValidCsv()
@@ -110,7 +110,7 @@ public class CsvFormatterTests
 /// <summary>
 /// Unit tests for XML export and import functionality.
 /// </summary>
-public class XmlFormatterTests
+public sealed class XmlFormatterTests
 {
     [Fact]
     public void ExportFeatureFlags_ProducesValidXml()
@@ -216,7 +216,7 @@ public class XmlFormatterTests
 /// <summary>
 /// Unit tests for JSON serialization with custom converters.
 /// </summary>
-public class JsonFormatterTests
+public sealed class JsonFormatterTests
 {
     [Fact]
     public void CreateOptions_ReturnsValidOptions()

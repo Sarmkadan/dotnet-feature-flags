@@ -13,7 +13,7 @@ namespace FeatureFlags.Utilities;
 /// Fluent query builder for constructing complex feature flag searches with filtering and sorting.
 /// Provides a chainable API for building search criteria without writing LINQ queries directly.
 /// </summary>
-public class FeatureFlagSearchBuilder
+public sealed class FeatureFlagSearchBuilder
 {
     private string? _keyFilter;
     private string? _nameFilter;

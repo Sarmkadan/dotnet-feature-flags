@@ -15,7 +15,7 @@ namespace FeatureFlags.Middleware;
 /// Global exception handler middleware that catches all unhandled exceptions and returns standardized error responses.
 /// Logs exceptions at appropriate levels and ensures consistent error response format across the API.
 /// </summary>
-public class ErrorHandlingMiddleware
+public sealed class ErrorHandlingMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly ILogger<ErrorHandlingMiddleware> _logger;

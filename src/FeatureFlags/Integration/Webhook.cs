@@ -10,7 +10,7 @@ namespace FeatureFlags.Integration;
 /// Webhook entity that represents a registered webhook endpoint for receiving feature flag events.
 /// Webhooks are triggered when feature flags are created, updated, or deleted.
 /// </summary>
-public class Webhook
+public sealed class Webhook
 {
     public int Id { get; set; }
 
@@ -100,7 +100,7 @@ public enum WebhookEventType
 /// <summary>
 /// Payload sent to webhook endpoints when events occur.
 /// </summary>
-public class WebhookPayload
+public sealed class WebhookPayload
 {
     public string EventType { get; set; } = string.Empty;
 
@@ -137,7 +137,7 @@ public class WebhookPayload
 /// <summary>
 /// Represents a webhook delivery attempt and its result.
 /// </summary>
-public class WebhookDelivery
+public sealed class WebhookDelivery
 {
     public int Id { get; set; }
 

@@ -14,7 +14,7 @@ using FeatureFlags.Services;
 /// This demonstrates the simplest use case: toggling a feature on/off
 /// with percentage-based rollout to control exposure.
 /// </summary>
-public class BasicEvaluationExample
+public sealed class BasicEvaluationExample
 {
     private readonly IFeatureFlagService _featureFlagService;
     private readonly IAuditLogService _auditLogService;

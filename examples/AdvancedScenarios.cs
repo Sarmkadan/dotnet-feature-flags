@@ -15,7 +15,7 @@ using FeatureFlags.Services;
 /// Example: Advanced feature flag scenarios including canary deployments,
 /// segment exclusions, and complex multi-rule configurations.
 /// </summary>
-public class AdvancedScenariosExample
+public sealed class AdvancedScenariosExample
 {
     private readonly IFeatureFlagService _flagService;
     private readonly IAuditLogService _auditService;

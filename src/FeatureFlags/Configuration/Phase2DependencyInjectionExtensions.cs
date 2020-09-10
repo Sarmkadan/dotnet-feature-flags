@@ -134,7 +134,7 @@ public static class Phase2DependencyInjectionExtensions
 /// <summary>
 /// Configuration options container for Phase 2 components.
 /// </summary>
-public class Phase2Options
+public sealed class Phase2Options
 {
     /// <summary>
     /// Cache provider type (InMemory or Distributed).

@@ -10,7 +10,7 @@ namespace FeatureFlags.Models;
 /// Represents a targeting rule that applies conditions to determine if a feature flag should be enabled.
 /// Rules can be combined using AND/OR logic to create complex targeting scenarios.
 /// </summary>
-public class Rule
+public sealed class Rule
 {
     public int Id { get; set; }
 

@@ -282,7 +282,7 @@ public static class DatabaseSeeder
 /// <summary>
 /// Statistics about database contents.
 /// </summary>
-public class DatabaseStatistics
+public sealed class DatabaseStatistics
 {
     public int TotalFeatureFlags { get; set; }
     public int EnabledFlags { get; set; }
