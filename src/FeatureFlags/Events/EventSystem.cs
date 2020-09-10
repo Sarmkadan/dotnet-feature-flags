@@ -94,7 +94,7 @@ public interface IEventBus
         }
     }
 
-    public async Task PublishAsync(FeatureFlagEvent @event)
+    public async Task PublishAsync(FeatureFlagEvent @event, CancellationToken cancellationToken = default)
     {
         if (@event is null)
         {
@@ -127,7 +127,7 @@ public interface IEventBus
         await Task.WhenAll(tasks);
     }
 
-    public async Task PublishAsync(string eventType, int featureFlagId, string featureFlagKey, string triggeredBy, Dictionary<string, object?>? metadata = null)
+    public async Task PublishAsync(string eventType, int featureFlagId, string featureFlagKey, string triggeredBy, Dictionary<string, object?>? metadata = null, CancellationToken cancellationToken = default)
     {
         var @event = new FeatureFlagEvent
         {
@@ -155,7 +155,7 @@ public interface IEventBus
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task HandleEventAsync(FeatureFlagEvent @event)
+    public async Task HandleEventAsync(FeatureFlagEvent @event, CancellationToken cancellationToken = default)
     {
         _logger.LogInformation(
             "Feature Flag Event: {EventType} | Flag: {Key} | TriggeredBy: {TriggeredBy} | Time: {Time}",
@@ -183,7 +183,7 @@ public interface IEventBus
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task HandleEventAsync(FeatureFlagEvent @event)
+    public async Task HandleEventAsync(FeatureFlagEvent @event, CancellationToken cancellationToken = default)
     {
         if (_webhookService is null)
         {

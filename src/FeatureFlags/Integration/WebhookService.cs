@@ -45,7 +45,7 @@ public interface IWebhookService
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task<Webhook> RegisterWebhookAsync(string url, string description, WebhookEventType eventTypes, string createdBy)
+    public async Task<Webhook> RegisterWebhookAsync(string url, string description, WebhookEventType eventTypes, string createdBy, CancellationToken cancellationToken = default)
     {
         var webhook = new Webhook
         {
@@ -65,7 +65,7 @@ public interface IWebhookService
         return await _webhookRepository.CreateAsync(webhook);
     }
 
-    public async Task<Webhook?> GetWebhookAsync(int webhookId)
+    public async Task<Webhook?> GetWebhookAsync(int webhookId, CancellationToken cancellationToken = default)
     {
         return await _webhookRepository.GetByIdAsync(webhookId);
     }
@@ -76,7 +76,7 @@ public interface IWebhookService
         return webhooks.Where(w => w.ShouldTrigger(eventType)).ToList();
     }
 
-    public async Task<bool> UpdateWebhookAsync(int webhookId, string? url, string? description, WebhookEventType? eventTypes)
+    public async Task<bool> UpdateWebhookAsync(int webhookId, string? url, string? description, WebhookEventType? eventTypes, CancellationToken cancellationToken = default)
     {
         var webhook = await _webhookRepository.GetByIdAsync(webhookId);
         if (webhook is null)
@@ -109,12 +109,12 @@ public interface IWebhookService
         return await _webhookRepository.UpdateAsync(webhook);
     }
 
-    public async Task<bool> DeleteWebhookAsync(int webhookId)
+    public async Task<bool> DeleteWebhookAsync(int webhookId, CancellationToken cancellationToken = default)
     {
         return await _webhookRepository.DeleteAsync(webhookId);
     }
 
-    public async Task TriggerWebhooksAsync(WebhookEventType eventType, FeatureFlag flag, string changedBy, Dictionary<string, object?>? data = null)
+    public async Task TriggerWebhooksAsync(WebhookEventType eventType, FeatureFlag flag, string changedBy, Dictionary<string, object?>? data = null, CancellationToken cancellationToken = default)
     {
         var webhooks = await GetActiveWebhooksAsync(eventType);
 
@@ -132,7 +132,7 @@ public interface IWebhookService
         }
     }
 
-    public async Task RetryFailedDeliveriesAsync()
+    public async Task RetryFailedDeliveriesAsync(CancellationToken cancellationToken = default)
     {
         var failedDeliveries = await _deliveryRepository.GetPendingRetriesAsync();
 

@@ -21,7 +21,7 @@ namespace FeatureFlags.Services;
         _logger = logger;
     }
 
-    public async Task<bool> EvaluateAsync(FeatureFlag featureFlag, UserContext userContext)
+    public async Task<bool> EvaluateAsync(FeatureFlag featureFlag, UserContext userContext, CancellationToken cancellationToken = default)
     {
         if (featureFlag is null)
             throw new ArgumentNullException(nameof(featureFlag));

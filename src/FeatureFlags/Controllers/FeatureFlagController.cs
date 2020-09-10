@@ -35,7 +35,7 @@ namespace FeatureFlags.Controllers;
     /// Checks if a feature flag is enabled for the given user context.
     /// </summary>
     [HttpPost("evaluate")]
-    public async Task<IActionResult> EvaluateFeatureFlag([FromBody] EvaluationRequest request)
+    public async Task<IActionResult> EvaluateFeatureFlag([FromBody] EvaluationRequest request, CancellationToken cancellationToken = default)
     {
         if (request is null || string.IsNullOrEmpty(request.FeatureFlagKey))
             return BadRequest("Feature flag key is required");
@@ -68,7 +68,7 @@ namespace FeatureFlags.Controllers;
     /// Gets the A/B test variant for a user.
     /// </summary>
     [HttpPost("variant")]
-    public async Task<IActionResult> GetVariant([FromBody] EvaluationRequest request)
+    public async Task<IActionResult> GetVariant([FromBody] EvaluationRequest request, CancellationToken cancellationToken = default)
     {
         if (request is null || string.IsNullOrEmpty(request.FeatureFlagKey))
             return BadRequest("Feature flag key is required");
@@ -101,7 +101,7 @@ namespace FeatureFlags.Controllers;
     /// Gets all feature flags.
     /// </summary>
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll(CancellationToken cancellationToken = default)
     {
         try
         {
@@ -119,7 +119,7 @@ namespace FeatureFlags.Controllers;
     /// Gets a feature flag by key.
     /// </summary>
     [HttpGet("{key}")]
-    public async Task<IActionResult> GetByKey(string key)
+    public async Task<IActionResult> GetByKey(string key, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(key))
             return BadRequest("Key is required");
@@ -143,7 +143,7 @@ namespace FeatureFlags.Controllers;
     /// Creates a new feature flag.
     /// </summary>
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] FeatureFlag featureFlag)
+    public async Task<IActionResult> Create([FromBody] FeatureFlag featureFlag, CancellationToken cancellationToken = default)
     {
         if (featureFlag is null || !featureFlag.IsValid())
             return BadRequest("Invalid feature flag configuration");
@@ -164,7 +164,7 @@ namespace FeatureFlags.Controllers;
     /// Updates a feature flag.
     /// </summary>
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, [FromBody] FeatureFlag featureFlag)
+    public async Task<IActionResult> Update(int id, [FromBody] FeatureFlag featureFlag, CancellationToken cancellationToken = default)
     {
         if (featureFlag is null || featureFlag.Id != id)
             return BadRequest("Invalid feature flag");
@@ -185,7 +185,7 @@ namespace FeatureFlags.Controllers;
     /// Enables a feature flag.
     /// </summary>
     [HttpPost("{id}/enable")]
-    public async Task<IActionResult> Enable(int id)
+    public async Task<IActionResult> Enable(int id, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -203,7 +203,7 @@ namespace FeatureFlags.Controllers;
     /// Disables a feature flag.
     /// </summary>
     [HttpPost("{id}/disable")]
-    public async Task<IActionResult> Disable(int id)
+    public async Task<IActionResult> Disable(int id, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -221,7 +221,7 @@ namespace FeatureFlags.Controllers;
     /// Gets audit logs for a feature flag.
     /// </summary>
     [HttpGet("{id}/audit")]
-    public async Task<IActionResult> GetAuditLogs(int id)
+    public async Task<IActionResult> GetAuditLogs(int id, CancellationToken cancellationToken = default)
     {
         try
         {

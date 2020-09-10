@@ -29,7 +29,7 @@ public sealed class RateLimitingMiddleware
         _ = Task.Run(async () => await CleanupExpiredEntriesAsync());
     }
 
-    public async Task InvokeAsync(HttpContext context)
+    public async Task InvokeAsync(HttpContext context, CancellationToken cancellationToken = default)
     {
         var clientId = GetClientIdentifier(context);
 
