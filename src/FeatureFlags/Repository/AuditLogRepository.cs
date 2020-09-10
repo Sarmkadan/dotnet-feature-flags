@@ -1,3 +1,4 @@
+#nullable enable
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
@@ -15,8 +16,7 @@ namespace FeatureFlags.Repository;
 /// Implementation of audit log repository providing persistence and retrieval of audit records.
 /// Supports comprehensive querying for audit trails and compliance reporting.
 /// </summary>
-public class AuditLogRepository : IAuditLogRepository
-{
+{public sealed class AuditLogRepository {
     private readonly FeatureFlagDbContext _context;
 
     public AuditLogRepository(FeatureFlagDbContext context)
@@ -138,7 +138,7 @@ public class AuditLogRepository : IAuditLogRepository
 
     public async Task<AuditLog> AddAsync(AuditLog entity)
     {
-        if (entity == null)
+        if (entity is null)
             throw new ArgumentNullException(nameof(entity));
 
         if (!entity.IsValid())
@@ -151,11 +151,11 @@ public class AuditLogRepository : IAuditLogRepository
 
     public async Task UpdateAsync(AuditLog entity)
     {
-        if (entity == null)
+        if (entity is null)
             throw new ArgumentNullException(nameof(entity));
 
         var existing = await GetByIdAsync(entity.Id);
-        if (existing == null)
+        if (existing is null)
             throw new FeatureFlagDataException($"Audit log with id {entity.Id} not found");
 
         _context.AuditLogs.Update(entity);
@@ -165,7 +165,7 @@ public class AuditLogRepository : IAuditLogRepository
     public async Task DeleteAsync(int id)
     {
         var entity = await GetByIdAsync(id);
-        if (entity == null)
+        if (entity is null)
             throw new FeatureFlagDataException($"Audit log with id {id} not found");
 
         _context.AuditLogs.Remove(entity);

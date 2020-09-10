@@ -1,3 +1,4 @@
+#nullable enable
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
@@ -50,8 +51,7 @@ public interface IEventBus
 /// <summary>
 /// Default in-process implementation of event bus.
 /// </summary>
-public class EventBus : IEventBus
-{
+{public sealed class EventBus {
     private readonly List<IEventSubscriber> _subscribers = new();
     private readonly ILogger<EventBus> _logger;
     private readonly object _syncLock = new();
@@ -63,7 +63,7 @@ public class EventBus : IEventBus
 
     public void Subscribe(IEventSubscriber subscriber)
     {
-        if (subscriber == null)
+        if (subscriber is null)
         {
             throw new ArgumentNullException(nameof(subscriber));
         }
@@ -80,7 +80,7 @@ public class EventBus : IEventBus
 
     public void Unsubscribe(IEventSubscriber subscriber)
     {
-        if (subscriber == null)
+        if (subscriber is null)
         {
             throw new ArgumentNullException(nameof(subscriber));
         }
@@ -96,7 +96,7 @@ public class EventBus : IEventBus
 
     public async Task PublishAsync(FeatureFlagEvent @event)
     {
-        if (@event == null)
+        if (@event is null)
         {
             throw new ArgumentNullException(nameof(@event));
         }
@@ -145,8 +145,7 @@ public class EventBus : IEventBus
 /// <summary>
 /// Event subscriber that logs all feature flag events for audit trail.
 /// </summary>
-public class EventLoggingSubscriber : IEventSubscriber
-{
+{public sealed class EventLoggingSubscriber {
     private readonly ILogger<EventLoggingSubscriber> _logger;
 
     public string[] InterestedEventTypes => new[] { "*" };
@@ -172,8 +171,7 @@ public class EventLoggingSubscriber : IEventSubscriber
 /// <summary>
 /// Event subscriber that triggers webhooks when feature flag events occur.
 /// </summary>
-public class WebhookEventSubscriber : IEventSubscriber
-{
+{public sealed class WebhookEventSubscriber {
     private readonly Integration.IWebhookService? _webhookService;
     private readonly ILogger<WebhookEventSubscriber> _logger;
 
@@ -187,7 +185,7 @@ public class WebhookEventSubscriber : IEventSubscriber
 
     public async Task HandleEventAsync(FeatureFlagEvent @event)
     {
-        if (_webhookService == null)
+        if (_webhookService is null)
         {
             return;
         }

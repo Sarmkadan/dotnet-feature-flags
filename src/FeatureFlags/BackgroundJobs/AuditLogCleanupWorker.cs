@@ -1,3 +1,4 @@
+#nullable enable
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
@@ -11,8 +12,7 @@ namespace FeatureFlags.BackgroundJobs;
 /// Background worker that periodically cleans up old audit logs based on retention policy.
 /// Helps manage database size and comply with data retention regulations.
 /// </summary>
-public class AuditLogCleanupWorker : BackgroundService
-{
+{public sealed class AuditLogCleanupWorker {
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<AuditLogCleanupWorker> _logger;
     private readonly AuditLogCleanupOptions _options;
@@ -78,8 +78,7 @@ public class AuditLogCleanupOptions
 /// Background worker that retries failed webhook deliveries.
 /// Ensures webhook events are delivered with exponential backoff retry strategy.
 /// </summary>
-public class WebhookRetryWorker : BackgroundService
-{
+{public sealed class WebhookRetryWorker {
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<WebhookRetryWorker> _logger;
     private readonly WebhookRetryOptions _options;
@@ -109,7 +108,7 @@ public class WebhookRetryWorker : BackgroundService
                 using var scope = _serviceProvider.CreateScope();
                 var webhookService = scope.ServiceProvider.GetService<Integration.IWebhookService>();
 
-                if (webhookService != null)
+                if (webhookService is not null)
                 {
                     _logger.LogDebug("Checking for failed webhook deliveries to retry");
                     await webhookService.RetryFailedDeliveriesAsync();
@@ -144,8 +143,7 @@ public class WebhookRetryOptions
 /// Background worker that periodically synchronizes feature flag cache with database.
 /// Ensures cache stays consistent with latest data for high-traffic scenarios.
 /// </summary>
-public class CacheSyncWorker : BackgroundService
-{
+{public sealed class CacheSyncWorker {
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<CacheSyncWorker> _logger;
     private readonly CacheSyncOptions _options;
@@ -180,7 +178,7 @@ public class CacheSyncWorker : BackgroundService
                 var cacheService = scope.ServiceProvider.GetService<Caching.ICacheService>();
                 var featureFlagService = scope.ServiceProvider.GetRequiredService<IFeatureFlagService>();
 
-                if (cacheService != null)
+                if (cacheService is not null)
                 {
                     _logger.LogDebug("Syncing feature flag cache with database");
 

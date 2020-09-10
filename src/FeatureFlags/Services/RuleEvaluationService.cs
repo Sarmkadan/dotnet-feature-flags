@@ -1,3 +1,4 @@
+#nullable enable
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
@@ -14,8 +15,7 @@ namespace FeatureFlags.Services;
 /// Service implementation for rule evaluation.
 /// Evaluates complex targeting rules with support for AND/OR logic.
 /// </summary>
-public class RuleEvaluationService : IRuleEvaluationService
-{
+{public sealed class RuleEvaluationService {
     private readonly IFeatureFlagRepository _repository;
     private readonly ILogger<RuleEvaluationService> _logger;
 
@@ -27,16 +27,16 @@ public class RuleEvaluationService : IRuleEvaluationService
 
     public async Task<bool> EvaluateAsync(FeatureFlag featureFlag, UserContext userContext)
     {
-        if (featureFlag == null)
+        if (featureFlag is null)
             throw new ArgumentNullException(nameof(featureFlag));
 
-        if (userContext == null)
+        if (userContext is null)
             throw new ArgumentNullException(nameof(userContext));
 
         try
         {
             var flagWithRules = await _repository.GetWithRulesAsync(featureFlag.Id);
-            if (flagWithRules == null)
+            if (flagWithRules is null)
                 throw new FeatureFlagNotFoundException(featureFlag.Key);
 
             if (!flagWithRules.Rules.Any())
@@ -67,10 +67,10 @@ public class RuleEvaluationService : IRuleEvaluationService
 
     public async Task<bool> EvaluateRuleAsync(Rule rule, UserContext userContext)
     {
-        if (rule == null)
+        if (rule is null)
             throw new ArgumentNullException(nameof(rule));
 
-        if (userContext == null)
+        if (userContext is null)
             throw new ArgumentNullException(nameof(userContext));
 
         if (!rule.IsActive)
@@ -92,10 +92,10 @@ public class RuleEvaluationService : IRuleEvaluationService
 
     public bool EvaluateCondition(Condition condition, UserContext userContext)
     {
-        if (condition == null)
+        if (condition is null)
             throw new ArgumentNullException(nameof(condition));
 
-        if (userContext == null)
+        if (userContext is null)
             throw new ArgumentNullException(nameof(userContext));
 
         if (!condition.IsActive)
@@ -115,14 +115,14 @@ public class RuleEvaluationService : IRuleEvaluationService
 
     public async Task<IEnumerable<Rule>> GetApplicableRulesAsync(FeatureFlag featureFlag, UserContext userContext)
     {
-        if (featureFlag == null)
+        if (featureFlag is null)
             throw new ArgumentNullException(nameof(featureFlag));
 
-        if (userContext == null)
+        if (userContext is null)
             throw new ArgumentNullException(nameof(userContext));
 
         var flagWithRules = await _repository.GetWithRulesAsync(featureFlag.Id);
-        if (flagWithRules == null)
+        if (flagWithRules is null)
             throw new FeatureFlagNotFoundException(featureFlag.Key);
 
         var applicable = new List<Rule>();

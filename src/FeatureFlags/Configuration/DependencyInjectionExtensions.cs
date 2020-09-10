@@ -1,3 +1,4 @@
+#nullable enable
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
@@ -21,7 +22,7 @@ public static class DependencyInjectionExtensions
     /// </summary>
     public static IServiceCollection AddFeatureFlagServices(this IServiceCollection services, IConfiguration configuration)
     {
-        if (services == null)
+        if (services is null)
             throw new ArgumentNullException(nameof(services));
 
         // Register repositories

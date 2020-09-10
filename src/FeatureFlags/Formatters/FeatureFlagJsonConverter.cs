@@ -1,3 +1,4 @@
+#nullable enable
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
@@ -13,8 +14,7 @@ namespace FeatureFlags.Formatters;
 /// Custom JSON converter for FeatureFlag entities that handles circular references and optimizes serialization.
 /// Provides cleaner JSON output by excluding unnecessary navigation properties and formatting timestamps consistently.
 /// </summary>
-public class FeatureFlagJsonConverter : JsonConverter<FeatureFlag>
-{
+{public sealed class FeatureFlagJsonConverter {
     public override FeatureFlag Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var flag = new FeatureFlag();
@@ -86,7 +86,7 @@ public class FeatureFlagJsonConverter : JsonConverter<FeatureFlag>
 
     public override void Write(Utf8JsonWriter writer, FeatureFlag value, JsonSerializerOptions options)
     {
-        if (value == null)
+        if (value is null)
         {
             writer.WriteNullValue();
             return;

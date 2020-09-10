@@ -1,3 +1,4 @@
+#nullable enable
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
@@ -120,7 +121,7 @@ public static class Phase2DependencyInjectionExtensions
 
         // Register webhook subscriber if webhook service is available
         var webhookService = app.ApplicationServices.GetService<IWebhookService>();
-        if (webhookService != null)
+        if (webhookService is not null)
         {
             var webhookSubscriber = new WebhookEventSubscriber(webhookService, app.ApplicationServices.GetRequiredService<ILogger<WebhookEventSubscriber>>());
             eventBus.Subscribe(webhookSubscriber);

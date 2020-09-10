@@ -1,3 +1,4 @@
+#nullable enable
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
@@ -18,8 +19,7 @@ public interface IHttpClientFactory
 /// <summary>
 /// Default implementation of HTTP client factory using standard HttpClient.
 /// </summary>
-public class DefaultHttpClientFactory : IHttpClientFactory
-{
+{public sealed class DefaultHttpClientFactory {
     private readonly IHttpClientFactory _factory;
 
     public DefaultHttpClientFactory(IHttpClientFactory factory)
@@ -98,7 +98,7 @@ public class HttpApiClient
     {
         return await SendWithRetryAsync(async () =>
         {
-            var content = body != null
+            var content = body is not null
                 ? new StringContent(System.Text.Json.JsonSerializer.Serialize(body), System.Text.Encoding.UTF8, "application/json")
                 : null;
 
@@ -114,7 +114,7 @@ public class HttpApiClient
     {
         return await SendWithRetryAsync(async () =>
         {
-            var content = body != null
+            var content = body is not null
                 ? new StringContent(System.Text.Json.JsonSerializer.Serialize(body), System.Text.Encoding.UTF8, "application/json")
                 : null;
 

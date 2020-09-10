@@ -1,3 +1,4 @@
+#nullable enable
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
@@ -80,7 +81,7 @@ public static class ConversionUtilities
     /// </summary>
     public static string? ConvertToString(object? value)
     {
-        if (value == null)
+        if (value is null)
         {
             return null;
         }
@@ -132,9 +133,9 @@ public static class ConversionUtilities
                 }
 
                 var key = dict.Keys.FirstOrDefault(k => k.Equals(property.Name, StringComparison.OrdinalIgnoreCase));
-                if (key != null && dict.TryGetValue(key, out var value))
+                if (key is not null && dict.TryGetValue(key, out var value))
                 {
-                    if (value != null)
+                    if (value is not null)
                     {
                         property.SetValue(obj, Convert.ChangeType(value, property.PropertyType));
                     }
@@ -157,7 +158,7 @@ public static class ConversionUtilities
     {
         var dict = new Dictionary<string, object?>();
 
-        if (obj == null)
+        if (obj is null)
         {
             return dict;
         }
@@ -216,7 +217,7 @@ public static class ConversionUtilities
     /// </summary>
     public static List<T> ConvertCollection<T>(IEnumerable<object?>? items)
     {
-        if (items == null)
+        if (items is null)
         {
             return new List<T>();
         }
@@ -239,7 +240,7 @@ public static class ConversionUtilities
     /// </summary>
     public static T? DeepClone<T>(T obj)
     {
-        if (obj == null)
+        if (obj is null)
         {
             return default;
         }
@@ -260,7 +261,7 @@ public static class ConversionUtilities
     /// </summary>
     public static bool CanConvertTo<T>(object? value)
     {
-        if (value == null)
+        if (value is null)
         {
             return !typeof(T).IsValueType || Nullable.GetUnderlyingType(typeof(T)) != null;
         }

@@ -1,3 +1,4 @@
+#nullable enable
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
@@ -43,7 +44,7 @@ public class RolloutStrategy
     /// </summary>
     public int GetCurrentPercentage()
     {
-        if (!IsGradual || StartDate == null || DailyIncrement == null)
+        if (!IsGradual || StartDate is null || DailyIncrement is null)
             return StartPercentage ?? 0;
 
         var daysElapsed = (DateTime.UtcNow - StartDate.Value).Days;
