@@ -18,6 +18,7 @@ A production-grade feature flag engine for .NET with support for percentage roll
 - [API Reference](#api-reference)
 - [CLI Reference](#cli-reference)
 - [Advanced Usage](#advanced-usage)
+- [Testing](#testing)
 - [Troubleshooting](#troubleshooting)
 - [Performance](#performance)
 - [Related Projects](#related-projects)
@@ -783,6 +784,38 @@ using (var scope = monitor.StartOperation("flag-evaluation"))
 
 var metrics = monitor.GetMetrics();
 ```
+
+## Testing
+
+Run the full test suite:
+
+```bash
+dotnet test
+```
+
+Run a specific test project:
+
+```bash
+dotnet test src/FeatureFlags.Tests/FeatureFlags.Tests.csproj
+dotnet test tests/dotnet-feature-flags.Tests/dotnet-feature-flags.Tests.csproj
+```
+
+Run with code coverage:
+
+```bash
+dotnet test --collect:"XPlat Code Coverage"
+```
+
+### Test Structure
+
+- `src/FeatureFlags.Tests/` — Unit tests for models, services, formatters, and utilities
+  - `Models/` — Condition and UserContext model tests
+  - `Services/` — CacheService and PercentageRolloutService tests
+  - `Formatters/` — JSON/CSV/XML formatter tests
+  - `Utilities/` — Extension and utility function tests
+- `tests/dotnet-feature-flags.Tests/` — Integration-level service tests
+  - `Models/` — Condition evaluation logic tests
+  - `Services/` — FeatureFlagService and RuleEvaluationService tests
 
 ## Troubleshooting
 
