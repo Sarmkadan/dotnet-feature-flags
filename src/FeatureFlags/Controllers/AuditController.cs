@@ -1,3 +1,4 @@
+#nullable enable
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
@@ -16,8 +17,7 @@ namespace FeatureFlags.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/audit")]
-public class AuditController : ControllerBase
-{
+{public sealed class AuditController {
     private readonly IAuditLogService _auditLogService;
     private readonly IFeatureFlagService _featureFlagService;
     private readonly ILogger<AuditController> _logger;

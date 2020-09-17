@@ -1,3 +1,4 @@
+#nullable enable
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
@@ -201,8 +202,7 @@ public interface IPaymentProcessor
     Task<PaymentResult> ProcessPaymentAsync(decimal amount);
 }
 
-public class LegacyPaymentGateway : IPaymentProcessor
-{
+{public sealed class LegacyPaymentGateway {
     public Task<PaymentResult> ProcessPaymentAsync(decimal amount)
     {
         return Task.FromResult(new PaymentResult
@@ -213,8 +213,7 @@ public class LegacyPaymentGateway : IPaymentProcessor
     }
 }
 
-public class NewPaymentGateway : IPaymentProcessor
-{
+{public sealed class NewPaymentGateway {
     public Task<PaymentResult> ProcessPaymentAsync(decimal amount)
     {
         return Task.FromResult(new PaymentResult
@@ -230,16 +229,14 @@ public interface IRecommendationEngine
     Task<string[]> GetRecommendationsAsync(string userId);
 }
 
-public class RuleBasedRecommendationEngine : IRecommendationEngine
-{
+{public sealed class RuleBasedRecommendationEngine {
     public Task<string[]> GetRecommendationsAsync(string userId)
     {
         return Task.FromResult(new[] { "Product-A", "Product-B", "Product-C" });
     }
 }
 
-public class MLRecommendationEngine : IRecommendationEngine
-{
+{public sealed class MLRecommendationEngine {
     public Task<string[]> GetRecommendationsAsync(string userId)
     {
         return Task.FromResult(new[] { "ML-Product-X", "ML-Product-Y", "ML-Product-Z" });

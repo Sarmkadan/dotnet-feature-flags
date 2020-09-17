@@ -1,3 +1,4 @@
+#nullable enable
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
@@ -26,8 +27,7 @@ public interface IWebhookService
 /// <summary>
 /// Default implementation of webhook service.
 /// </summary>
-public class WebhookService : IWebhookService
-{
+{public sealed class WebhookService {
     private readonly IWebhookRepository _webhookRepository;
     private readonly IWebhookDeliveryRepository _deliveryRepository;
     private readonly HttpApiClient _httpClient;
@@ -79,7 +79,7 @@ public class WebhookService : IWebhookService
     public async Task<bool> UpdateWebhookAsync(int webhookId, string? url, string? description, WebhookEventType? eventTypes)
     {
         var webhook = await _webhookRepository.GetByIdAsync(webhookId);
-        if (webhook == null)
+        if (webhook is null)
         {
             return false;
         }
@@ -139,7 +139,7 @@ public class WebhookService : IWebhookService
         foreach (var delivery in failedDeliveries)
         {
             var webhook = await _webhookRepository.GetByIdAsync(delivery.WebhookId);
-            if (webhook != null && webhook.IsActive)
+            if (webhook is not null && webhook.IsActive)
             {
                 _ = Task.Run(async () => await SendWebhookAsync(webhook, delivery.Payload, delivery));
             }

@@ -1,3 +1,4 @@
+#nullable enable
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
@@ -36,7 +37,7 @@ public class Condition
     /// </summary>
     public bool Evaluate(string? contextValue)
     {
-        if (contextValue == null)
+        if (contextValue is null)
             return false;
 
         return Operator switch
