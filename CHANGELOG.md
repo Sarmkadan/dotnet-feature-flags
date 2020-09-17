@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-03-14
+
+### Changed
+- Default container port changed from 80 to 8080 for non-root compatibility
+- Container now runs as non-root user (`appuser`) for improved security
+- Docker Compose upgraded to v2 schema (removed deprecated `version` field)
+- SQL Server health check updated to use `mssql-tools18`
+- Published with `UseAppHost=false` for smaller image size
+- Added `restart: unless-stopped` to all Compose services
+- SQL Server health check `start_period` increased to 30s
+
+### Added
+- Migration guide for v1.x to v2.0 (`docs/MIGRATION_v2.md`)
+- `DOTNET_EnableDiagnostics=0` environment variable for reduced memory footprint
+
+### Security
+- Non-root container execution (runs as `appuser:appgroup`)
+- Explicit file ownership with `chown` in Dockerfile
+
+---
+
 ## [1.0.0] - 2025-05-07
 
 ### Added
