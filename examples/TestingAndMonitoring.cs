@@ -18,7 +18,7 @@ using FeatureFlags.Services;
 /// </summary>
 
 // Unit Testing Example
-public class FeatureFlagServiceTestExample
+public sealed class FeatureFlagServiceTestExample
 {
     public void TestPercentageRollout()
     {
@@ -54,7 +54,7 @@ public class FeatureFlagServiceTestExample
 }
 
 // Performance Monitoring Example
-public class FeatureFlagPerformanceMonitor
+public sealed class FeatureFlagPerformanceMonitor
 {
     private readonly IFeatureFlagService _featureFlagService;
     private readonly List<EvaluationMetric> _metrics = new();
@@ -183,7 +183,7 @@ public class FeatureFlagPerformanceMonitor
 }
 
 // Production Monitoring: Health Checks
-public class FeatureFlagHealthCheck
+public sealed class FeatureFlagHealthCheck
 {
     private readonly IFeatureFlagService _featureFlagService;
 
@@ -242,7 +242,7 @@ public class FeatureFlagHealthCheck
 }
 
 // Load Testing Example
-public class FeatureFlagLoadTester
+public sealed class FeatureFlagLoadTester
 {
     private readonly IFeatureFlagService _featureFlagService;
 
@@ -308,7 +308,7 @@ public class FeatureFlagLoadTester
 }
 
 // Supporting classes
-public class EvaluationMetric
+public sealed class EvaluationMetric
 {
     public string FlagKey { get; set; } = "";
     public DateTime Timestamp { get; set; }
@@ -318,7 +318,7 @@ public class EvaluationMetric
     public double ThroughputPerSecond { get; set; }
 }
 
-public class HealthStatus
+public sealed class HealthStatus
 {
     public bool IsHealthy { get; set; }
     public bool DatabaseConnectivity { get; set; }

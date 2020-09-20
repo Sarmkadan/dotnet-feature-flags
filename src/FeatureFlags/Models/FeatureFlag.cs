@@ -12,7 +12,7 @@ namespace FeatureFlags.Models;
 /// Represents a feature flag with rollout strategies and targeting rules.
 /// Supports percentage-based rollouts, user targeting, and A/B testing variants.
 /// </summary>
-public class FeatureFlag
+public sealed class FeatureFlag
 {
     public int Id { get; set; }
 

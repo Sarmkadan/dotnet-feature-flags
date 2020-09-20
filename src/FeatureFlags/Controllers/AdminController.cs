@@ -250,7 +250,7 @@ namespace FeatureFlags.Controllers;
 /// <summary>
 /// Request model for registering a webhook.
 /// </summary>
-public class RegisterWebhookRequest
+public sealed class RegisterWebhookRequest
 {
     public string Url { get; set; } = string.Empty;
     public string? Description { get; set; }

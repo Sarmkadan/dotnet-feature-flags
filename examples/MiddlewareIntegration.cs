@@ -18,7 +18,7 @@ using FeatureFlags.Services;
 /// </summary>
 
 // Middleware for feature flag based routing
-public class FeatureFlagMiddleware
+public sealed class FeatureFlagMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly IFeatureFlagService _featureFlagService;
@@ -79,7 +79,7 @@ public class FeatureFlagMiddleware
 }
 
 // Controller using feature flags
-public class FeatureFlagEnabledControllerExample
+public sealed class FeatureFlagEnabledControllerExample
 {
     private readonly IFeatureFlagService _featureFlagService;
     private readonly IServiceProvider _serviceProvider;
@@ -168,7 +168,7 @@ public static class FeatureFlagsStartupConfiguration
 }
 
 // Example: Feature flag-based caching middleware
-public class FeatureFlagCachingMiddleware
+public sealed class FeatureFlagCachingMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly IFeatureFlagService _featureFlagService;
@@ -206,7 +206,7 @@ public class FeatureFlagCachingMiddleware
 }
 
 // Example: Feature flag-based rate limiting
-public class FeatureFlagRateLimitMiddleware
+public sealed class FeatureFlagRateLimitMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly IFeatureFlagService _featureFlagService;
@@ -238,7 +238,7 @@ public class FeatureFlagRateLimitMiddleware
 }
 
 // Example: Using feature flags in a service class
-public class ProductService
+public sealed class ProductService
 {
     private readonly IFeatureFlagService _featureFlagService;
 
@@ -288,7 +288,7 @@ public class ProductService
 }
 
 // Supporting classes
-public class Product
+public sealed class Product
 {
     public int Id { get; set; }
     public string Name { get; set; } = "";

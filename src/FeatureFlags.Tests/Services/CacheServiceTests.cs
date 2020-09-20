@@ -14,7 +14,7 @@ namespace FeatureFlags.Tests.Services;
 /// Unit tests for the in-memory cache service implementation.
 /// Tests cache operations including get, set, remove, and expiration handling.
 /// </summary>
-public class CacheServiceTests
+public sealed class CacheServiceTests
 {
     private readonly ILogger<InMemoryCacheService> _logger;
 
@@ -172,7 +172,7 @@ public class CacheServiceTests
 /// <summary>
 /// Unit tests for the cache-related utilities and helpers.
 /// </summary>
-public class CacheUtilityTests
+public sealed class CacheUtilityTests
 {
     [Fact]
     public void ValidateAndNormalizePaging_OutOfRangePage_NormalizesCorrectly()

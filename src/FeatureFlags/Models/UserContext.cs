@@ -10,7 +10,7 @@ namespace FeatureFlags.Models;
 /// Represents the context of a user for evaluating feature flags.
 /// Contains user identity and attributes used for targeting and rollout decisions.
 /// </summary>
-public class UserContext
+public sealed class UserContext
 {
     public string UserId { get; set; } = string.Empty;
 

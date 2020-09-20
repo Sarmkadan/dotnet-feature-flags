@@ -15,7 +15,7 @@ namespace FeatureFlags.Tests.Models;
 /// Unit tests for Condition model.
 /// Tests all condition operators and evaluation logic.
 /// </summary>
-public class ConditionTests
+public sealed class ConditionTests
 {
     [Fact]
     public void Evaluate_EqualsOperator_ReturnsTrueForMatch()

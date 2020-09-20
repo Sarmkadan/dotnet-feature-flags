@@ -10,7 +10,7 @@ namespace FeatureFlags.Models;
 /// Generic API response wrapper for consistent API response format.
 /// Used across all endpoints to provide uniform response structure to clients.
 /// </summary>
-public class ApiResponse<T>
+public sealed class ApiResponse<T>
 {
     public bool Success { get; set; }
     public T? Data { get; set; }
@@ -64,7 +64,7 @@ public class ApiResponse<T>
 /// <summary>
 /// Non-generic response for operations that don't return data.
 /// </summary>
-public class ApiResponse
+public sealed class ApiResponse
 {
     public bool Success { get; set; }
     public string? Message { get; set; }
@@ -102,7 +102,7 @@ public class ApiResponse
 /// <summary>
 /// Metadata included in API responses for additional context.
 /// </summary>
-public class ApiMetadata
+public sealed class ApiMetadata
 {
     public string? RequestId { get; set; }
     public long? ExecutionTimeMs { get; set; }
@@ -115,7 +115,7 @@ public class ApiMetadata
 /// <summary>
 /// Paginated API response wrapper for list endpoints.
 /// </summary>
-public class PaginatedApiResponse<T>
+public sealed class PaginatedApiResponse<T>
 {
     public bool Success { get; set; }
     public List<T> Data { get; set; } = new();
@@ -161,7 +161,7 @@ public class PaginatedApiResponse<T>
 /// <summary>
 /// Pagination information included in paginated responses.
 /// </summary>
-public class PaginationInfo
+public sealed class PaginationInfo
 {
     public int PageNumber { get; set; }
     public int PageSize { get; set; }
