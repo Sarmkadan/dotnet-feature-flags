@@ -37,7 +37,7 @@ namespace FeatureFlags.Services;
         _logger = logger;
     }
 
-    public async Task<bool> IsEnabledAsync(string featureFlagKey, UserContext userContext)
+    public async Task<bool> IsEnabledAsync(string featureFlagKey, UserContext userContext, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(featureFlagKey))
             throw new ArgumentException("Feature flag key cannot be empty", nameof(featureFlagKey));
@@ -77,7 +77,7 @@ namespace FeatureFlags.Services;
         }
     }
 
-    public async Task<FeatureFlag?> GetFeatureFlagAsync(int id)
+    public async Task<FeatureFlag?> GetFeatureFlagAsync(int id, CancellationToken cancellationToken = default)
     {
         if (id <= 0)
             throw new ArgumentException("Id must be > 0", nameof(id));
@@ -85,7 +85,7 @@ namespace FeatureFlags.Services;
         return await _featureFlagRepository.GetByIdAsync(id);
     }
 
-    public async Task<FeatureFlag?> GetFeatureFlagByKeyAsync(string key)
+    public async Task<FeatureFlag?> GetFeatureFlagByKeyAsync(string key, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(key))
             throw new ArgumentException("Key cannot be empty", nameof(key));
@@ -103,7 +103,7 @@ namespace FeatureFlags.Services;
         return await _featureFlagRepository.GetEnabledAsync();
     }
 
-    public async Task<FeatureFlag> CreateFeatureFlagAsync(FeatureFlag featureFlag, string createdBy)
+    public async Task<FeatureFlag> CreateFeatureFlagAsync(FeatureFlag featureFlag, string createdBy, CancellationToken cancellationToken = default)
     {
         if (featureFlag is null)
             throw new ArgumentNullException(nameof(featureFlag));
@@ -127,7 +127,7 @@ namespace FeatureFlags.Services;
         return created;
     }
 
-    public async Task UpdateFeatureFlagAsync(FeatureFlag featureFlag, string updatedBy)
+    public async Task UpdateFeatureFlagAsync(FeatureFlag featureFlag, string updatedBy, CancellationToken cancellationToken = default)
     {
         if (featureFlag is null)
             throw new ArgumentNullException(nameof(featureFlag));
@@ -150,7 +150,7 @@ namespace FeatureFlags.Services;
         _logger.LogInformation("Feature flag '{Key}' updated by {User}", featureFlag.Key, updatedBy);
     }
 
-    public async Task DeleteFeatureFlagAsync(int id, string deletedBy)
+    public async Task DeleteFeatureFlagAsync(int id, string deletedBy, CancellationToken cancellationToken = default)
     {
         if (id <= 0)
             throw new ArgumentException("Id must be > 0", nameof(id));
@@ -170,7 +170,7 @@ namespace FeatureFlags.Services;
         _logger.LogInformation("Feature flag with id {Id} deleted by {User}", id, deletedBy);
     }
 
-    public async Task EnableFeatureFlagAsync(int id, string modifiedBy)
+    public async Task EnableFeatureFlagAsync(int id, string modifiedBy, CancellationToken cancellationToken = default)
     {
         if (id <= 0)
             throw new ArgumentException("Id must be > 0", nameof(id));
@@ -192,7 +192,7 @@ namespace FeatureFlags.Services;
         _logger.LogInformation("Feature flag '{Key}' enabled by {User}", featureFlag.Key, modifiedBy);
     }
 
-    public async Task DisableFeatureFlagAsync(int id, string modifiedBy)
+    public async Task DisableFeatureFlagAsync(int id, string modifiedBy, CancellationToken cancellationToken = default)
     {
         if (id <= 0)
             throw new ArgumentException("Id must be > 0", nameof(id));
@@ -214,7 +214,7 @@ namespace FeatureFlags.Services;
         _logger.LogInformation("Feature flag '{Key}' disabled by {User}", featureFlag.Key, modifiedBy);
     }
 
-    public async Task<string?> GetVariantAsync(string featureFlagKey, UserContext userContext)
+    public async Task<string?> GetVariantAsync(string featureFlagKey, UserContext userContext, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(featureFlagKey))
             throw new ArgumentException("Feature flag key cannot be empty", nameof(featureFlagKey));

@@ -48,10 +48,19 @@ public sealed class FeatureFlag
     /// </summary>
     public bool IsValid()
     {
-        if (string.IsNullOrWhiteSpace(Key))
+        if (string.IsNullOrWhiteSpace(Key) || Key.Length > 100)
             return false;
 
-        if (string.IsNullOrWhiteSpace(DisplayName))
+        if (string.IsNullOrWhiteSpace(DisplayName) || DisplayName.Length > 200)
+            return false;
+
+        if (Description?.Length > 1000)
+            return false;
+
+        if (CreatedBy?.Length > 100)
+            return false;
+
+        if (UpdatedBy?.Length > 100)
             return false;
 
         if (RolloutType == RolloutType.Percentage && (PercentageRollout < 0 || PercentageRollout > 100))

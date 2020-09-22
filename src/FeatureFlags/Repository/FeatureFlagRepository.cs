@@ -23,12 +23,12 @@ namespace FeatureFlags.Repository;
         _context = context;
     }
 
-    public async Task<FeatureFlag?> GetByIdAsync(int id)
+    public async Task<FeatureFlag?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
         return await _context.FeatureFlags.FirstOrDefaultAsync(f => f.Id == id);
     }
 
-    public async Task<FeatureFlag?> GetByKeyAsync(string key)
+    public async Task<FeatureFlag?> GetByKeyAsync(string key, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(key))
             throw new ArgumentException("Key cannot be empty", nameof(key));
@@ -65,7 +65,7 @@ namespace FeatureFlags.Repository;
             .ToListAsync();
     }
 
-    public async Task<int> GetTotalCountAsync()
+    public async Task<int> GetTotalCountAsync(CancellationToken cancellationToken = default)
     {
         return await _context.FeatureFlags.CountAsync();
     }
@@ -97,7 +97,7 @@ namespace FeatureFlags.Repository;
             .ToListAsync();
     }
 
-    public async Task<FeatureFlag?> GetWithRulesAsync(int featureFlagId)
+    public async Task<FeatureFlag?> GetWithRulesAsync(int featureFlagId, CancellationToken cancellationToken = default)
     {
         return await _context.FeatureFlags
             .Include(f => f.Rules)
@@ -105,21 +105,21 @@ namespace FeatureFlags.Repository;
             .FirstOrDefaultAsync(f => f.Id == featureFlagId);
     }
 
-    public async Task<FeatureFlag?> GetWithVariantsAsync(int featureFlagId)
+    public async Task<FeatureFlag?> GetWithVariantsAsync(int featureFlagId, CancellationToken cancellationToken = default)
     {
         return await _context.FeatureFlags
             .Include(f => f.Variants)
             .FirstOrDefaultAsync(f => f.Id == featureFlagId);
     }
 
-    public async Task<FeatureFlag?> GetWithAuditLogsAsync(int featureFlagId)
+    public async Task<FeatureFlag?> GetWithAuditLogsAsync(int featureFlagId, CancellationToken cancellationToken = default)
     {
         return await _context.FeatureFlags
             .Include(f => f.AuditLogs)
             .FirstOrDefaultAsync(f => f.Id == featureFlagId);
     }
 
-    public async Task<bool> KeyExistsAsync(string key)
+    public async Task<bool> KeyExistsAsync(string key, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(key))
             return false;
@@ -138,7 +138,7 @@ namespace FeatureFlags.Repository;
             .ToListAsync();
     }
 
-    public async Task<FeatureFlag> AddAsync(FeatureFlag entity)
+    public async Task<FeatureFlag> AddAsync(FeatureFlag entity, CancellationToken cancellationToken = default)
     {
         if (entity is null)
             throw new ArgumentNullException(nameof(entity));
@@ -151,7 +151,7 @@ namespace FeatureFlags.Repository;
         return result.Entity;
     }
 
-    public async Task UpdateAsync(FeatureFlag entity)
+    public async Task UpdateAsync(FeatureFlag entity, CancellationToken cancellationToken = default)
     {
         if (entity is null)
             throw new ArgumentNullException(nameof(entity));
@@ -167,7 +167,7 @@ namespace FeatureFlags.Repository;
         await _context.SaveChangesAsync();
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
         var entity = await GetByIdAsync(id);
         if (entity is null)
@@ -177,12 +177,12 @@ namespace FeatureFlags.Repository;
         await _context.SaveChangesAsync();
     }
 
-    public async Task<bool> ExistsAsync(int id)
+    public async Task<bool> ExistsAsync(int id, CancellationToken cancellationToken = default)
     {
         return await _context.FeatureFlags.AnyAsync(f => f.Id == id);
     }
 
-    public async Task SaveChangesAsync()
+    public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         await _context.SaveChangesAsync();
     }

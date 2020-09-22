@@ -48,7 +48,7 @@ public sealed class ApiResponse<T>
     }
 
     /// <summary>
-    /// Creates a response from a Result<T>.
+    /// Creates a response from a Result&lt;T&gt;.
     /// </summary>
     public static ApiResponse<T> FromResult(Result<T> result, string? defaultError = null)
     {
