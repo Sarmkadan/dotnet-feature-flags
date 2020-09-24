@@ -48,7 +48,8 @@ namespace FeatureFlags.Controllers;
                 Email = request.Email,
                 Country = request.Country,
                 Tier = request.Tier,
-                Region = request.Region
+                Region = request.Region,
+                CustomAttributes = request.CustomAttributes ?? new Dictionary<string, string>()
             };
 
             if (!userContext.IsValid())
@@ -81,7 +82,8 @@ namespace FeatureFlags.Controllers;
                 Email = request.Email,
                 Country = request.Country,
                 Tier = request.Tier,
-                Region = request.Region
+                Region = request.Region,
+                CustomAttributes = request.CustomAttributes ?? new Dictionary<string, string>()
             };
 
             if (!userContext.IsValid())
