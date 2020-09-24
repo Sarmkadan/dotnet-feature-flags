@@ -1,125 +1,40 @@
-# =============================================================================
-# Author: Vladyslav Zaiets | https://sarmkadan.com
-# CTO & Software Architect
-# =============================================================================
-
 name: Build & Test
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main, master, develop ]
   pull_request:
-    branches: [ main, develop ]
+    branches: [ main, master, develop ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    services:
-      mssql:
-        image: mcr.microsoft.com/mssql/server:2022-latest
-        env:
-          SA_PASSWORD: TestPassword123!
-          ACCEPT_EULA: Y
-        options: >-
-          --health-cmd="/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P TestPassword123! -Q 'SELECT 1'"
-          --health-interval 15s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 1433:1433
+    strategy:
+      matrix:
+        dotnet-version: ['8.0.x']
 
     steps:
     - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '10.0.x'
+        dotnet-version: ${{ matrix.dotnet-version }}
 
     - name: Restore dependencies
       run: dotnet restore
 
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build --no-restore --configuration Release
 
-    - name: Run tests
-      run: dotnet test --configuration Release --no-build --logger "console;verbosity=detailed"
-      env:
-        ConnectionStrings__DefaultConnection: "Server=localhost;Database=FeatureFlagEngineTest;User Id=sa;Password=TestPassword123!;TrustServerCertificate=true;"
+    - name: Test
+      run: dotnet test --no-build --configuration Release --verbosity normal --logger "trx;LogFileName=test-results.trx"
+      continue-on-error: false
 
-    - name: Pack NuGet
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      run: dotnet pack src/FeatureFlags/FeatureFlags.csproj --configuration Release --output ./nupkg
-
-    - name: Upload NuGet artifacts
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    - name: Upload test results
       uses: actions/upload-artifact@v4
+      if: always()
       with:
-        name: nuget-package
-        path: ./nupkg/**/*.nupkg
-
-  code-quality:
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '10.0.x'
-
-    - name: Restore dependencies
-      run: dotnet restore
-
-    - name: Analyze code style
-      run: dotnet format --verify-no-changes --verbosity diagnostic
-
-    - name: SonarCloud Scan
-      uses: SonarSource/sonarcloud-github-action@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-  security:
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Run Trivy vulnerability scanner
-      uses: aquasecurity/trivy-action@master
-      with:
-        scan-type: 'fs'
-        scan-ref: '.'
-        format: 'sarif'
-        output: 'trivy-results.sarif'
-
-    - name: Upload Trivy results to GitHub Security tab
-      uses: github/codeql-action/upload-sarif@v3
-      with:
-        sarif_file: 'trivy-results.sarif'
-
-  docker-build:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-
-    - name: Build Docker image
-      uses: docker/build-push-action@v5
-      with:
-        context: .
-        push: false
-        tags: feature-flags:${{ github.sha }}
-        cache-from: type=registry,ref=feature-flags:buildcache
-        cache-to: type=registry,ref=feature-flags:buildcache,mode=max
+        name: test-results-${{ matrix.dotnet-version }}
+        path: '**/TestResults/*.trx'
+        retention-days: 7
