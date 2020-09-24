@@ -54,13 +54,19 @@ namespace FeatureFlags.Services;
             if (featureFlag is null)
             {
                 _logger.LogWarning("Feature flag '{Key}' not found", featureFlagKey);
+                // Log evaluation even if feature flag is not found, with result "Not Found"
+                await LogAuditAsync(0, AuditAction.Evaluated, userContext.UserId, featureFlagKey, "Not Found", $"Feature flag '{featureFlagKey}' evaluated by '{userContext.UserId}' - Not Found");
                 return false;
             }
 
             if (!featureFlag.IsEnabled)
+            {
+                // Log evaluation when feature flag is disabled
+                await LogAuditAsync(featureFlag.Id, AuditAction.Evaluated, userContext.UserId, featureFlagKey, "Disabled", $"Feature flag '{featureFlagKey}' evaluated by '{userContext.UserId}' - Disabled");
                 return false;
+            }
 
-            return featureFlag.RolloutType switch
+            bool result = featureFlag.RolloutType switch
             {
                 RolloutType.Percentage => await _percentageRolloutService.EvaluateAsync(featureFlag, userContext),
                 RolloutType.RulesBased => await _ruleEvaluationService.EvaluateAsync(featureFlag, userContext),
@@ -69,6 +75,10 @@ namespace FeatureFlags.Services;
                 RolloutType.None => false,
                 _ => false
             };
+
+            // Log successful evaluation
+            await LogAuditAsync(featureFlag.Id, AuditAction.Evaluated, userContext.UserId, featureFlagKey, result.ToString(), $"Feature flag '{featureFlagKey}' evaluated by '{userContext.UserId}' - Result: {result}");
+            return result;
         }
         catch (Exception ex)
         {
@@ -224,13 +234,20 @@ namespace FeatureFlags.Services;
 
         var featureFlag = await _featureFlagRepository.GetWithVariantsAsync(await GetIdByKeyAsync(featureFlagKey));
         if (featureFlag is null || !featureFlag.IsEnabled)
+        {
+            await LogAuditAsync(featureFlag?.Id ?? 0, AuditAction.Evaluated, userContext.UserId, featureFlagKey, "Not Enabled/Found", $"Feature flag '{featureFlagKey}' evaluated by '{userContext.UserId}' for variant - Not Enabled/Found");
             return null;
+        }
 
         if (featureFlag.RolloutType != RolloutType.ABTest)
+        {
+            await LogAuditAsync(featureFlag.Id, AuditAction.Evaluated, userContext.UserId, featureFlagKey, "Not ABTest", $"Feature flag '{featureFlagKey}' evaluated by '{userContext.UserId}' for variant - Not ABTest Type");
             return null;
+        }
 
         var hash = userContext.GetConsistentHash(featureFlagKey);
         var current = 0;
+        string? selectedVariantKey = null;
 
         foreach (var variant in featureFlag.Variants.OrderBy(v => v.Id))
         {
@@ -239,11 +256,18 @@ namespace FeatureFlags.Services;
             {
                 variant.RecordUserAssignment();
                 await _featureFlagRepository.SaveChangesAsync();
-                return variant.VariantKey;
+                selectedVariantKey = variant.VariantKey;
+                break;
             }
         }
+        
+        if (selectedVariantKey == null) {
+            selectedVariantKey = featureFlag.Variants.FirstOrDefault()?.VariantKey;
+        }
 
-        return featureFlag.Variants.FirstOrDefault()?.VariantKey;
+        await LogAuditAsync(featureFlag.Id, AuditAction.Evaluated, userContext.UserId, featureFlagKey, selectedVariantKey ?? "No Variant", $"Feature flag '{featureFlagKey}' evaluated by '{userContext.UserId}' for variant - Result: {selectedVariantKey ?? "No Variant"}");
+        return selectedVariantKey;
+
     }
 
     public async Task<IEnumerable<FeatureFlag>> SearchFeatureFlagsAsync(string searchTerm)
@@ -267,11 +291,19 @@ namespace FeatureFlags.Services;
     {
         try
         {
+            var finalChangedBy = string.IsNullOrWhiteSpace(changedBy) ? "Anonymous" : changedBy;
+
+            // Handle evaluation logs specifically if no description is provided, using featureFlagKey and result
+            if (action == AuditAction.Evaluated && string.IsNullOrWhiteSpace(description))
+            {
+                description = $"Feature flag '{oldValue}' evaluated to '{newValue}' by '{finalChangedBy}'";
+            }
+
             var auditLog = new AuditLog
             {
                 FeatureFlagId = featureFlagId,
                 Action = action,
-                ChangedBy = changedBy,
+                ChangedBy = finalChangedBy,
                 ChangedAt = DateTime.UtcNow,
                 OldValue = oldValue,
                 NewValue = newValue,
