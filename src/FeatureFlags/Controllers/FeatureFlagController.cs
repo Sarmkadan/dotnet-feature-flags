@@ -1,3 +1,4 @@
+#nullable enable
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
@@ -15,8 +16,7 @@ namespace FeatureFlags.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class FeatureFlagController : ControllerBase
-{
+{public sealed class FeatureFlagController {
     private readonly IFeatureFlagService _featureFlagService;
     private readonly IAuditLogService _auditLogService;
     private readonly ILogger<FeatureFlagController> _logger;
@@ -37,7 +37,7 @@ public class FeatureFlagController : ControllerBase
     [HttpPost("evaluate")]
     public async Task<IActionResult> EvaluateFeatureFlag([FromBody] EvaluationRequest request)
     {
-        if (request == null || string.IsNullOrEmpty(request.FeatureFlagKey))
+        if (request is null || string.IsNullOrEmpty(request.FeatureFlagKey))
             return BadRequest("Feature flag key is required");
 
         try
@@ -70,7 +70,7 @@ public class FeatureFlagController : ControllerBase
     [HttpPost("variant")]
     public async Task<IActionResult> GetVariant([FromBody] EvaluationRequest request)
     {
-        if (request == null || string.IsNullOrEmpty(request.FeatureFlagKey))
+        if (request is null || string.IsNullOrEmpty(request.FeatureFlagKey))
             return BadRequest("Feature flag key is required");
 
         try
@@ -127,7 +127,7 @@ public class FeatureFlagController : ControllerBase
         try
         {
             var flag = await _featureFlagService.GetFeatureFlagByKeyAsync(key);
-            if (flag == null)
+            if (flag is null)
                 return NotFound($"Feature flag '{key}' not found");
 
             return Ok(flag);
@@ -145,7 +145,7 @@ public class FeatureFlagController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] FeatureFlag featureFlag)
     {
-        if (featureFlag == null || !featureFlag.IsValid())
+        if (featureFlag is null || !featureFlag.IsValid())
             return BadRequest("Invalid feature flag configuration");
 
         try
@@ -166,7 +166,7 @@ public class FeatureFlagController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, [FromBody] FeatureFlag featureFlag)
     {
-        if (featureFlag == null || featureFlag.Id != id)
+        if (featureFlag is null || featureFlag.Id != id)
             return BadRequest("Invalid feature flag");
 
         try
