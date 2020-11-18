@@ -24,7 +24,7 @@ namespace FeatureFlags.Repository;
         _context = context;
     }
 
-    public async Task<AuditLog?> GetByIdAsync(int id)
+    public async Task<AuditLog?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
         return await _context.AuditLogs.FirstOrDefaultAsync(a => a.Id == id);
     }
@@ -95,7 +95,7 @@ namespace FeatureFlags.Repository;
             .ToListAsync();
     }
 
-    public async Task<int> GetCountByFeatureFlagIdAsync(int featureFlagId)
+    public async Task<int> GetCountByFeatureFlagIdAsync(int featureFlagId, CancellationToken cancellationToken = default)
     {
         if (featureFlagId <= 0)
             throw new ArgumentException("FeatureFlagId must be > 0", nameof(featureFlagId));
@@ -103,7 +103,7 @@ namespace FeatureFlags.Repository;
         return await _context.AuditLogs.CountAsync(a => a.FeatureFlagId == featureFlagId);
     }
 
-    public async Task<AuditLog?> GetLastChangeAsync(int featureFlagId)
+    public async Task<AuditLog?> GetLastChangeAsync(int featureFlagId, CancellationToken cancellationToken = default)
     {
         if (featureFlagId <= 0)
             throw new ArgumentException("FeatureFlagId must be > 0", nameof(featureFlagId));
@@ -136,7 +136,7 @@ namespace FeatureFlags.Repository;
             .ToListAsync();
     }
 
-    public async Task<AuditLog> AddAsync(AuditLog entity)
+    public async Task<AuditLog> AddAsync(AuditLog entity, CancellationToken cancellationToken = default)
     {
         if (entity is null)
             throw new ArgumentNullException(nameof(entity));
@@ -149,7 +149,7 @@ namespace FeatureFlags.Repository;
         return result.Entity;
     }
 
-    public async Task UpdateAsync(AuditLog entity)
+    public async Task UpdateAsync(AuditLog entity, CancellationToken cancellationToken = default)
     {
         if (entity is null)
             throw new ArgumentNullException(nameof(entity));
@@ -162,7 +162,7 @@ namespace FeatureFlags.Repository;
         await _context.SaveChangesAsync();
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
         var entity = await GetByIdAsync(id);
         if (entity is null)
@@ -172,17 +172,17 @@ namespace FeatureFlags.Repository;
         await _context.SaveChangesAsync();
     }
 
-    public async Task<bool> ExistsAsync(int id)
+    public async Task<bool> ExistsAsync(int id, CancellationToken cancellationToken = default)
     {
         return await _context.AuditLogs.AnyAsync(a => a.Id == id);
     }
 
-    public async Task SaveChangesAsync()
+    public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         await _context.SaveChangesAsync();
     }
 
-    public async Task CleanupOldLogsAsync(int retentionDays)
+    public async Task CleanupOldLogsAsync(int retentionDays, CancellationToken cancellationToken = default)
     {
         if (retentionDays < 1)
             throw new ArgumentException("Retention days must be >= 1", nameof(retentionDays));

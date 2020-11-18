@@ -25,7 +25,7 @@ namespace FeatureFlags.Services;
         _logger = logger;
     }
 
-    public async Task<bool> EvaluateAsync(FeatureFlag featureFlag, UserContext userContext)
+    public async Task<bool> EvaluateAsync(FeatureFlag featureFlag, UserContext userContext, CancellationToken cancellationToken = default)
     {
         if (featureFlag is null)
             throw new ArgumentNullException(nameof(featureFlag));
@@ -65,7 +65,7 @@ namespace FeatureFlags.Services;
         }
     }
 
-    public async Task<bool> EvaluateRuleAsync(Rule rule, UserContext userContext)
+    public async Task<bool> EvaluateRuleAsync(Rule rule, UserContext userContext, CancellationToken cancellationToken = default)
     {
         if (rule is null)
             throw new ArgumentNullException(nameof(rule));

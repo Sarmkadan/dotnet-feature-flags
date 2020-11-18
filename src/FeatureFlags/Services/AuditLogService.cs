@@ -97,7 +97,7 @@ namespace FeatureFlags.Services;
         }
     }
 
-    public async Task<AuditLog?> GetLastChangeAsync(int featureFlagId)
+    public async Task<AuditLog?> GetLastChangeAsync(int featureFlagId, CancellationToken cancellationToken = default)
     {
         if (featureFlagId <= 0)
             throw new ArgumentException("Feature flag ID must be > 0", nameof(featureFlagId));
@@ -129,7 +129,7 @@ namespace FeatureFlags.Services;
         }
     }
 
-    public async Task CleanupOldLogsAsync(int retentionDays)
+    public async Task CleanupOldLogsAsync(int retentionDays, CancellationToken cancellationToken = default)
     {
         if (retentionDays < 1)
             throw new ArgumentException("Retention days must be >= 1", nameof(retentionDays));

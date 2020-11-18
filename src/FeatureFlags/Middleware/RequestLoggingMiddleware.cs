@@ -26,7 +26,7 @@ public sealed class RequestLoggingMiddleware
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task InvokeAsync(HttpContext context)
+    public async Task InvokeAsync(HttpContext context, CancellationToken cancellationToken = default)
     {
         var stopwatch = Stopwatch.StartNew();
         var requestId = context.TraceIdentifier;
@@ -69,7 +69,17 @@ public sealed class RequestLoggingMiddleware
 
             if (!string.IsNullOrEmpty(responseBody) && responseBody.Length < 1024 && context.Response.StatusCode >= 400)
             {
-                Log.Debug("Error response body: {Body}", responseBody);
+                if (responseBody.Contains("password", StringComparison.OrdinalIgnoreCase) || 
+                    responseBody.Contains("token", StringComparison.OrdinalIgnoreCase) ||
+                    responseBody.Contains("secret", StringComparison.OrdinalIgnoreCase) ||
+                    responseBody.Contains("apikey", StringComparison.OrdinalIgnoreCase))
+                {
+                    Log.Debug("Error response body: [REDACTED]");
+                }
+                else
+                {
+                    Log.Debug("Error response body: {Body}", responseBody);
+                }
             }
 
             // Copy response to original stream
