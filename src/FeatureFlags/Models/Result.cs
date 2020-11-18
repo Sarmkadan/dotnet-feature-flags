@@ -10,7 +10,7 @@ namespace FeatureFlags.Models;
 /// Generic result wrapper class that represents the outcome of an operation.
 /// Provides a consistent way to return success/failure with data or error messages.
 /// </summary>
-public class Result<T>
+public sealed class Result<T>
 {
     public bool IsSuccess { get; }
     public T? Data { get; }
@@ -149,7 +149,7 @@ public class Result<T>
 /// <summary>
 /// Non-generic result class for operations that don't return data.
 /// </summary>
-public class Result
+public sealed class Result
 {
     public bool IsSuccess { get; }
     public string? Error { get; }

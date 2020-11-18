@@ -10,7 +10,7 @@ namespace FeatureFlags.Events;
 /// Represents a feature flag event that occurred in the system.
 /// Events are published to all registered subscribers for processing.
 /// </summary>
-public class FeatureFlagEvent
+public sealed class FeatureFlagEvent
 {
     public string EventType { get; set; } = string.Empty;
     public int FeatureFlagId { get; set; }

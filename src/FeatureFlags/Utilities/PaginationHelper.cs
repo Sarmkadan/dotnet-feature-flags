@@ -87,7 +87,7 @@ public static class PaginationHelper
 /// <summary>
 /// Pagination metadata to include in API responses.
 /// </summary>
-public class PaginationMetadata
+public sealed class PaginationMetadata
 {
     public int PageNumber { get; set; }
     public int PageSize { get; set; }
@@ -101,7 +101,7 @@ public class PaginationMetadata
 /// <summary>
 /// Generic paginated response wrapper for consistent API responses.
 /// </summary>
-public class PaginatedResponse<T>
+public sealed class PaginatedResponse<T>
 {
     public List<T> Items { get; set; } = new();
     public PaginationMetadata Pagination { get; set; } = new();

@@ -35,7 +35,7 @@ public interface IGradualRolloutSchedulerService
 /// <summary>
 /// Represents the current status and progress of a gradual rollout schedule for a feature flag.
 /// </summary>
-public class RolloutScheduleStatus
+public sealed class RolloutScheduleStatus
 {
     /// <summary>
     /// The feature flag identifier this schedule belongs to.

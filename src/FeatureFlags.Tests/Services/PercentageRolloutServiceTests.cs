@@ -17,7 +17,7 @@ namespace FeatureFlags.Tests.Services;
 /// Unit tests for percentage-based rollout evaluation.
 /// Tests consistent hashing and rollout percentage calculations.
 /// </summary>
-public class PercentageRolloutServiceTests
+public sealed class PercentageRolloutServiceTests
 {
     private readonly IPercentageRolloutService _service;
     private readonly Mock<ILogger<PercentageRolloutService>> _loggerMock;

@@ -14,7 +14,7 @@ namespace FeatureFlags.Tests.Models;
 /// <summary>
 /// Unit tests for Condition evaluation logic covering all supported operators.
 /// </summary>
-public class ConditionEvaluationTests
+public sealed class ConditionEvaluationTests
 {
     [Fact]
     public void Evaluate_WithEqualsOperator_CaseInsensitiveMatch_ReturnsTrue()

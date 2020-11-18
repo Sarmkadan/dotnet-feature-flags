@@ -19,7 +19,7 @@ namespace FeatureFlags.Tests.Services;
 /// Unit tests for FeatureFlagService covering flag evaluation, routing by rollout type,
 /// and validation of inputs using mocked repository dependencies.
 /// </summary>
-public class FeatureFlagServiceTests
+public sealed class FeatureFlagServiceTests
 {
     private readonly FeatureFlagService _service;
     private readonly Mock<IFeatureFlagRepository> _featureFlagRepositoryMock;

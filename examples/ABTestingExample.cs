@@ -16,7 +16,7 @@ using FeatureFlags.Services;
 /// This demonstrates how to run controlled experiments with variant
 /// allocation and measure conversion rates.
 /// </summary>
-public class ABTestingExample
+public sealed class ABTestingExample
 {
     private readonly IFeatureFlagService _featureFlagService;
 

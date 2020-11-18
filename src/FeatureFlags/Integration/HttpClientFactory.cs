@@ -66,7 +66,7 @@ public static class HttpClientConfiguration
 /// <summary>
 /// Wrapper for typed HTTP requests with built-in error handling and retry logic.
 /// </summary>
-public class HttpApiClient
+public sealed class HttpApiClient
 {
     private readonly HttpClient _httpClient;
     private readonly ILogger<HttpApiClient> _logger;

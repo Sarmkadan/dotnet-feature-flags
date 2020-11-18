@@ -13,7 +13,7 @@ namespace FeatureFlags.Tests.Utilities;
 /// Unit tests for string extension methods.
 /// Tests hashing, validation, and string transformation utilities.
 /// </summary>
-public class StringExtensionTests
+public sealed class StringExtensionTests
 {
     [Fact]
     public void ToSha256_ProducesConsistentHash()
@@ -122,7 +122,7 @@ public class StringExtensionTests
 /// Unit tests for DateTime extension methods.
 /// Tests time calculations and conversions.
 /// </summary>
-public class DateTimeExtensionTests
+public sealed class DateTimeExtensionTests
 {
     [Fact]
     public void ToUnixTimestamp_ConvertsCorrectly()
@@ -232,7 +232,7 @@ public class DateTimeExtensionTests
 /// <summary>
 /// Unit tests for validation extension methods.
 /// </summary>
-public class ValidationExtensionTests
+public sealed class ValidationExtensionTests
 {
     [Fact]
     public void IsNullOrEmpty_DetectsEmpty()
