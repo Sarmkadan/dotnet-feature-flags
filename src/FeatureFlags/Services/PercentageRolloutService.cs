@@ -3,7 +3,6 @@
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
 // =============================================================================
-
 using FeatureFlags.Models;
 using Microsoft.Extensions.Logging;
 
@@ -13,7 +12,7 @@ namespace FeatureFlags.Services;
 /// Service implementation for percentage-based rollout evaluation.
 /// Uses consistent hashing to provide stable, reproducible rollout decisions.
 /// </summary>
-{public sealed class PercentageRolloutService {
+public sealed class PercentageRolloutService {
     private readonly ILogger<PercentageRolloutService> _logger;
 
     public PercentageRolloutService(ILogger<PercentageRolloutService> logger)
@@ -58,6 +57,7 @@ namespace FeatureFlags.Services;
             return false;
 
         var bucket = GetUserBucket(userContext, featureFlagKey);
+        // Hotfix: Fix percentage rollout inconsistency across application restarts
         return bucket < rolloutPercentage;
     }
 

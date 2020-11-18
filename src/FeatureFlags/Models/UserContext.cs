@@ -68,7 +68,13 @@ public sealed class UserContext
     public int GetConsistentHash(string featureFlagKey)
     {
         var combined = $"{UserId}:{featureFlagKey}";
-        var hash = combined.GetHashCode();
-        return Math.Abs(hash) % 100;
+        // Hotfix: Fix percentage rollout inconsistency across application restarts
+        // Using a consistent hash algorithm instead of string.GetHashCode() which varies between app restarts
+        uint hash = 0;
+        foreach (char c in combined)
+        {
+            hash = (hash << 5) - hash + c;
+        }
+        return (int)(hash % 100);
     }
 }
