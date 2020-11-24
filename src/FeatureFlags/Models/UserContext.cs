@@ -67,7 +67,14 @@ public sealed class UserContext
     /// </summary>
     public int GetConsistentHash(string featureFlagKey)
     {
-        var combined = $"{UserId}:{featureFlagKey}";
+        string canonicalUserId = UserId;
+        if (long.TryParse(UserId, out long numericUserId))
+        {
+            // If UserId is numeric, use its canonical string representation
+            canonicalUserId = numericUserId.ToString();
+        }
+
+        var combined = $"{canonicalUserId}:{featureFlagKey}";
         // Hotfix: Fix percentage rollout inconsistency across application restarts
         // Using a consistent hash algorithm instead of string.GetHashCode() which varies between app restarts
         uint hash = 0;
