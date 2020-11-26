@@ -22,6 +22,12 @@ public sealed class Webhook
 
     public WebhookEventType EventTypes { get; set; } = WebhookEventType.All;
 
+    /// <summary>
+    /// Optional: The key of the specific feature flag this webhook is interested in.
+    /// If null or empty, the webhook triggers for any flag matching EventTypes.
+    /// </summary>
+    public string? FeatureFlagKey { get; set; }
+
     public DateTime CreatedAt { get; set; }
 
     public DateTime UpdatedAt { get; set; }
@@ -35,6 +41,11 @@ public sealed class Webhook
 
     // Authentication
     public string? AuthorizationHeader { get; set; }
+
+    /// <summary>
+    /// Secret key used for HMAC signature verification of webhook payloads.
+    /// </summary>
+    public string? Secret { get; set; }
 
     // Tracking
     public int SuccessCount { get; set; }

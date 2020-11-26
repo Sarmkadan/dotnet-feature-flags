@@ -45,13 +45,15 @@ public interface IWebhookService
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task<Webhook> RegisterWebhookAsync(string url, string description, WebhookEventType eventTypes, string createdBy, CancellationToken cancellationToken = default)
+    public async Task<Webhook> RegisterWebhookAsync(string url, string description, WebhookEventType eventTypes, string? featureFlagKey, string? secret, string createdBy, CancellationToken cancellationToken = default)
     {
         var webhook = new Webhook
         {
             Url = url,
             Description = description,
             EventTypes = eventTypes,
+            FeatureFlagKey = featureFlagKey,
+            Secret = secret,
             CreatedBy = createdBy,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
@@ -70,10 +72,10 @@ public interface IWebhookService
         return await _webhookRepository.GetByIdAsync(webhookId);
     }
 
-    public async Task<List<Webhook>> GetActiveWebhooksAsync(WebhookEventType eventType)
+    public async Task<List<Webhook>> GetActiveWebhooksAsync(WebhookEventType eventType, string? featureFlagKey = null)
     {
         var webhooks = await _webhookRepository.GetActiveAsync();
-        return webhooks.Where(w => w.ShouldTrigger(eventType)).ToList();
+        return webhooks.Where(w => w.ShouldTrigger(eventType) && (string.IsNullOrEmpty(w.FeatureFlagKey) || w.FeatureFlagKey == featureFlagKey)).ToList();
     }
 
     public async Task<bool> UpdateWebhookAsync(int webhookId, string? url, string? description, WebhookEventType? eventTypes, CancellationToken cancellationToken = default)
@@ -116,7 +118,7 @@ public interface IWebhookService
 
     public async Task TriggerWebhooksAsync(WebhookEventType eventType, FeatureFlag flag, string changedBy, Dictionary<string, object?>? data = null, CancellationToken cancellationToken = default)
     {
-        var webhooks = await GetActiveWebhooksAsync(eventType);
+        var webhooks = await GetActiveWebhooksAsync(eventType, flag.Key);
 
         if (!webhooks.Any())
         {
@@ -162,6 +164,13 @@ public interface IWebhookService
             if (!string.IsNullOrEmpty(webhook.AuthorizationHeader))
             {
                 client.DefaultRequestHeaders.Add("Authorization", webhook.AuthorizationHeader);
+            }
+
+            // Add HMAC signature if secret is provided
+            if (!string.IsNullOrEmpty(webhook.Secret))
+            {
+                var signature = HashingUtilities.ComputeHmacSha256(payload, webhook.Secret);
+                client.DefaultRequestHeaders.Add("X-Hub-Signature-256", $"sha256={signature}");
             }
 
             using var content = new StringContent(payload, System.Text.Encoding.UTF8, "application/json");
