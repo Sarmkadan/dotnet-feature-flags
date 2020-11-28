@@ -53,6 +53,14 @@ public sealed class FeatureFlagOptions
     public bool LogEvaluationDetails { get; set; } = false;
 
     /// <summary>
+    /// Enable in-memory audit log for each flag evaluation.
+    /// When true, every call to IsEnabledAsync records a <see cref="FeatureFlags.Models.FlagEvaluationLog"/>
+    /// entry that can be retrieved via <see cref="FeatureFlags.Services.IFlagEvaluationLogService"/>.
+    /// Opt-in to avoid overhead in high-throughput scenarios.
+    /// </summary>
+    public bool EnableAuditLog { get; set; } = false;
+
+    /// <summary>
     /// Default percentage for new rollouts.
     /// </summary>
     public int DefaultRolloutPercentage { get; set; } = 50;
