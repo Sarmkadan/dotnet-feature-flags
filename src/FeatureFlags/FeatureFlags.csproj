@@ -6,11 +6,11 @@
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageId>Zaiets.dotnet.feature.flags</PackageId>
-    <Version>2.0.2</Version>
+    <PackageId>dotnet-feature-flags</PackageId>
+    <Version>1.0.0</Version>
     <Authors>Vladyslav Zaiets</Authors>
-    <Description>Feature flag engine for .NET - percentage rollouts, user targeting, A/B testing, real-time toggle, audit log</Description>
-    <PackageTags>feature-flags dotnet csharp ab-testing rollout toggle</PackageTags>
+    <Description>A lightweight and robust feature flag management system for .NET applications with support for user targeting and gradual rollouts.</Description>
+    <PackageTags>feature-flags dotnet configuration rollouts ab-testing</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/sarmkadan/dotnet-feature-flags</PackageProjectUrl>
     <RepositoryUrl>https://github.com/sarmkadan/dotnet-feature-flags</RepositoryUrl>
