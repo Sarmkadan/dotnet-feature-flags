@@ -1,30 +1,19 @@
-![CI](https://github.com/sarmkadan/dotnet-feature-flags/actions/workflows/ci.yml/badge.svg)
 [![Build](https://github.com/sarmkadan/dotnet-feature-flags/actions/workflows/build.yml/badge.svg)](https://github.com/sarmkadan/dotnet-feature-flags/actions/workflows/build.yml)
-![License](https://img.shields.io/github/license/sarmkadan/dotnet-feature-flags)
+![License](https://img.shields.io/badge/License-MIT-yellow.svg)
 ![.NET](https://img.shields.io/badge/.NET-10.0-512BD4)
 
 # dotnet-feature-flags
 
-A production-grade feature flag engine for .NET with support for percentage rollouts, user targeting, A/B testing, real-time toggles, and comprehensive audit logging. Designed for teams that need sophisticated feature management without external dependencies.
+A production-grade, self-hosted feature flag engine for .NET.
 
-## Table of Contents
+## Installation
 
-- [Overview](#overview)
-- [Key Features](#key-features)
-- [Architecture](#architecture)
-- [Quick Start](#quick-start)
-- [Installation](#installation)
-- [Configuration](#configuration)
-- [Usage Examples](#usage-examples)
-- [API Reference](#api-reference)
-- [CLI Reference](#cli-reference)
-- [Advanced Usage](#advanced-usage)
-- [Testing](#testing)
-- [Troubleshooting](#troubleshooting)
-- [Performance](#performance)
-- [Related Projects](#related-projects)
-- [Contributing](#contributing)
-- [License](#license)
+### Clone Repository
+
+```bash
+git clone https://github.com/sarmkadan/dotnet-feature-flags.git
+cd dotnet-feature-flags
+```
 
 ## Overview
 
