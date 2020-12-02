@@ -1,8 +1,11 @@
 #nullable enable
+
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
 // =============================================================================
+
+using FeatureFlags.Exceptions;
 using FeatureFlags.Models;
 using Microsoft.Extensions.Logging;
 
@@ -29,14 +32,22 @@ public class PercentageRolloutService : IPercentageRolloutService {
             throw new ArgumentNullException(nameof(userContext));
 
         if (featureFlag.PercentageRollout is null)
-            throw new InvalidOperationException("Feature flag does not have a percentage rollout configured");
+            throw new InvalidFeatureFlagException("Feature flag does not have a percentage rollout configured");
 
-        var isEnabled = IsUserInRollout(userContext, featureFlag.Key, featureFlag.PercentageRollout.Value);
+        try
+        {
+            var isEnabled = IsUserInRollout(userContext, featureFlag.Key, featureFlag.PercentageRollout.Value);
 
-        _logger.LogDebug("Feature flag '{Key}' percentage evaluation for user {UserId}: {Result}",
-            featureFlag.Key, userContext.UserId, isEnabled);
+            _logger.LogDebug("Feature flag '{Key}' percentage evaluation for user {UserId}: {Result}",
+                featureFlag.Key, userContext.UserId, isEnabled);
 
-        return await Task.FromResult(isEnabled);
+            return await Task.FromResult(isEnabled);
+        }
+        catch (Exception ex) when (ex is not FeatureFlagException)
+        {
+            _logger.LogError(ex, "Error during percentage rollout evaluation for feature flag '{Key}'", featureFlag.Key);
+            throw new FeatureFlagDataException("Failed to evaluate percentage rollout", ex);
+        }
     }
 
     public bool IsUserInRollout(UserContext userContext, string featureFlagKey, int rolloutPercentage)

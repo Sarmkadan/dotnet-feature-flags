@@ -101,10 +101,10 @@ public class FeatureFlagService : IFeatureFlagService {
             RecordEvaluationLog(featureFlagKey, userContext.UserId, result, reason);
             return result;
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not FeatureFlagException)
         {
             _logger.LogError(ex, "Error evaluating feature flag '{Key}'", featureFlagKey);
-            throw;
+            throw new FeatureFlagDataException("Failed to evaluate feature flag", ex);
         }
     }
 
@@ -348,9 +348,10 @@ public class FeatureFlagService : IFeatureFlagService {
 
             await _auditLogRepository.AddAsync(auditLog);
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not FeatureFlagException)
         {
             _logger.LogError(ex, "Failed to log audit entry for feature flag {Id}", featureFlagId);
+            throw new FeatureFlagDataException("Failed to log audit entry", ex);
         }
     }
 

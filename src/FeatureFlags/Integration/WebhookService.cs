@@ -4,7 +4,9 @@
 // CTO & Software Architect
 // =============================================================================
 
+using System.Net;
 using System.Text.Json;
+using FeatureFlags.Exceptions;
 using FeatureFlags.Models;
 using FeatureFlags.Utilities;
 
@@ -48,6 +50,15 @@ public sealed class WebhookService : IWebhookService {
 
     public async Task<Webhook> RegisterWebhookAsync(string url, string description, WebhookEventType eventTypes, string? featureFlagKey, string? secret, string createdBy, CancellationToken cancellationToken = default)
     {
+        if (string.IsNullOrWhiteSpace(url))
+            throw new ArgumentException("URL cannot be empty", nameof(url));
+
+        if (string.IsNullOrWhiteSpace(description))
+            throw new ArgumentException("Description cannot be empty", nameof(description));
+
+        if (string.IsNullOrWhiteSpace(createdBy))
+            throw new ArgumentException("CreatedBy cannot be empty", nameof(createdBy));
+
         var webhook = new Webhook
         {
             Url = url,
@@ -62,10 +73,18 @@ public sealed class WebhookService : IWebhookService {
 
         if (!webhook.IsValid())
         {
-            throw new ArgumentException("Invalid webhook URL");
+            throw new WebhookValidationException("Invalid webhook configuration");
         }
 
-        return await _webhookRepository.CreateAsync(webhook);
+        try
+        {
+            return await _webhookRepository.CreateAsync(webhook);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to register webhook for URL {Url}", url);
+            throw new FeatureFlagDataException("Failed to register webhook", ex);
+        }
     }
 
     public async Task<Webhook?> GetWebhookAsync(int webhookId, CancellationToken cancellationToken = default)
@@ -151,6 +170,12 @@ public sealed class WebhookService : IWebhookService {
 
     private async Task SendWebhookAsync(Webhook webhook, string payload, WebhookDelivery? existingDelivery = null)
     {
+        if (webhook is null)
+            throw new ArgumentNullException(nameof(webhook));
+
+        if (string.IsNullOrWhiteSpace(webhook.Url))
+            throw new ArgumentException("Webhook URL cannot be empty", nameof(webhook));
+
         var delivery = existingDelivery ?? new WebhookDelivery
         {
             WebhookId = webhook.Id,
@@ -198,7 +223,22 @@ public sealed class WebhookService : IWebhookService {
                 _logger.LogWarning("Webhook delivery failed: {WebhookId} to {Url} - {Error}", webhook.Id, webhook.Url, errorMsg);
             }
         }
-        catch (Exception ex)
+        catch (HttpRequestException ex)
+        {
+            var errorMsg = ex.StatusCode.HasValue ? $"HTTP {(int)ex.StatusCode}" : ex.Message;
+            delivery.MarkFailed(errorMsg, webhook.MaxRetries, webhook.RetryDelaySeconds);
+            webhook.FailureCount++;
+
+            _logger.LogError(ex, "Webhook HTTP request failed: {WebhookId} to {Url} - {Error}", webhook.Id, webhook.Url, errorMsg);
+        }
+        catch (TaskCanceledException ex) when (ex.InnerException is TimeoutException)
+        {
+            delivery.MarkFailed("Request timeout", webhook.MaxRetries, webhook.RetryDelaySeconds);
+            webhook.FailureCount++;
+
+            _logger.LogError(ex, "Webhook delivery timeout: {WebhookId} to {Url}", webhook.Id, webhook.Url);
+        }
+        catch (Exception ex) when (ex is not FeatureFlagException)
         {
             delivery.MarkFailed(ex.Message, webhook.MaxRetries, webhook.RetryDelaySeconds);
             webhook.FailureCount++;
@@ -206,8 +246,16 @@ public sealed class WebhookService : IWebhookService {
             _logger.LogError(ex, "Webhook delivery error: {WebhookId} to {Url}", webhook.Id, webhook.Url);
         }
 
-        await _deliveryRepository.CreateAsync(delivery);
-        await _webhookRepository.UpdateAsync(webhook);
+        try
+        {
+            await _deliveryRepository.CreateAsync(delivery);
+            await _webhookRepository.UpdateAsync(webhook);
+        }
+        catch (Exception ex) when (ex is not FeatureFlagException)
+        {
+            _logger.LogError(ex, "Failed to save webhook delivery record for webhook {WebhookId}", webhook.Id);
+            throw new FeatureFlagDataException("Failed to save webhook delivery record", ex);
+        }
     }
 }
 
