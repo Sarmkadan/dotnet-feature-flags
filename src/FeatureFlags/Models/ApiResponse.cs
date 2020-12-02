@@ -36,7 +36,7 @@ public sealed class ApiResponse<T>
     /// <summary>
     /// Creates a failed response with error message.
     /// </summary>
-    public static ApiResponse<T> Error(string error, T? data = default)
+    public static ApiResponse<T> Fail(string error, T? data = default)
     {
         return new ApiResponse<T>
         {
@@ -57,7 +57,7 @@ public sealed class ApiResponse<T>
             return Ok(result.Data);
         }
 
-        return Error(result.Error ?? defaultError ?? "Operation failed");
+        return Fail(result.Error ?? defaultError ?? "Operation failed");
     }
 }
 
@@ -88,7 +88,7 @@ public sealed class ApiResponse
     /// <summary>
     /// Creates a failed response.
     /// </summary>
-    public static ApiResponse Error(string error)
+    public static ApiResponse Fail(string error)
     {
         return new ApiResponse
         {

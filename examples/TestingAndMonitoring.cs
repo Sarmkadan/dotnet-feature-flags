@@ -327,7 +327,7 @@ public sealed class HealthStatus
 }
 
 // Mock repository for testing
-{public sealed class MockFeatureFlagRepository {
+public sealed class MockFeatureFlagRepository {
     private readonly Dictionary<Guid, FeatureFlag> _flags = new();
 
     public Task<FeatureFlag?> GetByIdAsync(Guid id) =>

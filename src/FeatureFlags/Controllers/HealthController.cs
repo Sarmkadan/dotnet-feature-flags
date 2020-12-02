@@ -17,7 +17,7 @@ namespace FeatureFlags.Controllers;
 /// </summary>
 [ApiController]
 [Route("[controller]")]
-{public sealed class HealthController {
+public sealed class HealthController {
     private readonly FeatureFlagDbContext _dbContext;
     private readonly IFeatureFlagService _featureFlagService;
     private readonly ILogger<HealthController> _logger;

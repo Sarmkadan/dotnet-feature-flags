@@ -12,7 +12,7 @@ namespace FeatureFlags.Utilities;
 /// Performance monitoring utility for measuring operation execution time and tracking metrics.
 /// Helps identify performance bottlenecks and track service performance over time.
 /// </summary>
-{public sealed class PerformanceMonitor {
+public sealed class PerformanceMonitor {
     private readonly Stopwatch _stopwatch;
     private readonly string _operationName;
     private readonly ILogger<PerformanceMonitor> _logger;

@@ -15,7 +15,8 @@ namespace FeatureFlags.BackgroundJobs;
 /// Iterates over all active time-based rollout strategies and updates feature flag
 /// percentage allocations according to elapsed days and configured daily increments.
 /// </summary>
-{public sealed class GradualRolloutSchedulerWorker {
+public sealed class GradualRolloutSchedulerWorker : BackgroundService
+{
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<GradualRolloutSchedulerWorker> _logger;
     private readonly GradualRolloutSchedulerOptions _options;
