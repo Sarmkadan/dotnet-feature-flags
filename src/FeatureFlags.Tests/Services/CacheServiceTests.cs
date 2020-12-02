@@ -178,38 +178,38 @@ public sealed class CacheUtilityTests
     public void ValidateAndNormalizePaging_OutOfRangePage_NormalizesCorrectly()
     {
         // Arrange & Act
-        var (page, size) = Utilities.PaginationHelper.ValidateAndNormalizePaging(-1, 0);
+        var (page, size) = FeatureFlags.Utilities.PaginationHelper.ValidateAndNormalizePaging(-1, 0);
 
         // Assert
         Assert.Equal(1, page);
-        Assert.Equal(Utilities.PaginationHelper.MinPageSize, size);
+        Assert.Equal(FeatureFlags.Utilities.PaginationHelper.MinPageSize, size);
     }
 
     [Fact]
     public void ValidateAndNormalizePaging_MaxPageSize_ClampedCorrectly()
     {
         // Arrange & Act
-        var (page, size) = Utilities.PaginationHelper.ValidateAndNormalizePaging(1, 5000);
+        var (page, size) = FeatureFlags.Utilities.PaginationHelper.ValidateAndNormalizePaging(1, 5000);
 
         // Assert
         Assert.Equal(1, page);
-        Assert.Equal(Utilities.PaginationHelper.MaxPageSize, size);
+        Assert.Equal(FeatureFlags.Utilities.PaginationHelper.MaxPageSize, size);
     }
 
     [Fact]
     public void CalculateOffset_ReturnsCorrectValue()
     {
         // Arrange & Act & Assert
-        Assert.Equal(0, Utilities.PaginationHelper.CalculateOffset(1, 20));
-        Assert.Equal(20, Utilities.PaginationHelper.CalculateOffset(2, 20));
-        Assert.Equal(40, Utilities.PaginationHelper.CalculateOffset(3, 20));
+        Assert.Equal(0, FeatureFlags.Utilities.PaginationHelper.CalculateOffset(1, 20));
+        Assert.Equal(20, FeatureFlags.Utilities.PaginationHelper.CalculateOffset(2, 20));
+        Assert.Equal(40, FeatureFlags.Utilities.PaginationHelper.CalculateOffset(3, 20));
     }
 
     [Fact]
     public void CreateMetadata_CalculatesCorrectly()
     {
         // Arrange & Act
-        var metadata = Utilities.PaginationHelper.CreateMetadata(2, 10, 35);
+        var metadata = FeatureFlags.Utilities.PaginationHelper.CreateMetadata(2, 10, 35);
 
         // Assert
         Assert.Equal(2, metadata.PageNumber);

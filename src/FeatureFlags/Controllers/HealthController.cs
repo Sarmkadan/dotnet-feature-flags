@@ -8,6 +8,7 @@ using FeatureFlags.Data;
 using FeatureFlags.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 using System.Text.Json;
 
 namespace FeatureFlags.Controllers;
@@ -17,7 +18,7 @@ namespace FeatureFlags.Controllers;
 /// </summary>
 [ApiController]
 [Route("[controller]")]
-public sealed class HealthController {
+public class HealthController : ControllerBase {
     private readonly FeatureFlagDbContext _dbContext;
     private readonly IFeatureFlagService _featureFlagService;
     private readonly ILogger<HealthController> _logger;
@@ -83,7 +84,7 @@ public sealed class HealthController {
         // Check feature flag service
         try
         {
-            var flags = await _featureFlagService.GetFeatureFlagsAsync();
+            var flags = await _featureFlagService.GetAllFeatureFlagsAsync();
             dependencies["feature-flag-service"] = flags is not null;
         }
         catch (Exception ex)

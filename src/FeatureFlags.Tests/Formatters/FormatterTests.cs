@@ -60,7 +60,7 @@ public sealed class CsvFormatterTests
                 FeatureFlagId = 1,
                 Action = AuditAction.Created,
                 ChangedBy = "admin",
-                Timestamp = DateTime.UtcNow,
+                ChangedAt = DateTime.UtcNow,
                 OldValue = null,
                 NewValue = "created"
             }
@@ -156,7 +156,7 @@ public sealed class XmlFormatterTests
                 FeatureFlagId = 1,
                 Action = AuditAction.Created,
                 ChangedBy = "admin",
-                Timestamp = DateTime.UtcNow,
+                ChangedAt = DateTime.UtcNow,
                 OldValue = null,
                 NewValue = "created"
             }

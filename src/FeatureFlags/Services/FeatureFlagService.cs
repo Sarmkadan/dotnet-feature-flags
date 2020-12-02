@@ -18,7 +18,7 @@ namespace FeatureFlags.Services;
 /// Service implementation for feature flag operations.
 /// Coordinates evaluation, persistence, and audit logging of feature flags.
 /// </summary>
-public sealed class FeatureFlagService {
+public class FeatureFlagService : IFeatureFlagService {
     private readonly IFeatureFlagRepository _featureFlagRepository;
     private readonly IAuditLogRepository _auditLogRepository;
     private readonly IRuleEvaluationService _ruleEvaluationService;
@@ -353,4 +353,14 @@ public sealed class FeatureFlagService {
             _logger.LogError(ex, "Failed to log audit entry for feature flag {Id}", featureFlagId);
         }
     }
+
+    Task<bool> IFeatureFlagService.IsEnabledAsync(string featureFlagKey, UserContext userContext) => IsEnabledAsync(featureFlagKey, userContext);
+    Task<FeatureFlag?> IFeatureFlagService.GetFeatureFlagAsync(int id) => GetFeatureFlagAsync(id);
+    Task<FeatureFlag?> IFeatureFlagService.GetFeatureFlagByKeyAsync(string key) => GetFeatureFlagByKeyAsync(key);
+    Task<FeatureFlag> IFeatureFlagService.CreateFeatureFlagAsync(FeatureFlag featureFlag, string createdBy) => CreateFeatureFlagAsync(featureFlag, createdBy);
+    Task IFeatureFlagService.UpdateFeatureFlagAsync(FeatureFlag featureFlag, string updatedBy) => UpdateFeatureFlagAsync(featureFlag, updatedBy);
+    Task IFeatureFlagService.DeleteFeatureFlagAsync(int id, string deletedBy) => DeleteFeatureFlagAsync(id, deletedBy);
+    Task IFeatureFlagService.EnableFeatureFlagAsync(int id, string modifiedBy) => EnableFeatureFlagAsync(id, modifiedBy);
+    Task IFeatureFlagService.DisableFeatureFlagAsync(int id, string modifiedBy) => DisableFeatureFlagAsync(id, modifiedBy);
+    Task<string?> IFeatureFlagService.GetVariantAsync(string featureFlagKey, UserContext userContext) => GetVariantAsync(featureFlagKey, userContext);
 }
