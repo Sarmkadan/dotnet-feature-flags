@@ -202,7 +202,7 @@ public interface IPaymentProcessor
     Task<PaymentResult> ProcessPaymentAsync(decimal amount);
 }
 
-{public sealed class LegacyPaymentGateway {
+public sealed class LegacyPaymentGateway {
     public Task<PaymentResult> ProcessPaymentAsync(decimal amount)
     {
         return Task.FromResult(new PaymentResult
@@ -213,7 +213,7 @@ public interface IPaymentProcessor
     }
 }
 
-{public sealed class NewPaymentGateway {
+public sealed class NewPaymentGateway {
     public Task<PaymentResult> ProcessPaymentAsync(decimal amount)
     {
         return Task.FromResult(new PaymentResult
@@ -229,14 +229,14 @@ public interface IRecommendationEngine
     Task<string[]> GetRecommendationsAsync(string userId);
 }
 
-{public sealed class RuleBasedRecommendationEngine {
+public sealed class RuleBasedRecommendationEngine {
     public Task<string[]> GetRecommendationsAsync(string userId)
     {
         return Task.FromResult(new[] { "Product-A", "Product-B", "Product-C" });
     }
 }
 
-{public sealed class MLRecommendationEngine {
+public sealed class MLRecommendationEngine {
     public Task<string[]> GetRecommendationsAsync(string userId)
     {
         return Task.FromResult(new[] { "ML-Product-X", "ML-Product-Y", "ML-Product-Z" });

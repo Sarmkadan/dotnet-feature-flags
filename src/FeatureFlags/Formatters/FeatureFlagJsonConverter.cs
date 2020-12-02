@@ -14,7 +14,8 @@ namespace FeatureFlags.Formatters;
 /// Custom JSON converter for FeatureFlag entities that handles circular references and optimizes serialization.
 /// Provides cleaner JSON output by excluding unnecessary navigation properties and formatting timestamps consistently.
 /// </summary>
-{public sealed class FeatureFlagJsonConverter {
+public sealed class FeatureFlagJsonConverter : JsonConverter<FeatureFlag>
+{
     public override FeatureFlag Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var flag = new FeatureFlag();

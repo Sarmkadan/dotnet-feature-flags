@@ -16,7 +16,7 @@ namespace FeatureFlags.Services;
 /// Service implementation for audit log operations.
 /// Manages retrieval and cleanup of audit trails for compliance and debugging.
 /// </summary>
-{public sealed class AuditLogService {
+public sealed class AuditLogService {
     private readonly IAuditLogRepository _repository;
     private readonly ILogger<AuditLogService> _logger;
 

@@ -13,7 +13,8 @@ namespace FeatureFlags.Data;
 /// Database context for the feature flag engine.
 /// Manages entity configurations, relationships, and database schema.
 /// </summary>
-{public sealed class FeatureFlagDbContext {
+public sealed class FeatureFlagDbContext : DbContext
+{
     public FeatureFlagDbContext(DbContextOptions<FeatureFlagDbContext> options)
         : base(options)
     {

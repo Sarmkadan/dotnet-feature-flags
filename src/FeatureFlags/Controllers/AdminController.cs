@@ -16,7 +16,7 @@ namespace FeatureFlags.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/admin")]
-{public sealed class AdminController {
+public sealed class AdminController {
     private readonly Integration.IWebhookService _webhookService;
     private readonly Services.IFeatureFlagService _featureFlagService;
     private readonly Caching.ICacheService _cacheService;
@@ -257,6 +257,4 @@ public sealed class RegisterWebhookRequest
     public string Url { get; set; } = string.Empty;
     public string? Description { get; set; }
     public Integration.WebhookEventType? EventTypes { get; set; }
-}
-{ get; set; }
 }

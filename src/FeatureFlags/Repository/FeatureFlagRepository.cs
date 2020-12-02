@@ -15,7 +15,7 @@ namespace FeatureFlags.Repository;
 /// Implementation of feature flag repository providing database persistence operations.
 /// Handles complex queries including eager loading of related entities.
 /// </summary>
-{public sealed class FeatureFlagRepository {
+public sealed class FeatureFlagRepository {
     private readonly FeatureFlagDbContext _context;
 
     public FeatureFlagRepository(FeatureFlagDbContext context)

@@ -12,7 +12,8 @@ namespace FeatureFlags.BackgroundJobs;
 /// Background worker that periodically cleans up old audit logs based on retention policy.
 /// Helps manage database size and comply with data retention regulations.
 /// </summary>
-{public sealed class AuditLogCleanupWorker {
+public sealed class AuditLogCleanupWorker : BackgroundService
+{
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<AuditLogCleanupWorker> _logger;
     private readonly AuditLogCleanupOptions _options;
@@ -78,7 +79,8 @@ public sealed class AuditLogCleanupOptions
 /// Background worker that retries failed webhook deliveries.
 /// Ensures webhook events are delivered with exponential backoff retry strategy.
 /// </summary>
-{public sealed class WebhookRetryWorker {
+public sealed class WebhookRetryWorker : BackgroundService
+{
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<WebhookRetryWorker> _logger;
     private readonly WebhookRetryOptions _options;
@@ -143,7 +145,8 @@ public sealed class WebhookRetryOptions
 /// Background worker that periodically synchronizes feature flag cache with database.
 /// Ensures cache stays consistent with latest data for high-traffic scenarios.
 /// </summary>
-{public sealed class CacheSyncWorker {
+public sealed class CacheSyncWorker : BackgroundService
+{
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<CacheSyncWorker> _logger;
     private readonly CacheSyncOptions _options;

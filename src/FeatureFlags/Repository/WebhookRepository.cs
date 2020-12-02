@@ -14,7 +14,7 @@ namespace FeatureFlags.Repository;
 /// Repository for managing webhook persistence and queries.
 /// Handles CRUD operations and specialized queries for webhook management.
 /// </summary>
-{public sealed class WebhookRepository {
+public sealed class WebhookRepository {
     private readonly FeatureFlagDbContext _context;
     private readonly ILogger<WebhookRepository> _logger;
 
@@ -132,7 +132,7 @@ namespace FeatureFlags.Repository;
 /// Repository for managing webhook delivery attempts.
 /// Tracks delivery history and supports retry operations.
 /// </summary>
-{public sealed class WebhookDeliveryRepository {
+public sealed class WebhookDeliveryRepository {
     private readonly FeatureFlagDbContext _context;
     private readonly ILogger<WebhookDeliveryRepository> _logger;
 

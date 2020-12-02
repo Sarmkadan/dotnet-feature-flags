@@ -16,7 +16,7 @@ namespace FeatureFlags.Repository;
 /// Implementation of audit log repository providing persistence and retrieval of audit records.
 /// Supports comprehensive querying for audit trails and compliance reporting.
 /// </summary>
-{public sealed class AuditLogRepository {
+public sealed class AuditLogRepository {
     private readonly FeatureFlagDbContext _context;
 
     public AuditLogRepository(FeatureFlagDbContext context)

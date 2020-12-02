@@ -51,7 +51,7 @@ public interface IEventBus
 /// <summary>
 /// Default in-process implementation of event bus.
 /// </summary>
-{public sealed class EventBus {
+public sealed class EventBus {
     private readonly List<IEventSubscriber> _subscribers = new();
     private readonly ILogger<EventBus> _logger;
     private readonly object _syncLock = new();
@@ -145,7 +145,7 @@ public interface IEventBus
 /// <summary>
 /// Event subscriber that logs all feature flag events for audit trail.
 /// </summary>
-{public sealed class EventLoggingSubscriber {
+public sealed class EventLoggingSubscriber {
     private readonly ILogger<EventLoggingSubscriber> _logger;
 
     public string[] InterestedEventTypes => new[] { "*" };
@@ -171,7 +171,7 @@ public interface IEventBus
 /// <summary>
 /// Event subscriber that triggers webhooks when feature flag events occur.
 /// </summary>
-{public sealed class WebhookEventSubscriber {
+public sealed class WebhookEventSubscriber {
     private readonly Integration.IWebhookService? _webhookService;
     private readonly ILogger<WebhookEventSubscriber> _logger;
 
