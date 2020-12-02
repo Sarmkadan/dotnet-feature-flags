@@ -9,7 +9,7 @@ namespace FeatureFlags.Exceptions;
 /// <summary>
 /// Base exception for all feature flag related errors.
 /// </summary>
-public sealed class FeatureFlagException {
+public class FeatureFlagException : Exception {
     public string? ErrorCode { get; set; }
 
     public FeatureFlagException(string message) : base(message)
@@ -36,7 +36,7 @@ public sealed class FeatureFlagException {
 /// <summary>
 /// Thrown when a feature flag is not found.
 /// </summary>
-public sealed class FeatureFlagNotFoundException {
+public class FeatureFlagNotFoundException : FeatureFlagException {
     public FeatureFlagNotFoundException(string featureFlagKey)
         : base($"Feature flag '{featureFlagKey}' not found.", "FF_NOT_FOUND")
     {
@@ -46,7 +46,7 @@ public sealed class FeatureFlagNotFoundException {
 /// <summary>
 /// Thrown when a feature flag configuration is invalid.
 /// </summary>
-public sealed class InvalidFeatureFlagException {
+public class InvalidFeatureFlagException : FeatureFlagException {
     public InvalidFeatureFlagException(string message)
         : base(message, "FF_INVALID_CONFIG")
     {
@@ -56,7 +56,7 @@ public sealed class InvalidFeatureFlagException {
 /// <summary>
 /// Thrown when rule evaluation fails.
 /// </summary>
-public sealed class RuleEvaluationException {
+public class RuleEvaluationException : FeatureFlagException {
     public RuleEvaluationException(string message)
         : base(message, "RULE_EVAL_ERROR")
     {
@@ -71,7 +71,7 @@ public sealed class RuleEvaluationException {
 /// <summary>
 /// Thrown when database operation fails.
 /// </summary>
-public sealed class FeatureFlagDataException {
+public class FeatureFlagDataException : FeatureFlagException {
     public FeatureFlagDataException(string message)
         : base(message, "DATA_ERROR")
     {

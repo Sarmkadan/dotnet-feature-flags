@@ -15,7 +15,7 @@ namespace FeatureFlags.Repository;
 /// Implementation of feature flag repository providing database persistence operations.
 /// Handles complex queries including eager loading of related entities.
 /// </summary>
-public sealed class FeatureFlagRepository {
+public class FeatureFlagRepository : IFeatureFlagRepository {
     private readonly FeatureFlagDbContext _context;
 
     public FeatureFlagRepository(FeatureFlagDbContext context)
@@ -186,4 +186,17 @@ public sealed class FeatureFlagRepository {
     {
         await _context.SaveChangesAsync();
     }
+
+    Task<FeatureFlag?> IRepository<FeatureFlag>.GetByIdAsync(int id) => GetByIdAsync(id);
+    Task<FeatureFlag?> IFeatureFlagRepository.GetByKeyAsync(string key) => GetByKeyAsync(key);
+    Task<int> IFeatureFlagRepository.GetTotalCountAsync() => GetTotalCountAsync();
+    Task<FeatureFlag?> IFeatureFlagRepository.GetWithRulesAsync(int featureFlagId) => GetWithRulesAsync(featureFlagId);
+    Task<FeatureFlag?> IFeatureFlagRepository.GetWithVariantsAsync(int featureFlagId) => GetWithVariantsAsync(featureFlagId);
+    Task<FeatureFlag?> IFeatureFlagRepository.GetWithAuditLogsAsync(int featureFlagId) => GetWithAuditLogsAsync(featureFlagId);
+    Task<bool> IFeatureFlagRepository.KeyExistsAsync(string key) => KeyExistsAsync(key);
+    Task<FeatureFlag> IRepository<FeatureFlag>.AddAsync(FeatureFlag entity) => AddAsync(entity);
+    Task IRepository<FeatureFlag>.UpdateAsync(FeatureFlag entity) => UpdateAsync(entity);
+    Task IRepository<FeatureFlag>.DeleteAsync(int id) => DeleteAsync(id);
+    Task<bool> IRepository<FeatureFlag>.ExistsAsync(int id) => ExistsAsync(id);
+    Task IRepository<FeatureFlag>.SaveChangesAsync() => SaveChangesAsync();
 }

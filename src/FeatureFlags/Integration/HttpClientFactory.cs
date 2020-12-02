@@ -19,10 +19,10 @@ public interface IHttpClientFactory
 /// <summary>
 /// Default implementation of HTTP client factory using standard HttpClient.
 /// </summary>
-public sealed class DefaultHttpClientFactory {
-    private readonly IHttpClientFactory _factory;
+public sealed class DefaultHttpClientFactory : IHttpClientFactory {
+    private readonly System.Net.Http.IHttpClientFactory _factory;
 
-    public DefaultHttpClientFactory(IHttpClientFactory factory)
+    public DefaultHttpClientFactory(System.Net.Http.IHttpClientFactory factory)
     {
         _factory = factory ?? throw new ArgumentNullException(nameof(factory));
     }

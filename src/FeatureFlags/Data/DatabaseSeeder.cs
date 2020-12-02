@@ -6,6 +6,7 @@
 
 using FeatureFlags.Enums;
 using FeatureFlags.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace FeatureFlags.Data;
 
@@ -100,10 +101,9 @@ public static class DatabaseSeeder
         var darkModeCondition = new Condition
         {
             RuleId = 0, // Will be set after SaveChanges
-            FieldName = "tier",
+            AttributeName = "tier",
             Operator = ConditionOperator.Equals,
-            Value = "enterprise",
-            CaseSensitive = false
+            ExpectedValue = "enterprise"
         };
 
         darkModeRule.Conditions.Add(darkModeCondition);
@@ -113,7 +113,7 @@ public static class DatabaseSeeder
         var variantA = new ABTestVariant
         {
             FeatureFlagId = 0, // Will be set after SaveChanges
-            VariantName = "Control",
+            VariantKey = "Control",
             AllocationPercentage = 50,
             Description = "Original checkout flow"
         };
@@ -121,7 +121,7 @@ public static class DatabaseSeeder
         var variantB = new ABTestVariant
         {
             FeatureFlagId = 0, // Will be set after SaveChanges
-            VariantName = "Treatment",
+            VariantKey = "Treatment",
             AllocationPercentage = 50,
             Description = "New checkout flow with simplified steps"
         };
@@ -137,8 +137,8 @@ public static class DatabaseSeeder
             ChangedBy = "system",
             OldValue = null,
             NewValue = "payment-v2 created",
-            Timestamp = now.AddDays(-30),
-            Details = "Feature flag created with 0% rollout"
+            ChangedAt = now.AddDays(-30),
+            Description = "Feature flag created with 0% rollout"
         };
 
         var auditLog2 = new AuditLog
@@ -148,8 +148,8 @@ public static class DatabaseSeeder
             ChangedBy = "admin@company.com",
             OldValue = "0%",
             NewValue = "25%",
-            Timestamp = now.AddDays(-5),
-            Details = "Increased rollout to 25% after testing"
+            ChangedAt = now.AddDays(-5),
+            Description = "Increased rollout to 25% after testing"
         };
 
         // Save changes

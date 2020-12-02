@@ -79,7 +79,7 @@ public static class CsvExporter
                 log.FeatureFlagId.ToString(),
                 log.Action.ToString(),
                 EscapeCsvValue(log.ChangedBy),
-                log.Timestamp.ToString("O"),
+                log.ChangedAt.ToString("O"),
                 EscapeCsvValue(log.OldValue),
                 EscapeCsvValue(log.NewValue)
             };

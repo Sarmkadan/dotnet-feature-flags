@@ -78,7 +78,7 @@ public sealed class RateLimitingMiddleware
     private void RecordRequest(string clientId)
     {
         _requestHistory.AddOrUpdate(clientId,
-            new RequestHistory { Timestamps = new Queue<DateTime> { DateTime.UtcNow } },
+            new RequestHistory { Timestamps = new Queue<DateTime>(new[] { DateTime.UtcNow }) },
             (_, history) =>
             {
                 history.Timestamps.Enqueue(DateTime.UtcNow);

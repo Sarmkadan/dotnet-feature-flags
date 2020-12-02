@@ -4,6 +4,7 @@
 // CTO & Software Architect
 // =============================================================================
 
+using FeatureFlags.Integration;
 using FeatureFlags.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,6 +27,8 @@ public sealed class FeatureFlagDbContext : DbContext
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
     public DbSet<RolloutStrategy> RolloutStrategies => Set<RolloutStrategy>();
     public DbSet<ABTestVariant> ABTestVariants => Set<ABTestVariant>();
+    public DbSet<Webhook> Webhooks => Set<Webhook>();
+    public DbSet<WebhookDelivery> WebhookDeliveries => Set<WebhookDelivery>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -92,6 +95,26 @@ public sealed class FeatureFlagDbContext : DbContext
             entity.Property(e => e.DisplayName).IsRequired().HasMaxLength(256);
             entity.Property(e => e.Description).HasMaxLength(1000);
             entity.HasIndex(e => new { e.FeatureFlagId, e.VariantKey }).IsUnique();
+        });
+
+        // Webhook configuration
+        modelBuilder.Entity<Webhook>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Url).IsRequired().HasMaxLength(2000);
+            entity.Property(e => e.Description).HasMaxLength(1000);
+            entity.Property(e => e.CreatedBy).HasMaxLength(256);
+            entity.Property(e => e.FeatureFlagKey).HasMaxLength(128);
+        });
+
+        // WebhookDelivery configuration
+        modelBuilder.Entity<WebhookDelivery>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Payload).IsRequired();
+            entity.HasIndex(e => e.WebhookId);
+            entity.HasIndex(e => e.TriggeredAt);
+            entity.HasOne(e => e.Webhook).WithMany().HasForeignKey(e => e.WebhookId).OnDelete(DeleteBehavior.Cascade);
         });
     }
 }

@@ -16,7 +16,7 @@ namespace FeatureFlags.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/admin")]
-public sealed class AdminController {
+public class AdminController : ControllerBase {
     private readonly Integration.IWebhookService _webhookService;
     private readonly Services.IFeatureFlagService _featureFlagService;
     private readonly Caching.ICacheService _cacheService;
@@ -116,7 +116,7 @@ public sealed class AdminController {
     {
         try
         {
-            var flags = await _featureFlagService.GetFeatureFlagsAsync();
+            var flags = await _featureFlagService.GetAllFeatureFlagsAsync();
             var csv = CsvExporter.ExportFeatureFlags(flags, includeRules);
 
             var fileName = $"feature-flags-{DateTime.UtcNow:yyyy-MM-dd-HHmmss}.csv";
@@ -139,7 +139,7 @@ public sealed class AdminController {
     {
         try
         {
-            var flags = await _featureFlagService.GetFeatureFlagsAsync();
+            var flags = await _featureFlagService.GetAllFeatureFlagsAsync();
             var xml = XmlExporter.ExportFeatureFlags(flags);
 
             var fileName = $"feature-flags-{DateTime.UtcNow:yyyy-MM-dd-HHmmss}.xml";
@@ -227,13 +227,13 @@ public sealed class AdminController {
     {
         try
         {
-            var flags = await _featureFlagService.GetFeatureFlagsAsync();
+            var flags = await _featureFlagService.GetAllFeatureFlagsAsync();
             var enabledCount = flags.Count(f => f.IsEnabled);
             var disabledCount = flags.Count(f => !f.IsEnabled);
 
             return Ok(new
             {
-                totalFlags = flags.Count,
+                totalFlags = flags.Count(),
                 enabledFlags = enabledCount,
                 disabledFlags = disabledCount,
                 percentRolloutCount = flags.Count(f => f.RolloutType == Enums.RolloutType.Percentage),
@@ -257,4 +257,6 @@ public sealed class RegisterWebhookRequest
     public string Url { get; set; } = string.Empty;
     public string? Description { get; set; }
     public Integration.WebhookEventType? EventTypes { get; set; }
+    public string? FeatureFlagKey { get; set; }
+    public string? Secret { get; set; }
 }

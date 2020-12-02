@@ -16,7 +16,7 @@ namespace FeatureFlags.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public sealed class FeatureFlagController {
+public class FeatureFlagController : ControllerBase {
     private readonly IFeatureFlagService _featureFlagService;
     private readonly IAuditLogService _auditLogService;
     private readonly ILogger<FeatureFlagController> _logger;
@@ -249,4 +249,5 @@ public sealed class EvaluationRequest
     public string? Country { get; set; }
     public string? Tier { get; set; }
     public string? Region { get; set; }
+    public Dictionary<string, string>? CustomAttributes { get; set; }
 }

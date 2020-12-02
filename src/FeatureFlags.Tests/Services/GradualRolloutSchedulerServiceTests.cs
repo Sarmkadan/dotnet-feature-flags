@@ -10,7 +10,9 @@ using FeatureFlags.Models;
 using FeatureFlags.Repository;
 using FeatureFlags.Services;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using MockQueryable.Moq;
 using Moq;
 using Xunit;
 
@@ -40,27 +42,27 @@ public sealed class GradualRolloutSchedulerServiceTests
     }
 
     [Fact]
-    public void GetScheduleStatusAsync_WithNegativeId_ThrowsArgumentException()
+    public async Task GetScheduleStatusAsync_WithNegativeId_ThrowsArgumentException()
     {
         // Act & Assert
-        Assert.ThrowsAsync<ArgumentException>(() => _service.GetScheduleStatusAsync(0));
-        Assert.ThrowsAsync<ArgumentException>(() => _service.GetScheduleStatusAsync(-1));
+        await Assert.ThrowsAsync<ArgumentException>(() => _service.GetScheduleStatusAsync(0));
+        await Assert.ThrowsAsync<ArgumentException>(() => _service.GetScheduleStatusAsync(-1));
     }
 
     [Fact]
-    public void AdvanceRolloutAsync_WithInvalidId_ThrowsArgumentException()
+    public async Task AdvanceRolloutAsync_WithInvalidId_ThrowsArgumentException()
     {
         // Act & Assert
-        Assert.ThrowsAsync<ArgumentException>(() => _service.AdvanceRolloutAsync(0, "admin"));
-        Assert.ThrowsAsync<ArgumentException>(() => _service.AdvanceRolloutAsync(-1, "admin"));
+        await Assert.ThrowsAsync<ArgumentException>(() => _service.AdvanceRolloutAsync(0, "admin"));
+        await Assert.ThrowsAsync<ArgumentException>(() => _service.AdvanceRolloutAsync(-1, "admin"));
     }
 
     [Fact]
-    public void AdvanceRolloutAsync_WithEmptyAdvancedBy_ThrowsArgumentException()
+    public async Task AdvanceRolloutAsync_WithEmptyAdvancedBy_ThrowsArgumentException()
     {
         // Act & Assert
-        Assert.ThrowsAsync<ArgumentException>(() => _service.AdvanceRolloutAsync(1, ""));
-        Assert.ThrowsAsync<ArgumentException>(() => _service.AdvanceRolloutAsync(1, "   "));
+        await Assert.ThrowsAsync<ArgumentException>(() => _service.AdvanceRolloutAsync(1, ""));
+        await Assert.ThrowsAsync<ArgumentException>(() => _service.AdvanceRolloutAsync(1, "   "));
     }
 
     [Fact]
@@ -88,7 +90,7 @@ public sealed class GradualRolloutSchedulerServiceTests
             FeatureFlagId = 1,
             IsGradual = true,
             StartDate = DateTime.UtcNow.AddDays(-1),
-            IsActive = false,
+            EndDate = DateTime.UtcNow.AddDays(-1),
             FeatureFlag = flag
         };
         var strategies = new List<RolloutStrategy> { strategy };
@@ -113,7 +115,6 @@ public sealed class GradualRolloutSchedulerServiceTests
             FeatureFlagId = 1,
             IsGradual = true,
             StartDate = DateTime.UtcNow.AddDays(-1),
-            IsActive = true,
             FeatureFlag = flag
         };
         var strategies = new List<RolloutStrategy> { strategy };
@@ -148,7 +149,6 @@ public sealed class GradualRolloutSchedulerServiceTests
                 FeatureFlagId = 1,
                 IsGradual = true,
                 StartDate = DateTime.UtcNow.AddDays(-1),
-                IsActive = true,
                 FeatureFlag = flags[0],
                 DailyIncrement = 5
             }
@@ -157,7 +157,7 @@ public sealed class GradualRolloutSchedulerServiceTests
         var strategyDbSet = CreateMockDbSet(strategies);
         _contextMock.Setup(c => c.RolloutStrategies).Returns(strategyDbSet);
         _contextMock.Setup(c => c.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
-        _auditLogRepositoryMock.Setup(r => r.AddAsync(It.IsAny<AuditLog>())).Returns(Task.CompletedTask);
+        _auditLogRepositoryMock.Setup(r => r.AddAsync(It.IsAny<AuditLog>())).ReturnsAsync(new AuditLog());
 
         // Act
         var result = await _service.ProcessScheduledRolloutsAsync();
@@ -177,8 +177,7 @@ public sealed class GradualRolloutSchedulerServiceTests
             Id = 1,
             FeatureFlagId = 1,
             IsGradual = true,
-            StartDate = DateTime.UtcNow.AddDays(-1),
-            IsActive = true,
+            StartDate = DateTime.UtcNow.AddDays(-10),
             FeatureFlag = flag,
             DailyIncrement = 5
         };
@@ -187,13 +186,13 @@ public sealed class GradualRolloutSchedulerServiceTests
         var strategyDbSet = CreateMockDbSet(strategies);
         _contextMock.Setup(c => c.RolloutStrategies).Returns(strategyDbSet);
         _contextMock.Setup(c => c.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
-        _auditLogRepositoryMock.Setup(r => r.AddAsync(It.IsAny<AuditLog>())).Returns(Task.CompletedTask);
+        _auditLogRepositoryMock.Setup(r => r.AddAsync(It.IsAny<AuditLog>())).ReturnsAsync(new AuditLog());
 
         // Act
         var result = await _service.AdvanceRolloutAsync(1, "admin");
 
         // Assert
-        result.Should().BeOfType<bool>();
+        result.Should().BeTrue();
     }
 
     [Fact]
@@ -211,8 +210,8 @@ public sealed class GradualRolloutSchedulerServiceTests
         result.Should().BeFalse();
     }
 
-    private IQueryable<T> CreateMockDbSet<T>(List<T> data) where T : class
+    private static DbSet<T> CreateMockDbSet<T>(List<T> data) where T : class
     {
-        return data.AsQueryable();
+        return data.BuildMockDbSet().Object;
     }
 }

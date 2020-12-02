@@ -51,7 +51,7 @@ public interface IEventBus
 /// <summary>
 /// Default in-process implementation of event bus.
 /// </summary>
-public sealed class EventBus {
+public sealed class EventBus : IEventBus {
     private readonly List<IEventSubscriber> _subscribers = new();
     private readonly ILogger<EventBus> _logger;
     private readonly object _syncLock = new();
@@ -140,12 +140,17 @@ public sealed class EventBus {
 
         await PublishAsync(@event);
     }
+
+    Task IEventBus.PublishAsync(FeatureFlagEvent @event) => PublishAsync(@event);
+
+    Task IEventBus.PublishAsync(string eventType, int featureFlagId, string featureFlagKey, string triggeredBy, Dictionary<string, object?>? metadata)
+        => PublishAsync(eventType, featureFlagId, featureFlagKey, triggeredBy, metadata);
 }
 
 /// <summary>
 /// Event subscriber that logs all feature flag events for audit trail.
 /// </summary>
-public sealed class EventLoggingSubscriber {
+public sealed class EventLoggingSubscriber : IEventSubscriber {
     private readonly ILogger<EventLoggingSubscriber> _logger;
 
     public string[] InterestedEventTypes => new[] { "*" };
@@ -166,12 +171,14 @@ public sealed class EventLoggingSubscriber {
 
         await Task.CompletedTask;
     }
+
+    Task IEventSubscriber.HandleEventAsync(FeatureFlagEvent @event) => HandleEventAsync(@event);
 }
 
 /// <summary>
 /// Event subscriber that triggers webhooks when feature flag events occur.
 /// </summary>
-public sealed class WebhookEventSubscriber {
+public sealed class WebhookEventSubscriber : IEventSubscriber {
     private readonly Integration.IWebhookService? _webhookService;
     private readonly ILogger<WebhookEventSubscriber> _logger;
 
@@ -203,6 +210,8 @@ public sealed class WebhookEventSubscriber {
 
         await Task.CompletedTask;
     }
+
+    Task IEventSubscriber.HandleEventAsync(FeatureFlagEvent @event) => HandleEventAsync(@event);
 }
 
 /// <summary>

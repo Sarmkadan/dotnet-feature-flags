@@ -44,7 +44,7 @@ public sealed class WebhookServiceTests
         // Arrange
         var url = "https://example.com/webhook";
         var description = "Test Webhook";
-        var eventTypes = WebhookEventType.FlagChanged | WebhookEventType.FlagCreated;
+        var eventTypes = WebhookEventType.FeatureFlagUpdated | WebhookEventType.FeatureFlagCreated;
         var createdBy = "admin";
 
         var webhook = new Webhook
@@ -79,7 +79,7 @@ public sealed class WebhookServiceTests
         // Arrange
         var invalidUrl = "not-a-valid-url";
         var description = "Test Webhook";
-        var eventTypes = WebhookEventType.FlagChanged;
+        var eventTypes = WebhookEventType.FeatureFlagUpdated;
 
         // Act & Assert
         await Assert.ThrowsAsync<ArgumentException>(() =>
@@ -131,21 +131,21 @@ public sealed class WebhookServiceTests
     public async Task GetActiveWebhooksAsync_WithMatchingEventType_ReturnsWebhooks()
     {
         // Arrange
-        var eventType = WebhookEventType.FlagChanged;
+        var eventType = WebhookEventType.FeatureFlagUpdated;
         var webhooks = new List<Webhook>
         {
             new Webhook
             {
                 Id = 1,
                 Url = "https://example.com/webhook",
-                EventTypes = WebhookEventType.FlagChanged,
+                EventTypes = WebhookEventType.FeatureFlagUpdated,
                 IsActive = true
             },
             new Webhook
             {
                 Id = 2,
                 Url = "https://example.com/webhook2",
-                EventTypes = WebhookEventType.FlagCreated,
+                EventTypes = WebhookEventType.FeatureFlagCreated,
                 IsActive = true
             }
         };
@@ -159,14 +159,14 @@ public sealed class WebhookServiceTests
 
         // Assert
         result.Should().HaveCount(1);
-        result[0].EventTypes.Should().Have(WebhookEventType.FlagChanged);
+        result[0].EventTypes.Should().HaveFlag(WebhookEventType.FeatureFlagUpdated);
     }
 
     [Fact]
     public async Task GetActiveWebhooksAsync_WithNoneMatching_ReturnsEmpty()
     {
         // Arrange
-        var eventType = WebhookEventType.FlagDeleted;
+        var eventType = WebhookEventType.FeatureFlagDeleted;
         _webhookRepositoryMock
             .Setup(r => r.GetActiveAsync())
             .ReturnsAsync(new List<Webhook>());
@@ -185,14 +185,14 @@ public sealed class WebhookServiceTests
         var webhookId = 1;
         var newUrl = "https://example.com/webhook-updated";
         var newDescription = "Updated Webhook";
-        var newEventTypes = WebhookEventType.FlagChanged | WebhookEventType.FlagDeleted;
+        var newEventTypes = WebhookEventType.FeatureFlagUpdated | WebhookEventType.FeatureFlagDeleted;
 
         var existingWebhook = new Webhook
         {
             Id = webhookId,
             Url = "https://example.com/webhook",
             Description = "Original",
-            EventTypes = WebhookEventType.FlagChanged,
+            EventTypes = WebhookEventType.FeatureFlagUpdated,
             IsActive = true
         };
 
@@ -220,7 +220,7 @@ public sealed class WebhookServiceTests
             .ReturnsAsync((Webhook?)null);
 
         // Act
-        var result = await _service.UpdateWebhookAsync(999, "https://example.com/webhook", "New Description", WebhookEventType.FlagChanged);
+        var result = await _service.UpdateWebhookAsync(999, "https://example.com/webhook", "New Description", WebhookEventType.FeatureFlagUpdated);
 
         // Assert
         result.Should().BeFalse();
@@ -267,7 +267,7 @@ public sealed class WebhookServiceTests
     public async Task TriggerWebhooksAsync_WithMatchingEventType_CallsActiveWebhooks()
     {
         // Arrange
-        var eventType = WebhookEventType.FlagChanged;
+        var eventType = WebhookEventType.FeatureFlagUpdated;
         var flag = new FeatureFlag { Id = 1, Key = "test-flag", IsEnabled = true };
         var webhooks = new List<Webhook>
         {
@@ -275,7 +275,7 @@ public sealed class WebhookServiceTests
             {
                 Id = 1,
                 Url = "https://example.com/webhook",
-                EventTypes = WebhookEventType.FlagChanged,
+                EventTypes = WebhookEventType.FeatureFlagUpdated,
                 IsActive = true
             }
         };
@@ -338,14 +338,14 @@ public sealed class WebhookServiceTests
             {
                 Id = 1,
                 Url = "https://example.com/webhook1",
-                EventTypes = WebhookEventType.FlagChanged,
+                EventTypes = WebhookEventType.FeatureFlagUpdated,
                 IsActive = true
             },
             new Webhook
             {
                 Id = 2,
                 Url = "https://example.com/webhook2",
-                EventTypes = WebhookEventType.FlagChanged,
+                EventTypes = WebhookEventType.FeatureFlagUpdated,
                 IsActive = false
             }
         };
@@ -355,7 +355,7 @@ public sealed class WebhookServiceTests
             .ReturnsAsync(webhooks.Where(w => w.IsActive).ToList());
 
         // Act
-        var result = await _service.GetActiveWebhooksAsync(WebhookEventType.FlagChanged);
+        var result = await _service.GetActiveWebhooksAsync(WebhookEventType.FeatureFlagUpdated);
 
         // Assert
         result.Should().HaveCount(1);
@@ -368,7 +368,7 @@ public sealed class WebhookServiceTests
         // Arrange
         var url = "https://example.com/webhook";
         var description = "Test Webhook";
-        var eventTypes = WebhookEventType.FlagChanged;
+        var eventTypes = WebhookEventType.FeatureFlagUpdated;
         var featureFlagKey = "specific-flag";
         var secret = "webhook-secret";
         var createdBy = "admin";

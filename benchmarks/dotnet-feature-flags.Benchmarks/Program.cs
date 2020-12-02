@@ -1,8 +1,11 @@
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Diagnosers;
+using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Running;
+using FeatureFlags.Enums;
 using FeatureFlags.Models;
+using FeatureFlags.Repository;
 using FeatureFlags.Services;
 using FeatureFlags.Caching;
 using System.Collections.Concurrent;
@@ -10,7 +13,7 @@ using System.Collections.Concurrent;
 namespace dotnet_feature_flags.Benchmarks;
 
 [MemoryDiagnoser]
-[SimpleJob(RuntimeMoniker.Net100, warmupCount: 3, iterationCount: 10)]
+[SimpleJob(RuntimeMoniker.Net10_0, warmupCount: 3, iterationCount: 10)]
 [GroupBenchmarksBy(BenchmarkLogicalGroupRule.ByCategory)]
 [CategoriesColumn]
 public class FeatureFlagsBenchmarks
@@ -45,8 +48,8 @@ public class FeatureFlagsBenchmarks
             _ruleEvaluationService,
             _percentageRolloutService,
             _flagEvaluationLogService,
-            _cacheService,
-            null
+            Microsoft.Extensions.Options.Options.Create(new FeatureFlags.Configuration.FeatureFlagOptions()),
+            null!
         );
 
         // Create test user context
@@ -64,7 +67,7 @@ public class FeatureFlagsBenchmarks
         {
             Key = "new-dashboard",
             DisplayName = "New Dashboard",
-            RolloutType = Enums.RolloutType.Percentage,
+            RolloutType = RolloutType.Percentage,
             PercentageRollout = 25,
             IsEnabled = true
         };
@@ -74,7 +77,7 @@ public class FeatureFlagsBenchmarks
         {
             Key = "premium-feature",
             DisplayName = "Premium Feature",
-            RolloutType = Enums.RolloutType.RulesBased,
+            RolloutType = RolloutType.RulesBased,
             IsEnabled = true,
             Rules = new List<Rule>
             {
@@ -86,8 +89,8 @@ public class FeatureFlagsBenchmarks
                     IsActive = true,
                     Conditions = new List<Condition>
                     {
-                        new Condition { Attribute = "tier", Operator = ConditionOperator.Equals, Value = "premium", IsActive = true },
-                        new Condition { Attribute = "country", Operator = ConditionOperator.In, Value = "US,CA,UK,DE", IsActive = true }
+                        new Condition { AttributeName = "tier", Operator = ConditionOperator.Equals , ExpectedValue = "premium", IsActive = true },
+                        new Condition { AttributeName = "country", Operator = ConditionOperator.In , ExpectedValue = "US,CA,UK,DE", IsActive = true }
                     }
                 },
                 new Rule
@@ -98,8 +101,8 @@ public class FeatureFlagsBenchmarks
                     IsActive = true,
                     Conditions = new List<Condition>
                     {
-                        new Condition { Attribute = "tier", Operator = ConditionOperator.Equals, Value = "beta", IsActive = true },
-                        new Condition { Attribute = "tags", Operator = ConditionOperator.Contains, Value = "beta-tester", IsActive = true }
+                        new Condition { AttributeName = "tier", Operator = ConditionOperator.Equals , ExpectedValue = "beta", IsActive = true },
+                        new Condition { AttributeName = "tags", Operator = ConditionOperator.Contains , ExpectedValue = "beta-tester", IsActive = true }
                     }
                 }
             }
@@ -110,12 +113,12 @@ public class FeatureFlagsBenchmarks
         {
             Key = "checkout-redesign",
             DisplayName = "Checkout Redesign",
-            RolloutType = Enums.RolloutType.ABTest,
+            RolloutType = RolloutType.ABTest,
             IsEnabled = true,
             Variants = new List<ABTestVariant>
             {
-                new ABTestVariant { Name = "Control", AllocationPercentage = 50, VariantKey = "control-variant" },
-                new ABTestVariant { Name = "Treatment", AllocationPercentage = 50, VariantKey = "treatment-variant" }
+                new ABTestVariant { DisplayName = "Control", AllocationPercentage = 50, VariantKey = "control-variant" },
+                new ABTestVariant { DisplayName = "Treatment", AllocationPercentage = 50, VariantKey = "treatment-variant" }
             }
         };
     }
@@ -189,7 +192,7 @@ public class FeatureFlagsBenchmarks
         {
             Key = "simple-rule",
             DisplayName = "Simple Rule",
-            RolloutType = Enums.RolloutType.RulesBased,
+            RolloutType = RolloutType.RulesBased,
             IsEnabled = true,
             Rules = new List<Rule>
             {
@@ -201,7 +204,7 @@ public class FeatureFlagsBenchmarks
                     IsActive = true,
                     Conditions = new List<Condition>
                     {
-                        new Condition { Attribute = "tier", Operator = ConditionOperator.Equals, Value = "premium", IsActive = true }
+                        new Condition { AttributeName = "tier", Operator = ConditionOperator.Equals , ExpectedValue = "premium", IsActive = true }
                     }
                 }
             }
@@ -213,7 +216,7 @@ public class FeatureFlagsBenchmarks
     [Benchmark]
     public string? ABTestVariantAssignment()
     {
-        return _ruleEvaluationService.GetVariantAsync(_abTestFlag.Key, _userContext).Result;
+        return _featureFlagService.GetVariantAsync(_abTestFlag.Key, _userContext).Result;
     }
 
     [BenchmarkCategory("A/B Test")]
@@ -224,16 +227,16 @@ public class FeatureFlagsBenchmarks
         {
             Key = "multi-variant-test",
             DisplayName = "Multi Variant Test",
-            RolloutType = Enums.RolloutType.ABTest,
+            RolloutType = RolloutType.ABTest,
             IsEnabled = true,
             Variants = new List<ABTestVariant>
             {
-                new ABTestVariant { Name = "Variant A", AllocationPercentage = 30, VariantKey = "variant-a" },
-                new ABTestVariant { Name = "Variant B", AllocationPercentage = 30, VariantKey = "variant-b" },
-                new ABTestVariant { Name = "Variant C", AllocationPercentage = 40, VariantKey = "variant-c" }
+                new ABTestVariant { DisplayName = "Variant A", AllocationPercentage = 30, VariantKey = "variant-a" },
+                new ABTestVariant { DisplayName = "Variant B", AllocationPercentage = 30, VariantKey = "variant-b" },
+                new ABTestVariant { DisplayName = "Variant C", AllocationPercentage = 40, VariantKey = "variant-c" }
             }
         };
-        return _ruleEvaluationService.GetVariantAsync(multiVariantFlag.Key, _userContext).Result;
+        return _featureFlagService.GetVariantAsync(multiVariantFlag.Key, _userContext).Result;
     }
 
     [BenchmarkCategory("Full Evaluation")]
@@ -292,7 +295,7 @@ public class FeatureFlagsBenchmarks
         {
             Key = "complex-conditions",
             DisplayName = "Complex Conditions",
-            RolloutType = Enums.RolloutType.RulesBased,
+            RolloutType = RolloutType.RulesBased,
             IsEnabled = true,
             Rules = new List<Rule>
             {
@@ -304,11 +307,11 @@ public class FeatureFlagsBenchmarks
                     IsActive = true,
                     Conditions = new List<Condition>
                     {
-                        new Condition { Attribute = "tier", Operator = ConditionOperator.Equals, Value = "premium", IsActive = true },
-                        new Condition { Attribute = "country", Operator = ConditionOperator.In, Value = "US,CA,UK,DE,FR,ES", IsActive = true },
-                        new Condition { Attribute = "subscription_age_days", Operator = ConditionOperator.GreaterThan, Value = "90", IsActive = true },
-                        new Condition { Attribute = "plan_type", Operator = ConditionOperator.Equals, Value = "enterprise", IsActive = true },
-                        new Condition { Attribute = "feature_access", Operator = ConditionOperator.Contains, Value = "new-ui", IsActive = true }
+                        new Condition { AttributeName = "tier", Operator = ConditionOperator.Equals , ExpectedValue = "premium", IsActive = true },
+                        new Condition { AttributeName = "country", Operator = ConditionOperator.In , ExpectedValue = "US,CA,UK,DE,FR,ES", IsActive = true },
+                        new Condition { AttributeName = "subscription_age_days", Operator = ConditionOperator.GreaterThan , ExpectedValue = "90", IsActive = true },
+                        new Condition { AttributeName = "plan_type", Operator = ConditionOperator.Equals , ExpectedValue = "enterprise", IsActive = true },
+                        new Condition { AttributeName = "feature_access", Operator = ConditionOperator.Contains , ExpectedValue = "new-ui", IsActive = true }
                     }
                 }
             }
@@ -337,7 +340,7 @@ public class FeatureFlagsBenchmarks
         {
             Key = "or-logic",
             DisplayName = "OR Logic",
-            RolloutType = Enums.RolloutType.RulesBased,
+            RolloutType = RolloutType.RulesBased,
             IsEnabled = true,
             Rules = new List<Rule>
             {
@@ -349,8 +352,8 @@ public class FeatureFlagsBenchmarks
                     IsActive = true,
                     Conditions = new List<Condition>
                     {
-                        new Condition { Attribute = "tier", Operator = ConditionOperator.Equals, Value = "free", IsActive = true },
-                        new Condition { Attribute = "tags", Operator = ConditionOperator.Contains, Value = "beta-tester", IsActive = true }
+                        new Condition { AttributeName = "tier", Operator = ConditionOperator.Equals , ExpectedValue = "free", IsActive = true },
+                        new Condition { AttributeName = "tags", Operator = ConditionOperator.Contains , ExpectedValue = "beta-tester", IsActive = true }
                     }
                 }
             }
@@ -461,7 +464,7 @@ public class FeatureFlagsBenchmarks
         {
             Key = "complex-conditions",
             DisplayName = "Complex Conditions",
-            RolloutType = Enums.RolloutType.RulesBased,
+            RolloutType = RolloutType.RulesBased,
             IsEnabled = true,
             Rules = new List<Rule>
             {
@@ -473,11 +476,11 @@ public class FeatureFlagsBenchmarks
                     IsActive = true,
                     Conditions = new List<Condition>
                     {
-                        new Condition { Attribute = "tier", Operator = ConditionOperator.Equals, Value = "premium", IsActive = true },
-                        new Condition { Attribute = "country", Operator = ConditionOperator.In, Value = "US,CA,UK,DE,FR,ES" },
-                        new Condition { Attribute = "subscription_age_days", Operator = ConditionOperator.GreaterThan, Value = "90" },
-                        new Condition { Attribute = "plan_type", Operator = ConditionOperator.Equals, Value = "enterprise" },
-                        new Condition { Attribute = "feature_access", Operator = ConditionOperator.Contains, Value = "new-ui" }
+                        new Condition { AttributeName = "tier", Operator = ConditionOperator.Equals , ExpectedValue = "premium", IsActive = true },
+                        new Condition { AttributeName = "country", Operator = ConditionOperator.In , ExpectedValue = "US,CA,UK,DE,FR,ES" },
+                        new Condition { AttributeName = "subscription_age_days", Operator = ConditionOperator.GreaterThan , ExpectedValue = "90" },
+                        new Condition { AttributeName = "plan_type", Operator = ConditionOperator.Equals , ExpectedValue = "enterprise" },
+                        new Condition { AttributeName = "feature_access", Operator = ConditionOperator.Contains , ExpectedValue = "new-ui" }
                     }
                 }
             }
@@ -506,7 +509,7 @@ public class FeatureFlagsBenchmarks
         {
             Key = "dynamic-percentage",
             DisplayName = "Dynamic Percentage",
-            RolloutType = Enums.RolloutType.Percentage,
+            RolloutType = RolloutType.Percentage,
             PercentageRollout = 0,
             IsEnabled = true
         };
@@ -563,14 +566,14 @@ public class FeatureFlagsBenchmarks
         {
             Key = "distribution-test",
             DisplayName = "Distribution Test",
-            RolloutType = Enums.RolloutType.ABTest,
+            RolloutType = RolloutType.ABTest,
             IsEnabled = true,
             Variants = new List<ABTestVariant>
             {
-                new ABTestVariant { Name = "A", AllocationPercentage = 10, VariantKey = "a" },
-                new ABTestVariant { Name = "B", AllocationPercentage = 20, VariantKey = "b" },
-                new ABTestVariant { Name = "C", AllocationPercentage = 30, VariantKey = "c" },
-                new ABTestVariant { Name = "D", AllocationPercentage = 40, VariantKey = "d" }
+                new ABTestVariant { DisplayName = "A", AllocationPercentage = 10, VariantKey = "a" },
+                new ABTestVariant { DisplayName = "B", AllocationPercentage = 20, VariantKey = "b" },
+                new ABTestVariant { DisplayName = "C", AllocationPercentage = 30, VariantKey = "c" },
+                new ABTestVariant { DisplayName = "D", AllocationPercentage = 40, VariantKey = "d" }
             }
         };
 
@@ -578,7 +581,7 @@ public class FeatureFlagsBenchmarks
         for (int i = 0; i < 1000; i++)
         {
             var user = new UserContext { UserId = $"user{i}" };
-            var variant = _ruleEvaluationService.GetVariantAsync(flag.Key, user).Result;
+            var variant = _featureFlagService.GetVariantAsync(flag.Key, user).Result;
             if (variant != null)
                 results[variant] = results.GetValueOrDefault(variant) + 1;
         }
@@ -638,6 +641,9 @@ internal class MockCacheService : ICacheService
         Clear();
         return Task.CompletedTask;
     }
+
+    Task ICacheService.RemoveAsync(string key) => RemoveAsync(key);
+    Task ICacheService.ClearAsync() => ClearAsync();
 }
 
 internal class MockFeatureFlagRepository : IFeatureFlagRepository
@@ -646,13 +652,20 @@ internal class MockFeatureFlagRepository : IFeatureFlagRepository
     public Task<FeatureFlag?> GetByIdAsync(int id) => Task.FromResult<FeatureFlag?>(null);
     public Task<IEnumerable<FeatureFlag>> GetAllAsync() => Task.FromResult(Enumerable.Empty<FeatureFlag>());
     public Task<IEnumerable<FeatureFlag>> GetEnabledAsync() => Task.FromResult(Enumerable.Empty<FeatureFlag>());
+    public Task<IEnumerable<FeatureFlag>> GetByCreatorAsync(string createdBy) => Task.FromResult(Enumerable.Empty<FeatureFlag>());
+    public Task<IEnumerable<FeatureFlag>> GetModifiedSinceAsync(DateTime dateTime) => Task.FromResult(Enumerable.Empty<FeatureFlag>());
+    public Task<int> GetTotalCountAsync() => Task.FromResult(0);
+    public Task<IEnumerable<FeatureFlag>> GetPagedAsync(int pageNumber, int pageSize) => Task.FromResult(Enumerable.Empty<FeatureFlag>());
     public Task<bool> KeyExistsAsync(string key) => Task.FromResult(false);
     public Task<FeatureFlag> AddAsync(FeatureFlag entity) => Task.FromResult(new FeatureFlag());
     public Task UpdateAsync(FeatureFlag entity) => Task.CompletedTask;
     public Task DeleteAsync(int id) => Task.CompletedTask;
-    public Task<int> SaveChangesAsync() => Task.FromResult(0);
+    public Task<bool> ExistsAsync(int id) => Task.FromResult(false);
+    public Task SaveChangesAsync() => Task.CompletedTask;
     public Task<FeatureFlag?> GetWithRulesAsync(int id) => Task.FromResult<FeatureFlag?>(null);
     public Task<FeatureFlag?> GetWithVariantsAsync(int id) => Task.FromResult<FeatureFlag?>(null);
+    public Task<FeatureFlag?> GetWithAuditLogsAsync(int featureFlagId) => Task.FromResult<FeatureFlag?>(null);
+    public Task<IEnumerable<FeatureFlag>> GetRecentlyModifiedAsync(int count) => Task.FromResult(Enumerable.Empty<FeatureFlag>());
     public Task<IEnumerable<FeatureFlag>> SearchAsync(string term) => Task.FromResult(Enumerable.Empty<FeatureFlag>());
 }
 
@@ -660,13 +673,27 @@ internal class MockAuditLogRepository : IAuditLogRepository
 {
     public Task<AuditLog> AddAsync(AuditLog entity) => Task.FromResult(new AuditLog());
     public Task DeleteAsync(int id) => Task.CompletedTask;
+    public Task<bool> ExistsAsync(int id) => Task.FromResult(false);
+    public Task SaveChangesAsync() => Task.CompletedTask;
     public Task<IEnumerable<AuditLog>> GetAllAsync() => Task.FromResult(Enumerable.Empty<AuditLog>());
     public Task<AuditLog?> GetByIdAsync(int id) => Task.FromResult<AuditLog?>(null);
     public Task<IEnumerable<AuditLog>> GetByFeatureFlagIdAsync(int featureFlagId) => Task.FromResult(Enumerable.Empty<AuditLog>());
+    public Task<IEnumerable<AuditLog>> GetByChangedByAsync(string changedBy) => Task.FromResult(Enumerable.Empty<AuditLog>());
+    public Task<IEnumerable<AuditLog>> GetSinceAsync(DateTime dateTime) => Task.FromResult(Enumerable.Empty<AuditLog>());
+    public Task<IEnumerable<AuditLog>> GetPagedAsync(int pageNumber, int pageSize) => Task.FromResult(Enumerable.Empty<AuditLog>());
+    public Task<IEnumerable<AuditLog>> GetByFeatureFlagIdPagedAsync(int featureFlagId, int pageNumber, int pageSize) => Task.FromResult(Enumerable.Empty<AuditLog>());
+    public Task<int> GetCountByFeatureFlagIdAsync(int featureFlagId) => Task.FromResult(0);
+    public Task<AuditLog?> GetLastChangeAsync(int featureFlagId) => Task.FromResult<AuditLog?>(null);
+    public Task<IEnumerable<AuditLog>> GetChangesInRangeAsync(DateTime startDate, DateTime endDate) => Task.FromResult(Enumerable.Empty<AuditLog>());
+    public Task<IEnumerable<AuditLog>> GetByActionAsync(string action) => Task.FromResult(Enumerable.Empty<AuditLog>());
+    public Task CleanupOldLogsAsync(int retentionDays) => Task.CompletedTask;
     public Task UpdateAsync(AuditLog entity) => Task.CompletedTask;
 }
 
 internal class MockFlagEvaluationLogService : IFlagEvaluationLogService
 {
-    public void Log(FlagEvaluationLog log) { }
+    public void Log(FlagEvaluationLog entry) { }
+    public IReadOnlyList<FlagEvaluationLog> GetAll() => Array.Empty<FlagEvaluationLog>();
+    public IReadOnlyList<FlagEvaluationLog> GetByUserId(string userId) => Array.Empty<FlagEvaluationLog>();
+    public IReadOnlyList<FlagEvaluationLog> GetByFlagName(string flagName) => Array.Empty<FlagEvaluationLog>();
 }

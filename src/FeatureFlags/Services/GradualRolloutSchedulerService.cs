@@ -18,7 +18,7 @@ namespace FeatureFlags.Services;
 /// Evaluates active rollout strategies and advances percentage allocations according to
 /// configured start dates, end dates, and daily increment values.
 /// </summary>
-public sealed class GradualRolloutSchedulerService {
+public class GradualRolloutSchedulerService : IGradualRolloutSchedulerService {
     private readonly FeatureFlagDbContext _context;
     private readonly IAuditLogRepository _auditLogRepository;
     private readonly ILogger<GradualRolloutSchedulerService> _logger;
@@ -39,7 +39,7 @@ public sealed class GradualRolloutSchedulerService {
         _logger.LogInformation("Processing scheduled gradual rollouts");
 
         var strategies = await _context.RolloutStrategies
-            .Where(s => s.IsGradual && s.StartDate is not null)
+            .Where(s => s.IsGradual && s.StartDate != null)
             .Include(s => s.FeatureFlag)
             .ToListAsync(cancellationToken);
 

@@ -39,4 +39,37 @@ public sealed class FlagEvaluationLogService : IFlagEvaluationLogService
     public IReadOnlyList<FlagEvaluationLog> GetByFlagName(string flagName) =>
         _logs.Where(l => string.Equals(l.FlagName, flagName, StringComparison.OrdinalIgnoreCase))
              .ToArray();
+
+    /// <summary>
+    /// Convenience overload that builds a <see cref="FlagEvaluationLog"/> from an evaluated
+    /// feature flag and user context, then records it.
+    /// </summary>
+    public void LogEvaluation(FeatureFlag flag, UserContext userContext, bool result)
+    {
+        if (flag is null)
+            throw new ArgumentNullException(nameof(flag));
+
+        if (userContext is null)
+            throw new ArgumentNullException(nameof(userContext));
+
+        Log(new FlagEvaluationLog
+        {
+            FlagName = flag.Key,
+            UserId = userContext.UserId,
+            Result = result,
+            Timestamp = DateTime.UtcNow
+        });
+    }
+
+    /// <summary>Alias for <see cref="GetAll"/>.</summary>
+    public IReadOnlyList<FlagEvaluationLog> GetEvaluationLogs() => GetAll();
+
+    /// <summary>Alias for <see cref="GetByUserId"/>.</summary>
+    public IReadOnlyList<FlagEvaluationLog> GetEvaluationLogsForUser(string userId) => GetByUserId(userId);
+
+    /// <summary>Alias for <see cref="GetByFlagName"/>.</summary>
+    public IReadOnlyList<FlagEvaluationLog> GetEvaluationLogsForFlag(string flagName) => GetByFlagName(flagName);
+
+    /// <summary>Removes all recorded evaluation logs.</summary>
+    public void ClearLogs() => _logs.Clear();
 }

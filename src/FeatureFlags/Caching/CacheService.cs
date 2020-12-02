@@ -29,7 +29,7 @@ public interface ICacheService
 /// In-memory implementation of cache service using concurrent dictionary.
 /// Suitable for single-server deployments. For distributed scenarios, use DistributedCacheService.
 /// </summary>
-public sealed class InMemoryCacheService : IDisposable {
+public sealed class InMemoryCacheService : ICacheService, IDisposable {
     private readonly ConcurrentDictionary<string, CacheEntry> _cache;
     private readonly ILogger<InMemoryCacheService> _logger;
     private readonly TimeSpan _defaultTtl;
@@ -175,6 +175,9 @@ public sealed class InMemoryCacheService : IDisposable {
         _cleanupCts.Dispose();
     }
 
+    Task ICacheService.RemoveAsync(string key) => RemoveAsync(key);
+    Task ICacheService.ClearAsync() => ClearAsync();
+
     private class CacheEntry
     {
         public object? Value { get; set; }
@@ -187,7 +190,7 @@ public sealed class InMemoryCacheService : IDisposable {
 /// Distributed cache service using IDistributedCache for multi-server deployments.
 /// Typically backed by Redis or similar distributed cache.
 /// </summary>
-public sealed class DistributedCacheService {
+public sealed class DistributedCacheService : ICacheService {
     private readonly IDistributedCache _distributedCache;
     private readonly ILogger<DistributedCacheService> _logger;
     private readonly TimeSpan _defaultTtl;
@@ -335,4 +338,7 @@ public sealed class DistributedCacheService {
         await Task.Yield();
         Clear();
     }
+
+    Task ICacheService.RemoveAsync(string key) => RemoveAsync(key);
+    Task ICacheService.ClearAsync() => ClearAsync();
 }

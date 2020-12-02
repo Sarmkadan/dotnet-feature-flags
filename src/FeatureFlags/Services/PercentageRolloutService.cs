@@ -12,7 +12,7 @@ namespace FeatureFlags.Services;
 /// Service implementation for percentage-based rollout evaluation.
 /// Uses consistent hashing to provide stable, reproducible rollout decisions.
 /// </summary>
-public sealed class PercentageRolloutService {
+public class PercentageRolloutService : IPercentageRolloutService {
     private readonly ILogger<PercentageRolloutService> _logger;
 
     public PercentageRolloutService(ILogger<PercentageRolloutService> logger)
@@ -71,4 +71,6 @@ public sealed class PercentageRolloutService {
 
         return userContext.GetConsistentHash(featureFlagKey);
     }
+
+    Task<bool> IPercentageRolloutService.EvaluateAsync(FeatureFlag featureFlag, UserContext userContext) => EvaluateAsync(featureFlag, userContext);
 }

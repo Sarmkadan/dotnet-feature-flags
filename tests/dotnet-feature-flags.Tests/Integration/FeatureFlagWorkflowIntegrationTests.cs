@@ -343,8 +343,8 @@ public sealed class FeatureFlagWorkflowIntegrationTests
         // Arrange - Simulate A/B test with variants
         var variants = new List<ABTestVariant>
         {
-            new ABTestVariant { Id = 1, Name = "Control", AllocationPercentage = 50 },
-            new ABTestVariant { Id = 2, Name = "Treatment", AllocationPercentage = 50 }
+            new ABTestVariant { Id = 1, VariantKey = "Control", AllocationPercentage = 50 },
+            new ABTestVariant { Id = 2, VariantKey = "Treatment", AllocationPercentage = 50 }
         };
 
         var userBuckets = new Dictionary<string, string>();

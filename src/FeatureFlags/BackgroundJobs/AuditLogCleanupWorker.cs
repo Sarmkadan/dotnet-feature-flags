@@ -47,7 +47,7 @@ public sealed class AuditLogCleanupWorker : BackgroundService
 
                 _logger.LogInformation("Starting audit log cleanup (removing logs older than {CutoffDate})", cutoffDate);
 
-                await auditLogService.CleanupOldLogsAsync(cutoffDate);
+                await auditLogService.CleanupOldLogsAsync(_options.RetentionDays);
 
                 _logger.LogInformation("Audit log cleanup completed successfully");
             }
@@ -186,15 +186,15 @@ public sealed class CacheSyncWorker : BackgroundService
                     _logger.LogDebug("Syncing feature flag cache with database");
 
                     // Get all enabled flags and refresh their cache entries
-                    var flags = await featureFlagService.SearchFeatureFlagsAsync(new() { Skip = 0, Take = 1000 });
+                    var flags = (await featureFlagService.GetAllFeatureFlagsAsync()).Take(1000).ToList();
 
-                    foreach (var flag in flags.Items)
+                    foreach (var flag in flags)
                     {
                         var cacheKey = $"feature_flag_{flag.Key}";
                         await cacheService.SetAsync(cacheKey, flag, TimeSpan.FromMinutes(_options.CacheTtlMinutes));
                     }
 
-                    _logger.LogDebug("Cache sync completed ({Count} flags updated)", flags.Items.Count);
+                    _logger.LogDebug("Cache sync completed ({Count} flags updated)", flags.Count);
                 }
             }
             catch (OperationCanceledException)

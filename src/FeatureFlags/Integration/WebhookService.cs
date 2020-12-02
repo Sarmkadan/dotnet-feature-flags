@@ -6,6 +6,7 @@
 
 using System.Text.Json;
 using FeatureFlags.Models;
+using FeatureFlags.Utilities;
 
 namespace FeatureFlags.Integration;
 
@@ -15,19 +16,19 @@ namespace FeatureFlags.Integration;
 /// </summary>
 public interface IWebhookService
 {
-    Task<Webhook> RegisterWebhookAsync(string url, string description, WebhookEventType eventTypes, string createdBy);
-    Task<Webhook?> GetWebhookAsync(int webhookId);
-    Task<List<Webhook>> GetActiveWebhooksAsync(WebhookEventType eventType);
-    Task<bool> UpdateWebhookAsync(int webhookId, string? url, string? description, WebhookEventType? eventTypes);
-    Task<bool> DeleteWebhookAsync(int webhookId);
-    Task TriggerWebhooksAsync(WebhookEventType eventType, FeatureFlag flag, string changedBy, Dictionary<string, object?>? data = null);
-    Task RetryFailedDeliveriesAsync();
+    Task<Webhook> RegisterWebhookAsync(string url, string description, WebhookEventType eventTypes, string? featureFlagKey, string? secret, string createdBy, CancellationToken cancellationToken = default);
+    Task<Webhook?> GetWebhookAsync(int webhookId, CancellationToken cancellationToken = default);
+    Task<List<Webhook>> GetActiveWebhooksAsync(WebhookEventType eventType, string? featureFlagKey = null);
+    Task<bool> UpdateWebhookAsync(int webhookId, string? url, string? description, WebhookEventType? eventTypes, CancellationToken cancellationToken = default);
+    Task<bool> DeleteWebhookAsync(int webhookId, CancellationToken cancellationToken = default);
+    Task TriggerWebhooksAsync(WebhookEventType eventType, FeatureFlag flag, string changedBy, Dictionary<string, object?>? data = null, CancellationToken cancellationToken = default);
+    Task RetryFailedDeliveriesAsync(CancellationToken cancellationToken = default);
 }
 
 /// <summary>
 /// Default implementation of webhook service.
 /// </summary>
-public sealed class WebhookService {
+public sealed class WebhookService : IWebhookService {
     private readonly IWebhookRepository _webhookRepository;
     private readonly IWebhookDeliveryRepository _deliveryRepository;
     private readonly HttpApiClient _httpClient;
@@ -159,7 +160,10 @@ public sealed class WebhookService {
 
         try
         {
-            using var client = new HttpClient();
+            using var client = new HttpClient
+            {
+                Timeout = TimeSpan.FromSeconds(30)
+            };
 
             if (!string.IsNullOrEmpty(webhook.AuthorizationHeader))
             {
@@ -174,7 +178,7 @@ public sealed class WebhookService {
             }
 
             using var content = new StringContent(payload, System.Text.Encoding.UTF8, "application/json");
-            using var response = await client.PostAsync(webhook.Url, content, TimeSpan.FromSeconds(30));
+            using var response = await client.PostAsync(webhook.Url, content);
 
             if (response.IsSuccessStatusCode)
             {
