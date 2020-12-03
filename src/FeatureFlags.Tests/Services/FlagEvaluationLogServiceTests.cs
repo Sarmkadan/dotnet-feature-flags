@@ -7,6 +7,8 @@
 using FeatureFlags.Models;
 using FeatureFlags.Services;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
+using Moq;
 using Xunit;
 
 namespace FeatureFlags.Tests.Services;
@@ -18,10 +20,12 @@ namespace FeatureFlags.Tests.Services;
 public sealed class FlagEvaluationLogServiceTests
 {
     private readonly FlagEvaluationLogService _service;
+    private readonly Mock<ILogger<FlagEvaluationLogService>> _loggerMock;
 
     public FlagEvaluationLogServiceTests()
     {
-        _service = new FlagEvaluationLogService();
+        _loggerMock = new Mock<ILogger<FlagEvaluationLogService>>();
+        _service = new FlagEvaluationLogService(_loggerMock.Object);
     }
 
     [Fact]
@@ -100,7 +104,8 @@ public sealed class FlagEvaluationLogServiceTests
     public void GetEvaluationLogs_WithNoLogs_ReturnsEmptyList()
     {
         // Arrange
-        var freshService = new FlagEvaluationLogService();
+        var freshLoggerMock = new Mock<ILogger<FlagEvaluationLogService>>();
+        var freshService = new FlagEvaluationLogService(freshLoggerMock.Object);
 
         // Act
         var logs = freshService.GetEvaluationLogs();
