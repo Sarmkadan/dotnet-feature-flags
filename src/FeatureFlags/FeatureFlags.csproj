@@ -1,38 +1,39 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <LangVersion>latest</LangVersion>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageId>dotnet-feature-flags</PackageId>
-    <Version>1.0.0</Version>
-    <Authors>Vladyslav Zaiets</Authors>
-    <Description>A lightweight and robust feature flag management system for .NET applications with support for user targeting and gradual rollouts.</Description>
-    <PackageTags>feature-flags dotnet configuration rollouts ab-testing</PackageTags>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/sarmkadan/dotnet-feature-flags</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/sarmkadan/dotnet-feature-flags</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-  </PropertyGroup>
+<PropertyGroup>
+<TargetFramework>net10.0</TargetFramework>
+<ImplicitUsings>enable</ImplicitUsings>
+<Nullable>enable</Nullable>
+<LangVersion>latest</LangVersion>
+<GenerateDocumentationFile>true</GenerateDocumentationFile>
+<PackageId>dotnet-feature-flags</PackageId>
+<Version>1.0.0</Version>
+<Authors>Vladyslav Zaiets</Authors>
+<Description>A lightweight and robust feature flag management system for .NET applications with support for user targeting and gradual rollouts.</Description>
+<PackageTags>feature-flags dotnet configuration rollouts ab-testing</PackageTags>
+<PackageLicenseExpression>MIT</PackageLicenseExpression>
+<PackageProjectUrl>https://github.com/sarmkadan/dotnet-feature-flags</PackageProjectUrl>
+<RepositoryUrl>https://github.com/sarmkadan/dotnet-feature-flags</RepositoryUrl>
+<RepositoryType>git</RepositoryType>
+<PackageReadmeFile>README.md</PackageReadmeFile>
+</PropertyGroup>
 
-  <ItemGroup>
-    <None Include="../../README.md" Pack="true" PackagePath="\" />
-  </ItemGroup>
+<ItemGroup>
+<None Include="../../README.md" Pack="true" PackagePath="\" />
+</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="10.0.0" />
-    <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
-    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.0" />
-  </ItemGroup>
+<ItemGroup>
+<PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.0" />
+<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.0" />
+<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.0">
+  <PrivateAssets>all</PrivateAssets>
+  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+</PackageReference>
+<PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="10.0.0" />
+<PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.0" />
+<PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
+<PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
+<PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.0" />
+</ItemGroup>
 
 </Project>
