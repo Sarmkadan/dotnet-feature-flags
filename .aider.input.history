@@ -2192,3 +2192,73 @@
 +- chore: apply workspace updates
 +- feat: add structured logging
 +- chore: apply workspace updates
+
+# 2026-07-10 07:12:37.447477
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, create ONE new C# file: `src/FeatureFlags/Exceptions/ValidationExceptionExtensions.cs`.
++
++It must contain `public static class ValidationExceptionExtensions` with 2-4 genuinely useful, fully implemented extension methods for the existing type `ValidationException` (same namespace as the original file `src/FeatureFlags/Exceptions/ValidationException.cs`).
++
++The REAL public members of `ValidationException` are (use ONLY these plus the .NET BCL, do not invent members):
++```
++public Dictionary<string, string> Errors
++public ValidationException(string message) : base
++public ValidationException(string message, Dictionary<string, string> errors) : base
++public ValidationException(string message, Exception innerException) : base
++public WebhookValidationException(string message) : base
++public WebhookValidationException(string message, Dictionary<string, string> errors) : base
++```
++
++Every method fully implemented: NO NotImplementedException, NO TODO, no empty bodies.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- feat: add extension methods for FeatureFlagEvent
++- chore: apply workspace updates
+
+# 2026-07-10 07:12:37.448230
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, create ONE new C# file: `src/FeatureFlags/Exceptions/ValidationExceptionExtensions.cs`.
++
++It must contain `public static class ValidationExceptionExtensions` with 2-4 genuinely useful, fully implemented extension methods for the existing type `ValidationException` (same namespace as the original file `src/FeatureFlags/Exceptions/ValidationException.cs`).
++
++The REAL public members of `ValidationException` are (use ONLY these plus the .NET BCL, do not invent members):
++```
++public Dictionary<string, string> Errors
++public ValidationException(string message) : base
++public ValidationException(string message, Dictionary<string, string> errors) : base
++public ValidationException(string message, Exception innerException) : base
++public WebhookValidationException(string message) : base
++public WebhookValidationException(string message, Dictionary<string, string> errors) : base
++```
++
++Every method fully implemented: NO NotImplementedException, NO TODO, no empty bodies.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- feat: add extension methods for FeatureFlagEvent
++- chore: apply workspace updates
