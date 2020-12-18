@@ -16,6 +16,10 @@ namespace dotnet_feature_flags.Benchmarks;
 [SimpleJob(RuntimeMoniker.Net10_0, warmupCount: 3, iterationCount: 10)]
 [GroupBenchmarksBy(BenchmarkLogicalGroupRule.ByCategory)]
 [CategoriesColumn]
+/// <summary>
+/// Benchmark suite for evaluating feature flag performance across different scenarios.
+/// Tests percentage-based rollouts, rule-based evaluations, A/B testing, caching, and concurrent access.
+/// </summary>
 public class FeatureFlagsBenchmarks
 {
     private PercentageRolloutService _percentageRolloutService;
