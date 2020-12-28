@@ -5,16 +5,26 @@ using FeatureFlags.Services;
 
 namespace FeatureFlags.Examples
 {
-    // Minimal setup and first evaluation call
+    /// <summary>
+    /// Demonstrates the basic usage of the feature flag service.
+    /// </summary>
     public class BasicUsage
     {
         private readonly IFeatureFlagService _featureFlagService;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BasicUsage"/> class.
+        /// </summary>
+        /// <param name="featureFlagService">The feature flag service.</param>
         public BasicUsage(IFeatureFlagService featureFlagService)
         {
             _featureFlagService = featureFlagService;
         }
 
+        /// <summary>
+        /// Runs the example.
+        /// </summary>
+        /// <returns>A task that represents the asynchronous operation.</returns>
         public async Task RunExampleAsync()
         {
             // 1. Create a user context for evaluation
