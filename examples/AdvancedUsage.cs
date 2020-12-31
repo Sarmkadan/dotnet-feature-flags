@@ -6,16 +6,24 @@ using FeatureFlags.Services;
 
 namespace FeatureFlags.Examples
 {
-    // Configuration, custom options, and error handling
+    /// <summary>
+    /// Demonstrates advanced usage of the feature flag service, including custom options and error handling.
+    /// </summary>
     public class AdvancedUsage
     {
-        private readonly IFeatureFlagService _featureFlagService;
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AdvancedUsage"/> class.
+        /// </summary>
+        /// <param name="featureFlagService">The feature flag service to use.</param>
         public AdvancedUsage(IFeatureFlagService featureFlagService)
         {
             _featureFlagService = featureFlagService;
         }
 
+        /// <summary>
+        /// Runs the example, demonstrating how to evaluate a feature flag with custom attributes.
+        /// </summary>
+        /// <returns>A task that represents the asynchronous operation.</returns>
         public async Task RunExampleAsync()
         {
             try
