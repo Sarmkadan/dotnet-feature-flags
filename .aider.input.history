@@ -2630,3 +2630,93 @@
 +- chore: apply workspace updates
 +- chore: apply workspace updates
 +- feat(examples): add FeatureFlagServiceTestExampleExtensions with comprehensive testing utilities
+
+# 2026-07-10 14:31:03.906079
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, create ONE new C# file: `src/FeatureFlags/Models/UserContextExtensions.cs`.
++
++It must contain `public static class UserContextExtensions` with 2-4 genuinely useful, fully implemented extension methods for the existing type `UserContext` (same namespace as the original file `src/FeatureFlags/Models/UserContext.cs`).
++
++The REAL public members of `UserContext` are (use ONLY these plus the .NET BCL, do not invent members):
++```
++public string UserId
++public string Email
++public string? Country
++public string? Tier
++public string? Region
++public Dictionary<string, string> CustomAttributes
++public DateTime CreatedAt
++public string? GetAttribute
++public void SetCustomAttribute
++public bool IsValid
++public int GetConsistentHash
++```
++
++QUALITY BAR (an automated review rejects the commit if violated):
++- Every method solves its problem COMPLETELY. If you cannot implement something for real, OMIT that method entirely - never fake a result, never hardcode a return value, never write "simplified for demo" / "in a real application". A smaller honest class beats a padded fake one.
++- Guard clauses first: ArgumentNullException.ThrowIfNull(x) / ArgumentException.ThrowIfNullOrEmpty(s) at the top of each public method.
++- Modern C#: expression-bodied members where they fit on one line, pattern matching over if-chains, target-typed new.
++- Return IReadOnlyList<T>/IEnumerable<T> from queries, not List<T>. Use CultureInfo.InvariantCulture for machine-facing parsing/formatting of numbers/dates.
++- XML doc comments on every public member, including <exception> tags for every throw.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- chore: apply workspace updates
++- docs: add XML documentation comments to examples/AdvancedUsage.cs
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
+
+# 2026-07-10 14:31:03.906156
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, create ONE new C# file: `src/FeatureFlags/Models/UserContextExtensions.cs`.
++
++It must contain `public static class UserContextExtensions` with 2-4 genuinely useful, fully implemented extension methods for the existing type `UserContext` (same namespace as the original file `src/FeatureFlags/Models/UserContext.cs`).
++
++The REAL public members of `UserContext` are (use ONLY these plus the .NET BCL, do not invent members):
++```
++public string UserId
++public string Email
++public string? Country
++public string? Tier
++public string? Region
++public Dictionary<string, string> CustomAttributes
++public DateTime CreatedAt
++public string? GetAttribute
++public void SetCustomAttribute
++public bool IsValid
++public int GetConsistentHash
++```
++
++QUALITY BAR (an automated review rejects the commit if violated):
++- Every method solves its problem COMPLETELY. If you cannot implement something for real, OMIT that method entirely - never fake a result, never hardcode a return value, never write "simplified for demo" / "in a real application". A smaller honest class beats a padded fake one.
++- Guard clauses first: ArgumentNullException.ThrowIfNull(x) / ArgumentException.ThrowIfNullOrEmpty(s) at the top of each public method.
++- Modern C#: expression-bodied members where they fit on one line, pattern matching over if-chains, target-typed new.
++- Return IReadOnlyList<T>/IEnumerable<T> from queries, not List<T>. Use CultureInfo.InvariantCulture for machine-facing parsing/formatting of numbers/dates.
++- XML doc comments on every public member, including <exception> tags for every throw.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- chore: apply workspace updates
++- docs: add XML documentation comments to examples/AdvancedUsage.cs
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
