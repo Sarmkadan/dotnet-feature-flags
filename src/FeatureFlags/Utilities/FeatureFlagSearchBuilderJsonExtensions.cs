@@ -1,0 +1,84 @@
+#nullable enable
+// =============================================================================
+// Author: Vladyslav Zaiets | https://sarmkadan.com
+// CTO & Software Architect
+// =============================================================================
+
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
+namespace FeatureFlags.Utilities;
+
+/// <summary>
+/// Provides System.Text.Json serialization/deserialization extension methods for
+/// <see cref="FeatureFlagSearchBuilder"/>.
+/// Enables JSON conversion of search builder instances for storage and transmission.
+/// </summary>
+public static class FeatureFlagSearchBuilderJsonExtensions
+{
+    private static readonly JsonSerializerOptions _jsonOptions = new(JsonSerializerDefaults.Web)
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        WriteIndented = false
+    };
+
+    /// <summary>
+    /// Serializes a <see cref="FeatureFlagSearchBuilder"/> instance to a JSON string.
+    /// </summary>
+    /// <param name="value">The search builder instance to serialize.</param>
+    /// <param name="indented">Whether to format the JSON with indentation for readability.</param>
+    /// <returns>A JSON string representation of the search builder.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="value"/> is null.</exception>
+    public static string ToJson(this FeatureFlagSearchBuilder value, bool indented = false)
+    {
+        ArgumentNullException.ThrowIfNull(value);
+
+        var options = new JsonSerializerOptions(_jsonOptions)
+        {
+            WriteIndented = indented
+        };
+
+        return JsonSerializer.Serialize(value, options);
+    }
+
+    /// <summary>
+    /// Deserializes a JSON string to a <see cref="FeatureFlagSearchBuilder"/> instance.
+    /// </summary>
+    /// <param name="json">The JSON string to deserialize.</param>
+    /// <returns>A deserialized <see cref="FeatureFlagSearchBuilder"/> instance.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="json"/> is null or empty.</exception>
+    /// <exception cref="JsonException">Thrown when the JSON is malformed or cannot be deserialized.</exception>
+    public static FeatureFlagSearchBuilder? FromJson(string json)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(json);
+
+        return JsonSerializer.Deserialize<FeatureFlagSearchBuilder>(json, _jsonOptions);
+    }
+
+    /// <summary>
+    /// Attempts to deserialize a JSON string to a <see cref="FeatureFlagSearchBuilder"/> instance.
+    /// </summary>
+    /// <param name="json">The JSON string to deserialize.</param>
+    /// <param name="value">Receives the deserialized search builder if successful.</param>
+    /// <returns>True if deserialization succeeded; otherwise, false.</returns>
+    public static bool TryFromJson(string json, out FeatureFlagSearchBuilder? value)
+    {
+        value = null;
+
+        if (string.IsNullOrEmpty(json))
+        {
+            return false;
+        }
+
+        try
+        {
+            value = JsonSerializer.Deserialize<FeatureFlagSearchBuilder>(json, _jsonOptions);
+            return true;
+        }
+        catch (JsonException)
+        {
+            return false;
+        }
+    }
+}
