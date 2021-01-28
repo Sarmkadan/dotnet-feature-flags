@@ -10,21 +10,18 @@ namespace FeatureFlags.Exceptions
     public static class ConfigurationExceptionValidation
     {
         /// <summary>
-        /// Validates the <see cref="ConfigurationException"/> instance and returns a list of human‑readable problems.
+        /// Validates the <see cref="ConfigurationException"/> instance and returns a list of human-readable problems.
         /// </summary>
         /// <param name="value">The exception instance to validate.</param>
-        /// <returns>A read‑only list of validation error messages. Empty if the instance is valid.</returns>
+        /// <returns>A read-only list of validation error messages. Empty if the instance is valid.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="value"/> is <see langword="null"/>.</exception>
         public static IReadOnlyList<string> Validate(this ConfigurationException value)
         {
+            ArgumentNullException.ThrowIfNull(value);
+
             var problems = new List<string>();
 
-            if (value is null)
-            {
-                problems.Add("ConfigurationException instance is null.");
-                return problems;
-            }
-
-            // Message should be non‑null and non‑empty
+            // Message should be non-null and non-empty
             if (string.IsNullOrWhiteSpace(value.Message))
             {
                 problems.Add("Message must not be null, empty, or whitespace.");
@@ -48,15 +45,15 @@ namespace FeatureFlags.Exceptions
         /// </summary>
         /// <param name="value">The exception instance to check.</param>
         /// <returns>True if no validation problems are found; otherwise false.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="value"/> is <see langword="null"/>.</exception>
         public static bool IsValid(this ConfigurationException value)
-        {
-            return !value.Validate().Any();
-        }
+            => value?.Validate().Count is 0 or null;
 
         /// <summary>
         /// Ensures that the <see cref="ConfigurationException"/> instance is valid, throwing an <see cref="ArgumentException"/> if not.
         /// </summary>
         /// <param name="value">The exception instance to validate.</param>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="value"/> is <see langword="null"/>.</exception>
         /// <exception cref="ArgumentException">Thrown when validation problems are found.</exception>
         public static void EnsureValid(this ConfigurationException value)
         {
