@@ -22,12 +22,10 @@ public static class AuditLogCleanupWorkerExtensions
     /// </summary>
     /// <param name="services">The service collection to register with</param>
     /// <returns>The modified service collection</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> is null</exception>
     public static IServiceCollection AddAuditLogCleanupWorker(this IServiceCollection services)
     {
-        if (services == null)
-        {
-            throw new ArgumentNullException(nameof(services));
-        }
+        ArgumentNullException.ThrowIfNull(services);
 
         services.AddOptions<AuditLogCleanupOptions>()
             .Configure(options =>
@@ -48,19 +46,13 @@ public static class AuditLogCleanupWorkerExtensions
     /// <param name="services">The service collection to register with</param>
     /// <param name="configureOptions">Action to configure the cleanup options</param>
     /// <returns>The modified service collection</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> or <paramref name="configureOptions"/> is null</exception>
     public static IServiceCollection AddAuditLogCleanupWorker(
         this IServiceCollection services,
         Action<AuditLogCleanupOptions> configureOptions)
     {
-        if (services == null)
-        {
-            throw new ArgumentNullException(nameof(services));
-        }
-
-        if (configureOptions == null)
-        {
-            throw new ArgumentNullException(nameof(configureOptions));
-        }
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configureOptions);
 
         services.Configure(configureOptions);
         services.AddHostedService<AuditLogCleanupWorker>();
@@ -69,48 +61,45 @@ public static class AuditLogCleanupWorkerExtensions
     }
 
     /// <summary>
-    /// Creates a new instance of AuditLogCleanupOptions with the specified retention period.
+    /// Configures the audit log cleanup with the specified retention period.
     /// </summary>
+    /// <param name="options">The cleanup options to configure</param>
     /// <param name="retentionDays">Number of days to retain audit logs</param>
-    /// <returns>Configured AuditLogCleanupOptions instance</returns>
+    /// <returns>The configured options instance for method chaining</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="options"/> is null</exception>
     public static AuditLogCleanupOptions WithRetentionDays(this AuditLogCleanupOptions options, int retentionDays)
     {
-        if (options == null)
-        {
-            throw new ArgumentNullException(nameof(options));
-        }
+        ArgumentNullException.ThrowIfNull(options);
 
         options.RetentionDays = retentionDays;
         return options;
     }
 
     /// <summary>
-    /// Creates a new instance of AuditLogCleanupOptions with the specified cleanup interval.
+    /// Configures the audit log cleanup with the specified cleanup interval.
     /// </summary>
+    /// <param name="options">The cleanup options to configure</param>
     /// <param name="intervalHours">Interval in hours between cleanup operations</param>
-    /// <returns>Configured AuditLogCleanupOptions instance</returns>
+    /// <returns>The configured options instance for method chaining</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="options"/> is null</exception>
     public static AuditLogCleanupOptions WithCleanupIntervalHours(this AuditLogCleanupOptions options, int intervalHours)
     {
-        if (options == null)
-        {
-            throw new ArgumentNullException(nameof(options));
-        }
+        ArgumentNullException.ThrowIfNull(options);
 
         options.CleanupIntervalHours = intervalHours;
         return options;
     }
 
     /// <summary>
-    /// Creates a new instance of AuditLogCleanupOptions with the specified enabled state.
+    /// Configures whether the audit log cleanup worker should be enabled.
     /// </summary>
+    /// <param name="options">The cleanup options to configure</param>
     /// <param name="enabled">Whether the worker should be enabled</param>
-    /// <returns>Configured AuditLogCleanupOptions instance</returns>
+    /// <returns>The configured options instance for method chaining</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="options"/> is null</exception>
     public static AuditLogCleanupOptions WithEnabled(this AuditLogCleanupOptions options, bool enabled)
     {
-        if (options == null)
-        {
-            throw new ArgumentNullException(nameof(options));
-        }
+        ArgumentNullException.ThrowIfNull(options);
 
         options.Enabled = enabled;
         return options;
@@ -121,26 +110,12 @@ public static class AuditLogCleanupWorkerExtensions
     /// </summary>
     /// <param name="worker">The audit log cleanup worker instance</param>
     /// <returns>Cleanup interval in seconds</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="worker"/> is null</exception>
     public static int GetCleanupIntervalSeconds(this AuditLogCleanupWorker worker)
     {
-        if (worker == null)
-        {
-            throw new ArgumentNullException(nameof(worker));
-        }
+        ArgumentNullException.ThrowIfNull(worker);
 
-        // Access the options through the worker's field
-        var optionsField = typeof(AuditLogCleanupWorker).GetField("_options", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-        if (optionsField != null)
-        {
-            var options = optionsField.GetValue(worker) as AuditLogCleanupOptions;
-            if (options != null)
-            {
-                return options.CleanupIntervalHours * 3600;
-            }
-        }
-
-        // Fallback to default value
-        return 24 * 3600;
+        return worker.CleanupIntervalSeconds;
     }
 
     /// <summary>
@@ -148,25 +123,11 @@ public static class AuditLogCleanupWorkerExtensions
     /// </summary>
     /// <param name="worker">The audit log cleanup worker instance</param>
     /// <returns>Retention period in days</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="worker"/> is null</exception>
     public static int GetRetentionDays(this AuditLogCleanupWorker worker)
     {
-        if (worker == null)
-        {
-            throw new ArgumentNullException(nameof(worker));
-        }
+        ArgumentNullException.ThrowIfNull(worker);
 
-        // Access the options through the worker's field
-        var optionsField = typeof(AuditLogCleanupWorker).GetField("_options", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-        if (optionsField != null)
-        {
-            var options = optionsField.GetValue(worker) as AuditLogCleanupOptions;
-            if (options != null)
-            {
-                return options.RetentionDays;
-            }
-        }
-
-        // Fallback to default value
-        return 90;
+        return worker.RetentionDays;
     }
 }
