@@ -3,24 +3,29 @@
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
-// =============================================================================
+// =====================================================================
 
 using System.Diagnostics.CodeAnalysis;
 
 namespace FeatureFlags.Events;
 
 /// <summary>
-/// Extension methods for <see cref="FeatureFlagEvent"/> that provide common operations
+/// Provides extension methods for <see cref="FeatureFlagEvent"/> that enable common operations
 /// for filtering, metadata access, and event manipulation.
 /// </summary>
+/// <remarks>
+/// This class is sealed to prevent inheritance and ensure consistent behavior across all consumers.
+/// </remarks>
 public static class FeatureFlagEventExtensions
 {
     /// <summary>
-    /// Filters events by the specified event type.
+    /// Determines whether the specified event matches the given event type.
     /// </summary>
     /// <param name="event">The event to check.</param>
     /// <param name="eventType">The event type to match against.</param>
-    /// <returns>True if the event matches the specified type; otherwise, false.</returns>
+    /// <returns><see langword="true"/> if the event matches the specified type; otherwise, <see langword="false"/>.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="event"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="eventType"/> is <see langword="null"/> or empty.</exception>
     public static bool IsType(this FeatureFlagEvent @event, string eventType)
     {
         ArgumentNullException.ThrowIfNull(@event);
@@ -30,11 +35,13 @@ public static class FeatureFlagEventExtensions
     }
 
     /// <summary>
-    /// Checks if the event contains metadata with the specified key.
+    /// Determines whether the event contains metadata with the specified key.
     /// </summary>
     /// <param name="event">The event to check.</param>
     /// <param name="key">The metadata key to look for.</param>
-    /// <returns>True if the metadata contains the key; otherwise, false.</returns>
+    /// <returns><see langword="true"/> if the metadata contains the key; otherwise, <see langword="false"/>.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="event"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="key"/> is <see langword="null"/> or empty.</exception>
     public static bool HasMetadataKey(this FeatureFlagEvent @event, string key)
     {
         ArgumentNullException.ThrowIfNull(@event);
@@ -51,17 +58,16 @@ public static class FeatureFlagEventExtensions
     /// <param name="key">The metadata key to retrieve.</param>
     /// <param name="defaultValue">The default value to return if the key doesn't exist.</param>
     /// <returns>The metadata value if it exists and is of the correct type; otherwise, the default value.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="event"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="key"/> is <see langword="null"/> or empty.</exception>
     public static T? GetMetadataValue<T>(this FeatureFlagEvent @event, string key, T? defaultValue = default)
     {
         ArgumentNullException.ThrowIfNull(@event);
         ArgumentException.ThrowIfNullOrEmpty(key);
 
-        if (@event.Metadata.TryGetValue(key, out var value) && value is T typedValue)
-        {
-            return typedValue;
-        }
-
-        return defaultValue;
+        return @event.Metadata.TryGetValue(key, out var value) && value is T typedValue
+            ? typedValue
+            : defaultValue;
     }
 
     /// <summary>
@@ -71,6 +77,8 @@ public static class FeatureFlagEventExtensions
     /// <param name="key">The metadata key to set.</param>
     /// <param name="value">The metadata value to set.</param>
     /// <returns>A new event with the updated metadata.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="event"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="key"/> is <see langword="null"/> or empty.</exception>
     public static FeatureFlagEvent WithMetadata(this FeatureFlagEvent @event, string key, object? value)
     {
         ArgumentNullException.ThrowIfNull(@event);
@@ -96,6 +104,7 @@ public static class FeatureFlagEventExtensions
     /// <param name="event">The original event to clone.</param>
     /// <param name="occurredAt">The new timestamp for the event.</param>
     /// <returns>A new event with the updated timestamp.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="event"/> is <see langword="null"/>.</exception>
     public static FeatureFlagEvent WithOccurredAt(this FeatureFlagEvent @event, DateTime occurredAt)
     {
         ArgumentNullException.ThrowIfNull(@event);
@@ -112,11 +121,13 @@ public static class FeatureFlagEventExtensions
     }
 
     /// <summary>
-    /// Checks if the event was triggered by the specified user or system.
+    /// Determines whether the event was triggered by the specified user or system.
     /// </summary>
     /// <param name="event">The event to check.</param>
     /// <param name="triggeredBy">The user/system name to match against.</param>
-    /// <returns>True if the event was triggered by the specified entity; otherwise, false.</returns>
+    /// <returns><see langword="true"/> if the event was triggered by the specified entity; otherwise, <see langword="false"/>.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="event"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="triggeredBy"/> is <see langword="null"/> or empty.</exception>
     public static bool IsTriggeredBy(this FeatureFlagEvent @event, string triggeredBy)
     {
         ArgumentNullException.ThrowIfNull(@event);
@@ -131,7 +142,8 @@ public static class FeatureFlagEventExtensions
     /// <param name="event">The event to check.</param>
     /// <param name="start">The start of the time range (inclusive).</param>
     /// <param name="end">The end of the time range (inclusive).</param>
-    /// <returns>True if the event occurred within the time range; otherwise, false.</returns>
+    /// <returns><see langword="true"/> if the event occurred within the time range; otherwise, <see langword="false"/>.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="event"/> is <see langword="null"/>.</exception>
     public static bool OccurredBetween(this FeatureFlagEvent @event, DateTime start, DateTime end)
     {
         ArgumentNullException.ThrowIfNull(@event);
@@ -144,6 +156,7 @@ public static class FeatureFlagEventExtensions
     /// </summary>
     /// <param name="event">The event to format.</param>
     /// <returns>A formatted string representation of the event.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="event"/> is <see langword="null"/>.</exception>
     public static string ToLogString(this FeatureFlagEvent @event)
     {
         ArgumentNullException.ThrowIfNull(@event);
@@ -155,7 +168,7 @@ public static class FeatureFlagEventExtensions
     /// Creates a shallow copy of the event.
     /// </summary>
     /// <param name="event">The event to copy.</param>
-    /// <returns>A new event with the same property values.</returns>
+    /// <returns>A new event with the same property values, or <see langword="null"/> if the input is <see langword="null"/>.</returns>
     [return: NotNullIfNotNull(nameof(@event))]
     public static FeatureFlagEvent? Clone(this FeatureFlagEvent? @event)
     {
