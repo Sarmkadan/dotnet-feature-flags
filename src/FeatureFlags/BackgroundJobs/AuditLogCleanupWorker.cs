@@ -30,6 +30,16 @@ public sealed class AuditLogCleanupWorker : BackgroundService
         _checkInterval = TimeSpan.FromHours(_options.CleanupIntervalHours);
     }
 
+    /// <summary>
+    /// Gets the cleanup interval in seconds.
+    /// </summary>
+    public int CleanupIntervalSeconds => _options.CleanupIntervalHours * 3600;
+
+    /// <summary>
+    /// Gets the retention period in days.
+    /// </summary>
+    public int RetentionDays => _options.RetentionDays;
+
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _logger.LogInformation("Audit log cleanup worker started (runs every {Hours} hours)", _options.CleanupIntervalHours);
