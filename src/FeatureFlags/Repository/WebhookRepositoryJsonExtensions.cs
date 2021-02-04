@@ -40,57 +40,39 @@ public static class WebhookRepositoryJsonExtensions
             ? new JsonSerializerOptions(_jsonSerializerOptions) { WriteIndented = true }
             : _jsonSerializerOptions;
 
-        return JsonSerializer.Serialize(new { Type = "WebhookRepository", Assembly = typeof(WebhookRepository).Assembly.GetName().Name }, options);
+        return JsonSerializer.Serialize(
+            new { Type = "WebhookRepository", Assembly = typeof(WebhookRepository).Assembly.GetName().Name },
+            options);
     }
 
     /// <summary>
     /// Deserializes a JSON string to a WebhookRepository instance.
-    /// Note: Returns null as WebhookRepository requires dependency injection.
     /// </summary>
-    /// <param name="json">JSON string to deserialize</param>
-    /// <returns>null (WebhookRepository requires dependency injection)</returns>
+    /// <remarks>
+    /// WebhookRepository requires dependency injection and cannot be deserialized from JSON.
+    /// This method always returns <see langword="null"/>.
+    /// </remarks>
+    /// <param name="json">JSON string to deserialize.</param>
+    /// <returns><see langword="null"/> as WebhookRepository requires dependency injection.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="json"/> is <see langword="null"/>.</exception>
     public static WebhookRepository? FromJson(string json)
     {
-        if (string.IsNullOrWhiteSpace(json))
-        {
-            return null;
-        }
+        ArgumentNullException.ThrowIfNull(json);
 
-        try
-        {
-            // WebhookRepository cannot be deserialized as it requires dependency injection
-            return null;
-        }
-        catch (JsonException)
-        {
-            return null;
-        }
+        return null;
     }
 
     /// <summary>
     /// Attempts to deserialize a JSON string to a WebhookRepository instance.
     /// </summary>
-    /// <param name="json">JSON string to deserialize</param>
-    /// <param name="value">Output parameter for the deserialized instance</param>
-    /// <returns>True if deserialization succeeded; otherwise false</returns>
+    /// <param name="json">JSON string to deserialize.</param>
+    /// <param name="value">Output parameter for the deserialized instance.</param>
+    /// <returns>True if deserialization succeeded; otherwise false.</returns>
     public static bool TryFromJson(string json, out WebhookRepository? value)
     {
         value = null;
+        ArgumentNullException.ThrowIfNull(json);
 
-        if (string.IsNullOrWhiteSpace(json))
-        {
-            return false;
-        }
-
-        try
-        {
-            // WebhookRepository cannot be deserialized as it requires dependency injection
-            value = null;
-            return true;
-        }
-        catch (JsonException)
-        {
-            return false;
-        }
+        return false;
     }
 }
