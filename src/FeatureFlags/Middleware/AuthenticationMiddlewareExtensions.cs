@@ -21,15 +21,9 @@ public static class AuthenticationMiddlewareExtensions
     /// </summary>
     /// <param name="app">The IApplicationBuilder instance</param>
     /// <returns>IApplicationBuilder for chaining</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="app"/> is null.</exception>
     public static IApplicationBuilder UseAuthenticationMiddleware(this IApplicationBuilder app)
-    {
-        if (app == null)
-        {
-            throw new ArgumentNullException(nameof(app));
-        }
-
-        return app.UseMiddleware<AuthenticationMiddleware>();
-    }
+        => app.UseMiddleware<AuthenticationMiddleware>();
 
     /// <summary>
     /// Adds AuthenticationMiddleware to the pipeline with custom configuration options.
@@ -37,19 +31,15 @@ public static class AuthenticationMiddlewareExtensions
     /// <param name="app">The IApplicationBuilder instance</param>
     /// <param name="configureOptions">Action to configure AuthenticationOptions</param>
     /// <returns>IApplicationBuilder for chaining</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="app"/> or <paramref name="configureOptions"/> is null.
+    /// </exception>
     public static IApplicationBuilder UseAuthenticationMiddleware(
         this IApplicationBuilder app,
         Action<AuthenticationOptions> configureOptions)
     {
-        if (app == null)
-        {
-            throw new ArgumentNullException(nameof(app));
-        }
-
-        if (configureOptions == null)
-        {
-            throw new ArgumentNullException(nameof(configureOptions));
-        }
+        ArgumentNullException.ThrowIfNull(app);
+        ArgumentNullException.ThrowIfNull(configureOptions);
 
         var options = new AuthenticationOptions();
         configureOptions(options);
@@ -63,19 +53,15 @@ public static class AuthenticationMiddlewareExtensions
     /// <param name="app">The IApplicationBuilder instance</param>
     /// <param name="validApiKeys">Collection of valid API keys</param>
     /// <returns>IApplicationBuilder for chaining</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="app"/> or <paramref name="validApiKeys"/> is null.
+    /// </exception>
     public static IApplicationBuilder UseAuthenticationMiddleware(
         this IApplicationBuilder app,
         IEnumerable<string> validApiKeys)
     {
-        if (app == null)
-        {
-            throw new ArgumentNullException(nameof(app));
-        }
-
-        if (validApiKeys == null)
-        {
-            throw new ArgumentNullException(nameof(validApiKeys));
-        }
+        ArgumentNullException.ThrowIfNull(app);
+        ArgumentNullException.ThrowIfNull(validApiKeys);
 
         var options = new AuthenticationOptions
         {
@@ -91,14 +77,12 @@ public static class AuthenticationMiddlewareExtensions
     /// <param name="app">The IApplicationBuilder instance</param>
     /// <param name="requireApiKey">Whether API key is required (true) or optional (false)</param>
     /// <returns>IApplicationBuilder for chaining</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="app"/> is null.</exception>
     public static IApplicationBuilder UseAuthenticationMiddleware(
         this IApplicationBuilder app,
         bool requireApiKey)
     {
-        if (app == null)
-        {
-            throw new ArgumentNullException(nameof(app));
-        }
+        ArgumentNullException.ThrowIfNull(app);
 
         var options = new AuthenticationOptions
         {
