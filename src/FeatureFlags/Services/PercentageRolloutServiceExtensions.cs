@@ -18,25 +18,23 @@ public static class PercentageRolloutServiceExtensions
     /// <summary>
     /// Evaluates multiple feature flags asynchronously for a given user.
     /// </summary>
-    /// <param name="service">The percentage rollout service instance</param>
-    /// <param name="featureFlags">Collection of feature flags to evaluate</param>
-    /// <param name="userContext">User context containing user identifier and optional properties</param>
-    /// <param name="cancellationToken">Cancellation token</param>
-    /// <returns>Dictionary mapping feature flag keys to their evaluation results</returns>
+    /// <param name="service">The percentage rollout service instance.</param>
+    /// <param name="featureFlags">Collection of feature flags to evaluate.</param>
+    /// <param name="userContext">User context containing user identifier and optional properties.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Dictionary mapping feature flag keys to their evaluation results.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="service"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="featureFlags"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="userContext"/> is <see langword="null"/>.</exception>
     public static async Task<Dictionary<string, bool>> EvaluateMultipleAsync(
         this PercentageRolloutService service,
         IEnumerable<FeatureFlag> featureFlags,
         UserContext userContext,
         CancellationToken cancellationToken = default)
     {
-        if (service is null)
-            throw new ArgumentNullException(nameof(service));
-
-        if (featureFlags is null)
-            throw new ArgumentNullException(nameof(featureFlags));
-
-        if (userContext is null)
-            throw new ArgumentNullException(nameof(userContext));
+        ArgumentNullException.ThrowIfNull(service);
+        ArgumentNullException.ThrowIfNull(featureFlags);
+        ArgumentNullException.ThrowIfNull(userContext);
 
         var results = new Dictionary<string, bool>(StringComparer.Ordinal);
 
@@ -55,58 +53,56 @@ public static class PercentageRolloutServiceExtensions
     /// <summary>
     /// Determines if a feature flag should be enabled based on a specific bucket value.
     /// </summary>
-    /// <param name="service">The percentage rollout service instance</param>
-    /// <param name="featureFlagKey">Feature flag key</param>
-    /// <param name="rolloutPercentage">Rollout percentage to evaluate</param>
-    /// <param name="bucketValue">Specific bucket value to test against rollout percentage</param>
-    /// <returns>True if the bucket value falls within the rollout percentage, false otherwise</returns>
+    /// <param name="service">The percentage rollout service instance.</param>
+    /// <param name="featureFlagKey">Feature flag key.</param>
+    /// <param name="rolloutPercentage">Rollout percentage to evaluate.</param>
+    /// <param name="bucketValue">Specific bucket value to test against rollout percentage.</param>
+    /// <returns>True if the bucket value falls within the rollout percentage, false otherwise.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="service"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="featureFlagKey"/> is <see langword="null"/>, empty, or whitespace.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="rolloutPercentage"/> is not between 0 and 100.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="bucketValue"/> is not between 0 and 100.</exception>
     public static bool IsBucketInRollout(
         this PercentageRolloutService service,
         string featureFlagKey,
         int rolloutPercentage,
         int bucketValue)
     {
-        if (service is null)
-            throw new ArgumentNullException(nameof(service));
+        ArgumentNullException.ThrowIfNull(service);
+        ArgumentException.ThrowIfNullOrWhiteSpace(featureFlagKey);
 
-        if (string.IsNullOrWhiteSpace(featureFlagKey))
-            throw new ArgumentException("Feature flag key cannot be empty", nameof(featureFlagKey));
+        if (rolloutPercentage is < 0 or > 100)
+            throw new ArgumentOutOfRangeException(nameof(rolloutPercentage), "Rollout percentage must be between 0 and 100");
 
-        if (rolloutPercentage < 0 || rolloutPercentage > 100)
-            throw new ArgumentException("Rollout percentage must be between 0 and 100", nameof(rolloutPercentage));
+        if (bucketValue is < 0 or > 100)
+            throw new ArgumentOutOfRangeException(nameof(bucketValue), "Bucket value must be between 0 and 100");
 
-        if (bucketValue < 0 || bucketValue > 100)
-            throw new ArgumentException("Bucket value must be between 0 and 100", nameof(bucketValue));
-
-        if (rolloutPercentage == 100)
-            return true;
-
-        if (rolloutPercentage == 0)
-            return false;
-
-        return bucketValue < rolloutPercentage;
+        return rolloutPercentage switch
+        {
+            100 => true,
+            0 => false,
+            _ => bucketValue < rolloutPercentage
+        };
     }
 
     /// <summary>
     /// Gets the bucket value for a user without requiring a full UserContext object.
     /// </summary>
-    /// <param name="service">The percentage rollout service instance</param>
-    /// <param name="userId">User identifier</param>
-    /// <param name="featureFlagKey">Feature flag key</param>
-    /// <returns>Bucket value between 0 and 99</returns>
+    /// <param name="service">The percentage rollout service instance.</param>
+    /// <param name="userId">User identifier.</param>
+    /// <param name="featureFlagKey">Feature flag key.</param>
+    /// <returns>Bucket value between 0 and 99.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="service"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="userId"/> is <see langword="null"/>, empty, or whitespace.</exception>
+    /// <exception cref="ArgumentException"><paramref name="featureFlagKey"/> is <see langword="null"/>, empty, or whitespace.</exception>
     public static int GetUserBucket(
         this PercentageRolloutService service,
         string userId,
         string featureFlagKey)
     {
-        if (service is null)
-            throw new ArgumentNullException(nameof(service));
-
-        if (string.IsNullOrWhiteSpace(userId))
-            throw new ArgumentException("User ID cannot be empty", nameof(userId));
-
-        if (string.IsNullOrWhiteSpace(featureFlagKey))
-            throw new ArgumentException("Feature flag key cannot be empty", nameof(featureFlagKey));
+        ArgumentNullException.ThrowIfNull(service);
+        ArgumentException.ThrowIfNullOrWhiteSpace(userId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(featureFlagKey);
 
         var userContext = new UserContext { UserId = userId };
         return service.GetUserBucket(userContext, featureFlagKey);
@@ -115,36 +111,33 @@ public static class PercentageRolloutServiceExtensions
     /// <summary>
     /// Determines if a specific user should have a feature enabled based on user ID alone.
     /// </summary>
-    /// <param name="service">The percentage rollout service instance</param>
-    /// <param name="userId">User identifier</param>
-    /// <param name="featureFlagKey">Feature flag key</param>
-    /// <param name="rolloutPercentage">Rollout percentage to evaluate</param>
-    /// <returns>True if the user should have the feature enabled, false otherwise</returns>
+    /// <param name="service">The percentage rollout service instance.</param>
+    /// <param name="userId">User identifier.</param>
+    /// <param name="featureFlagKey">Feature flag key.</param>
+    /// <param name="rolloutPercentage">Rollout percentage to evaluate.</param>
+    /// <returns>True if the user should have the feature enabled, false otherwise.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="service"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="userId"/> is <see langword="null"/>, empty, or whitespace.</exception>
+    /// <exception cref="ArgumentException"><paramref name="featureFlagKey"/> is <see langword="null"/>, empty, or whitespace.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="rolloutPercentage"/> is not between 0 and 100.</exception>
     public static bool IsUserInRollout(
         this PercentageRolloutService service,
         string userId,
         string featureFlagKey,
         int rolloutPercentage)
     {
-        if (service is null)
-            throw new ArgumentNullException(nameof(service));
+        ArgumentNullException.ThrowIfNull(service);
+        ArgumentException.ThrowIfNullOrWhiteSpace(userId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(featureFlagKey);
 
-        if (string.IsNullOrWhiteSpace(userId))
-            throw new ArgumentException("User ID cannot be empty", nameof(userId));
+        if (rolloutPercentage is < 0 or > 100)
+            throw new ArgumentOutOfRangeException(nameof(rolloutPercentage), "Rollout percentage must be between 0 and 100");
 
-        if (string.IsNullOrWhiteSpace(featureFlagKey))
-            throw new ArgumentException("Feature flag key cannot be empty", nameof(featureFlagKey));
-
-        if (rolloutPercentage < 0 || rolloutPercentage > 100)
-            throw new ArgumentException("Rollout percentage must be between 0 and 100", nameof(rolloutPercentage));
-
-        if (rolloutPercentage == 100)
-            return true;
-
-        if (rolloutPercentage == 0)
-            return false;
-
-        var bucket = service.GetUserBucket(userId, featureFlagKey);
-        return bucket < rolloutPercentage;
+        return rolloutPercentage switch
+        {
+            100 => true,
+            0 => false,
+            _ => service.GetUserBucket(userId, featureFlagKey) < rolloutPercentage
+        };
     }
 }
