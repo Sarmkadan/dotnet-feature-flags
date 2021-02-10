@@ -22,8 +22,15 @@ public static class Phase2DependencyInjectionExtensions
     /// <summary>
     /// Registers all Phase 2 services including middleware, caching, webhooks, and background jobs.
     /// </summary>
+    /// <param name="services">The service collection to register services with.</param>
+    /// <param name="configuration">The application configuration.</param>
+    /// <returns>The configured service collection.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="services"/> or <paramref name="configuration"/> is null.</exception>
     public static IServiceCollection AddPhase2Services(this IServiceCollection services, IConfiguration configuration)
     {
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configuration);
+
         // Register middleware
         services.AddSingleton<ErrorHandlingMiddleware>();
         services.AddSingleton<RequestLoggingMiddleware>();
@@ -31,12 +38,13 @@ public static class Phase2DependencyInjectionExtensions
         services.AddSingleton<AuthenticationMiddleware>();
 
         // Register caching
-        var cacheProvider = configuration.GetValue("Cache:Provider", "InMemory").ToLower();
-        if (cacheProvider == "distributed")
+        var cacheProvider = configuration.GetValue("Cache:Provider", "InMemory");
+        if (string.Equals(cacheProvider, "distributed", StringComparison.OrdinalIgnoreCase))
         {
             services.AddStackExchangeRedisCache(options =>
             {
-                var connection = configuration.GetConnectionString("Redis") ?? "localhost:6379";
+                var connection = configuration.GetConnectionString("Redis");
+                ArgumentException.ThrowIfNullOrEmpty(connection);
                 options.Configuration = connection;
             });
             services.AddScoped<ICacheService, DistributedCacheService>();
@@ -98,8 +106,13 @@ public static class Phase2DependencyInjectionExtensions
     /// <summary>
     /// Adds Phase 2 middleware to the application pipeline.
     /// </summary>
+    /// <param name="app">The application builder to configure.</param>
+    /// <returns>The configured application builder.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="app"/> is null.</exception>
     public static IApplicationBuilder UsePhase2Middleware(this IApplicationBuilder app)
     {
+        ArgumentNullException.ThrowIfNull(app);
+
         app.UseMiddleware<ErrorHandlingMiddleware>();
         app.UseMiddleware<RequestLoggingMiddleware>();
         app.UseMiddleware<RateLimitingMiddleware>();
@@ -111,8 +124,13 @@ public static class Phase2DependencyInjectionExtensions
     /// <summary>
     /// Registers webhook and event subscribers.
     /// </summary>
+    /// <param name="app">The application builder to configure.</param>
+    /// <returns>The configured application builder.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="app"/> is null.</exception>
     public static IApplicationBuilder InitializeEventSubscribers(this IApplicationBuilder app)
     {
+        ArgumentNullException.ThrowIfNull(app);
+
         var eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
 
         // Register logging subscriber
@@ -123,51 +141,12 @@ public static class Phase2DependencyInjectionExtensions
         var webhookService = app.ApplicationServices.GetService<IWebhookService>();
         if (webhookService is not null)
         {
-            var webhookSubscriber = new WebhookEventSubscriber(webhookService, app.ApplicationServices.GetRequiredService<ILogger<WebhookEventSubscriber>>());
+            var webhookSubscriber = new WebhookEventSubscriber(
+                webhookService,
+                app.ApplicationServices.GetRequiredService<ILogger<WebhookEventSubscriber>>());
             eventBus.Subscribe(webhookSubscriber);
         }
 
         return app;
     }
-}
-
-/// <summary>
-/// Configuration options container for Phase 2 components.
-/// </summary>
-public sealed class Phase2Options
-{
-    /// <summary>
-    /// Cache provider type (InMemory or Distributed).
-    /// </summary>
-    public string CacheProvider { get; set; } = "InMemory";
-
-    /// <summary>
-    /// Enable webhook functionality.
-    /// </summary>
-    public bool EnableWebhooks { get; set; } = true;
-
-    /// <summary>
-    /// Enable event system.
-    /// </summary>
-    public bool EnableEvents { get; set; } = true;
-
-    /// <summary>
-    /// Enable background workers.
-    /// </summary>
-    public bool EnableBackgroundWorkers { get; set; } = true;
-
-    /// <summary>
-    /// Enable rate limiting.
-    /// </summary>
-    public bool EnableRateLimiting { get; set; } = true;
-
-    /// <summary>
-    /// Enable request logging middleware.
-    /// </summary>
-    public bool EnableRequestLogging { get; set; } = true;
-
-    /// <summary>
-    /// Enable API key authentication.
-    /// </summary>
-    public bool EnableApiKeyAuth { get; set; } = true;
 }
