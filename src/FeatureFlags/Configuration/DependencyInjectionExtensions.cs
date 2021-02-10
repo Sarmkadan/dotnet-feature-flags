@@ -21,10 +21,16 @@ public static class DependencyInjectionExtensions
     /// <summary>
     /// Adds all feature flag services to the dependency injection container.
     /// </summary>
+    /// <param name="services">The service collection to register services with.</param>
+    /// <param name="configuration">The application configuration.</param>
+    /// <returns>The configured service collection.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="services"/> or <paramref name="configuration"/> is null.
+    /// </exception>
     public static IServiceCollection AddFeatureFlagServices(this IServiceCollection services, IConfiguration configuration)
     {
-        if (services is null)
-            throw new ArgumentNullException(nameof(services));
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configuration);
 
         // Register repositories
         services.AddScoped<IFeatureFlagRepository, FeatureFlagRepository>();
