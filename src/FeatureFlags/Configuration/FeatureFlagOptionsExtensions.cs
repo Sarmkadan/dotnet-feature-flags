@@ -5,6 +5,7 @@
 // CTO & Software Architect
 // =============================================================================
 
+using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -19,9 +20,12 @@ public static class FeatureFlagOptionsExtensions
     /// Validates the feature flag options and throws if invalid.
     /// </summary>
     /// <param name="options">The feature flag options to validate.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="options"/> is <see langword="null"/>.</exception>
     /// <exception cref="InvalidOperationException">Thrown when options are invalid.</exception>
     public static void Validate(this FeatureFlagOptions options)
     {
+        ArgumentNullException.ThrowIfNull(options);
+
         if (!options.IsValid())
         {
             throw new InvalidOperationException(
@@ -57,8 +61,12 @@ public static class FeatureFlagOptionsExtensions
     /// <param name="options">The target options.</param>
     /// <param name="overrideOptions">The options to merge in.</param>
     /// <returns>A new merged instance.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="options"/> or <paramref name="overrideOptions"/> is <see langword="null"/>.</exception>
     public static FeatureFlagOptions MergeWith(this FeatureFlagOptions options, FeatureFlagOptions overrideOptions)
     {
+        ArgumentNullException.ThrowIfNull(options);
+        ArgumentNullException.ThrowIfNull(overrideOptions);
+
         return new FeatureFlagOptions
         {
             EnableCache = overrideOptions.EnableCache,
@@ -91,8 +99,11 @@ public static class FeatureFlagOptionsExtensions
     /// </summary>
     /// <param name="options">The feature flag options.</param>
     /// <returns>True if audit logging is enabled and retention is positive; otherwise false.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="options"/> is <see langword="null"/>.</exception>
     public static bool IsAuditLoggingConfigured(this FeatureFlagOptions options)
     {
+        ArgumentNullException.ThrowIfNull(options);
+
         return options.EnableAuditLogging && options.EnableAuditLog && options.AuditLogRetentionDays > 0;
     }
 
@@ -101,8 +112,11 @@ public static class FeatureFlagOptionsExtensions
     /// </summary>
     /// <param name="options">The feature flag options.</param>
     /// <returns>The cache duration in seconds, or 0 if caching is disabled.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="options"/> is <see langword="null"/>.</exception>
     public static int GetCacheDurationSeconds(this FeatureFlagOptions options)
     {
+        ArgumentNullException.ThrowIfNull(options);
+
         return options.EnableCache && options.CacheDurationMinutes > 0
             ? options.CacheDurationMinutes * 60
             : 0;
