@@ -109,8 +109,8 @@ public class HealthController : ControllerBase {
 
     private string GetUptime()
     {
-        // Simple uptime calculation - in a real app, you'd track start time
-        return $"{(DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime()).TotalSeconds:F0}s";
+        var uptime = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
+        return string.Create(System.Globalization.CultureInfo.InvariantCulture, $"{uptime.TotalSeconds:F0}s");
     }
 }
 

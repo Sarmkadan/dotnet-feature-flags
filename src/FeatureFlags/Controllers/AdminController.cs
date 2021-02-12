@@ -77,8 +77,7 @@ public class AdminController : ControllerBase {
     {
         try
         {
-            // In a real scenario, this would fetch from repository
-            var webhooks = new List<Integration.Webhook>();
+            var webhooks = await _webhookService.GetAllActiveWebhooksAsync(cancellationToken);
             return Ok(new { webhooks });
         }
         catch (Exception ex)
