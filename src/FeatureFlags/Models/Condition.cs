@@ -4,6 +4,7 @@
 // CTO & Software Architect
 // =============================================================================
 
+using System.Globalization;
 using FeatureFlags.Enums;
 
 namespace FeatureFlags.Models;
@@ -47,11 +48,11 @@ public sealed class Condition
             ConditionOperator.Contains => contextValue.Contains(ExpectedValue, StringComparison.OrdinalIgnoreCase),
             ConditionOperator.StartsWith => contextValue.StartsWith(ExpectedValue, StringComparison.OrdinalIgnoreCase),
             ConditionOperator.EndsWith => contextValue.EndsWith(ExpectedValue, StringComparison.OrdinalIgnoreCase),
-            ConditionOperator.GreaterThan => double.TryParse(contextValue, out var cv)
-                && double.TryParse(ExpectedValue, out var ev)
+            ConditionOperator.GreaterThan => double.TryParse(contextValue, NumberStyles.Float, CultureInfo.InvariantCulture, out var cv)
+                && double.TryParse(ExpectedValue, NumberStyles.Float, CultureInfo.InvariantCulture, out var ev)
                 && cv > ev,
-            ConditionOperator.LessThan => double.TryParse(contextValue, out var cv2)
-                && double.TryParse(ExpectedValue, out var ev2)
+            ConditionOperator.LessThan => double.TryParse(contextValue, NumberStyles.Float, CultureInfo.InvariantCulture, out var cv2)
+                && double.TryParse(ExpectedValue, NumberStyles.Float, CultureInfo.InvariantCulture, out var ev2)
                 && cv2 < ev2,
             ConditionOperator.In => ExpectedValue.Split(',').Any(v => v.Trim().Equals(contextValue, StringComparison.OrdinalIgnoreCase)),
             _ => false
