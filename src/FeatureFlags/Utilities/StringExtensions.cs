@@ -61,14 +61,8 @@ public static class StringExtensions
     /// </summary>
     /// <param name="input">The email address string to validate.</param>
     /// <returns><see langword="true"/> if the string is a valid email address; otherwise, <see langword="false"/>.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="input"/> is <see langword="null"/>.</exception>
-    public static bool IsValidEmail(this string input)
+    public static bool IsValidEmail(this string? input)
     {
-        if (input is null)
-        {
-            throw new ArgumentNullException(nameof(input));
-        }
-
         if (string.IsNullOrWhiteSpace(input))
         {
             return false;
@@ -203,7 +197,7 @@ public static class StringExtensions
             throw new ArgumentNullException(nameof(input));
         }
 
-        return double.TryParse(input, out var result) ? result : defaultValue;
+        return double.TryParse(input, NumberStyles.Float, CultureInfo.InvariantCulture, out var result) ? result : defaultValue;
     }
 
     /// <summary>

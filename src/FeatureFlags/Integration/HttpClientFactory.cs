@@ -66,7 +66,7 @@ public static class HttpClientConfiguration
 /// <summary>
 /// Wrapper for typed HTTP requests with built-in error handling and retry logic.
 /// </summary>
-public sealed class HttpApiClient
+public class HttpApiClient
 {
     private readonly HttpClient _httpClient;
     private readonly ILogger<HttpApiClient> _logger;
@@ -82,7 +82,7 @@ public sealed class HttpApiClient
     /// <summary>
     /// Sends GET request with automatic retries on transient failures.
     /// </summary>
-    public async Task<T?> GetAsync<T>(string url, CancellationToken cancellationToken = default)
+    public virtual async Task<T?> GetAsync<T>(string url, CancellationToken cancellationToken = default)
     {
         return await SendWithRetryAsync(async () =>
         {
@@ -94,7 +94,7 @@ public sealed class HttpApiClient
     /// <summary>
     /// Sends POST request with JSON body and automatic retries.
     /// </summary>
-    public async Task<T?> PostAsync<T>(string url, object? body = null, CancellationToken cancellationToken = default)
+    public virtual async Task<T?> PostAsync<T>(string url, object? body = null, CancellationToken cancellationToken = default)
     {
         return await SendWithRetryAsync(async () =>
         {
@@ -110,7 +110,7 @@ public sealed class HttpApiClient
     /// <summary>
     /// Sends PUT request with JSON body.
     /// </summary>
-    public async Task<T?> PutAsync<T>(string url, object? body = null, CancellationToken cancellationToken = default)
+    public virtual async Task<T?> PutAsync<T>(string url, object? body = null, CancellationToken cancellationToken = default)
     {
         return await SendWithRetryAsync(async () =>
         {
@@ -126,7 +126,7 @@ public sealed class HttpApiClient
     /// <summary>
     /// Sends DELETE request.
     /// </summary>
-    public async Task<bool> DeleteAsync(string url, CancellationToken cancellationToken = default)
+    public virtual async Task<bool> DeleteAsync(string url, CancellationToken cancellationToken = default)
     {
         try
         {

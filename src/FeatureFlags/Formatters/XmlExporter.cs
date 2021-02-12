@@ -30,7 +30,7 @@ public static class XmlExporter
                 new XAttribute("key", flag.Key),
                 new XElement("DisplayName", flag.DisplayName),
                 new XElement("Description", flag.Description),
-                new XElement("IsEnabled", flag.IsEnabled),
+                new XElement("IsEnabled", flag.IsEnabled.ToString()),
                 new XElement("RolloutType", flag.RolloutType),
                 new XElement("PercentageRollout", flag.PercentageRollout ?? -1),
                 new XElement("CreatedAt", flag.CreatedAt.ToString("O")),
@@ -169,14 +169,14 @@ public static class XmlParser
             {
                 var flag = new FeatureFlag
                 {
-                    Id = int.Parse(element.Attribute("id")?.Value ?? "0"),
+                    Id = int.Parse(element.Attribute("id")?.Value ?? "0", System.Globalization.CultureInfo.InvariantCulture),
                     Key = element.Attribute("key")?.Value ?? string.Empty,
                     DisplayName = element.Element("DisplayName")?.Value ?? string.Empty,
                     Description = element.Element("Description")?.Value ?? string.Empty,
                     IsEnabled = bool.Parse(element.Element("IsEnabled")?.Value ?? "false"),
                     RolloutType = Enum.Parse<Enums.RolloutType>(element.Element("RolloutType")?.Value ?? "Percentage"),
-                    CreatedAt = DateTime.Parse(element.Element("CreatedAt")?.Value ?? DateTime.UtcNow.ToString("O")),
-                    UpdatedAt = DateTime.Parse(element.Element("UpdatedAt")?.Value ?? DateTime.UtcNow.ToString("O")),
+                    CreatedAt = DateTime.Parse(element.Element("CreatedAt")?.Value ?? DateTime.UtcNow.ToString("O"), System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.RoundtripKind),
+                    UpdatedAt = DateTime.Parse(element.Element("UpdatedAt")?.Value ?? DateTime.UtcNow.ToString("O"), System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.RoundtripKind),
                     CreatedBy = element.Element("CreatedBy")?.Value ?? string.Empty
                 };
 
