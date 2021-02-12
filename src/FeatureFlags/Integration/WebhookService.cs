@@ -21,6 +21,7 @@ public interface IWebhookService
     Task<Webhook> RegisterWebhookAsync(string url, string description, WebhookEventType eventTypes, string? featureFlagKey, string? secret, string createdBy, CancellationToken cancellationToken = default);
     Task<Webhook?> GetWebhookAsync(int webhookId, CancellationToken cancellationToken = default);
     Task<List<Webhook>> GetActiveWebhooksAsync(WebhookEventType eventType, string? featureFlagKey = null);
+    Task<List<Webhook>> GetAllActiveWebhooksAsync(CancellationToken cancellationToken = default);
     Task<bool> UpdateWebhookAsync(int webhookId, string? url, string? description, WebhookEventType? eventTypes, CancellationToken cancellationToken = default);
     Task<bool> DeleteWebhookAsync(int webhookId, CancellationToken cancellationToken = default);
     Task TriggerWebhooksAsync(WebhookEventType eventType, FeatureFlag flag, string changedBy, Dictionary<string, object?>? data = null, CancellationToken cancellationToken = default);
@@ -52,6 +53,9 @@ public sealed class WebhookService : IWebhookService {
     {
         if (string.IsNullOrWhiteSpace(url))
             throw new ArgumentException("URL cannot be empty", nameof(url));
+
+        if (!Uri.TryCreate(url, UriKind.Absolute, out var uri) || (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
+            throw new ArgumentException("URL must be a valid absolute HTTP or HTTPS address", nameof(url));
 
         if (string.IsNullOrWhiteSpace(description))
             throw new ArgumentException("Description cannot be empty", nameof(description));
@@ -90,6 +94,11 @@ public sealed class WebhookService : IWebhookService {
     public async Task<Webhook?> GetWebhookAsync(int webhookId, CancellationToken cancellationToken = default)
     {
         return await _webhookRepository.GetByIdAsync(webhookId);
+    }
+
+    public Task<List<Webhook>> GetAllActiveWebhooksAsync(CancellationToken cancellationToken = default)
+    {
+        return _webhookRepository.GetActiveAsync();
     }
 
     public async Task<List<Webhook>> GetActiveWebhooksAsync(WebhookEventType eventType, string? featureFlagKey = null)

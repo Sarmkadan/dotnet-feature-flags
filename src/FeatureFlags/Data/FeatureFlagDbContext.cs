@@ -14,21 +14,25 @@ namespace FeatureFlags.Data;
 /// Database context for the feature flag engine.
 /// Manages entity configurations, relationships, and database schema.
 /// </summary>
-public sealed class FeatureFlagDbContext : DbContext
+public class FeatureFlagDbContext : DbContext
 {
     public FeatureFlagDbContext(DbContextOptions<FeatureFlagDbContext> options)
         : base(options)
     {
     }
 
-    public DbSet<FeatureFlag> FeatureFlags => Set<FeatureFlag>();
-    public DbSet<Rule> Rules => Set<Rule>();
-    public DbSet<Condition> Conditions => Set<Condition>();
-    public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
-    public DbSet<RolloutStrategy> RolloutStrategies => Set<RolloutStrategy>();
-    public DbSet<ABTestVariant> ABTestVariants => Set<ABTestVariant>();
-    public DbSet<Webhook> Webhooks => Set<Webhook>();
-    public DbSet<WebhookDelivery> WebhookDeliveries => Set<WebhookDelivery>();
+    protected FeatureFlagDbContext()
+    {
+    }
+
+    public virtual DbSet<FeatureFlag> FeatureFlags => Set<FeatureFlag>();
+    public virtual DbSet<Rule> Rules => Set<Rule>();
+    public virtual DbSet<Condition> Conditions => Set<Condition>();
+    public virtual DbSet<AuditLog> AuditLogs => Set<AuditLog>();
+    public virtual DbSet<RolloutStrategy> RolloutStrategies => Set<RolloutStrategy>();
+    public virtual DbSet<ABTestVariant> ABTestVariants => Set<ABTestVariant>();
+    public virtual DbSet<Webhook> Webhooks => Set<Webhook>();
+    public virtual DbSet<WebhookDelivery> WebhookDeliveries => Set<WebhookDelivery>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
