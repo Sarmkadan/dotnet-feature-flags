@@ -13,81 +13,98 @@ using Xunit;
 namespace FeatureFlags.Tests.Models;
 
 /// <summary>
-/// Extension methods for ConditionEvaluationTests to provide additional test utilities
+/// Extension methods for <see cref="ConditionEvaluationTests"/> to provide additional test utilities
 /// for evaluating condition logic with various scenarios.
 /// </summary>
 public static class ConditionEvaluationTestsExtensions
 {
-    /// <summary>
-    /// Creates a condition with the specified parameters for testing.
-    /// </summary>
-    /// <param name="attributeName">The attribute name to evaluate</param>
-    /// <param name="operator">The condition operator</param>
-    /// <param name="expectedValue">The expected value for comparison</param>
-    /// <param name="isActive">Whether the condition is active</param>
-    /// <returns>A configured Condition object</returns>
-    public static Condition CreateCondition(
-        this ConditionEvaluationTests _,
-        string attributeName,
-        ConditionOperator op,
-        string expectedValue,
-        bool isActive = true)
-    {
-        return new Condition
-        {
-            AttributeName = attributeName,
-            Operator = op,
-            ExpectedValue = expectedValue,
-            IsActive = isActive
-        };
-    }
+	/// <summary>
+	/// Creates a condition with the specified parameters for testing.
+	/// </summary>
+	/// <param name="_">The test instance (unused)</param>
+	/// <param name="attributeName">The attribute name to evaluate. Cannot be null or empty.</param>
+	/// <param name="op"><see cref="ConditionOperator"/> to apply for comparison</param>
+	/// <param name="expectedValue">The expected value for comparison. Cannot be null.</param>
+	/// <param name="isActive">Whether the condition is active</param>
+	/// <returns>A configured <see cref="Condition"/> object</returns>
+	/// <exception cref="ArgumentNullException"><paramref name="attributeName"/> or <paramref name="expectedValue"/> is null</exception>
+	/// <exception cref="ArgumentException"><paramref name="attributeName"/> is empty or whitespace</exception>
+	public static Condition CreateCondition(
+		this ConditionEvaluationTests _,
+		string attributeName,
+		ConditionOperator op,
+		string expectedValue,
+		bool isActive = true)
+	{
+		ArgumentNullException.ThrowIfNull(attributeName);
+		ArgumentException.ThrowIfNullOrWhiteSpace(attributeName, nameof(attributeName));
+		ArgumentNullException.ThrowIfNull(expectedValue);
 
-    /// <summary>
-    /// Asserts that a condition evaluates to true with the given context value.
-    /// </summary>
-    /// <param name="test">The test instance</param>
-    /// <param name="condition">The condition to evaluate</param>
-    /// <param name="contextValue">The context value to test against</param>
-    public static void ShouldEvaluateToTrue(
-        this ConditionEvaluationTests test,
-        Condition condition,
-        string contextValue)
-    {
-        var result = condition.Evaluate(contextValue);
-        result.Should().BeTrue($"Condition with attribute '{condition.AttributeName}' and operator '{condition.Operator}' should evaluate to true with context value '{contextValue}'");
-    }
+		return new Condition
+		{
+			AttributeName = attributeName.Trim(),
+			Operator = op,
+			ExpectedValue = expectedValue.Trim(),
+			IsActive = isActive
+		};
+	}
 
-    /// <summary>
-    /// Asserts that a condition evaluates to false with the given context value.
-    /// </summary>
-    /// <param name="test">The test instance</param>
-    /// <param name="condition">The condition to evaluate</param>
-    /// <param name="contextValue">The context value to test against</param>
-    public static void ShouldEvaluateToFalse(
-        this ConditionEvaluationTests test,
-        Condition condition,
-        string contextValue)
-    {
-        var result = condition.Evaluate(contextValue);
-        result.Should().BeFalse($"Condition with attribute '{condition.AttributeName}' and operator '{condition.Operator}' should evaluate to false with context value '{contextValue}'");
-    }
+	/// <summary>
+	/// Asserts that a condition evaluates to true with the given context value.
+	/// </summary>
+	/// <param name="test">The test instance</param>
+	/// <param name="condition">The condition to evaluate. Cannot be null.</param>
+	/// <param name="contextValue">The context value to test against. Cannot be null.</param>
+	/// <exception cref="ArgumentNullException"><paramref name="condition"/> or <paramref name="contextValue"/> is null</exception>
+	public static void ShouldEvaluateToTrue(
+		this ConditionEvaluationTests test,
+		Condition condition,
+		string contextValue)
+	{
+		ArgumentNullException.ThrowIfNull(condition);
+		ArgumentNullException.ThrowIfNull(contextValue);
 
-    /// <summary>
-    /// Creates a collection of conditions for testing multiple scenarios.
-    /// </summary>
-    /// <param name="test">The test instance</param>
-    /// <param name="conditions">Array of condition configurations</param>
-    /// <returns>Array of Condition objects</returns>
-    public static Condition[] CreateConditions(
-        this ConditionEvaluationTests _,
-        params (string AttributeName, ConditionOperator Operator, string ExpectedValue, bool IsActive)[] conditions)
-    {
-        return conditions.Select(c => new Condition
-        {
-            AttributeName = c.AttributeName,
-            Operator = c.Operator,
-            ExpectedValue = c.ExpectedValue,
-            IsActive = c.IsActive
-        }).ToArray();
-    }
+		var result = condition.Evaluate(contextValue);
+		result.Should().BeTrue($"Condition with attribute '{condition.AttributeName}' and operator '{condition.Operator}' should evaluate to true with context value '{contextValue}'");
+	}
+
+	/// <summary>
+	/// Asserts that a condition evaluates to false with the given context value.
+	/// </summary>
+	/// <param name="test">The test instance</param>
+	/// <param name="condition">The condition to evaluate. Cannot be null.</param>
+	/// <param name="contextValue">The context value to test against. Cannot be null.</param>
+	/// <exception cref="ArgumentNullException"><paramref name="condition"/> or <paramref name="contextValue"/> is null</exception>
+	public static void ShouldEvaluateToFalse(
+		this ConditionEvaluationTests test,
+		Condition condition,
+		string contextValue)
+	{
+		ArgumentNullException.ThrowIfNull(condition);
+		ArgumentNullException.ThrowIfNull(contextValue);
+
+		var result = condition.Evaluate(contextValue);
+		result.Should().BeFalse($"Condition with attribute '{condition.AttributeName}' and operator '{condition.Operator}' should evaluate to false with context value '{contextValue}'");
+	}
+
+	/// <summary>
+	/// Creates a collection of conditions for testing multiple scenarios.
+	/// </summary>
+	/// <param name="test">The test instance</param>
+	/// <param name="conditions">Array of condition configurations</param>
+	/// <returns>Array of Condition objects</returns>
+	public static Condition[] CreateConditions(
+		this ConditionEvaluationTests _,
+		params (string AttributeName, ConditionOperator Operator, string ExpectedValue, bool IsActive)[] conditions)
+	{
+		ArgumentNullException.ThrowIfNull(conditions);
+
+		return conditions.Select(c => new Condition
+		{
+			AttributeName = c.AttributeName.Trim(),
+			Operator = c.Operator,
+			ExpectedValue = c.ExpectedValue.Trim(),
+			IsActive = c.IsActive
+		}).ToArray();
+	}
 }
