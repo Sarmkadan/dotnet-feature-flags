@@ -16,7 +16,7 @@ using FeatureFlags.Services;
 namespace FeatureFlags.Examples
 {
     /// <summary>
-    /// Extension methods for FeatureFlagServiceTestExample to provide additional testing and monitoring utilities.
+    /// Extension methods for <see cref="FeatureFlagServiceTestExample"/> to provide additional testing and monitoring utilities.
     /// </summary>
     public static class FeatureFlagServiceTestExampleExtensions
     {
@@ -24,14 +24,19 @@ namespace FeatureFlags.Examples
         /// Creates a comprehensive test suite for percentage rollout feature flags.
         /// Tests both percentage-based rollout and consistent hashing behavior.
         /// </summary>
-        /// <param name="example">The test example instance</param>
-        /// <param name="iterations">Number of iterations to run (default: 100)</param>
-        /// <returns>Dictionary mapping user IDs to their rollout results</returns>
+        /// <param name="example">The test example instance. Cannot be null.</param>
+        /// <param name="iterations">Number of iterations to run (default: 100). Must be positive.</param>
+        /// <returns>Dictionary mapping user IDs to their rollout results.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="example"/> is null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="iterations"/> is not positive.</exception>
         public static Dictionary<string, bool> TestPercentageRolloutComprehensive(this FeatureFlagServiceTestExample example, int iterations = 100)
         {
+            ArgumentNullException.ThrowIfNull(example);
+            ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(iterations, 0);
+
             var results = new Dictionary<string, bool>();
             var mockRepository = new MockFeatureFlagRepository();
-            var service = new FeatureFlagService(mockRepository, null!);
+            var service = new FeatureFlagService(mockRepository, new InMemoryFeatureFlagCache());
 
             var flag = new FeatureFlag
             {
@@ -66,14 +71,19 @@ namespace FeatureFlags.Examples
         /// Tests rule-based evaluation with various rule types.
         /// Creates flags with different rule conditions and verifies they evaluate correctly.
         /// </summary>
-        /// <param name="example">The test example instance</param>
-        /// <param name="ruleCount">Number of rules to test (default: 5)</param>
-        /// <returns>List of test results with rule evaluations</returns>
+        /// <param name="example">The test example instance. Cannot be null.</param>
+        /// <param name="ruleCount">Number of rules to test (default: 5). Must be non-negative.</param>
+        /// <returns>List of test results with rule evaluations.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="example"/> is null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="ruleCount"/> is negative.</exception>
         public static List<RuleEvaluationResult> TestRuleBasedEvaluation(this FeatureFlagServiceTestExample example, int ruleCount = 5)
         {
+            ArgumentNullException.ThrowIfNull(example);
+            ArgumentOutOfRangeException.ThrowIfNegative(ruleCount);
+
             var results = new List<RuleEvaluationResult>();
             var mockRepository = new MockFeatureFlagRepository();
-            var service = new FeatureFlagService(mockRepository, null!);
+            var service = new FeatureFlagService(mockRepository, new InMemoryFeatureFlagCache());
 
             for (int i = 0; i < ruleCount; i++)
             {
@@ -119,7 +129,7 @@ namespace FeatureFlags.Examples
             Console.WriteLine($"Rule-Based Evaluation Test: {results.Count} rules tested");
             foreach (var result in results)
             {
-                Console.WriteLine($"  {result.FlagKey}: Matching={result.MatchingUserEnabled}, Non-matching={result.NonMatchingUserEnabled}");
+                Console.WriteLine($" {result.FlagKey}: Matching={result.MatchingUserEnabled}, Non-matching={result.NonMatchingUserEnabled}");
             }
 
             return results;
@@ -129,15 +139,21 @@ namespace FeatureFlags.Examples
         /// Runs A/B test variant assignment tests to verify consistent variant assignment.
         /// Tests that users consistently get the same variant across multiple evaluations.
         /// </summary>
-        /// <param name="example">The test example instance</param>
-        /// <param name="variants">Number of variants to test (default: 3)</param>
-        /// <param name="iterationsPerUser">Evaluations per user (default: 10)</param>
-        /// <returns>Dictionary mapping user IDs to their variant assignments</returns>
+        /// <param name="example">The test example instance. Cannot be null.</param>
+        /// <param name="variants">Number of variants to test (default: 3). Must be positive.</param>
+        /// <param name="iterationsPerUser">Evaluations per user (default: 10). Must be positive.</param>
+        /// <returns>Dictionary mapping user IDs to their variant assignments.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="example"/> is null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="variants"/> or <paramref name="iterationsPerUser"/> is not positive.</exception>
         public static Dictionary<string, string> TestABTestVariantAssignment(this FeatureFlagServiceTestExample example, int variants = 3, int iterationsPerUser = 10)
         {
+            ArgumentNullException.ThrowIfNull(example);
+            ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(variants, 0);
+            ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(iterationsPerUser, 0);
+
             var assignments = new Dictionary<string, string>();
             var mockRepository = new MockFeatureFlagRepository();
-            var service = new FeatureFlagService(mockRepository, null!);
+            var service = new FeatureFlagService(mockRepository, new InMemoryFeatureFlagCache());
 
             var flag = new FeatureFlag
             {
@@ -194,17 +210,25 @@ namespace FeatureFlags.Examples
         /// Creates a performance monitoring extension that tracks evaluation metrics over time.
         /// Useful for detecting performance regressions in production.
         /// </summary>
-        /// <param name="example">The test example instance</param>
-        /// <param name="flagKey">The flag key to monitor</param>
-        /// <param name="iterations">Number of evaluations to perform</param>
-        /// <returns>Performance metrics including average, p95, max time, and throughput</returns>
+        /// <param name="example">The test example instance. Cannot be null.</param>
+        /// <param name="flagKey">The flag key to monitor. Cannot be null or empty.</param>
+        /// <param name="iterations">Number of evaluations to perform (default: 1000). Must be positive.</param>
+        /// <returns>Performance metrics including average, p95, max time, and throughput.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="example"/> or <paramref name="flagKey"/> is null.</exception>
+        /// <exception cref="ArgumentException"><paramref name="flagKey"/> is empty or whitespace.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="iterations"/> is not positive.</exception>
         public static async Task<FlagPerformanceMetrics> MonitorEvaluationPerformanceAsync(
             this FeatureFlagServiceTestExample example,
             string flagKey,
             int iterations = 1000)
         {
+            ArgumentNullException.ThrowIfNull(example);
+            ArgumentNullException.ThrowIfNull(flagKey);
+            ArgumentException.ThrowIfNullOrWhiteSpace(flagKey);
+            ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(iterations, 0);
+
             var mockRepository = new MockFeatureFlagRepository();
-            var service = new FeatureFlagService(mockRepository, null!);
+            var service = new FeatureFlagService(mockRepository, new InMemoryFeatureFlagCache());
 
             var stopwatch = Stopwatch.StartNew();
             var successCount = 0;
@@ -218,7 +242,7 @@ namespace FeatureFlags.Examples
 
                 try
                 {
-                    await service.IsEnabledAsync(flagKey, context);
+                    await service.IsEnabledAsync(flagKey, context).ConfigureAwait(false);
                     iterationStopwatch.Stop();
                     timings.Add(iterationStopwatch.ElapsedMilliseconds);
                     successCount++;
@@ -257,8 +281,14 @@ namespace FeatureFlags.Examples
 
         private static long GetPercentile(List<long> values, double percentile)
         {
-            if (values == null || !values.Any())
+            ArgumentNullException.ThrowIfNull(values);
+            ArgumentOutOfRangeException.ThrowIfLessThan(percentile, 0);
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(percentile, 1);
+
+            if (values.Count == 0)
+            {
                 return 0;
+            }
 
             var sorted = values.OrderBy(v => v).ToList();
             var index = (int)((sorted.Count - 1) * percentile);
@@ -271,10 +301,19 @@ namespace FeatureFlags.Examples
     /// </summary>
     public sealed class RuleEvaluationResult
     {
+        /// <summary>Gets or sets the feature flag key.</summary>
         public string FlagKey { get; set; } = string.Empty;
+
+        /// <summary>Gets or sets whether the matching user was enabled.</summary>
         public bool MatchingUserEnabled { get; set; }
+
+        /// <summary>Gets or sets whether the non-matching user was enabled.</summary>
         public bool NonMatchingUserEnabled { get; set; }
+
+        /// <summary>Gets or sets the expected result for the matching user.</summary>
         public bool ExpectedMatching { get; set; }
+
+        /// <summary>Gets or sets the expected result for the non-matching user.</summary>
         public bool ExpectedNonMatching { get; set; }
     }
 
@@ -283,15 +322,34 @@ namespace FeatureFlags.Examples
     /// </summary>
     public sealed class FlagPerformanceMetrics
     {
+        /// <summary>Gets or sets the total number of iterations performed.</summary>
         public int Iterations { get; set; }
+
+        /// <summary>Gets or sets the number of successful evaluations.</summary>
         public int SuccessCount { get; set; }
+
+        /// <summary>Gets or sets the number of failed evaluations.</summary>
         public int ErrorCount { get; set; }
+
+        /// <summary>Gets or sets the total time taken in milliseconds.</summary>
         public long TotalTimeMs { get; set; }
+
+        /// <summary>Gets or sets the average evaluation time in milliseconds.</summary>
         public double AverageMs { get; set; }
+
+        /// <summary>Gets or sets the maximum evaluation time in milliseconds.</summary>
         public long MaxMs { get; set; }
+
+        /// <summary>Gets or sets the minimum evaluation time in milliseconds.</summary>
         public long MinMs { get; set; }
+
+        /// <summary>Gets or sets the 95th percentile evaluation time in milliseconds.</summary>
         public double P95Ms { get; set; }
+
+        /// <summary>Gets or sets the 99th percentile evaluation time in milliseconds.</summary>
         public double P99Ms { get; set; }
+
+        /// <summary>Gets or sets the throughput in evaluations per second.</summary>
         public double ThroughputPerSecond { get; set; }
     }
 }
