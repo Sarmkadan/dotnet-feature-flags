@@ -12,8 +12,8 @@ namespace FeatureFlags.Exceptions
         /// <summary>
         /// Determines whether the exception contains any validation errors.
         /// </summary>
-        /// <param name="exception">The exception to check for errors.</param>
-        /// <returns>True if the exception has errors; otherwise, false.</returns>
+        /// <param name="exception">The <see cref="ValidationException"/> instance to check for errors.</param>
+        /// <returns>True if the <see cref="ValidationException.Errors"/> collection contains any entries; otherwise, false.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="exception"/> is null.</exception>
         public static bool HasErrors(this ValidationException exception)
         {
@@ -22,11 +22,14 @@ namespace FeatureFlags.Exceptions
         }
 
         /// <summary>
-        /// Retrieves the error message associated with the specified key.
+        /// Retrieves the error message associated with the specified key from the exception's error collection.
         /// </summary>
-        /// <param name="exception">The exception containing the errors.</param>
-        /// <param name="key">The error key to look up.</param>
-        /// <returns>The error message if found; otherwise, an empty string.</returns>
+        /// <param name="exception">The <see cref="ValidationException"/> instance containing the errors.</param>
+        /// <param name="key">The key to look up in the error collection.</param>
+        /// <returns>
+        /// The error message corresponding to the specified <paramref name="key"/> if found;
+        /// otherwise, an empty string.
+        /// </returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="exception"/> is null.</exception>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="key"/> is null.</exception>
         public static string GetErrorMessage(this ValidationException exception, string key)
@@ -40,10 +43,14 @@ namespace FeatureFlags.Exceptions
         }
 
         /// <summary>
-        /// Converts the exception's error dictionary into a flattened dictionary.
+        /// Converts the exception's error dictionary into a new flattened dictionary containing all key-value pairs.
         /// </summary>
-        /// <param name="exception">The exception containing the errors.</param>
-        /// <returns>A new dictionary containing all error key-value pairs.</returns>
+        /// <param name="exception">The <see cref="ValidationException"/> instance containing the errors.</param>
+        /// <returns>
+        /// A new <see cref="Dictionary{String, String}"/> containing all key-value pairs from the
+        /// <see cref="ValidationException.Errors"/> collection. If the error collection is null or empty,
+        /// an empty dictionary is returned.
+        /// </returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="exception"/> is null.</exception>
         public static Dictionary<string, string> ToFlattenedErrorDictionary(this ValidationException exception)
         {
