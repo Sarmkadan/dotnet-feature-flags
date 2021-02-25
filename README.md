@@ -8,11 +8,11 @@ Below is a realistic usage example demonstrating the most commonly used extensio
 // Create a rollout strategy
 var strategy = new RolloutStrategy
 {
-    StartPercentage = 5,
-    EndPercentage = 100,
-    DailyIncrementPercentage = 10,
-    StartDate = DateTime.UtcNow,
-    EndDate = DateTime.UtcNow.AddDays(10)
+  StartPercentage = 5,
+  EndPercentage = 100,
+  DailyIncrementPercentage = 10,
+  StartDate = DateTime.UtcNow,
+  EndDate = DateTime.UtcNow.AddDays(10)
 };
 
 // Check if strategy is percentage-based
@@ -41,4 +41,42 @@ bool hasReachedTarget = strategy.HasReachedTarget();
 
 // Get a human-readable description of the rollout strategy type
 string description = strategy.GetDescription();
+```
+
+## AuditLogExtensions
+
+The `AuditLogExtensions` class provides a set of extension methods for the `AuditLog` type that enable common operations for analyzing audit trail entries. These methods allow you to determine the type of change, calculate time since changes, generate human-readable descriptions, and format actions for display purposes.
+
+Below is a realistic usage example demonstrating the most commonly used extension methods:
+
+```csharp
+// Create an audit log entry
+var log = new AuditLog
+{
+    Action = AuditAction.Updated,
+    ChangedAt = DateTime.UtcNow.AddMinutes(-45),
+    Summary = "Feature flag updated",
+    ChangeDetails = "Enabled state changed from false to true"
+};
+
+// Check if this represents a state change
+bool isStateChange = log.IsStateChange();
+
+// Check if this represents a creation event
+bool isCreation = log.IsCreation();
+
+// Check if this represents a deletion event
+bool isDeletion = log.IsDeletion();
+
+// Get the time since this change was made
+string timeSinceChange = log.GetTimeSinceChange();
+
+// Get a detailed change description
+string detailedDescription = log.GetDetailedChangeDescription();
+
+// Check if this change is recent (within 30 minutes)
+bool isRecent = log.IsRecent();
+
+// Get a simplified action name for UI display
+string actionDisplayName = log.GetActionDisplayName();
 ```
