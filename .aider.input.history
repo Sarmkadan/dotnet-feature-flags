@@ -6120,3 +6120,283 @@
 +- fix: resolve build errors in .aider.chat.history
 +- (no commit message provided)
 +- fix(repository): resolve build errors in AuditLogRepositoryExtensions
+
+# 2026-07-13 15:54:04.003984
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, extend README.md with a documentation section for the type `RolloutStrategyExtensions` (defined in `src/FeatureFlags/Models/RolloutStrategyExtensions.cs`).
++
++Add a "## RolloutStrategyExtensions" section: 2-3 sentences on what it does and a realistic, compiling C# usage example based on its REAL public members:
++```
++public static bool IsPercentageBased
++public static bool IsRulesBased
++public static bool IsABTest
++public static bool IsFullRollout
++public static bool IsNoRollout
++public static int GetEffectivePercentage
++public static int GetProgressPercentage
++public static bool HasReachedTarget
++public static string GetDescription
++```
++Only edit README.md. Do not invent members that are not listed.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- docs: describe .aider.chat.history usage in README
++- docs: describe .aider.chat.history usage in README
++- docs(events): add FeatureFlagEventExtensions documentation section with usage examples
++- docs: describe .aider.chat.history usage in README
++- docs: document .aider.chat.history public API
++- <think> Okay, let me go through the user's request step by step. They want me to generate a commit message for the changes made to the ValidationExceptionExtensions.cs file. The commit message needs to follow the conventional commits style, which means using a type prefix like docs, feat, fix, etc., followed by a concise description.
++- docs(exceptions): document ValidationExceptionJson public API
++- docs: document .aider.chat.history public API
++- fix: resolve build errors in .aider.chat.history
++- (no commit message provided)
+
+# 2026-07-13 15:54:04.004068
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, extend README.md with a documentation section for the type `RolloutStrategyExtensions` (defined in `src/FeatureFlags/Models/RolloutStrategyExtensions.cs`).
++
++Add a "## RolloutStrategyExtensions" section: 2-3 sentences on what it does and a realistic, compiling C# usage example based on its REAL public members:
++```
++public static bool IsPercentageBased
++public static bool IsRulesBased
++public static bool IsABTest
++public static bool IsFullRollout
++public static bool IsNoRollout
++public static int GetEffectivePercentage
++public static int GetProgressPercentage
++public static bool HasReachedTarget
++public static string GetDescription
++```
++Only edit README.md. Do not invent members that are not listed.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- docs: describe .aider.chat.history usage in README
++- docs: describe .aider.chat.history usage in README
++- docs(events): add FeatureFlagEventExtensions documentation section with usage examples
++- docs: describe .aider.chat.history usage in README
++- docs: document .aider.chat.history public API
++- <think> Okay, let me go through the user's request step by step. They want me to generate a commit message for the changes made to the ValidationExceptionExtensions.cs file. The commit message needs to follow the conventional commits style, which means using a type prefix like docs, feat, fix, etc., followed by a concise description.
++- docs(exceptions): document ValidationExceptionJson public API
++- docs: document .aider.chat.history public API
++- fix: resolve build errors in .aider.chat.history
++- (no commit message provided)
+
+# 2026-07-13 15:55:15.052703
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, extend README.md with a documentation section for the type `RolloutStrategyExtensions` (defined in `src/FeatureFlags/Models/RolloutStrategyExtensions.cs`).
++
++Add a "## RolloutStrategyExtensions" section: 2-3 sentences on what it does and a realistic, compiling C# usage example based on its REAL public members:
++```
++public static bool IsPercentageBased
++public static bool IsRulesBased
++public static bool IsABTest
++public static bool IsFullRollout
++public static bool IsNoRollout
++public static int GetEffectivePercentage
++public static int GetProgressPercentage
++public static bool HasReachedTarget
++public static string GetDescription
++```
++Only edit README.md. Do not invent members that are not listed.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- docs: describe .aider.chat.history usage in README
++- docs: describe .aider.chat.history usage in README
++- docs(events): add FeatureFlagEventExtensions documentation section with usage examples
++- docs: describe .aider.chat.history usage in README
++- docs: document .aider.chat.history public API
++- <think> Okay, let me go through the user's request step by step. They want me to generate a commit message for the changes made to the ValidationExceptionExtensions.cs file. The commit message needs to follow the conventional commits style, which means using a type prefix like docs, feat, fix, etc., followed by a concise description.
++- docs(exceptions): document ValidationExceptionJson public API
++- docs: document .aider.chat.history public API
++- fix: resolve build errors in .aider.chat.history
++- (no commit message provided)
+
+# 2026-07-13 15:55:15.053068
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, extend README.md with a documentation section for the type `RolloutStrategyExtensions` (defined in `src/FeatureFlags/Models/RolloutStrategyExtensions.cs`).
++
++Add a "## RolloutStrategyExtensions" section: 2-3 sentences on what it does and a realistic, compiling C# usage example based on its REAL public members:
++```
++public static bool IsPercentageBased
++public static bool IsRulesBased
++public static bool IsABTest
++public static bool IsFullRollout
++public static bool IsNoRollout
++public static int GetEffectivePercentage
++public static int GetProgressPercentage
++public static bool HasReachedTarget
++public static string GetDescription
++```
++Only edit README.md. Do not invent members that are not listed.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- docs: describe .aider.chat.history usage in README
++- docs: describe .aider.chat.history usage in README
++- docs(events): add FeatureFlagEventExtensions documentation section with usage examples
++- docs: describe .aider.chat.history usage in README
++- docs: document .aider.chat.history public API
++- <think> Okay, let me go through the user's request step by step. They want me to generate a commit message for the changes made to the ValidationExceptionExtensions.cs file. The commit message needs to follow the conventional commits style, which means using a type prefix like docs, feat, fix, etc., followed by a concise description.
++- docs(exceptions): document ValidationExceptionJson public API
++- docs: document .aider.chat.history public API
++- fix: resolve build errors in .aider.chat.history
++- (no commit message provided)
+
+# 2026-07-13 15:57:29.491258
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, extend README.md with a documentation section for the type `RolloutStrategyExtensions` (defined in `src/FeatureFlags/Models/RolloutStrategyExtensions.cs`).
++
++Add a "## RolloutStrategyExtensions" section: 2-3 sentences on what it does and a realistic, compiling C# usage example based on its REAL public members:
++```
++public static bool IsPercentageBased
++public static bool IsRulesBased
++public static bool IsABTest
++public static bool IsFullRollout
++public static bool IsNoRollout
++public static int GetEffectivePercentage
++public static int GetProgressPercentage
++public static bool HasReachedTarget
++public static string GetDescription
++```
++Only edit README.md. Do not invent members that are not listed.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- docs: describe .aider.chat.history usage in README
++- docs: describe .aider.chat.history usage in README
++- docs(events): add FeatureFlagEventExtensions documentation section with usage examples
++- docs: describe .aider.chat.history usage in README
++- docs: document .aider.chat.history public API
++- <think> Okay, let me go through the user's request step by step. They want me to generate a commit message for the changes made to the ValidationExceptionExtensions.cs file. The commit message needs to follow the conventional commits style, which means using a type prefix like docs, feat, fix, etc., followed by a concise description.
++- docs(exceptions): document ValidationExceptionJson public API
++- docs: document .aider.chat.history public API
++- fix: resolve build errors in .aider.chat.history
++- (no commit message provided)
+
+# 2026-07-13 15:57:29.491317
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, extend README.md with a documentation section for the type `RolloutStrategyExtensions` (defined in `src/FeatureFlags/Models/RolloutStrategyExtensions.cs`).
++
++Add a "## RolloutStrategyExtensions" section: 2-3 sentences on what it does and a realistic, compiling C# usage example based on its REAL public members:
++```
++public static bool IsPercentageBased
++public static bool IsRulesBased
++public static bool IsABTest
++public static bool IsFullRollout
++public static bool IsNoRollout
++public static int GetEffectivePercentage
++public static int GetProgressPercentage
++public static bool HasReachedTarget
++public static string GetDescription
++```
++Only edit README.md. Do not invent members that are not listed.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- docs: describe .aider.chat.history usage in README
++- docs: describe .aider.chat.history usage in README
++- docs(events): add FeatureFlagEventExtensions documentation section with usage examples
++- docs: describe .aider.chat.history usage in README
++- docs: document .aider.chat.history public API
++- <think> Okay, let me go through the user's request step by step. They want me to generate a commit message for the changes made to the ValidationExceptionExtensions.cs file. The commit message needs to follow the conventional commits style, which means using a type prefix like docs, feat, fix, etc., followed by a concise description.
++- docs(exceptions): document ValidationExceptionJson public API
++- docs: document .aider.chat.history public API
++- fix: resolve build errors in .aider.chat.history
++- (no commit message provided)
+
+# 2026-07-13 15:58:38.783666
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, extend README.md with a documentation section for the type `RolloutStrategyExtensions` (defined in `src/FeatureFlags/Models/RolloutStrategyExtensions.cs`).
++
++Add a "## RolloutStrategyExtensions" section: 2-3 sentences on what it does and a realistic, compiling C# usage example based on its REAL public members:
++```
++public static bool IsPercentageBased
++public static bool IsRulesBased
++public static bool IsABTest
++public static bool IsFullRollout
++public static bool IsNoRollout
++public static int GetEffectivePercentage
++public static int GetProgressPercentage
++public static bool HasReachedTarget
++public static string GetDescription
++```
++Only edit README.md. Do not invent members that are not listed.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- docs: describe .aider.chat.history usage in README
++- docs: describe .aider.chat.history usage in README
++- docs(events): add FeatureFlagEventExtensions documentation section with usage examples
++- docs: describe .aider.chat.history usage in README
++- docs: document .aider.chat.history public API
++- <think> Okay, let me go through the user's request step by step. They want me to generate a commit message for the changes made to the ValidationExceptionExtensions.cs file. The commit message needs to follow the conventional commits style, which means using a type prefix like docs, feat, fix, etc., followed by a concise description.
++- docs(exceptions): document ValidationExceptionJson public API
++- docs: document .aider.chat.history public API
++- fix: resolve build errors in .aider.chat.history
++- (no commit message provided)
+
+# 2026-07-13 15:58:38.783771
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, extend README.md with a documentation section for the type `RolloutStrategyExtensions` (defined in `src/FeatureFlags/Models/RolloutStrategyExtensions.cs`).
++
++Add a "## RolloutStrategyExtensions" section: 2-3 sentences on what it does and a realistic, compiling C# usage example based on its REAL public members:
++```
++public static bool IsPercentageBased
++public static bool IsRulesBased
++public static bool IsABTest
++public static bool IsFullRollout
++public static bool IsNoRollout
++public static int GetEffectivePercentage
++public static int GetProgressPercentage
++public static bool HasReachedTarget
++public static string GetDescription
++```
++Only edit README.md. Do not invent members that are not listed.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- docs: describe .aider.chat.history usage in README
++- docs: describe .aider.chat.history usage in README
++- docs(events): add FeatureFlagEventExtensions documentation section with usage examples
++- docs: describe .aider.chat.history usage in README
++- docs: document .aider.chat.history public API
++- <think> Okay, let me go through the user's request step by step. They want me to generate a commit message for the changes made to the ValidationExceptionExtensions.cs file. The commit message needs to follow the conventional commits style, which means using a type prefix like docs, feat, fix, etc., followed by a concise description.
++- docs(exceptions): document ValidationExceptionJson public API
++- docs: document .aider.chat.history public API
++- fix: resolve build errors in .aider.chat.history
++- (no commit message provided)
