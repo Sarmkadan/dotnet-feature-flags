@@ -7184,3 +7184,189 @@
 +- docs(events): add FeatureFlagEventExtensions documentation section with usage examples
 +- docs: describe .aider.chat.history usage in README
 +- docs: document .aider.chat.history public API
+
+# 2026-07-14 01:20:14.645779
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, extend README.md with a documentation section for the type `AuditControllerExtensions` (defined in `src/FeatureFlags/Controllers/AuditControllerExtensions.cs`).
++
++Add a "## AuditControllerExtensions" section: 2-3 sentences on what it does and a realistic, compiling C# usage example based on its REAL public members:
++```
++public static async Task<IActionResult> GetRecentActivity
++public static async Task<IActionResult> GetAuditLogsByAction
++public static async Task<IActionResult> GetFilteredAuditLogs
++public static async Task<IActionResult> GetMostRecentChanges
++public static async Task<IActionResult> GetEnhancedChangeHistory
++```
++Only edit README.md. Do not invent members that are not listed.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- docs: describe .aider.chat.history usage in README
++- <think> Okay, I need to generate a commit message for the changes made to the README.md. The user added a new section for FeatureFlagOptionsExtensions. Let me check the diff to see what was changed. The diff shows that a new section was added with a description and a C# example.
++- docs: describe .aider.chat.history usage in README
++- docs(cli): add CliArgumentParserExtensions documentation section with usage examples
++- docs: describe .aider.chat.history usage in README
++- docs(audit-log): add AuditLogExtensions documentation section with usage examples
++- docs: describe .aider.chat.history usage in README
++- docs: describe .aider.chat.history usage in README
++- docs: describe .aider.chat.history usage in README
++- docs(events): add FeatureFlagEventExtensions documentation section with usage examples
+
+# 2026-07-14 01:20:14.645849
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, extend README.md with a documentation section for the type `AuditControllerExtensions` (defined in `src/FeatureFlags/Controllers/AuditControllerExtensions.cs`).
++
++Add a "## AuditControllerExtensions" section: 2-3 sentences on what it does and a realistic, compiling C# usage example based on its REAL public members:
++```
++public static async Task<IActionResult> GetRecentActivity
++public static async Task<IActionResult> GetAuditLogsByAction
++public static async Task<IActionResult> GetFilteredAuditLogs
++public static async Task<IActionResult> GetMostRecentChanges
++public static async Task<IActionResult> GetEnhancedChangeHistory
++```
++Only edit README.md. Do not invent members that are not listed.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- docs: describe .aider.chat.history usage in README
++- <think> Okay, I need to generate a commit message for the changes made to the README.md. The user added a new section for FeatureFlagOptionsExtensions. Let me check the diff to see what was changed. The diff shows that a new section was added with a description and a C# example.
++- docs: describe .aider.chat.history usage in README
++- docs(cli): add CliArgumentParserExtensions documentation section with usage examples
++- docs: describe .aider.chat.history usage in README
++- docs(audit-log): add AuditLogExtensions documentation section with usage examples
++- docs: describe .aider.chat.history usage in README
++- docs: describe .aider.chat.history usage in README
++- docs: describe .aider.chat.history usage in README
++- docs(events): add FeatureFlagEventExtensions documentation section with usage examples
+
+# 2026-07-14 01:21:24.237305
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, extend README.md with a documentation section for the type `AuditControllerExtensions` (defined in `src/FeatureFlags/Controllers/AuditControllerExtensions.cs`).
++
++Add a "## AuditControllerExtensions" section: 2-3 sentences on what it does and a realistic, compiling C# usage example based on its REAL public members:
++```
++public static async Task<IActionResult> GetRecentActivity
++public static async Task<IActionResult> GetAuditLogsByAction
++public static async Task<IActionResult> GetFilteredAuditLogs
++public static async Task<IActionResult> GetMostRecentChanges
++public static async Task<IActionResult> GetEnhancedChangeHistory
++```
++Only edit README.md. Do not invent members that are not listed.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- docs: describe .aider.chat.history usage in README
++- <think> Okay, I need to generate a commit message for the changes made to the README.md. The user added a new section for FeatureFlagOptionsExtensions. Let me check the diff to see what was changed. The diff shows that a new section was added with a description and a C# example.
++- docs: describe .aider.chat.history usage in README
++- docs(cli): add CliArgumentParserExtensions documentation section with usage examples
++- docs: describe .aider.chat.history usage in README
++- docs(audit-log): add AuditLogExtensions documentation section with usage examples
++- docs: describe .aider.chat.history usage in README
++- docs: describe .aider.chat.history usage in README
++- docs: describe .aider.chat.history usage in README
++- docs(events): add FeatureFlagEventExtensions documentation section with usage examples
+
+# 2026-07-14 01:21:24.237377
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, extend README.md with a documentation section for the type `AuditControllerExtensions` (defined in `src/FeatureFlags/Controllers/AuditControllerExtensions.cs`).
++
++Add a "## AuditControllerExtensions" section: 2-3 sentences on what it does and a realistic, compiling C# usage example based on its REAL public members:
++```
++public static async Task<IActionResult> GetRecentActivity
++public static async Task<IActionResult> GetAuditLogsByAction
++public static async Task<IActionResult> GetFilteredAuditLogs
++public static async Task<IActionResult> GetMostRecentChanges
++public static async Task<IActionResult> GetEnhancedChangeHistory
++```
++Only edit README.md. Do not invent members that are not listed.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- docs: describe .aider.chat.history usage in README
++- <think> Okay, I need to generate a commit message for the changes made to the README.md. The user added a new section for FeatureFlagOptionsExtensions. Let me check the diff to see what was changed. The diff shows that a new section was added with a description and a C# example.
++- docs: describe .aider.chat.history usage in README
++- docs(cli): add CliArgumentParserExtensions documentation section with usage examples
++- docs: describe .aider.chat.history usage in README
++- docs(audit-log): add AuditLogExtensions documentation section with usage examples
++- docs: describe .aider.chat.history usage in README
++- docs: describe .aider.chat.history usage in README
++- docs: describe .aider.chat.history usage in README
++- docs(events): add FeatureFlagEventExtensions documentation section with usage examples
+
+# 2026-07-14 01:22:38.540262
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, extend README.md with a documentation section for the type `AuditControllerExtensions` (defined in `src/FeatureFlags/Controllers/AuditControllerExtensions.cs`).
++
++Add a "## AuditControllerExtensions" section: 2-3 sentences on what it does and a realistic, compiling C# usage example based on its REAL public members:
++```
++public static async Task<IActionResult> GetRecentActivity
++public static async Task<IActionResult> GetAuditLogsByAction
++public static async Task<IActionResult> GetFilteredAuditLogs
++public static async Task<IActionResult> GetMostRecentChanges
++public static async Task<IActionResult> GetEnhancedChangeHistory
++```
++Only edit README.md. Do not invent members that are not listed.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- docs: describe .aider.chat.history usage in README
++- <think> Okay, I need to generate a commit message for the changes made to the README.md. The user added a new section for FeatureFlagOptionsExtensions. Let me check the diff to see what was changed. The diff shows that a new section was added with a description and a C# example.
++- docs: describe .aider.chat.history usage in README
++- docs(cli): add CliArgumentParserExtensions documentation section with usage examples
++- docs: describe .aider.chat.history usage in README
++- docs(audit-log): add AuditLogExtensions documentation section with usage examples
++- docs: describe .aider.chat.history usage in README
++- docs: describe .aider.chat.history usage in README
++- docs: describe .aider.chat.history usage in README
++- docs(events): add FeatureFlagEventExtensions documentation section with usage examples
+
+# 2026-07-14 01:22:38.541126
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, extend README.md with a documentation section for the type `AuditControllerExtensions` (defined in `src/FeatureFlags/Controllers/AuditControllerExtensions.cs`).
++
++Add a "## AuditControllerExtensions" section: 2-3 sentences on what it does and a realistic, compiling C# usage example based on its REAL public members:
++```
++public static async Task<IActionResult> GetRecentActivity
++public static async Task<IActionResult> GetAuditLogsByAction
++public static async Task<IActionResult> GetFilteredAuditLogs
++public static async Task<IActionResult> GetMostRecentChanges
++public static async Task<IActionResult> GetEnhancedChangeHistory
++```
++Only edit README.md. Do not invent members that are not listed.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- docs: describe .aider.chat.history usage in README
++- <think> Okay, I need to generate a commit message for the changes made to the README.md. The user added a new section for FeatureFlagOptionsExtensions. Let me check the diff to see what was changed. The diff shows that a new section was added with a description and a C# example.
++- docs: describe .aider.chat.history usage in README
++- docs(cli): add CliArgumentParserExtensions documentation section with usage examples
++- docs: describe .aider.chat.history usage in README
++- docs(audit-log): add AuditLogExtensions documentation section with usage examples
++- docs: describe .aider.chat.history usage in README
++- docs: describe .aider.chat.history usage in README
++- docs: describe .aider.chat.history usage in README
++- docs(events): add FeatureFlagEventExtensions documentation section with usage examples
