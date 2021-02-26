@@ -1,52 +1,41 @@
 // existing content ...
 
-## AuditControllerExtensions
+## UserContextTestsExtensions
 
-The `AuditControllerExtensions` class provides a set of extension methods for the `AuditController` type that enable common operations for querying and analyzing audit logs. These methods allow you to easily retrieve recent activity, filter logs by action or multiple criteria, and get detailed change history.
+The `UserContextTestsExtensions` class provides extension methods for testing `UserContext` model behavior, including validation, attribute manipulation, and hash generation. These methods simplify creating test scenarios for user context validation, custom attributes, and consistent hashing in feature flag evaluation.
 
 Below is a realistic usage example demonstrating the most commonly used extension methods:
 
 ```csharp
-// Assuming you have an instance of AuditController
-var auditController = new AuditController();
+// Assuming you have an instance of UserContextTests
+var userContextTests = new UserContextTests();
 
-// Get recent audit activity across all feature flags within the last 7 days
-var recentActivityResult = await auditController.GetRecentActivity(
-    days: 7,
-    maxResults: 100
-);
-Console.WriteLine(recentActivityResult);
+// Create a valid user context with default attributes
+var validUser = userContextTests.CreateValidUserContext();
+userContextTests.ShouldBeValid(validUser); // Validate required fields
 
-// Get audit logs filtered by specific action type
-var logsByActionResult = await auditController.GetAuditLogsByAction(
-    Enums.AuditAction.Updated,
-    page: 1,
-    pageSize: 20
-);
-Console.WriteLine(logsByActionResult);
+// Create a user with custom attributes
+var customUser = userContextTests.WithCustomAttributes(new Dictionary<string, string>
+{
+    { "plan", "premium" },
+    { "region", "eu" }
+});
 
-// Get audit logs with enhanced filtering capabilities
-var filteredLogsResult = await auditController.GetFilteredAuditLogs(
-    startDate: DateTime.UtcNow.AddDays(-30),
-    endDate: DateTime.UtcNow,
-    action: Enums.AuditAction.Created,
-    username: "john.doe"
-);
-Console.WriteLine(filteredLogsResult);
+userContextTests.ShouldHaveAttribute(customUser, "plan", "premium"); // Verify attribute
 
-// Get the most recent changes across all feature flags
-var mostRecentChangesResult = await auditController.GetMostRecentChanges(
-    maxResults: 50
-);
-Console.WriteLine(mostRecentChangesResult);
+// Create a user with deterministic hash for testing percentage rollouts
+var hashUser = userContextTests.CreateUserContextWithHash("12345", "feature-abc");
+int hashValue = userContextTests.GetHash(hashUser, "feature-abc");
+Console.WriteLine($"Computed hash: {hashValue}");
 
-// Get enhanced change history for a specific feature flag
-var enhancedChangeHistoryResult = await auditController.GetEnhancedChangeHistory(
-    featureFlagId: 123,
-    maxEntries: 50,
-    includeDetailedChanges: true
-);
-Console.WriteLine(enhancedChangeHistoryResult);
+// Create a collection of users for batch testing
+var userCollection = userContextTests.CreateUserContextCollection(5);
+foreach (var user in userCollection)
+{
+    Console.WriteLine($"User ID: {user.UserId}");
+}
+
+// Test tier-based evaluation
+var tierUser = userContextTests.WithTier("enterprise");
+userContextTests.ShouldHaveAttribute(tierUser, "tier", "enterprise");
 ```
-
-// existing content ...
