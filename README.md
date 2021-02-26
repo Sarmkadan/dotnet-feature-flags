@@ -1,3 +1,48 @@
+## CliArgumentParserExtensions
+
+The `CliArgumentParserExtensions` class provides a set of extension methods for the `CliArgumentParser` type that enhance CLI argument parsing functionality. These methods allow you to extract command names, parse and validate arguments, check for argument presence, retrieve argument values, and generate help documentation for commands.
+
+Below is a realistic usage example demonstrating the most commonly used extension methods:
+
+```csharp
+// Initialize the argument parser
+var parser = new CliArgumentParser();
+
+// Parse command line arguments
+string[] args = new[] { "evaluate", "--key", "payment-v2", "--user", "john@example.com" };
+
+// Get the command name
+string command = parser.GetCommand(args);
+Console.WriteLine($"Command: {command}"); // Output: Command: evaluate
+
+// Parse with validation for required arguments
+var validatedCommand = parser.ParseWithValidation(args, "key", "user");
+Console.WriteLine($"Validated command has {parser.GetArgumentCount(validatedCommand)} arguments");
+
+// Check if any arguments are present
+bool hasArgs = parser.HasAnyArguments(validatedCommand);
+Console.WriteLine($"Has arguments: {hasArgs}"); // Output: Has arguments: True
+
+// Get all values for a specific argument key
+var keyValues = parser.GetAllArguments(validatedCommand, "key");
+foreach (var value in keyValues)
+{
+    Console.WriteLine($"Key value: {value}");
+}
+
+// Get help text for a command
+string helpText = parser.GetCommandHelp("evaluate");
+Console.WriteLine(helpText);
+
+// Parse with group validation (at least one of several required groups)
+string[] groupArgs = new[] { "create", "--key", "new-feature", "--name", "New Feature" };
+var groupCommand = parser.ParseWithGroupValidation(groupArgs, 
+    new[] { "key", "name" },
+    new[] { "percentage", "rollout-type" }
+);
+Console.WriteLine($"Group validation successful: {groupCommand.HasArgument("key")}");
+```
+
 ## RolloutStrategyExtensions
 
 The `RolloutStrategyExtensions` class provides a set of extension methods for the `RolloutStrategy` type that enable common operations for filtering, metadata access, and event manipulation. These methods allow you to easily check event types, access metadata values, create modified copies of events, and format events for logging purposes.
