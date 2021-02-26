@@ -125,3 +125,42 @@ bool isRecent = log.IsRecent();
 // Get a simplified action name for UI display
 string actionDisplayName = log.GetActionDisplayName();
 ```
+
+## FeatureFlagOptionsExtensions
+
+The `FeatureFlagOptionsExtensions` class provides utility methods for working with `FeatureFlagOptions` configuration. It includes validation, cloning, merging, and auditing/cache configuration checks to ensure options are correctly configured and used consistently across the application.
+
+```csharp
+// Create base options
+var options = new FeatureFlagOptions
+{
+    EnableCache = true,
+    CacheDurationMinutes = 30,
+    EnableAuditLogging = true,
+    AuditLogRetentionDays = 30,
+    MaxRulesPerFlag = 5
+};
+
+// Validate options
+options.Validate(); // Throws if invalid
+
+// Clone options
+var clonedOptions = options.Clone();
+
+// Create override options
+var overrideOptions = new FeatureFlagOptions
+{
+    CacheDurationMinutes = 60,
+    MaxRulesPerFlag = 10
+};
+
+// Merge options
+var mergedOptions = options.MergeWith(overrideOptions);
+
+// Check audit logging configuration
+bool isAuditConfigured = mergedOptions.IsAuditLoggingConfigured();
+
+// Get effective cache duration in seconds
+int cacheSeconds = mergedOptions.GetCacheDurationSeconds();
+Console.WriteLine($"Cache duration: {cacheSeconds} seconds");
+```
