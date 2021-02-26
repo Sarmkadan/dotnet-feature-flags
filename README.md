@@ -1,41 +1,51 @@
 // existing content ...
 
-## UserContextTestsExtensions
+## StringExtensionTestsExtensions
 
-The `UserContextTestsExtensions` class provides extension methods for testing `UserContext` model behavior, including validation, attribute manipulation, and hash generation. These methods simplify creating test scenarios for user context validation, custom attributes, and consistent hashing in feature flag evaluation.
+The `StringExtensionTestsExtensions` class provides a set of extension methods for testing string-related functionality. These methods simplify creating test scenarios for various string operations, including hashing, case conversion, and string manipulation.
 
 Below is a realistic usage example demonstrating the most commonly used extension methods:
 
 ```csharp
-// Assuming you have an instance of UserContextTests
-var userContextTests = new UserContextTests();
+// Assuming you have an instance of StringExtensionTests
+var stringTests = new StringExtensionTests();
 
-// Create a valid user context with default attributes
-var validUser = userContextTests.CreateValidUserContext();
-userContextTests.ShouldBeValid(validUser); // Validate required fields
+// Generate a consistent test string for SHA-256 hashing tests
+var sha256TestString = stringTests.GetSha256TestString("test-prefix");
 
-// Create a user with custom attributes
-var customUser = userContextTests.WithCustomAttributes(new Dictionary<string, string>
-{
-    { "plan", "premium" },
-    { "region", "eu" }
-});
+// Create an array of test strings with different patterns
+var testStrings = stringTests.GetTestStrings(5);
 
-userContextTests.ShouldHaveAttribute(customUser, "plan", "premium"); // Verify attribute
+// Create a valid email address
+var validEmail = stringTests.GetValidEmail();
 
-// Create a user with deterministic hash for testing percentage rollouts
-var hashUser = userContextTests.CreateUserContextWithHash("12345", "feature-abc");
-int hashValue = userContextTests.GetHash(hashUser, "feature-abc");
-Console.WriteLine($"Computed hash: {hashValue}");
+// Create an invalid email address
+var invalidEmail = stringTests.GetInvalidEmail();
 
-// Create a collection of users for batch testing
-var userCollection = userContextTests.CreateUserContextCollection(5);
-foreach (var user in userCollection)
-{
-    Console.WriteLine($"User ID: {user.UserId}");
-}
+// Generate a snake_case string
+var snakeCaseString = stringTests.GetSnakeCaseString(3);
 
-// Test tier-based evaluation
-var tierUser = userContextTests.WithTier("enterprise");
-userContextTests.ShouldHaveAttribute(tierUser, "tier", "enterprise");
+// Generate a PascalCase string
+var pascalCaseString = stringTests.GetPascalCaseString(3);
+
+// Create a long string that needs truncation
+var longString = stringTests.GetLongString(20);
+
+// Create a string that can be parsed as an integer
+var intString = stringTests.GetIntString(123);
+
+// Create a string that cannot be parsed as an integer
+var nonIntString = stringTests.GetNonIntString();
+
+// Create an array of substrings for ContainsAny testing
+var substrings = stringTests.GetSubstringsForContains(2, 2);
+
+// Create a repeatable string
+var repeatableString = stringTests.GetRepeatableString(5);
+
+// Create a string with special characters
+var specialCharsString = stringTests.GetSpecialCharsString();
+
+// Get a null or empty string
+var nullOrEmptyString = stringTests.GetNullOrEmptyString(true);
 ```
