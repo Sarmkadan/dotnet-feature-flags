@@ -41,6 +41,37 @@ var variantAssignments = example.TestABTestVariantAssignment();
 var performanceMetrics = await example.MonitorEvaluationPerformanceAsync("test-flag");
 ```
 
+## FeatureFlagException
+
+The `FeatureFlagException` class is the base exception type for all feature flag-related errors in the system. It provides an `ErrorCode` property to categorize different types of failures that can occur during feature flag evaluation, configuration, or data processing.
+
+Example usage:
+```csharp
+try
+{
+    var featureFlag = await featureFlagService.GetFeatureFlagAsync("my-flag");
+    if (featureFlag == null)
+    {
+        throw new FeatureFlagNotFoundException("Feature flag 'my-flag' was not found in the configuration");
+    }
+}
+catch (FeatureFlagException ex) when (ex.ErrorCode == "FF_NOT_FOUND")
+{
+    // Handle missing feature flag
+    logger.LogWarning(ex, "Feature flag not found: {FlagName}", "my-flag");
+}
+catch (FeatureFlagException ex) when (ex.ErrorCode == "FF_INVALID_DATA")
+{
+    // Handle invalid feature flag data
+    logger.LogError(ex, "Invalid feature flag data encountered");
+}
+catch (FeatureFlagException ex)
+{
+    // Handle other feature flag exceptions
+    logger.LogError(ex, "Feature flag evaluation failed");
+}
+```
+
 ## FeatureFlagsBenchmarks
 
 The `FeatureFlagsBenchmarks` class provides performance benchmarks for feature flag evaluation operations. It measures the execution time of various evaluation scenarios including percentage rollout, rule-based evaluation, A/B test variant assignment, and complex rule evaluations with caching.
