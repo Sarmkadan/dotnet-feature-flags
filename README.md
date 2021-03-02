@@ -39,5 +39,83 @@ var percentageRolloutResults = example.TestPercentageRolloutComprehensive();
 var ruleEvaluationResults = example.TestRuleBasedEvaluation();
 var variantAssignments = example.TestABTestVariantAssignment();
 var performanceMetrics = await example.MonitorEvaluationPerformanceAsync("test-flag");
+```
+
+## FeatureFlagsBenchmarks
+
+The `FeatureFlagsBenchmarks` class provides performance benchmarks for feature flag evaluation operations. It measures the execution time of various evaluation scenarios including percentage rollout, rule-based evaluation, A/B test variant assignment, and complex rule evaluations with caching.
+
+Example usage:
+```csharp
+[MemoryDiagnoser]
+public class FeatureFlagBenchmarksExample
+{
+    private FeatureFlagService _featureFlagService;
+    private IRuleEvaluationService _ruleEvaluationService;
+    private UserContext _userContext;
+
+    [GlobalSetup]
+    public void Setup()
+    {
+        _featureFlagService = new FeatureFlagService();
+        _ruleEvaluationService = new RuleEvaluationService();
+        _userContext = new UserContext
+        {
+            UserId = "user123",
+            Email = "user@example.com",
+            Country = "US",
+            Tier = "premium"
+        };
+    }
+
+    [Benchmark]
+    public void PercentageRolloutEvaluation() => _featureFlagService.IsEnabled("percentage-flag", _userContext);
+
+    [Benchmark]
+    public void PercentageRolloutEvaluation_100() => _featureFlagService.IsEnabled("percentage-100-flag", _userContext);
+
+    [Benchmark]
+    public void PercentageRolloutEvaluation_0() => _featureFlagService.IsEnabled("percentage-0-flag", _userContext);
+
+    [Benchmark]
+    public void RuleBasedEvaluation_Match()
+    {
+        var rule = new Rule
+        {
+            Name = "Country Rule",
+            Conditions = new List<Condition>
+            {
+                new Condition { AttributeName = "Country", Operator = ConditionOperator.Equals, ExpectedValue = "US" }
+            }
+        };
+        _ruleEvaluationService.EvaluateRule(rule, _userContext);
+    }
+
+    [Benchmark]
+    public void RuleBasedEvaluation_NoMatch()
+    {
+        var rule = new Rule
+        {
+            Name = "Country Rule",
+            Conditions = new List<Condition>
+            {
+                new Condition { AttributeName = "Country", Operator = ConditionOperator.Equals, ExpectedValue = "UK" }
+            }
+        };
+        _ruleEvaluationService.EvaluateRule(rule, _userContext);
+    }
+
+    [Benchmark]
+    public void ABTestVariantAssignment() => _featureFlagService.GetVariant("ab-test-flag", _userContext);
+
+    [Benchmark]
+    public void FullFeatureFlagEvaluation_Percentage() => _featureFlagService.IsEnabled("complex-percentage-flag", _userContext);
+
+    [Benchmark]
+    public void FullFeatureFlagEvaluation_RuleBased() => _featureFlagService.IsEnabled("complex-rule-flag", _userContext);
+
+    [Benchmark]
+    public void FullFeatureFlagEvaluation_ABTest() => _featureFlagService.GetVariant("complex-abtest-flag", _userContext);
+}
 ``` 
 ```
