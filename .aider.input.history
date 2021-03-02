@@ -7918,3 +7918,95 @@
 +- docs: add AuditControllerExtensions documentation section with usage examples
 +- docs: describe .aider.chat.history usage in README
 +- <think> Okay, I need to generate a commit message for the changes made to the README.md. The user added a new section for FeatureFlagOptionsExtensions. Let me check the diff to see what was changed. The diff shows that a new section was added with a description and a C# example.
+
+# 2026-07-14 11:58:38.546248
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, extend README.md with a documentation section for the type `FeatureFlagsBenchmarks` (defined in `benchmarks/dotnet-feature-flags.Benchmarks/Program.cs`).
++
++Add a "## FeatureFlagsBenchmarks" section: 2-3 sentences on what it does and a realistic, compiling C# usage example based on its REAL public members:
++```
++public void Setup
++public int GetConsistentHash
++public bool PercentageRolloutEvaluation
++public bool PercentageRolloutEvaluation_100
++public bool PercentageRolloutEvaluation_0
++public bool RuleBasedEvaluation_Match
++public bool RuleBasedEvaluation_NoMatch
++public bool RuleBasedEvaluation_SingleCondition
++public string? ABTestVariantAssignment
++public string? ABTestVariantAssignment_MultipleVariants
++public bool FullFeatureFlagEvaluation_Percentage
++public bool FullFeatureFlagEvaluation_RuleBased
++public bool FullFeatureFlagEvaluation_ABTest
++public bool ComplexRuleEvaluation_ManyConditions
++public bool ComplexRuleEvaluation_ORLogic
++public bool PercentageRollout_WithCache_Hit
++public bool PercentageRollout_WithCache_Miss
++public bool RuleBased_WithCache_Hit
++public string ABTest_WithCache_Hit
++public bool FullEvaluation_WithCache_Miss
++```
++Only edit README.md. Do not invent members that are not listed.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- docs: describe .aider.chat.history usage in README
++- docs: add FeatureFlagServiceTestExampleExtensions documentation
++- docs: describe .aider.chat.history usage in README
++- <think> Okay, let's see. The user wants me to generate a commit message for the changes made to the README.md. The task was to add a documentation section for RuleEvaluationServiceTestsExtensions with a usage example.
++- docs: describe .aider.chat.history usage in README
++- (no commit message provided)
++- docs: describe .aider.chat.history usage in README
++- (no commit message provided)
++- docs: describe .aider.chat.history usage in README
++- docs: add AuditControllerExtensions documentation section with usage examples
+
+# 2026-07-14 11:58:38.546324
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, extend README.md with a documentation section for the type `FeatureFlagsBenchmarks` (defined in `benchmarks/dotnet-feature-flags.Benchmarks/Program.cs`).
++
++Add a "## FeatureFlagsBenchmarks" section: 2-3 sentences on what it does and a realistic, compiling C# usage example based on its REAL public members:
++```
++public void Setup
++public int GetConsistentHash
++public bool PercentageRolloutEvaluation
++public bool PercentageRolloutEvaluation_100
++public bool PercentageRolloutEvaluation_0
++public bool RuleBasedEvaluation_Match
++public bool RuleBasedEvaluation_NoMatch
++public bool RuleBasedEvaluation_SingleCondition
++public string? ABTestVariantAssignment
++public string? ABTestVariantAssignment_MultipleVariants
++public bool FullFeatureFlagEvaluation_Percentage
++public bool FullFeatureFlagEvaluation_RuleBased
++public bool FullFeatureFlagEvaluation_ABTest
++public bool ComplexRuleEvaluation_ManyConditions
++public bool ComplexRuleEvaluation_ORLogic
++public bool PercentageRollout_WithCache_Hit
++public bool PercentageRollout_WithCache_Miss
++public bool RuleBased_WithCache_Hit
++public string ABTest_WithCache_Hit
++public bool FullEvaluation_WithCache_Miss
++```
++Only edit README.md. Do not invent members that are not listed.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- docs: describe .aider.chat.history usage in README
++- docs: add FeatureFlagServiceTestExampleExtensions documentation
++- docs: describe .aider.chat.history usage in README
++- <think> Okay, let's see. The user wants me to generate a commit message for the changes made to the README.md. The task was to add a documentation section for RuleEvaluationServiceTestsExtensions with a usage example.
++- docs: describe .aider.chat.history usage in README
++- (no commit message provided)
++- docs: describe .aider.chat.history usage in README
++- (no commit message provided)
++- docs: describe .aider.chat.history usage in README
++- docs: add AuditControllerExtensions documentation section with usage examples
