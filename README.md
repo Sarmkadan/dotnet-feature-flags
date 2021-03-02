@@ -72,6 +72,43 @@ catch (FeatureFlagException ex)
 }
 ```
 
+## ValidationException
+
+The `ValidationException` class is thrown when input validation fails during feature flag operations. It extends `FeatureFlagException` with an `Errors` property that contains a dictionary of validation error messages, where keys represent the field names and values contain the corresponding error descriptions. This is particularly useful for webhook validation and other scenarios where multiple validation errors need to be reported.
+
+Example usage:
+```csharp
+// Basic validation exception
+throw new ValidationException("Invalid feature flag configuration detected");
+
+// Validation exception with error details
+var errors = new Dictionary<string, string>
+{
+  { "Name", "Name is required and must be between 3-50 characters" },
+  { "Enabled", "Enabled flag must be a valid boolean value" },
+  { "Percentage", "Percentage must be between 0 and 100" }
+};
+throw new ValidationException("Feature flag configuration validation failed", errors);
+
+// Validation exception with inner exception
+try
+{
+  var featureFlag = await featureFlagService.GetFeatureFlagAsync("my-flag");
+}
+catch (Exception ex)
+{
+  throw new ValidationException("Failed to validate feature flag configuration", ex);
+}
+
+// Webhook validation exception
+var webhookErrors = new Dictionary<string, string>
+{
+  { "Url", "Webhook URL must be a valid HTTPS endpoint" },
+  { "Secret", "Webhook secret must be at least 32 characters" }
+};
+throw new WebhookValidationException("Webhook configuration is invalid", webhookErrors);
+```
+
 ## FeatureFlagsBenchmarks
 
 The `FeatureFlagsBenchmarks` class provides performance benchmarks for feature flag evaluation operations. It measures the execution time of various evaluation scenarios including percentage rollout, rule-based evaluation, A/B test variant assignment, and complex rule evaluations with caching.
