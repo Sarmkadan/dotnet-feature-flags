@@ -242,6 +242,42 @@ var deleted = await webhookService.DeleteWebhookAsync(webhook.Id);
 await webhookService.RetryFailedDeliveriesAsync();
 ```
 
+## Webhook
+
+The `Webhook` class represents a webhook configuration for receiving real-time notifications about feature flag events. It includes properties for webhook identification, endpoint configuration, authentication, retry policies, and delivery tracking. Webhooks can be filtered by event type and feature flag key to receive only relevant notifications.
+
+Example usage:
+```csharp
+// Create a new webhook for feature flag events
+var webhook = new Webhook
+{
+    Url = "https://webhook.site/unique-id",
+    Description = "Production environment webhook for feature flag changes",
+    IsActive = true,
+    EventTypes = WebhookEventType.FeatureFlagEnabled | WebhookEventType.FeatureFlagDisabled,
+    FeatureFlagKey = "new-dashboard",
+    MaxRetries = 3,
+    RetryDelaySeconds = 60,
+    AuthorizationHeader = "Bearer my-secret-token",
+    Secret = "my-webhook-secret-key-32-chars-long",
+    CreatedBy = "admin@company.com"
+};
+
+// Validate the webhook configuration
+if (webhook.IsValid)
+{
+    Console.WriteLine($"Webhook is valid: {webhook.Url}");
+    Console.WriteLine($"Should trigger: {webhook.ShouldTrigger}");
+}
+
+// Update webhook tracking information
+webhook.SuccessCount++;
+webhook.LastTriggeredAt = DateTime.UtcNow;
+
+// Check webhook status
+Console.WriteLine($"Webhook status - Active: {webhook.IsActive}, Successes: {webhook.SuccessCount}, Failures: {webhook.FailureCount}");
+```
+
 ## FeatureFlagsBenchmarks
 
 The `FeatureFlagsBenchmarks` class provides performance benchmarks for feature flag evaluation operations. It measures the execution time of various evaluation scenarios including percentage rollout, rule-based evaluation, A/B test variant assignment, and complex rule evaluations with caching.
