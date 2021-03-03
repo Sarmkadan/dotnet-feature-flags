@@ -109,6 +109,36 @@ var webhookErrors = new Dictionary<string, string>
 throw new WebhookValidationException("Webhook configuration is invalid", webhookErrors);
 ```
 
+## ConfigurationException
+
+The `ConfigurationException` class is the base exception type for configuration-related errors in the feature flag system. It is thrown when there are issues with application configuration, such as missing required settings, invalid configuration values, or malformed configuration files.
+
+Example usage:
+```csharp
+// Basic configuration exception
+throw new ConfigurationException("Missing required configuration: FeatureFlags:Database:ConnectionString");
+
+// Configuration exception with inner exception
+try
+{
+  var configValue = configuration["FeatureFlags:Database:ConnectionString"];
+  if (string.IsNullOrEmpty(configValue))
+  {
+    throw new ConfigurationException("Database connection string is not configured");
+  }
+}
+catch (Exception ex)
+{
+  throw new ConfigurationException("Failed to read database configuration", ex);
+}
+
+// Database-specific configuration exception
+throw new DatabaseConfigurationException("Invalid database connection string format: expected Server=...;Database=...;");
+
+// HTTP client configuration exception
+throw new HttpClientConfigurationException("Timeout configuration must be between 1 and 30 seconds");
+```
+
 ## FeatureFlagsBenchmarks
 
 The `FeatureFlagsBenchmarks` class provides performance benchmarks for feature flag evaluation operations. It measures the execution time of various evaluation scenarios including percentage rollout, rule-based evaluation, A/B test variant assignment, and complex rule evaluations with caching.
