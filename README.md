@@ -184,6 +184,64 @@ await eventBus.PublishAsync(
 // WebhookEventSubscriber can be configured for HTTP integrations
 ```
 
+## IWebhookService
+
+The `IWebhookService` interface provides methods for managing webhooks in the feature flag system. It handles webhook registration, retrieval, updating, deletion, and triggering webhook deliveries for feature flag events. The service supports filtering webhooks by event type and feature flag key, and includes automatic retry logic for failed deliveries.
+
+Example usage:
+```csharp
+// Register a new webhook
+var webhookService = serviceProvider.GetRequiredService<IWebhookService>();
+
+var webhook = await webhookService.RegisterWebhookAsync(
+    url: "https://webhook.site/unique-id",
+    description: "Production environment webhook for feature flag changes",
+    eventTypes: WebhookEventType.FeatureFlagEnabled | WebhookEventType.FeatureFlagDisabled,
+    featureFlagKey: "new-dashboard",
+    secret: "my-secret-key-32-chars-long",
+    createdBy: "admin@company.com");
+
+// Get a specific webhook
+var existingWebhook = await webhookService.GetWebhookAsync(webhook.Id);
+
+// Get all active webhooks for a specific event type
+var enabledWebhooks = await webhookService.GetActiveWebhooksAsync(
+    eventType: WebhookEventType.FeatureFlagEnabled,
+    featureFlagKey: "new-dashboard");
+
+// Update a webhook
+var updated = await webhookService.UpdateWebhookAsync(
+    webhookId: webhook.Id,
+    url: "https://webhook.site/updated-id",
+    description: "Updated production webhook",
+    eventTypes: WebhookEventType.FeatureFlagEnabled);
+
+// Trigger webhooks for a feature flag event
+var featureFlag = new FeatureFlag
+{
+    Id = 42,
+    Key = "new-dashboard",
+    Enabled = true,
+    Name = "New Dashboard Feature"
+};
+
+await webhookService.TriggerWebhooksAsync(
+    eventType: WebhookEventType.FeatureFlagEnabled,
+    flag: featureFlag,
+    changedBy: "admin@company.com",
+    data: new Dictionary<string, object?>
+    {
+        { "Environment", "Production" },
+        { "UserId", "user-123" }
+    });
+
+// Delete a webhook
+var deleted = await webhookService.DeleteWebhookAsync(webhook.Id);
+
+// Retry failed webhook deliveries
+await webhookService.RetryFailedDeliveriesAsync();
+```
+
 ## FeatureFlagsBenchmarks
 
 The `FeatureFlagsBenchmarks` class provides performance benchmarks for feature flag evaluation operations. It measures the execution time of various evaluation scenarios including percentage rollout, rule-based evaluation, A/B test variant assignment, and complex rule evaluations with caching.
