@@ -139,6 +139,51 @@ throw new DatabaseConfigurationException("Invalid database connection string for
 throw new HttpClientConfigurationException("Timeout configuration must be between 1 and 30 seconds");
 ```
 
+## FeatureFlagEvent
+
+The `FeatureFlagEvent` class represents an event that occurs in the feature flag system. It contains information about the event type, feature flag identifier, trigger details, and additional metadata. Events are published through the `IEventBus` and can be consumed by subscribers such as `EventLoggingSubscriber` for audit trails or `WebhookEventSubscriber` for webhook integrations.
+
+Example usage:
+```csharp
+// Create and publish a feature flag event
+var featureFlagEvent = new FeatureFlagEvent
+{
+    EventType = "FeatureFlagEnabled",
+    FeatureFlagId = 42,
+    FeatureFlagKey = "new-dashboard",
+    TriggeredBy = "admin@company.com",
+    OccurredAt = DateTime.UtcNow,
+    Metadata = new Dictionary<string, object?>
+    {
+        { "Environment", "Production" },
+        { "UserId", "user-123" },
+        { "PreviousState", false },
+        { "NewState", true }
+    }
+};
+
+// Using the event bus to publish the event
+var eventBus = serviceProvider.GetRequiredService<IEventBus>();
+await eventBus.PublishAsync(featureFlagEvent);
+
+// Publishing with convenience method
+await eventBus.PublishAsync(
+    eventType: "FeatureFlagUpdated",
+    featureFlagId: 17,
+    featureFlagKey: "experimental-feature",
+    triggeredBy: "ci-cd-pipeline",
+    metadata: new Dictionary<string, object?>
+    {
+        { "Version", "2.1.0" },
+        { "Changes", new[] { "rule-added", "percentage-updated" } }
+    }
+);
+
+// Subscribing to events (automatic with AddEventSystem)
+// Events are automatically logged by EventLoggingSubscriber
+// WebhookEventSubscriber can be configured for HTTP integrations
+```
+
 ## FeatureFlagsBenchmarks
 
 The `FeatureFlagsBenchmarks` class provides performance benchmarks for feature flag evaluation operations. It measures the execution time of various evaluation scenarios including percentage rollout, rule-based evaluation, A/B test variant assignment, and complex rule evaluations with caching.
