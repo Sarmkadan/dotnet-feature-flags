@@ -1,18 +1,22 @@
 // existing content ...
 
-## IHttpClientFactory
+## AuditLogCleanupWorker
 
-The `IHttpClientFactory` interface provides methods for creating and configuring `HttpClient` instances with consistent settings for different integration scenarios. It allows for typed HTTP clients with proper timeouts and retry policies.
+The `AuditLogCleanupWorker` is a background worker that periodically cleans up old audit logs based on the retention policy. It helps manage database size and comply with data retention regulations.
 
 Example usage:
 ```csharp
-var factory = new DefaultHttpClientFactory(
-    new System.Net.Http.HttpClientFactory()
-);
+var serviceProvider = new ServiceCollection()
+    .AddFeatureFlags()
+    .BuildServiceProvider();
 
-var webhookClient = factory.CreateWebhookClient();
-var externalApiClient = factory.CreateExternalApiClient();
+var logger = serviceProvider.GetService<ILogger<AuditLogCleanupWorker>>();
+var options = serviceProvider.GetService<AuditLogCleanupOptions>();
 
-var httpApiClient = new HttpApiClient(webhookClient, new NullLogger<HttpApiClient>());
-var result = await httpApiClient.GetAsync<string>("https://example.com/api/data");
+var worker = new AuditLogCleanupWorker(serviceProvider, logger, options);
+worker.CleanupIntervalHours = 24;
+worker.RetentionDays = 90;
+worker.Enabled = true;
+
+await worker.StartAsync();
 ```
