@@ -1,22 +1,25 @@
 // existing content ...
 
-## AuditLogCleanupWorker
+## UserContext
 
-The `AuditLogCleanupWorker` is a background worker that periodically cleans up old audit logs based on the retention policy. It helps manage database size and comply with data retention regulations.
+Represents a user's context for feature flag evaluation, containing identity attributes and metadata for targeting rules. Provides methods for validating user data and generating consistent hash values for percentage-based rollouts.
 
 Example usage:
 ```csharp
-var serviceProvider = new ServiceCollection()
-    .AddFeatureFlags()
-    .BuildServiceProvider();
+var userContext = new UserContext
+{
+    UserId = "user123",
+    Email = "user@example.com",
+    Country = "US",
+    Tier = "Premium",
+    Region = "North America"
+};
 
-var logger = serviceProvider.GetService<ILogger<AuditLogCleanupWorker>>();
-var options = serviceProvider.GetService<AuditLogCleanupOptions>();
+userContext.SetCustomAttribute("userType", "PowerUser");
 
-var worker = new AuditLogCleanupWorker(serviceProvider, logger, options);
-worker.CleanupIntervalHours = 24;
-worker.RetentionDays = 90;
-worker.Enabled = true;
-
-await worker.StartAsync();
+if (userContext.IsValid())
+{
+    var hash = userContext.GetConsistentHash("feature.new_ui");
+    Console.WriteLine($"Consistent hash for feature: {hash}");
+}
 ```
