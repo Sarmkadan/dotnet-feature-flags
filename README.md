@@ -58,6 +58,45 @@ if (userContext.IsValid())
 
 A generic result wrapper class that represents the outcome of an operation. The `Result<T>` class provides a consistent way to return success/failure with data or error messages, making it ideal for error handling in feature flag operations and other business logic.
 
+## ABTestVariant
+
+Represents a variant in an A/B test for a feature flag. Tracks allocation percentage and metrics for statistical analysis. Use ABTestVariant to implement feature flag variants with controlled rollout and conversion tracking.
+
+Example usage:
+```csharp
+var variant = new ABTestVariant
+{
+    VariantKey = "new_ui_variant",
+    DisplayName = "New UI Variant",
+    Description = "Variant with redesigned user interface",
+    AllocationPercentage = 30,
+    IsControl = false
+};
+
+// Record user assignment to track participation
+variant.RecordUserAssignment();
+
+// Record conversion when user completes desired action
+if (userCompletedAction)
+{
+    variant.RecordConversion();
+}
+
+// Calculate conversion rate
+double conversionRate = variant.GetConversionRate();
+Console.WriteLine($"Conversion rate: {conversionRate:P2}");
+
+// Check if variant configuration is valid
+if (variant.IsValid())
+{
+    Console.WriteLine("Variant configuration is valid");
+}
+
+// Get statistical confidence level based on user count
+string confidence = variant.GetStatisticalConfidence();
+Console.WriteLine($"Statistical confidence: {confidence}");
+```
+
 Example usage:
 ```csharp
 // Successful operation with data
