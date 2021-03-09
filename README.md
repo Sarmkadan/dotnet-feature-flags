@@ -53,3 +53,60 @@ if (userContext.IsValid())
     Console.WriteLine($"Consistent hash for feature: {hash}");
 }
 ```
+
+## Result
+
+A generic result wrapper class that represents the outcome of an operation. The `Result<T>` class provides a consistent way to return success/failure with data or error messages, making it ideal for error handling in feature flag operations and other business logic.
+
+Example usage:
+```csharp
+// Successful operation with data
+Result<FeatureFlag> result = Result<FeatureFlag>.Success(new FeatureFlag
+{
+    Key = "new_ui",
+    IsEnabled = true,
+    Description = "Enables the new user interface"
+});
+
+if (result.IsSuccess)
+{
+    FeatureFlag flag = result.Data!;
+    Console.WriteLine($"Flag enabled: {flag.IsEnabled}");
+}
+
+// Failed operation with error
+Result<bool> failureResult = Result<bool>.Failure("Feature flag not found", 404);
+
+// Using Try for exception handling
+Result<int> countResult = await Result<int>.Try(async () =>
+{
+    // Simulate database operation
+    await Task.Delay(100);
+    return 42;
+});
+
+// Chaining operations with Map
+Result<string> nameResult = result.Map(f => f.Key.ToUpper());
+
+// Chaining async operations with BindAsync
+Result<FeatureFlag> updatedFlag = await result.BindAsync(async flag =>
+{
+    // Simulate updating flag in database
+    await Task.Delay(50);
+    return Result<FeatureFlag>.Success(flag with { Description = "Updated description" });
+});
+
+// Handling success/failure with callbacks
+result.OnSuccess(flag => Console.WriteLine($"Success: {flag.Key}"))
+     .OnFailure(error => Console.WriteLine($"Error: {error}"));
+
+// Getting data with fallback
+FeatureFlag flag = result.GetOrDefault(new FeatureFlag { Key = "default", IsEnabled = false });
+
+// Non-generic Result for operations without return values
+Result operationResult = Result.Success();
+if (!operationResult.IsSuccess)
+{
+    Console.WriteLine($"Operation failed: {operationResult.Error}");
+}
+```
