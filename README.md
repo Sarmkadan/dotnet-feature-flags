@@ -149,3 +149,47 @@ if (!operationResult.IsSuccess)
     Console.WriteLine($"Operation failed: {operationResult.Error}");
 }
 ```
+
+## Rule
+
+Represents a targeting rule that groups one or more `Condition` objects and determines whether a feature flag should be enabled based on the rule's priority, activation state, and logical combination of its conditions. Rules are evaluated in order of `Priority` (higher values first) and can be toggled on or off with `IsActive`.
+
+Example usage:
+```csharp
+using FeatureFlags.Models;
+
+var rule = new Rule
+{
+    Id = 1,
+    FeatureFlagId = 42,
+    Name = "US Premium Users",
+    Description = "Enable feature for premium users in the US",
+    Priority = 10,
+    IsActive = true,
+    ConditionLogic = "AND",
+    CreatedAt = DateTime.UtcNow,
+    UpdatedAt = DateTime.UtcNow
+};
+
+// Add a condition that matches the user's country
+rule.Conditions.Add(new Condition
+{
+    AttributeName = "country",
+    Operator = ConditionOperator.Equals,
+    ExpectedValue = "US",
+    IsActive = true
+});
+
+// Add a condition that matches the user's tier
+rule.Conditions.Add(new Condition
+{
+    AttributeName = "tier",
+    Operator = ConditionOperator.Equals,
+    ExpectedValue = "Premium",
+    IsActive = true
+});
+
+bool valid = rule.IsValid();                     // true if the rule is well‑formed
+int activeCount = rule.GetActiveConditionCount(); // 2
+int evalPriority = rule.GetEvaluationPriority(); // 10
+```
