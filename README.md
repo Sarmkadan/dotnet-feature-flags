@@ -97,6 +97,56 @@ string confidence = variant.GetStatisticalConfidence();
 Console.WriteLine($"Statistical confidence: {confidence}");
 ```
 
+## ApiResponse
+
+Generic API response wrapper classes that provide consistent response structure across all endpoints. `ApiResponse<T>` is used for operations returning data, while the non-generic `ApiResponse` is used for operations without return values. Both include success status, optional messages/errors, metadata, and timestamps for standardized API communication.
+
+Example usage:
+```csharp
+using FeatureFlags.Models;
+
+// Successful response with data
+var successResponse = ApiResponse<FeatureFlag>.Ok(new FeatureFlag
+{
+    Key = "new_ui",
+    IsEnabled = true,
+    Description = "Enables the new user interface"
+}, "Feature flag created successfully");
+
+Console.WriteLine($"Success: {successResponse.Success}");
+Console.WriteLine($"Data: {successResponse.Data?.Key}");
+Console.WriteLine($"Message: {successResponse.Message}");
+
+// Failed response with error
+var errorResponse = ApiResponse<FeatureFlag>.Fail("Feature flag not found with key: missing_flag");
+
+Console.WriteLine($"Success: {errorResponse.Success}");
+Console.WriteLine($"Error: {errorResponse.Error}");
+
+// Non-generic response for operations without data
+var operationResponse = ApiResponse.Ok("Feature flag updated successfully");
+
+Console.WriteLine($"Success: {operationResponse.Success}");
+Console.WriteLine($"Message: {operationResponse.Message}");
+
+// Response with metadata
+var metadataResponse = ApiResponse<FeatureFlag>.Ok(
+    new FeatureFlag { Key = "beta_feature", IsEnabled = false },
+    "Beta feature retrieved"
+);
+metadataResponse.Metadata = new ApiMetadata
+{
+    RequestId = Guid.NewGuid().ToString(),
+    ExecutionTimeMs = 42,
+    PageNumber = 1,
+    PageSize = 10,
+    TotalCount = 1
+};
+
+Console.WriteLine($"Request ID: {metadataResponse.Metadata?.RequestId}");
+Console.WriteLine($"Execution time: {metadataResponse.Metadata?.ExecutionTimeMs}ms");
+```
+
 Example usage:
 ```csharp
 // Successful operation with data
