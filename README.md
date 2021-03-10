@@ -200,6 +200,44 @@ if (!operationResult.IsSuccess)
 }
 ```
 
+## AuditLog
+
+Records all changes to feature flags for compliance, debugging, and audit trail requirements. It tracks who made what changes and when, enabling rollback analysis and change history review.
+
+Example usage:
+```csharp
+using FeatureFlags.Models;
+using FeatureFlags.Enums;
+
+var auditLog = new AuditLog
+{
+    FeatureFlagId = 1,
+    Action = AuditAction.Update,
+    ChangedBy = "admin@example.com",
+    ChangedAt = DateTime.UtcNow,
+    OldValue = "true",
+    NewValue = "false",
+    Description = "Disabled feature flag new_ui",
+    IpAddress = "192.168.1.1"
+};
+
+// Summary of the change
+Console.WriteLine(auditLog.GetSummary());
+
+// Check if valid
+if (auditLog.IsValid())
+{
+    // Check if this log is a rollback
+    var previousLog = new AuditLog { OldValue = "false", NewValue = "true" };
+    bool isRollback = auditLog.IsRollbackOf(previousLog);
+    Console.WriteLine($"Is rollback: {isRollback}");
+}
+
+// Get raw state changes
+var (oldState, newState) = auditLog.GetChangeDetails();
+Console.WriteLine($"Changed from {oldState} to {newState}");
+```
+
 ## FlagEvaluationLog
 
 Records a single feature flag evaluation event, capturing the flag name, user identity, outcome, and reasoning for debugging "why did user X see feature Y". Use `FlagEvaluationLog` to audit feature flag evaluations and track which users received which feature states.
