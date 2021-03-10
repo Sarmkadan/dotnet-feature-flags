@@ -200,6 +200,42 @@ if (!operationResult.IsSuccess)
 }
 ```
 
+## FlagEvaluationLog
+
+Records a single feature flag evaluation event, capturing the flag name, user identity, outcome, and reasoning for debugging "why did user X see feature Y". Use `FlagEvaluationLog` to audit feature flag evaluations and track which users received which feature states.
+
+Example usage:
+```csharp
+using FeatureFlags.Models;
+
+// Log a successful feature flag evaluation
+var evaluationLog = new FlagEvaluationLog
+{
+    FlagName = "new_ui",
+    UserId = "user123",
+    Result = true,
+    Timestamp = DateTime.UtcNow,
+    Reason = "RulesBased"
+};
+
+Console.WriteLine($"Flag '{evaluationLog.FlagName}' evaluated to {evaluationLog.Result} for user {evaluationLog.UserId}");
+Console.WriteLine($"Reason: {evaluationLog.Reason} at {evaluationLog.Timestamp:u}");
+
+// Log a failed evaluation
+var failedLog = new FlagEvaluationLog
+{
+    FlagName = "beta_feature",
+    UserId = "user456",
+    Result = false,
+    Reason = "PercentageRollout"
+};
+
+if (!failedLog.Result)
+{
+    Console.WriteLine($"User {failedLog.UserId} did not receive feature '{failedLog.FlagName}' due to {failedLog.Reason}");
+}
+```
+
 ## Rule
 
 Represents a targeting rule that groups one or more `Condition` objects and determines whether a feature flag should be enabled based on the rule's priority, activation state, and logical combination of its conditions. Rules are evaluated in order of `Priority` (higher values first) and can be toggled on or off with `IsActive`.
