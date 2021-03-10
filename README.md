@@ -317,3 +317,58 @@ bool valid = rule.IsValid();                     // true if the rule is well‑f
 int activeCount = rule.GetActiveConditionCount(); // 2
 int evalPriority = rule.GetEvaluationPriority(); // 10
 ```
+
+## RolloutStrategy
+
+Defines the strategy for rolling out a feature to users. Supports percentage-based, rule-based, and A/B test rollout strategies with configurable start/end percentages, date ranges, and gradual rollout increments.
+
+Example usage:
+```csharp
+using FeatureFlags.Models;
+using FeatureFlags.Enums;
+
+// Create a gradual percentage-based rollout strategy
+var strategy = new RolloutStrategy
+{
+    FeatureFlagId = 1,
+    Type = RolloutType.Percentage,
+    StartPercentage = 0,
+    EndPercentage = 100,
+    IsGradual = true,
+    DailyIncrement = 10,
+    StartDate = DateTime.UtcNow.AddDays(-5), // Started 5 days ago
+    EndDate = DateTime.UtcNow.AddDays(5),  // Ends in 5 days
+    CreatedAt = DateTime.UtcNow,
+    UpdatedAt = DateTime.UtcNow
+};
+
+// Check if the rollout is currently active
+bool isActive = strategy.IsActive();
+Console.WriteLine($"Rollout is active: {isActive}");
+
+// Get the current percentage based on time elapsed and daily increment
+int currentPercentage = strategy.GetCurrentPercentage();
+Console.WriteLine($"Current rollout percentage: {currentPercentage}%");
+
+// Validate the strategy configuration
+bool isValid = strategy.IsValid();
+Console.WriteLine($"Strategy is valid: {isValid}");
+
+// Get remaining days until rollout ends
+int remainingDays = strategy.GetRemainingDays();
+Console.WriteLine($"Days remaining: {remainingDays}");
+
+// Example: Percentage-based rollout without gradual increment
+var instantStrategy = new RolloutStrategy
+{
+    FeatureFlagId = 2,
+    Type = RolloutType.Percentage,
+    StartPercentage = 50,
+    EndPercentage = 50,
+    IsGradual = false,
+    CreatedAt = DateTime.UtcNow,
+    UpdatedAt = DateTime.UtcNow
+};
+
+Console.WriteLine($"Instant rollout at {instantStrategy.GetCurrentPercentage()}%");
+```
