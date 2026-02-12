@@ -1,0 +1,85 @@
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio cache/options
+.vs/
+
+# Visual Studio Code cache/options
+.vscode/
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# ReSharper is a .NET coding add-in
+.idea/
+*.sln.iml
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings
+
+# JetBrains Rider
+.rider/
+
+# NuGet Package Manager
+*.nupkg
+*.snupkg
+.nuget/
+
+# Entity Framework
+*.db
+*.db-shm
+*.db-wal
+Migrations/
+
+# Local database
+*.mdf
+*.ldf
+*.ndf
+
+# Test Results
+TestResults/
+*.trx
+*.coverage
+
+# Rider
+.idea/
+*.sln.iml
+
+# Mac OS
+.DS_Store
+
+# Environment variables
+.env
+.env.local
+
+# IDE
+*.vscode
+.vscode/
+
+# Node modules (if needed)
+node_modules/
+npm-debug.log
+
+# Build artifacts
+artifacts/
+publish/
+
+# Documentation build
+docs/_build/
