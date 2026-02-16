@@ -3,8 +3,6 @@
 # CTO & Software Architect
 # =============================================================================
 
-version: '3.8'
-
 services:
   mssql:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -17,13 +15,14 @@ services:
     volumes:
       - mssql-data:/var/opt/mssql
     healthcheck:
-      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P YourStrongPassword123! -Q 'SELECT 1' || exit 1"]
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P YourStrongPassword123! -C -Q 'SELECT 1' || exit 1"]
       interval: 15s
       timeout: 5s
       retries: 5
-      start_period: 10s
+      start_period: 30s
     networks:
       - featureflags-network
+    restart: unless-stopped
 
   api:
     build:
@@ -35,7 +34,7 @@ services:
         condition: service_healthy
     environment:
       ASPNETCORE_ENVIRONMENT: Production
-      ASPNETCORE_URLS: http://+:80
+      ASPNETCORE_URLS: http://+:8080
       ConnectionStrings__DefaultConnection: >
         Server=mssql;Database=FeatureFlagEngine;User Id=sa;Password=YourStrongPassword123!;TrustServerCertificate=true;
       FeatureFlags__EnableCache: "true"
@@ -43,9 +42,9 @@ services:
       FeatureFlags__AuditLogRetentionDays: "365"
       FeatureFlags__EnableAuditLogging: "true"
     ports:
-      - "5000:80"
+      - "8080:8080"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
       interval: 30s
       timeout: 3s
       retries: 3
@@ -54,6 +53,7 @@ services:
       - featureflags-network
     volumes:
       - ./logs:/app/logs
+    restart: unless-stopped
 
 volumes:
   mssql-data:
