@@ -1,3 +1,4 @@
+#nullable enable
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
@@ -17,8 +18,7 @@ namespace FeatureFlags.Services;
 /// Evaluates active rollout strategies and advances percentage allocations according to
 /// configured start dates, end dates, and daily increment values.
 /// </summary>
-public class GradualRolloutSchedulerService : IGradualRolloutSchedulerService
-{
+{public sealed class GradualRolloutSchedulerService {
     private readonly FeatureFlagDbContext _context;
     private readonly IAuditLogRepository _auditLogRepository;
     private readonly ILogger<GradualRolloutSchedulerService> _logger;
@@ -39,7 +39,7 @@ public class GradualRolloutSchedulerService : IGradualRolloutSchedulerService
         _logger.LogInformation("Processing scheduled gradual rollouts");
 
         var strategies = await _context.RolloutStrategies
-            .Where(s => s.IsGradual && s.StartDate != null)
+            .Where(s => s.IsGradual && s.StartDate is not null)
             .Include(s => s.FeatureFlag)
             .ToListAsync(cancellationToken);
 
@@ -50,7 +50,7 @@ public class GradualRolloutSchedulerService : IGradualRolloutSchedulerService
             if (cancellationToken.IsCancellationRequested)
                 break;
 
-            if (!strategy.IsActive() || strategy.FeatureFlag == null)
+            if (!strategy.IsActive() || strategy.FeatureFlag is null)
                 continue;
 
             try
@@ -80,7 +80,7 @@ public class GradualRolloutSchedulerService : IGradualRolloutSchedulerService
             .OrderByDescending(s => s.CreatedAt)
             .FirstOrDefaultAsync(cancellationToken);
 
-        if (strategy?.FeatureFlag == null)
+        if (strategy?.FeatureFlag is null)
             return null;
 
         var currentPct = strategy.GetCurrentPercentage();
@@ -121,7 +121,7 @@ public class GradualRolloutSchedulerService : IGradualRolloutSchedulerService
             .OrderByDescending(s => s.CreatedAt)
             .FirstOrDefaultAsync(cancellationToken);
 
-        if (strategy?.FeatureFlag == null)
+        if (strategy?.FeatureFlag is null)
         {
             _logger.LogWarning("No gradual rollout strategy found for feature flag {FlagId}", featureFlagId);
             return false;

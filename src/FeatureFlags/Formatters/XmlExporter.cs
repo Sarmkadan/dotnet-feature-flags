@@ -1,3 +1,4 @@
+#nullable enable
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
@@ -180,7 +181,7 @@ public static class XmlParser
                 };
 
                 var percentageElement = element.Element("PercentageRollout");
-                if (percentageElement != null && int.TryParse(percentageElement.Value, out var percentage) && percentage >= 0)
+                if (percentageElement is not null && int.TryParse(percentageElement.Value, out var percentage) && percentage >= 0)
                 {
                     flag.PercentageRollout = percentage;
                 }

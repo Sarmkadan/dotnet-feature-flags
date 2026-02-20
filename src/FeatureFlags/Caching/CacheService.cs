@@ -1,3 +1,4 @@
+#nullable enable
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
@@ -27,8 +28,7 @@ public interface ICacheService
 /// In-memory implementation of cache service using concurrent dictionary.
 /// Suitable for single-server deployments. For distributed scenarios, use DistributedCacheService.
 /// </summary>
-public class InMemoryCacheService : ICacheService
-{
+{public sealed class InMemoryCacheService {
     private readonly ConcurrentDictionary<string, CacheEntry> _cache;
     private readonly ILogger<InMemoryCacheService> _logger;
     private readonly TimeSpan _defaultTtl;
@@ -173,8 +173,7 @@ public class InMemoryCacheService : ICacheService
 /// Distributed cache service using IDistributedCache for multi-server deployments.
 /// Typically backed by Redis or similar distributed cache.
 /// </summary>
-public class DistributedCacheService : ICacheService
-{
+{public sealed class DistributedCacheService {
     private readonly IDistributedCache _distributedCache;
     private readonly ILogger<DistributedCacheService> _logger;
     private readonly TimeSpan _defaultTtl;
@@ -194,7 +193,7 @@ public class DistributedCacheService : ICacheService
         }
 
         var data = _distributedCache.Get(key);
-        if (data == null)
+        if (data is null)
         {
             return default;
         }
@@ -219,7 +218,7 @@ public class DistributedCacheService : ICacheService
         }
 
         var data = await _distributedCache.GetAsync(key);
-        if (data == null)
+        if (data is null)
         {
             return default;
         }
@@ -238,7 +237,7 @@ public class DistributedCacheService : ICacheService
 
     public void Set<T>(string key, T value, TimeSpan? ttl = null)
     {
-        if (string.IsNullOrEmpty(key) || value == null)
+        if (string.IsNullOrEmpty(key) || value is null)
         {
             return;
         }
@@ -265,7 +264,7 @@ public class DistributedCacheService : ICacheService
 
     public async Task SetAsync<T>(string key, T value, TimeSpan? ttl = null)
     {
-        if (string.IsNullOrEmpty(key) || value == null)
+        if (string.IsNullOrEmpty(key) || value is null)
         {
             return;
         }

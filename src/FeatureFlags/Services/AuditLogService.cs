@@ -1,3 +1,4 @@
+#nullable enable
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
@@ -15,8 +16,7 @@ namespace FeatureFlags.Services;
 /// Service implementation for audit log operations.
 /// Manages retrieval and cleanup of audit trails for compliance and debugging.
 /// </summary>
-public class AuditLogService : IAuditLogService
-{
+{public sealed class AuditLogService {
     private readonly IAuditLogRepository _repository;
     private readonly ILogger<AuditLogService> _logger;
 

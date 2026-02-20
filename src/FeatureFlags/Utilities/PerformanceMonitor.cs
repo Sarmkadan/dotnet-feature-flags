@@ -1,3 +1,4 @@
+#nullable enable
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
@@ -11,8 +12,7 @@ namespace FeatureFlags.Utilities;
 /// Performance monitoring utility for measuring operation execution time and tracking metrics.
 /// Helps identify performance bottlenecks and track service performance over time.
 /// </summary>
-public class PerformanceMonitor : IDisposable
-{
+{public sealed class PerformanceMonitor {
     private readonly Stopwatch _stopwatch;
     private readonly string _operationName;
     private readonly ILogger<PerformanceMonitor> _logger;
@@ -160,7 +160,7 @@ public class PerformanceMetrics
         {
             return _metrics.Keys
                 .Select(key => GetStatistics(key))
-                .Where(s => s != null)
+                .Where(s => s is not null)
                 .Cast<OperationStats>()
                 .ToList();
         }
