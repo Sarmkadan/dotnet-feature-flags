@@ -1,3 +1,4 @@
+#nullable enable
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
@@ -49,7 +50,7 @@ public class AuditLog
     /// </summary>
     public bool IsRollbackOf(AuditLog? previousLog)
     {
-        if (previousLog == null)
+        if (previousLog is null)
             return false;
 
         return NewValue == previousLog.OldValue && OldValue == previousLog.NewValue;

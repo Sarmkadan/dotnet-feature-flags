@@ -1,3 +1,4 @@
+#nullable enable
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
@@ -140,7 +141,7 @@ public static class CsvParser
             var values = ParseCsvLine(lines[i]);
             var flag = MapRowToFeatureFlag(headers, values);
 
-            if (flag != null)
+            if (flag is not null)
             {
                 flags.Add(flag);
             }

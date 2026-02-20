@@ -1,3 +1,4 @@
+#nullable enable
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
@@ -12,8 +13,7 @@ namespace FeatureFlags.Services;
 /// Service implementation for percentage-based rollout evaluation.
 /// Uses consistent hashing to provide stable, reproducible rollout decisions.
 /// </summary>
-public class PercentageRolloutService : IPercentageRolloutService
-{
+{public sealed class PercentageRolloutService {
     private readonly ILogger<PercentageRolloutService> _logger;
 
     public PercentageRolloutService(ILogger<PercentageRolloutService> logger)
@@ -23,13 +23,13 @@ public class PercentageRolloutService : IPercentageRolloutService
 
     public async Task<bool> EvaluateAsync(FeatureFlag featureFlag, UserContext userContext)
     {
-        if (featureFlag == null)
+        if (featureFlag is null)
             throw new ArgumentNullException(nameof(featureFlag));
 
-        if (userContext == null)
+        if (userContext is null)
             throw new ArgumentNullException(nameof(userContext));
 
-        if (featureFlag.PercentageRollout == null)
+        if (featureFlag.PercentageRollout is null)
             throw new InvalidOperationException("Feature flag does not have a percentage rollout configured");
 
         var isEnabled = IsUserInRollout(userContext, featureFlag.Key, featureFlag.PercentageRollout.Value);
@@ -42,7 +42,7 @@ public class PercentageRolloutService : IPercentageRolloutService
 
     public bool IsUserInRollout(UserContext userContext, string featureFlagKey, int rolloutPercentage)
     {
-        if (userContext == null)
+        if (userContext is null)
             throw new ArgumentNullException(nameof(userContext));
 
         if (string.IsNullOrWhiteSpace(featureFlagKey))
@@ -63,7 +63,7 @@ public class PercentageRolloutService : IPercentageRolloutService
 
     public int GetUserBucket(UserContext userContext, string featureFlagKey)
     {
-        if (userContext == null)
+        if (userContext is null)
             throw new ArgumentNullException(nameof(userContext));
 
         if (string.IsNullOrWhiteSpace(featureFlagKey))

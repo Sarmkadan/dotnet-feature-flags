@@ -1,3 +1,4 @@
+#nullable enable
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
@@ -14,8 +15,7 @@ namespace FeatureFlags.Repository;
 /// Implementation of feature flag repository providing database persistence operations.
 /// Handles complex queries including eager loading of related entities.
 /// </summary>
-public class FeatureFlagRepository : IFeatureFlagRepository
-{
+{public sealed class FeatureFlagRepository {
     private readonly FeatureFlagDbContext _context;
 
     public FeatureFlagRepository(FeatureFlagDbContext context)
@@ -140,7 +140,7 @@ public class FeatureFlagRepository : IFeatureFlagRepository
 
     public async Task<FeatureFlag> AddAsync(FeatureFlag entity)
     {
-        if (entity == null)
+        if (entity is null)
             throw new ArgumentNullException(nameof(entity));
 
         if (!entity.IsValid())
@@ -153,14 +153,14 @@ public class FeatureFlagRepository : IFeatureFlagRepository
 
     public async Task UpdateAsync(FeatureFlag entity)
     {
-        if (entity == null)
+        if (entity is null)
             throw new ArgumentNullException(nameof(entity));
 
         if (!entity.IsValid())
             throw new InvalidFeatureFlagException("Feature flag configuration is invalid");
 
         var existing = await GetByIdAsync(entity.Id);
-        if (existing == null)
+        if (existing is null)
             throw new FeatureFlagNotFoundException(entity.Key);
 
         _context.FeatureFlags.Update(entity);
@@ -170,7 +170,7 @@ public class FeatureFlagRepository : IFeatureFlagRepository
     public async Task DeleteAsync(int id)
     {
         var entity = await GetByIdAsync(id);
-        if (entity == null)
+        if (entity is null)
             throw new FeatureFlagNotFoundException(id.ToString());
 
         _context.FeatureFlags.Remove(entity);

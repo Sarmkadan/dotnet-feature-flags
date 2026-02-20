@@ -1,3 +1,4 @@
+#nullable enable
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
@@ -15,8 +16,7 @@ namespace FeatureFlags.Services;
 /// Service implementation for feature flag operations.
 /// Coordinates evaluation, persistence, and audit logging of feature flags.
 /// </summary>
-public class FeatureFlagService : IFeatureFlagService
-{
+{public sealed class FeatureFlagService {
     private readonly IFeatureFlagRepository _featureFlagRepository;
     private readonly IAuditLogRepository _auditLogRepository;
     private readonly IRuleEvaluationService _ruleEvaluationService;
@@ -42,7 +42,7 @@ public class FeatureFlagService : IFeatureFlagService
         if (string.IsNullOrWhiteSpace(featureFlagKey))
             throw new ArgumentException("Feature flag key cannot be empty", nameof(featureFlagKey));
 
-        if (userContext == null)
+        if (userContext is null)
             throw new ArgumentNullException(nameof(userContext));
 
         if (!userContext.IsValid())
@@ -51,7 +51,7 @@ public class FeatureFlagService : IFeatureFlagService
         try
         {
             var featureFlag = await _featureFlagRepository.GetByKeyAsync(featureFlagKey);
-            if (featureFlag == null)
+            if (featureFlag is null)
             {
                 _logger.LogWarning("Feature flag '{Key}' not found", featureFlagKey);
                 return false;
@@ -105,7 +105,7 @@ public class FeatureFlagService : IFeatureFlagService
 
     public async Task<FeatureFlag> CreateFeatureFlagAsync(FeatureFlag featureFlag, string createdBy)
     {
-        if (featureFlag == null)
+        if (featureFlag is null)
             throw new ArgumentNullException(nameof(featureFlag));
 
         if (string.IsNullOrWhiteSpace(createdBy))
@@ -129,14 +129,14 @@ public class FeatureFlagService : IFeatureFlagService
 
     public async Task UpdateFeatureFlagAsync(FeatureFlag featureFlag, string updatedBy)
     {
-        if (featureFlag == null)
+        if (featureFlag is null)
             throw new ArgumentNullException(nameof(featureFlag));
 
         if (string.IsNullOrWhiteSpace(updatedBy))
             throw new ArgumentException("UpdatedBy cannot be empty", nameof(updatedBy));
 
         var existing = await _featureFlagRepository.GetByIdAsync(featureFlag.Id);
-        if (existing == null)
+        if (existing is null)
             throw new FeatureFlagNotFoundException(featureFlag.Key);
 
         var oldSnapshot = existing.GetSnapshot();
@@ -159,7 +159,7 @@ public class FeatureFlagService : IFeatureFlagService
             throw new ArgumentException("DeletedBy cannot be empty", nameof(deletedBy));
 
         var existing = await _featureFlagRepository.GetByIdAsync(id);
-        if (existing == null)
+        if (existing is null)
             throw new FeatureFlagNotFoundException(id.ToString());
 
         var snapshot = existing.GetSnapshot();
@@ -176,7 +176,7 @@ public class FeatureFlagService : IFeatureFlagService
             throw new ArgumentException("Id must be > 0", nameof(id));
 
         var featureFlag = await _featureFlagRepository.GetByIdAsync(id);
-        if (featureFlag == null)
+        if (featureFlag is null)
             throw new FeatureFlagNotFoundException(id.ToString());
 
         if (featureFlag.IsEnabled)
@@ -198,7 +198,7 @@ public class FeatureFlagService : IFeatureFlagService
             throw new ArgumentException("Id must be > 0", nameof(id));
 
         var featureFlag = await _featureFlagRepository.GetByIdAsync(id);
-        if (featureFlag == null)
+        if (featureFlag is null)
             throw new FeatureFlagNotFoundException(id.ToString());
 
         if (!featureFlag.IsEnabled)
@@ -219,11 +219,11 @@ public class FeatureFlagService : IFeatureFlagService
         if (string.IsNullOrWhiteSpace(featureFlagKey))
             throw new ArgumentException("Feature flag key cannot be empty", nameof(featureFlagKey));
 
-        if (userContext == null || !userContext.IsValid())
+        if (userContext is null || !userContext.IsValid())
             throw new InvalidOperationException("User context is invalid");
 
         var featureFlag = await _featureFlagRepository.GetWithVariantsAsync(await GetIdByKeyAsync(featureFlagKey));
-        if (featureFlag == null || !featureFlag.IsEnabled)
+        if (featureFlag is null || !featureFlag.IsEnabled)
             return null;
 
         if (featureFlag.RolloutType != RolloutType.ABTest)
@@ -257,7 +257,7 @@ public class FeatureFlagService : IFeatureFlagService
     private async Task<int> GetIdByKeyAsync(string key)
     {
         var flag = await _featureFlagRepository.GetByKeyAsync(key);
-        if (flag == null)
+        if (flag is null)
             throw new FeatureFlagNotFoundException(key);
 
         return flag.Id;
