@@ -10,7 +10,7 @@ namespace FeatureFlags.Models;
 /// Represents a variant in an A/B test for a feature flag.
 /// Tracks allocation percentage and metrics for statistical analysis.
 /// </summary>
-public class ABTestVariant
+public sealed class ABTestVariant
 {
     public int Id { get; set; }
 

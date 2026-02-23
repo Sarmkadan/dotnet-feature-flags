@@ -239,7 +239,7 @@ namespace FeatureFlags.Controllers;
 /// <summary>
 /// Request model for feature flag evaluation.
 /// </summary>
-public class EvaluationRequest
+public sealed class EvaluationRequest
 {
     public string FeatureFlagKey { get; set; } = string.Empty;
     public string UserId { get; set; } = string.Empty;

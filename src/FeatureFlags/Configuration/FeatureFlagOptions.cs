@@ -10,7 +10,7 @@ namespace FeatureFlags.Configuration;
 /// Configuration options for the feature flag engine.
 /// Loaded from appsettings.json under the "FeatureFlags" section.
 /// </summary>
-public class FeatureFlagOptions
+public sealed class FeatureFlagOptions
 {
     /// <summary>
     /// Enable caching of feature flags for performance optimization.

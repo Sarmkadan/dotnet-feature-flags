@@ -13,7 +13,7 @@ namespace FeatureFlags.Middleware;
 /// Rate limiting middleware that restricts the number of requests per IP address within a time window.
 /// Uses a sliding window approach to prevent API abuse and ensure fair resource usage across clients.
 /// </summary>
-public class RateLimitingMiddleware
+public sealed class RateLimitingMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly RateLimitOptions _options;
@@ -162,7 +162,7 @@ public class RateLimitingMiddleware
 /// <summary>
 /// Configuration options for rate limiting.
 /// </summary>
-public class RateLimitOptions
+public sealed class RateLimitOptions
 {
     public int MaxRequests { get; set; } = 100;
     public int WindowSeconds { get; set; } = 60;
