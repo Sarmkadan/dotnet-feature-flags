@@ -12,7 +12,7 @@ namespace FeatureFlags.Models;
 /// Records all changes to feature flags for compliance, debugging, and audit trail requirements.
 /// Tracks who made what changes and when, enabling rollback analysis and change history review.
 /// </summary>
-public class AuditLog
+public sealed class AuditLog
 {
     public int Id { get; set; }
 

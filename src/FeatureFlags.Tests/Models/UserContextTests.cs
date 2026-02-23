@@ -14,7 +14,7 @@ namespace FeatureFlags.Tests.Models;
 /// Unit tests for UserContext model.
 /// Tests attribute retrieval, validation, and consistent hashing.
 /// </summary>
-public class UserContextTests
+public sealed class UserContextTests
 {
     [Fact]
     public void IsValid_WithRequiredFields_ReturnsTrue()

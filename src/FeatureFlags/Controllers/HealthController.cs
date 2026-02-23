@@ -113,7 +113,7 @@ namespace FeatureFlags.Controllers;
     }
 }
 
-public class HealthResponse
+public sealed class HealthResponse
 {
     public string Status { get; set; } = string.Empty;
     public DateTime Timestamp { get; set; }
