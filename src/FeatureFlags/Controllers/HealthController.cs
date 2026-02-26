@@ -54,7 +54,7 @@ namespace FeatureFlags.Controllers;
     [HttpGet("ready")]
     [ProducesResponseType(typeof(HealthResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(HealthResponse), StatusCodes.Status503ServiceUnavailable)]
-    public async Task<IActionResult> GetReadiness()
+    public async Task<IActionResult> GetReadiness(CancellationToken cancellationToken = default)
     {
         var healthResponse = new HealthResponse
         {

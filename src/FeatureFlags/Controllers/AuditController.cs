@@ -38,7 +38,7 @@ namespace FeatureFlags.Controllers;
     [HttpGet("flags/{featureFlagId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetFlagAuditLog(int featureFlagId, [FromQuery] int page = 1, [FromQuery] int pageSize = 20)
+    public async Task<IActionResult> GetFlagAuditLog(int featureFlagId, [FromQuery] int page = 1, [FromQuery] int pageSize = 20, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -78,7 +78,7 @@ namespace FeatureFlags.Controllers;
     /// </summary>
     [HttpGet("by-user/{username}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetAuditLogsByUser(string username, [FromQuery] int page = 1, [FromQuery] int pageSize = 20)
+    public async Task<IActionResult> GetAuditLogsByUser(string username, [FromQuery] int page = 1, [FromQuery] int pageSize = 20, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -119,7 +119,7 @@ namespace FeatureFlags.Controllers;
         [FromQuery] DateTime startDate,
         [FromQuery] DateTime endDate,
         [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 20)
+        [FromQuery] int pageSize = 20, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -160,7 +160,7 @@ namespace FeatureFlags.Controllers;
     /// </summary>
     [HttpGet("history/{featureFlagId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetChangeHistory(int featureFlagId, [FromQuery] int maxEntries = 50)
+    public async Task<IActionResult> GetChangeHistory(int featureFlagId, [FromQuery] int maxEntries = 50, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -196,7 +196,7 @@ namespace FeatureFlags.Controllers;
     /// </summary>
     [HttpGet("summary")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetAuditSummary([FromQuery] int days = 30)
+    public async Task<IActionResult> GetAuditSummary([FromQuery] int days = 30, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -239,7 +239,7 @@ namespace FeatureFlags.Controllers;
     /// </summary>
     [HttpGet("export/csv")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> ExportAuditLogsCsv([FromQuery] int? featureFlagId = null, [FromQuery] int days = 30)
+    public async Task<IActionResult> ExportAuditLogsCsv([FromQuery] int? featureFlagId = null, [FromQuery] int days = 30, CancellationToken cancellationToken = default)
     {
         try
         {

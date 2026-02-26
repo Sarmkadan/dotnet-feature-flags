@@ -25,7 +25,7 @@ public sealed class AuthenticationMiddleware
         _options = options ?? throw new ArgumentNullException(nameof(options));
     }
 
-    public async Task InvokeAsync(HttpContext context)
+    public async Task InvokeAsync(HttpContext context, CancellationToken cancellationToken = default)
     {
         // Skip authentication for swagger and health check endpoints
         if (IsPublicEndpoint(context.Request.Path))
