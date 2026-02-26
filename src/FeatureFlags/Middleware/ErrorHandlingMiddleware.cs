@@ -26,7 +26,7 @@ public sealed class ErrorHandlingMiddleware
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task InvokeAsync(HttpContext context)
+    public async Task InvokeAsync(HttpContext context, CancellationToken cancellationToken = default)
     {
         try
         {
