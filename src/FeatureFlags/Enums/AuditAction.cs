@@ -54,5 +54,10 @@ public enum AuditAction
     /// <summary>
     /// A/B test variant was updated.
     /// </summary>
-    VariantUpdated = 8
+    VariantUpdated = 8,
+
+    /// <summary>
+    /// Feature flag was evaluated.
+    /// </summary>
+    Evaluated = 9
 }
