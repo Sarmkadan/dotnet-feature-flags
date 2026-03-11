@@ -187,4 +187,24 @@ public static class HashingUtilities
         rng.GetBytes(bytes);
         return Convert.ToBase64String(bytes);
     }
+
+    /// <summary>
+    /// Computes an HMAC-SHA256 signature for the given payload using the provided secret.
+    /// </summary>
+    public static string ComputeHmacSha256(string payload, string secret)
+    {
+        if (string.IsNullOrEmpty(payload))
+            throw new ArgumentException("Payload cannot be null or empty", nameof(payload));
+        if (string.IsNullOrEmpty(secret))
+            throw new ArgumentException("Secret cannot be null or empty", nameof(secret));
+
+        var keyBytes = Encoding.UTF8.GetBytes(secret);
+        var payloadBytes = Encoding.UTF8.GetBytes(payload);
+
+        using (var hmac = new HMACSHA256(keyBytes))
+        {
+            var hashBytes = hmac.ComputeHash(payloadBytes);
+            return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
+        }
+    }
 }

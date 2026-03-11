@@ -55,6 +55,8 @@ namespace FeatureFlags.Controllers;
                 request.Url,
                 request.Description ?? string.Empty,
                 request.EventTypes ?? Integration.WebhookEventType.All,
+                request.FeatureFlagKey,
+                request.Secret,
                 userId);
 
             return Created($"/api/admin/webhooks/{webhook.Id}", webhook);
@@ -255,4 +257,6 @@ public sealed class RegisterWebhookRequest
     public string Url { get; set; } = string.Empty;
     public string? Description { get; set; }
     public Integration.WebhookEventType? EventTypes { get; set; }
+}
+{ get; set; }
 }
