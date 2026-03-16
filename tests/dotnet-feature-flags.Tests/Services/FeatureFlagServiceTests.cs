@@ -4,12 +4,14 @@
 // CTO & Software Architect
 // =============================================================================
 
+using FeatureFlags.Configuration;
 using FeatureFlags.Enums;
 using FeatureFlags.Models;
 using FeatureFlags.Repository;
 using FeatureFlags.Services;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
 
@@ -36,11 +38,16 @@ public sealed class FeatureFlagServiceTests
         _percentageRolloutServiceMock = new Mock<IPercentageRolloutService>();
         _loggerMock = new Mock<ILogger<FeatureFlagService>>();
 
+        var evaluationLogService = new FlagEvaluationLogService();
+        var options = Options.Create(new FeatureFlagOptions());
+
         _service = new FeatureFlagService(
             _featureFlagRepositoryMock.Object,
             _auditLogRepositoryMock.Object,
             _ruleEvaluationServiceMock.Object,
             _percentageRolloutServiceMock.Object,
+            evaluationLogService,
+            options,
             _loggerMock.Object);
     }
 

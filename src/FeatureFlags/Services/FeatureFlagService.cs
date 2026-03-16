@@ -4,11 +4,13 @@
 // CTO & Software Architect
 // =============================================================================
 
+using FeatureFlags.Configuration;
 using FeatureFlags.Enums;
 using FeatureFlags.Exceptions;
 using FeatureFlags.Models;
 using FeatureFlags.Repository;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace FeatureFlags.Services;
 
@@ -21,6 +23,8 @@ namespace FeatureFlags.Services;
     private readonly IAuditLogRepository _auditLogRepository;
     private readonly IRuleEvaluationService _ruleEvaluationService;
     private readonly IPercentageRolloutService _percentageRolloutService;
+    private readonly IFlagEvaluationLogService _evaluationLogService;
+    private readonly FeatureFlagOptions _options;
     private readonly ILogger<FeatureFlagService> _logger;
 
     public FeatureFlagService(
@@ -28,12 +32,16 @@ namespace FeatureFlags.Services;
         IAuditLogRepository auditLogRepository,
         IRuleEvaluationService ruleEvaluationService,
         IPercentageRolloutService percentageRolloutService,
+        IFlagEvaluationLogService evaluationLogService,
+        IOptions<FeatureFlagOptions> options,
         ILogger<FeatureFlagService> logger)
     {
         _featureFlagRepository = featureFlagRepository;
         _auditLogRepository = auditLogRepository;
         _ruleEvaluationService = ruleEvaluationService;
         _percentageRolloutService = percentageRolloutService;
+        _evaluationLogService = evaluationLogService;
+        _options = options.Value;
         _logger = logger;
     }
 
@@ -56,6 +64,7 @@ namespace FeatureFlags.Services;
                 _logger.LogWarning("Feature flag '{Key}' not found", featureFlagKey);
                 // Log evaluation even if feature flag is not found, with result "Not Found"
                 await LogAuditAsync(0, AuditAction.Evaluated, userContext.UserId, featureFlagKey, "Not Found", $"Feature flag '{featureFlagKey}' evaluated by '{userContext.UserId}' - Not Found");
+                RecordEvaluationLog(featureFlagKey, userContext.UserId, false, "FlagNotFound");
                 return false;
             }
 
@@ -63,8 +72,19 @@ namespace FeatureFlags.Services;
             {
                 // Log evaluation when feature flag is disabled
                 await LogAuditAsync(featureFlag.Id, AuditAction.Evaluated, userContext.UserId, featureFlagKey, "Disabled", $"Feature flag '{featureFlagKey}' evaluated by '{userContext.UserId}' - Disabled");
+                RecordEvaluationLog(featureFlagKey, userContext.UserId, false, "FlagDisabled");
                 return false;
             }
+
+            string reason = featureFlag.RolloutType switch
+            {
+                RolloutType.Percentage => "PercentageRollout",
+                RolloutType.RulesBased => "RulesBased",
+                RolloutType.ABTest => "ABTest",
+                RolloutType.Full => "Full",
+                RolloutType.None => "None",
+                _ => "Unknown"
+            };
 
             bool result = featureFlag.RolloutType switch
             {
@@ -78,6 +98,7 @@ namespace FeatureFlags.Services;
 
             // Log successful evaluation
             await LogAuditAsync(featureFlag.Id, AuditAction.Evaluated, userContext.UserId, featureFlagKey, result.ToString(), $"Feature flag '{featureFlagKey}' evaluated by '{userContext.UserId}' - Result: {result}");
+            RecordEvaluationLog(featureFlagKey, userContext.UserId, result, reason);
             return result;
         }
         catch (Exception ex)
@@ -285,6 +306,21 @@ namespace FeatureFlags.Services;
             throw new FeatureFlagNotFoundException(key);
 
         return flag.Id;
+    }
+
+    private void RecordEvaluationLog(string flagName, string userId, bool result, string reason)
+    {
+        if (!_options.EnableAuditLog)
+            return;
+
+        _evaluationLogService.Log(new FlagEvaluationLog
+        {
+            FlagName = flagName,
+            UserId = userId,
+            Result = result,
+            Timestamp = DateTime.UtcNow,
+            Reason = reason
+        });
     }
 
     private async Task LogAuditAsync(int featureFlagId, AuditAction action, string changedBy, string oldValue, string newValue, string description)

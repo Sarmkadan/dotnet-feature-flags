@@ -34,6 +34,7 @@ public static class DependencyInjectionExtensions
         services.AddScoped<IRuleEvaluationService, RuleEvaluationService>();
         services.AddScoped<IPercentageRolloutService, PercentageRolloutService>();
         services.AddScoped<IAuditLogService, AuditLogService>();
+        services.AddSingleton<IFlagEvaluationLogService, FlagEvaluationLogService>();
 
         // Register configuration
         services.Configure<FeatureFlagOptions>(configuration.GetSection("FeatureFlags"));
