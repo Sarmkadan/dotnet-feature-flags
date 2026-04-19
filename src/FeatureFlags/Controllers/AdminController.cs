@@ -1,3 +1,4 @@
+#nullable enable
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
@@ -15,8 +16,7 @@ namespace FeatureFlags.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/admin")]
-public class AdminController : ControllerBase
-{
+{public sealed class AdminController {
     private readonly Integration.IWebhookService _webhookService;
     private readonly Services.IFeatureFlagService _featureFlagService;
     private readonly Caching.ICacheService _cacheService;
@@ -158,7 +158,7 @@ public class AdminController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> ImportCsv(IFormFile file)
     {
-        if (file == null || file.Length == 0)
+        if (file is null || file.Length == 0)
         {
             return BadRequest("No file provided");
         }

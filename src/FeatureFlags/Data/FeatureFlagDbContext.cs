@@ -1,3 +1,4 @@
+#nullable enable
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
@@ -12,8 +13,7 @@ namespace FeatureFlags.Data;
 /// Database context for the feature flag engine.
 /// Manages entity configurations, relationships, and database schema.
 /// </summary>
-public class FeatureFlagDbContext : DbContext
-{
+{public sealed class FeatureFlagDbContext {
     public FeatureFlagDbContext(DbContextOptions<FeatureFlagDbContext> options)
         : base(options)
     {

@@ -1,3 +1,4 @@
+#nullable enable
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
@@ -16,8 +17,7 @@ namespace FeatureFlags.Controllers;
 /// </summary>
 [ApiController]
 [Route("[controller]")]
-public class HealthController : ControllerBase
-{
+{public sealed class HealthController {
     private readonly FeatureFlagDbContext _dbContext;
     private readonly IFeatureFlagService _featureFlagService;
     private readonly ILogger<HealthController> _logger;
@@ -84,7 +84,7 @@ public class HealthController : ControllerBase
         try
         {
             var flags = await _featureFlagService.GetFeatureFlagsAsync();
-            dependencies["feature-flag-service"] = flags != null;
+            dependencies["feature-flag-service"] = flags is not null;
         }
         catch (Exception ex)
         {

@@ -1,3 +1,4 @@
+#nullable enable
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
@@ -14,8 +15,7 @@ namespace FeatureFlags.BackgroundJobs;
 /// Iterates over all active time-based rollout strategies and updates feature flag
 /// percentage allocations according to elapsed days and configured daily increments.
 /// </summary>
-public class GradualRolloutSchedulerWorker : BackgroundService
-{
+{public sealed class GradualRolloutSchedulerWorker {
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<GradualRolloutSchedulerWorker> _logger;
     private readonly GradualRolloutSchedulerOptions _options;
@@ -106,7 +106,7 @@ public static class GradualRolloutSchedulerExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        if (services == null)
+        if (services is null)
             throw new ArgumentNullException(nameof(services));
 
         services.AddScoped<IGradualRolloutSchedulerService, GradualRolloutSchedulerService>();
