@@ -12,7 +12,7 @@ namespace FeatureFlags.Models;
 /// Represents a single condition within a rule that evaluates context attributes.
 /// Supports various operators (Equals, Contains, GreaterThan, etc.) for flexible targeting.
 /// </summary>
-public class Condition
+public sealed class Condition
 {
     public int Id { get; set; }
 

@@ -10,7 +10,7 @@ namespace FeatureFlags.CLI;
 /// Parses command-line arguments and converts them to structured command objects.
 /// Provides help text generation and validation for CLI arguments.
 /// </summary>
-public class CliArgumentParser
+public sealed class CliArgumentParser
 {
     public static void PrintHelp()
     {
@@ -331,7 +331,7 @@ For command-specific help: dotnet run -- <command> --help
 /// <summary>
 /// Represents a parsed CLI command with its arguments.
 /// </summary>
-public class CliCommand
+public sealed class CliCommand
 {
     public string Command { get; set; } = string.Empty;
     public Dictionary<string, string> Arguments { get; set; } = new();

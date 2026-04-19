@@ -14,7 +14,7 @@ using FeatureFlags.Services;
 /// This demonstrates how to use flags in actual business logic
 /// like checkout, recommendations, and notifications.
 /// </summary>
-public class ApplicationIntegrationExample
+public sealed class ApplicationIntegrationExample
 {
     private readonly IFeatureFlagService _flagService;
 
@@ -183,7 +183,7 @@ public class ApplicationIntegrationExample
 }
 
 // Mock models and interfaces for the example
-public class OrderModel
+public sealed class OrderModel
 {
     public string Id { get; set; }
     public string UserId { get; set; }
@@ -191,7 +191,7 @@ public class OrderModel
     public int Items { get; set; }
 }
 
-public class PaymentResult
+public sealed class PaymentResult
 {
     public string TransactionId { get; set; }
     public bool Success { get; set; }

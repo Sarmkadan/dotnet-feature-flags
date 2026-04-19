@@ -14,7 +14,7 @@ using FeatureFlags.Services;
 /// This demonstrates complex targeting rules using conditions
 /// like user tier, country, and custom attributes.
 /// </summary>
-public class UserTargetingExample
+public sealed class UserTargetingExample
 {
     private readonly IFeatureFlagService _featureFlagService;
 
