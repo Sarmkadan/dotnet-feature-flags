@@ -105,7 +105,7 @@ public interface ICacheService
         }
     }
 
-    public async Task RemoveAsync(string key)
+    public async Task RemoveAsync(string key, CancellationToken cancellationToken = default)
     {
         await Task.Yield();
         Remove(key);
@@ -118,7 +118,7 @@ public interface ICacheService
         _logger.LogInformation("Cache cleared ({Count} entries removed)", count);
     }
 
-    public async Task ClearAsync()
+    public async Task ClearAsync(CancellationToken cancellationToken = default)
     {
         await Task.Yield();
         Clear();
@@ -300,7 +300,7 @@ public interface ICacheService
         _logger.LogDebug("Distributed cache REMOVE: {Key}", key);
     }
 
-    public async Task RemoveAsync(string key)
+    public async Task RemoveAsync(string key, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(key))
         {
@@ -316,7 +316,7 @@ public interface ICacheService
         _logger.LogWarning("Distributed cache clear requested (full clear may not be supported by all providers)");
     }
 
-    public async Task ClearAsync()
+    public async Task ClearAsync(CancellationToken cancellationToken = default)
     {
         await Task.Yield();
         Clear();

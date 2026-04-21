@@ -63,10 +63,10 @@ public sealed class Condition
     /// </summary>
     public bool IsValid()
     {
-        if (string.IsNullOrWhiteSpace(AttributeName))
+        if (string.IsNullOrWhiteSpace(AttributeName) || AttributeName.Length > 100)
             return false;
 
-        if (string.IsNullOrWhiteSpace(ExpectedValue))
+        if (string.IsNullOrWhiteSpace(ExpectedValue) || ExpectedValue.Length > 1000)
             return false;
 
         return Enum.IsDefined(typeof(ConditionOperator), Operator);

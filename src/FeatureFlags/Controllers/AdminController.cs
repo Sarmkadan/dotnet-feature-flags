@@ -40,7 +40,7 @@ namespace FeatureFlags.Controllers;
     [HttpPost("webhooks")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> RegisterWebhook([FromBody] RegisterWebhookRequest request)
+    public async Task<IActionResult> RegisterWebhook([FromBody] RegisterWebhookRequest request, CancellationToken cancellationToken = default)
     {
         if (!Uri.TryCreate(request.Url, UriKind.Absolute, out _))
         {
@@ -71,7 +71,7 @@ namespace FeatureFlags.Controllers;
     /// </summary>
     [HttpGet("webhooks")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetWebhooks()
+    public async Task<IActionResult> GetWebhooks(CancellationToken cancellationToken = default)
     {
         try
         {
@@ -92,7 +92,7 @@ namespace FeatureFlags.Controllers;
     [HttpDelete("webhooks/{webhookId}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteWebhook(int webhookId)
+    public async Task<IActionResult> DeleteWebhook(int webhookId, CancellationToken cancellationToken = default)
     {
         var success = await _webhookService.DeleteWebhookAsync(webhookId);
 
@@ -110,7 +110,7 @@ namespace FeatureFlags.Controllers;
     [HttpGet("export/csv")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> ExportCsv([FromQuery] bool includeRules = false)
+    public async Task<IActionResult> ExportCsv([FromQuery] bool includeRules = false, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -133,7 +133,7 @@ namespace FeatureFlags.Controllers;
     [HttpGet("export/xml")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> ExportXml()
+    public async Task<IActionResult> ExportXml(CancellationToken cancellationToken = default)
     {
         try
         {
@@ -156,7 +156,7 @@ namespace FeatureFlags.Controllers;
     [HttpPost("import/csv")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> ImportCsv(IFormFile file)
+    public async Task<IActionResult> ImportCsv(IFormFile file, CancellationToken cancellationToken = default)
     {
         if (file is null || file.Length == 0)
         {
@@ -185,7 +185,7 @@ namespace FeatureFlags.Controllers;
     /// </summary>
     [HttpPost("cache/clear")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> ClearCache()
+    public async Task<IActionResult> ClearCache(CancellationToken cancellationToken = default)
     {
         try
         {
@@ -221,7 +221,7 @@ namespace FeatureFlags.Controllers;
     /// </summary>
     [HttpGet("stats")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetStats()
+    public async Task<IActionResult> GetStats(CancellationToken cancellationToken = default)
     {
         try
         {
