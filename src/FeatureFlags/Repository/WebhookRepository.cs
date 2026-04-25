@@ -1,3 +1,4 @@
+#nullable enable
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
@@ -13,8 +14,7 @@ namespace FeatureFlags.Repository;
 /// Repository for managing webhook persistence and queries.
 /// Handles CRUD operations and specialized queries for webhook management.
 /// </summary>
-public class WebhookRepository : IWebhookRepository
-{
+{public sealed class WebhookRepository {
     private readonly FeatureFlagDbContext _context;
     private readonly ILogger<WebhookRepository> _logger;
 
@@ -26,7 +26,7 @@ public class WebhookRepository : IWebhookRepository
 
     public async Task<Webhook> CreateAsync(Webhook webhook)
     {
-        if (webhook == null)
+        if (webhook is null)
         {
             throw new ArgumentNullException(nameof(webhook));
         }
@@ -80,13 +80,13 @@ public class WebhookRepository : IWebhookRepository
 
     public async Task<bool> UpdateAsync(Webhook webhook)
     {
-        if (webhook == null)
+        if (webhook is null)
         {
             throw new ArgumentNullException(nameof(webhook));
         }
 
         var existing = await _context.Webhooks.FindAsync(webhook.Id);
-        if (existing == null)
+        if (existing is null)
         {
             return false;
         }
@@ -104,7 +104,7 @@ public class WebhookRepository : IWebhookRepository
     public async Task<bool> DeleteAsync(int id)
     {
         var webhook = await _context.Webhooks.FindAsync(id);
-        if (webhook == null)
+        if (webhook is null)
         {
             return false;
         }
@@ -132,8 +132,7 @@ public class WebhookRepository : IWebhookRepository
 /// Repository for managing webhook delivery attempts.
 /// Tracks delivery history and supports retry operations.
 /// </summary>
-public class WebhookDeliveryRepository : IWebhookDeliveryRepository
-{
+{public sealed class WebhookDeliveryRepository {
     private readonly FeatureFlagDbContext _context;
     private readonly ILogger<WebhookDeliveryRepository> _logger;
 
@@ -145,7 +144,7 @@ public class WebhookDeliveryRepository : IWebhookDeliveryRepository
 
     public async Task<WebhookDelivery> CreateAsync(WebhookDelivery delivery)
     {
-        if (delivery == null)
+        if (delivery is null)
         {
             throw new ArgumentNullException(nameof(delivery));
         }
@@ -209,13 +208,13 @@ public class WebhookDeliveryRepository : IWebhookDeliveryRepository
 
     public async Task<bool> UpdateAsync(WebhookDelivery delivery)
     {
-        if (delivery == null)
+        if (delivery is null)
         {
             throw new ArgumentNullException(nameof(delivery));
         }
 
         var existing = await _context.WebhookDeliveries.FindAsync(delivery.Id);
-        if (existing == null)
+        if (existing is null)
         {
             return false;
         }

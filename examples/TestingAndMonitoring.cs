@@ -1,3 +1,4 @@
+#nullable enable
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
@@ -326,8 +327,7 @@ public class HealthStatus
 }
 
 // Mock repository for testing
-public class MockFeatureFlagRepository : IFeatureFlagRepository
-{
+{public sealed class MockFeatureFlagRepository {
     private readonly Dictionary<Guid, FeatureFlag> _flags = new();
 
     public Task<FeatureFlag?> GetByIdAsync(Guid id) =>

@@ -1,3 +1,4 @@
+#nullable enable
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
@@ -181,7 +182,7 @@ public class FeatureFlagCachingMiddleware
     public async Task InvokeAsync(HttpContext context)
     {
         var userContext = (UserContext?)context.Items["UserContext"];
-        if (userContext == null)
+        if (userContext is null)
         {
             await _next(context);
             return;
@@ -219,7 +220,7 @@ public class FeatureFlagRateLimitMiddleware
     public async Task InvokeAsync(HttpContext context)
     {
         var userContext = (UserContext?)context.Items["UserContext"];
-        if (userContext == null)
+        if (userContext is null)
         {
             await _next(context);
             return;
