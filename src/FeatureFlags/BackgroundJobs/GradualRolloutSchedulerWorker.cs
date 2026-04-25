@@ -79,7 +79,7 @@ namespace FeatureFlags.BackgroundJobs;
 /// <summary>
 /// Configuration options for the gradual rollout scheduler background worker.
 /// </summary>
-public class GradualRolloutSchedulerOptions
+public sealed class GradualRolloutSchedulerOptions
 {
     /// <summary>
     /// Interval in minutes between consecutive rollout advancement checks. Defaults to 60 minutes.

@@ -18,7 +18,7 @@ namespace FeatureFlags.Tests.Services;
 /// <summary>
 /// Unit tests for RuleEvaluationService covering AND/OR condition logic and inactive rule handling.
 /// </summary>
-public class RuleEvaluationServiceTests
+public sealed class RuleEvaluationServiceTests
 {
     private readonly RuleEvaluationService _service;
     private readonly Mock<IFeatureFlagRepository> _repositoryMock;

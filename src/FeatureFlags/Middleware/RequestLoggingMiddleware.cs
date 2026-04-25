@@ -15,7 +15,7 @@ namespace FeatureFlags.Middleware;
 /// Middleware that logs all HTTP requests and responses, including request body, response status, and execution time.
 /// Provides comprehensive observability for API calls and helps identify performance issues.
 /// </summary>
-public class RequestLoggingMiddleware
+public sealed class RequestLoggingMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly ILogger<RequestLoggingMiddleware> _logger;

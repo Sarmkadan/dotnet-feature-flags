@@ -95,7 +95,7 @@ namespace FeatureFlags.Utilities;
 /// <summary>
 /// Collects and aggregates performance metrics over time.
 /// </summary>
-public class PerformanceMetrics
+public sealed class PerformanceMetrics
 {
     private readonly Dictionary<string, List<long>> _metrics = new();
     private readonly object _lockObj = new();
@@ -178,7 +178,7 @@ public class PerformanceMetrics
 /// <summary>
 /// Statistics for a specific operation.
 /// </summary>
-public class OperationStats
+public sealed class OperationStats
 {
     public string OperationName { get; set; } = string.Empty;
     public int CallCount { get; set; }

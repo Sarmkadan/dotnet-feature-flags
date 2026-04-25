@@ -14,7 +14,7 @@ namespace FeatureFlags.Middleware;
 /// Supports both header-based (X-API-Key) and query parameter-based API keys for flexibility.
 /// Designed to work with simple API key validation and can be extended for OAuth2/JWT.
 /// </summary>
-public class AuthenticationMiddleware
+public sealed class AuthenticationMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly AuthenticationOptions _options;
@@ -93,7 +93,7 @@ public class AuthenticationMiddleware
 /// <summary>
 /// Configuration options for API key authentication.
 /// </summary>
-public class AuthenticationOptions
+public sealed class AuthenticationOptions
 {
     public List<string> ValidApiKeys { get; set; } = new();
     public bool RequireApiKey { get; set; } = true;

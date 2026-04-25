@@ -263,7 +263,7 @@ public static class ConversionUtilities
     {
         if (value is null)
         {
-            return !typeof(T).IsValueType || Nullable.GetUnderlyingType(typeof(T)) != null;
+            return !typeof(T).IsValueType || Nullable.GetUnderlyingType(typeof(T)) is not null;
         }
 
         try

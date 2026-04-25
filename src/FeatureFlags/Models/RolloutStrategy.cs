@@ -12,7 +12,7 @@ namespace FeatureFlags.Models;
 /// Defines the strategy for rolling out a feature to users.
 /// Supports percentage-based, rule-based, and A/B test rollout strategies.
 /// </summary>
-public class RolloutStrategy
+public sealed class RolloutStrategy
 {
     public int Id { get; set; }
 
