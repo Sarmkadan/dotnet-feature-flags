@@ -24,7 +24,7 @@ namespace FeatureFlags.Repository;
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task<Webhook> CreateAsync(Webhook webhook)
+    public async Task<Webhook> CreateAsync(Webhook webhook, CancellationToken cancellationToken = default)
     {
         if (webhook is null)
         {
@@ -42,7 +42,7 @@ namespace FeatureFlags.Repository;
         return webhook;
     }
 
-    public async Task<Webhook?> GetByIdAsync(int id)
+    public async Task<Webhook?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
         return await _context.Webhooks
             .AsNoTracking()
@@ -78,7 +78,7 @@ namespace FeatureFlags.Repository;
             .ToListAsync();
     }
 
-    public async Task<bool> UpdateAsync(Webhook webhook)
+    public async Task<bool> UpdateAsync(Webhook webhook, CancellationToken cancellationToken = default)
     {
         if (webhook is null)
         {
@@ -101,7 +101,7 @@ namespace FeatureFlags.Repository;
         return true;
     }
 
-    public async Task<bool> DeleteAsync(int id)
+    public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
         var webhook = await _context.Webhooks.FindAsync(id);
         if (webhook is null)
@@ -117,12 +117,12 @@ namespace FeatureFlags.Repository;
         return true;
     }
 
-    public async Task<int> GetCountAsync()
+    public async Task<int> GetCountAsync(CancellationToken cancellationToken = default)
     {
         return await _context.Webhooks.CountAsync();
     }
 
-    public async Task<int> GetActiveCountAsync()
+    public async Task<int> GetActiveCountAsync(CancellationToken cancellationToken = default)
     {
         return await _context.Webhooks.CountAsync(w => w.IsActive);
     }
@@ -142,7 +142,7 @@ namespace FeatureFlags.Repository;
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task<WebhookDelivery> CreateAsync(WebhookDelivery delivery)
+    public async Task<WebhookDelivery> CreateAsync(WebhookDelivery delivery, CancellationToken cancellationToken = default)
     {
         if (delivery is null)
         {
@@ -155,7 +155,7 @@ namespace FeatureFlags.Repository;
         return delivery;
     }
 
-    public async Task<WebhookDelivery?> GetByIdAsync(int id)
+    public async Task<WebhookDelivery?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
         return await _context.WebhookDeliveries
             .AsNoTracking()
@@ -193,7 +193,7 @@ namespace FeatureFlags.Repository;
             .ToListAsync();
     }
 
-    public async Task<(int Successful, int Failed)> GetDeliveryStatsAsync(int webhookId, int days = 7)
+    public async Task<(int Successful, int Failed)> GetDeliveryStatsAsync(int webhookId, int days = 7, CancellationToken cancellationToken = default)
     {
         var cutoffDate = DateTime.UtcNow.AddDays(-days);
 
@@ -206,7 +206,7 @@ namespace FeatureFlags.Repository;
         return (successful, failed);
     }
 
-    public async Task<bool> UpdateAsync(WebhookDelivery delivery)
+    public async Task<bool> UpdateAsync(WebhookDelivery delivery, CancellationToken cancellationToken = default)
     {
         if (delivery is null)
         {
@@ -225,7 +225,7 @@ namespace FeatureFlags.Repository;
         return true;
     }
 
-    public async Task<int> CleanupOldDeliveriesAsync(int retentionDays = 30)
+    public async Task<int> CleanupOldDeliveriesAsync(int retentionDays = 30, CancellationToken cancellationToken = default)
     {
         var cutoffDate = DateTime.UtcNow.AddDays(-retentionDays);
 

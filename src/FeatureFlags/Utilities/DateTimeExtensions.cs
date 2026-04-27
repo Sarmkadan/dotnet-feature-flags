@@ -121,11 +121,11 @@ public static class DateTimeExtensions
         return span.TotalSeconds < 60
             ? "just now"
             : span.TotalMinutes < 60
-                ? $"{(int)span.TotalMinutes} minute{(int)span.TotalMinutes != 1 ? "s" : ""} ago"
+                ? $"{(int)span.TotalMinutes} minute{((int)span.TotalMinutes != 1 ? "s" : "")} ago"
                 : span.TotalHours < 24
-                    ? $"{(int)span.TotalHours} hour{(int)span.TotalHours != 1 ? "s" : ""} ago"
+                    ? $"{(int)span.TotalHours} hour{((int)span.TotalHours != 1 ? "s" : "")} ago"
                     : span.TotalDays < 30
-                        ? $"{(int)span.TotalDays} day{(int)span.TotalDays != 1 ? "s" : ""} ago"
+                        ? $"{(int)span.TotalDays} day{((int)span.TotalDays != 1 ? "s" : "")} ago"
                         : dateTime.ToShortDateString();
     }
 
