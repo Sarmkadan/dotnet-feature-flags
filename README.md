@@ -1,5 +1,46 @@
 // existing content ...
 
+## FeatureFlag
+
+Represents the core feature flag entity, containing configuration, rollout strategy, and targeting rules. Use FeatureFlag to define feature status, manage gradual rollouts, or configure A/B testing variants for controlled feature releases.
+
+Example usage:
+```csharp
+using FeatureFlags.Models;
+using FeatureFlags.Enums;
+
+var flag = new FeatureFlag
+{
+    Id = 1,
+    Key = "new_checkout_flow",
+    DisplayName = "New Checkout Flow",
+    Description = "Enables the redesigned checkout process",
+    IsEnabled = true,
+    RolloutType = RolloutType.Percentage,
+    PercentageRollout = 50,
+    CreatedAt = DateTime.UtcNow,
+    UpdatedAt = DateTime.UtcNow,
+    CreatedBy = "admin@example.com",
+    UpdatedBy = "admin@example.com"
+};
+
+// Add a targeting rule
+flag.Rules.Add(new Rule 
+{ 
+    Name = "Premium Users Only", 
+    Priority = 10,
+    IsActive = true
+});
+
+// Validate the flag configuration
+bool isValid = flag.IsValid(); // Returns true
+Console.WriteLine($"Flag is valid: {isValid}");
+
+// Get a summary snapshot of the flag state
+string snapshot = flag.GetSnapshot();
+Console.WriteLine($"Snapshot: {snapshot}");
+```
+
 ## Condition
 
 Represents a single condition within a rule that evaluates context attributes against expected values using various comparison operators. Conditions are used to define targeting rules for feature flags by matching user context properties like country, tier, or custom attributes.
