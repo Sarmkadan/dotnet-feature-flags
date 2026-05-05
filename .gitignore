@@ -33,6 +33,7 @@ bld/
 _ReSharper*/
 *.[Rr]e[Ss]harper
 *.DotSettings
+*.DotSettings.user
 
 # JetBrains Rider
 .rider/
@@ -41,6 +42,7 @@ _ReSharper*/
 *.nupkg
 *.snupkg
 .nuget/
+packages/
 
 # Entity Framework
 *.db
@@ -68,6 +70,7 @@ TestResults/
 # Environment variables
 .env
 .env.local
+appsettings.Development.json
 
 # IDE
 *.vscode
