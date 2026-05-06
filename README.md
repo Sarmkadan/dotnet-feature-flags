@@ -1,3 +1,7 @@
+[![Build](https://github.com/sarmkadan/dotnet-feature-flags/actions/workflows/build.yml/badge.svg)](https://github.com/sarmkadan/dotnet-feature-flags/actions/workflows/build.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![.NET](https://img.shields.io/badge/.NET-10.0-purple.svg)](https://dotnet.microsoft.com/)
+
 # dotnet-feature-flags
 
 A production-grade feature flag engine for .NET with support for percentage rollouts, user targeting, A/B testing, real-time toggles, and comprehensive audit logging. Designed for teams that need sophisticated feature management without external dependencies.
