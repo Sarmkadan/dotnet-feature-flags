@@ -5,162 +5,180 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.2.0] - 2024-02-20
+## [1.0.0] - 2025-05-07
 
 ### Added
-- Webhook integration for flag change notifications
-- Custom user attributes support in conditions
-- Performance monitoring metrics endpoint
-- Bulk operations for flags (enable/disable/delete multiple)
-- Export functionality (CSV, XML, JSON formats)
-- Rate limiting middleware with configurable thresholds
-- Request correlation ID for distributed tracing
-- Advanced search with fuzzy matching
-- Flag dependency resolution
-- Canary deployment patterns in examples
+- NuGet packaging configuration with full metadata
+- CodeQL security scanning workflow
+- Dependabot configuration for NuGet and GitHub Actions
+- Complete documentation suite: API reference, getting started guide, FAQ, deployment guide
+- Performance benchmarks table with throughput and latency measurements
+- Cross-references and integration examples with redis-cache-patterns
 
 ### Changed
-- Improved rule evaluation performance with caching
-- Enhanced audit log details with change diffs
-- Optimized database queries with better indexing
-- Upgraded to .NET 10 with latest C# 13 features
-- Updated Docker image to Alpine-based for smaller footprint
+- Promoted project to stable 1.0.0 release
+- Hardened all API endpoints with input validation
+- Rate limiting applied per IP address to prevent abuse
+- Improved secrets handling via environment variable overrides
 
 ### Fixed
-- Bug in percentage rollout distribution for edge cases
-- Concurrent access issues in cache layer
-- Null reference exception in variant allocation
-- Database migration rollback support
-- Memory leak in long-running evaluations
+- Null reference in variant allocation when all percentages sum to exactly 100
+- Concurrent cache write race condition under high load
 
-### Deprecated
-- Legacy condition operators (will be removed in 2.0)
+---
 
-### Security
-- Added input validation on all API endpoints
-- Implemented CSRF protection
-- Enhanced SQL injection prevention
-- Added rate limiting per IP address
-- Improved secrets handling in configuration
-
-## [1.1.0] - 2024-01-15
+## [0.9.0] - 2025-04-30
 
 ### Added
-- A/B test variant allocation with conversion tracking
-- Gradual rollout strategy with daily percentage increments
-- Rule-based evaluation with AND/OR logic
-- Comprehensive audit logging with change history
-- Pagination support for large datasets
-- Caching layer with configurable TTL
-- Search and filtering capabilities
-- Admin dashboard endpoints
+- Docker and Docker Compose support with Alpine-based image
+- OpenAPI/Swagger documentation on all controller endpoints
+- Example projects: BasicEvaluation, UserTargeting, ABTesting, AdvancedScenarios, MiddlewareIntegration, TestingAndMonitoring
+- Phase2 dependency injection extensions for optional services
 - Health check endpoint
-- OpenAPI/Swagger documentation
-- Docker and Docker Compose support
-- Comprehensive documentation and examples
-- Integration with Application Insights
 
 ### Changed
-- Refactored FeatureFlagService for better testability
-- Improved database schema with proper relationships
-- Enhanced error messages with actionable details
-- Optimized consistent hashing algorithm
+- Restructured examples directory with standalone runnable files
+- Improved Dockerfile multi-stage build for smaller production image
 
 ### Fixed
-- Issue with rule priority not being respected
-- Condition evaluation with special characters
-- Memory usage with large flag sets
-- Concurrent request handling
+- Docker Compose SQL Server volume mount path on Linux
 
-## [1.0.0] - 2023-12-01
+---
+
+## [0.8.0] - 2025-04-16
+
+### Changed
+- Optimized rule evaluation with short-circuit logic for AND conditions
+- Improved audit log change diffs to include old and new values side by side
+- Optimized database queries with explicit eager loading for rules and conditions
+- Enhanced error messages with actionable resolution hints
+
+### Fixed
+- Rule priority ordering: lower `Priority` value now correctly evaluated first
+- Percentage rollout distribution off-by-one at 0% and 100% boundaries
+- Condition evaluation failing for attribute values containing commas
+- Memory usage spike when evaluating flags with large variant sets
+
+---
+
+## [0.7.0] - 2025-04-02
 
 ### Added
-- Core feature flag evaluation engine
-- Percentage-based rollout with consistent hashing
-- User targeting with conditions
-- EF Core integration with SQL Server
-- REST API for flag management
-- Repository pattern with generic base
-- Dependency injection configuration
-- Unit test suite
-- Project documentation
+- CSV and XML export formatters (`CsvExporter`, `XmlExporter`)
+- CLI argument parser for command-line flag evaluation and management
+- `PerformanceMonitor` utility for measuring evaluation latency
+- `AuditLogCleanupWorker` background job for automatic log retention enforcement
+- `SearchQueryBuilder` for dynamic flag search with multiple filter criteria
+
+### Changed
+- `AuditLogService` now records old and new field values on every change
+- CLI `--export` command supports `--format csv|xml|json` and `--output` path
+
+---
+
+## [0.6.0] - 2025-03-19
+
+### Added
+- Webhook integration: register endpoints that receive payloads on flag changes
+- `WebhookService` and `WebhookRepository` with HMAC-SHA256 signature verification
+- `EventSystem` for internal publish/subscribe between services
+- Custom user attributes via `UserContext.SetCustomAttribute`
+- Admin controller endpoints for bulk enable, disable, and delete operations
+
+### Changed
+- `FeatureFlagService` now fires internal events on create, update, and delete
+- Webhook delivery retries up to 3 times with exponential backoff
+
+### Fixed
+- Flag key uniqueness constraint not enforced at service layer
+
+---
+
+## [0.5.0] - 2025-03-05
+
+### Added
+- In-memory caching layer (`CacheService`) with configurable TTL
+- `PaginationHelper` for consistent page/size handling across all list endpoints
+- `RequestLoggingMiddleware` with correlation ID injection
+- `FeatureFlagOptions` configuration binding from `appsettings.json`
+- `FeatureFlags__*` environment variable overrides for all options
+
+### Changed
+- All list endpoints now return paginated responses with `totalCount`, `pageNumber`, and `pageSize`
+- Cache enabled by default with a 5-minute TTL; disable via `FeatureFlags:EnableCache=false`
+
+### Fixed
+- Search returning duplicate results when flags matched multiple conditions
+
+---
+
+## [0.4.0] - 2025-02-19
+
+### Added
+- `GradualRolloutSchedulerService` and `GradualRolloutSchedulerWorker` for time-based percentage increments
+- `RateLimitingMiddleware` with configurable request-per-window thresholds
+- `AuthenticationMiddleware` with API key validation
+- `ErrorHandlingMiddleware` returning structured `ApiResponse` on unhandled exceptions
+
+### Changed
+- Background workers registered as hosted services via `IHostedService`
+- Error responses standardized to `{ success, error, statusCode }` envelope
+
+### Fixed
+- Gradual rollout scheduler not advancing percentage when host restarted mid-schedule
+
+---
+
+## [0.3.0] - 2025-02-05
+
+### Added
+- A/B testing with `ABTestVariant` model and percentage-based allocation
+- `GetVariantAsync` method on `IFeatureFlagService`
+- `AuditLogService` and `AuditLogRepository` for change history
+- `AuditController` with paginated log retrieval and user-scoped queries
+- Dependency injection extensions (`DependencyInjectionExtensions`) for one-call service registration
+- Audit log retention policy (`CleanupOldLogsAsync`)
+
+### Changed
+- `FeatureFlagDbContext` extended with `AuditLogs` and `Variants` `DbSet`s
+- Variant allocation uses the same consistent hash as percentage rollout for reproducibility
+
+### Fixed
+- A/B allocation producing different variants for the same user across app restarts
+
+---
+
+## [0.2.0] - 2025-01-22
+
+### Added
+- Percentage-based rollout with MurmurHash3 consistent hashing (`PercentageRolloutService`)
+- `UserContext` model with standard attributes: `UserId`, `Email`, `Tier`, `Country`, `Region`
+- `RuleEvaluationService` for evaluating targeting rules against user context
+- `Condition` model supporting operators: `Equals`, `NotEquals`, `Contains`, `In`, `StartsWith`, `EndsWith`, `GreaterThan`, `LessThan`
+- `Rule` model with AND/OR `ConditionLogic` and integer `Priority`
+- `RolloutType` enum: `Boolean`, `Percentage`, `RulesBased`, `ABTest`
+
+### Changed
+- `FeatureFlagService.IsEnabledAsync` now routes evaluation through rollout type strategy
+
+### Fixed
+- Case-sensitive attribute matching now documented; exact-match semantics preserved
+
+---
+
+## [0.1.0] - 2025-01-08
+
+### Added
+- Initial project structure: solution, `src/FeatureFlags`, `src/FeatureFlags.Tests`
+- `FeatureFlag` entity with key, display name, description, enabled state, created/modified dates
+- EF Core integration with SQL Server (`FeatureFlagDbContext`)
+- `FeatureFlagRepository` implementing generic `IRepository<T>` pattern
+- `FeatureFlagService` with create, read, update, delete, enable, and disable operations
+- `FeatureFlagController` REST API (GET, POST, PUT, DELETE, enable, disable)
+- `DatabaseSeeder` with example seed data
+- Repository pattern interfaces (`IRepository`, `IFeatureFlagRepository`)
+- Unit test project with xunit, Moq, and FluentAssertions
 - MIT License
-
-### Features
-- Create, read, update, delete feature flags
-- Enable/disable flags in real-time
-- Evaluate flags for users with context
-- Support for custom user attributes
-- Audit logging with compliance tracking
-- Type-safe C# implementation
-- Production-ready error handling
-
----
-
-## Version History Details
-
-### v0.1.0 (Unreleased)
-
-Initial project setup with:
-- Solution structure
-- Project templates
-- Git initialization
-- Basic documentation
-
----
-
-## Roadmap
-
-### v1.3.0 (Planned)
-- [ ] Redis caching integration
-- [ ] Multi-tenant support
-- [ ] Advanced analytics dashboard
-- [ ] Flag versioning and rollback
-- [ ] Custom operators via plugins
-- [ ] GraphQL API support
-
-### v2.0.0 (Planned)
-- [ ] Breaking changes cleanup
-- [ ] Native SDKs for popular frameworks
-- [ ] Real-time flag updates via WebSockets
-- [ ] Advanced targeting with machine learning
-- [ ] Managed cloud hosting option
-- [ ] Performance dashboard and insights
-
----
-
-## Migration Guides
-
-### Upgrading from 1.1.0 to 1.2.0
-
-No breaking changes. Simply update the NuGet package:
-
-```bash
-dotnet add package FeatureFlags --version 1.2.0
-```
-
-Run database migrations:
-
-```bash
-dotnet ef database update
-```
-
-### Upgrading from 1.0.0 to 1.1.0
-
-1. Update package
-2. Run migrations: `dotnet ef database update`
-3. No code changes required for basic usage
-4. To use A/B testing, create flags with `RolloutType.ABTest`
-
----
-
-## Support
-
-For issues with specific versions, please reference the version number in your GitHub issue.
-
-- **Current**: v1.2.0
-- **LTS**: v1.0.0 (security fixes only)
-- **EOL**: None yet
 
 ---
 
