@@ -28,19 +28,21 @@ public interface ICacheService
 /// In-memory implementation of cache service using concurrent dictionary.
 /// Suitable for single-server deployments. For distributed scenarios, use DistributedCacheService.
 /// </summary>
-{public sealed class InMemoryCacheService {
+{public sealed class InMemoryCacheService : IDisposable {
     private readonly ConcurrentDictionary<string, CacheEntry> _cache;
     private readonly ILogger<InMemoryCacheService> _logger;
     private readonly TimeSpan _defaultTtl;
+    private readonly CancellationTokenSource _cleanupCts;
 
     public InMemoryCacheService(ILogger<InMemoryCacheService> logger, TimeSpan? defaultTtl = null)
     {
         _cache = new ConcurrentDictionary<string, CacheEntry>();
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _defaultTtl = defaultTtl ?? TimeSpan.FromMinutes(5);
+        _cleanupCts = new CancellationTokenSource();
 
-        // Start cleanup task
-        _ = StartCleanupTaskAsync();
+        // Start cleanup task with cancellation support
+        _ = StartCleanupTaskAsync(_cleanupCts.Token);
     }
 
     public T? Get<T>(string key)
@@ -127,13 +129,13 @@ public interface ICacheService
     /// <summary>
     /// Periodically removes expired cache entries to prevent memory bloat.
     /// </summary>
-    private async Task StartCleanupTaskAsync()
+    private async Task StartCleanupTaskAsync(CancellationToken stoppingToken)
     {
-        while (true)
+        while (!stoppingToken.IsCancellationRequested)
         {
             try
             {
-                await Task.Delay(TimeSpan.FromMinutes(1));
+                await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
 
                 var expiredKeys = _cache
                     .Where(kvp => kvp.Value.ExpiresAt.HasValue && kvp.Value.ExpiresAt < DateTime.UtcNow)
@@ -154,11 +156,22 @@ public interface ICacheService
                     _logger.LogDebug("Cache cleanup: removed {Count} expired entries", removedCount);
                 }
             }
+            catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
+            {
+                _logger.LogInformation("Cache cleanup task stopping due to cancellation");
+                break;
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Cache cleanup error");
             }
         }
+    }
+
+    public void Dispose()
+    {
+        _cleanupCts.Cancel();
+        _cleanupCts.Dispose();
     }
 
     private class CacheEntry
