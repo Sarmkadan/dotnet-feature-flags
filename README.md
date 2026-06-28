@@ -297,7 +297,12 @@ FeatureFlags__AuditLogRetentionDays=730
 
 ## Usage Examples
 
-### Example 1: Simple Feature Toggle
+You can find more practical, runnable usage examples in the [examples/](examples/) directory:
+
+- [BasicUsage.cs](examples/BasicUsage.cs) - Minimal setup and first flag evaluation.
+- [AdvancedUsage.cs](examples/AdvancedUsage.cs) - Configuration, custom attributes, and error handling.
+- [IntegrationExample.cs](examples/IntegrationExample.cs) - ASP.NET dependency injection setup.
+
 
 ```csharp
 var context = new UserContext { UserId = "user123" };
