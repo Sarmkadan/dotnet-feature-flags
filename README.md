@@ -257,10 +257,45 @@ dotnet ef database update
 dotnet run
 ```
 
-### Using Docker Compose
+## Docker Usage
+
+You can run the application using Docker Compose, which includes the API and SQL Server database.
+
+### Build and Run
+
+To start the application and its dependencies:
 
 ```bash
 docker-compose up -d
+```
+
+This command will:
+1. Build the API container using the multi-stage `Dockerfile`.
+2. Start the SQL Server container.
+3. Map the application to port `8080` on your host.
+
+### View Logs
+
+To view the application logs:
+
+```bash
+docker-compose logs -f api
+```
+
+### Stop the Application
+
+To stop and remove the containers:
+
+```bash
+docker-compose down
+```
+
+### Health Check
+
+The application includes a built-in health check endpoint (`/health`) that Docker monitors to ensure the API is running correctly. You can check the status of your containers with:
+
+```bash
+docker ps
 ```
 
 ## Configuration
