@@ -27,7 +27,7 @@ public interface IWebhookService
 /// <summary>
 /// Default implementation of webhook service.
 /// </summary>
-{public sealed class WebhookService {
+public sealed class WebhookService {
     private readonly IWebhookRepository _webhookRepository;
     private readonly IWebhookDeliveryRepository _deliveryRepository;
     private readonly HttpApiClient _httpClient;
