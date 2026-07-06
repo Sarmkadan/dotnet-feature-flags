@@ -924,6 +924,31 @@ await auditLogService.CleanupOldLogsAsync(retentionDays: 365);
 
 ### Benchmarks
 
+The project includes comprehensive performance benchmarks using BenchmarkDotNet. These benchmarks measure the performance of critical operations including percentage-based rollouts, rule evaluation, A/B testing, caching, and concurrent access.
+
+#### Running Benchmarks
+
+To run the benchmarks yourself:
+
+```bash
+cd benchmarks/dotnet-feature-flags.Benchmarks
+
+# Run all benchmarks
+dotnet run -c Release
+
+# Run specific benchmark category
+dotnet run -c Release -- --filter "*Percentage*"
+
+# Run with memory diagnostics
+dotnet run -c Release -- --memory
+```
+
+The benchmarks are configured with:
+- Warmup: 3 iterations
+- Iterations: 10 per benchmark
+- Memory diagnostics enabled
+- Grouped by category for better organization
+
 Measured on a single core (Intel Core i7-12700, .NET 10, Release build):
 
 | Scenario | Throughput | p50 Latency | p99 Latency |
