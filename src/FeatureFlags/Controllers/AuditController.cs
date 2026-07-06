@@ -17,7 +17,7 @@ namespace FeatureFlags.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/audit")]
-{public sealed class AuditController {
+public sealed class AuditController {
     private readonly IAuditLogService _auditLogService;
     private readonly IFeatureFlagService _featureFlagService;
     private readonly ILogger<AuditController> _logger;
@@ -69,7 +69,7 @@ namespace FeatureFlags.Controllers;
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error retrieving audit log for flag {FlagId}", featureFlagId);
-            return StatusCode(500, ApiResponse<object>.Error("Failed to retrieve audit logs"));
+            return StatusCode(500, ApiResponse<object>.Fail("Failed to retrieve audit logs"));
         }
     }
 
@@ -105,7 +105,7 @@ namespace FeatureFlags.Controllers;
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error retrieving audit logs for user {Username}", username);
-            return StatusCode(500, ApiResponse<object>.Error("Failed to retrieve audit logs"));
+            return StatusCode(500, ApiResponse<object>.Fail("Failed to retrieve audit logs"));
         }
     }
 
@@ -125,7 +125,7 @@ namespace FeatureFlags.Controllers;
         {
             if (startDate > endDate)
             {
-                return BadRequest(ApiResponse<object>.Error("Start date must be before end date"));
+                return BadRequest(ApiResponse<object>.Fail("Start date must be before end date"));
             }
 
             var (validPage, validPageSize) = PaginationHelper.ValidateAndNormalizePaging(page, pageSize);
@@ -151,7 +151,7 @@ namespace FeatureFlags.Controllers;
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error retrieving audit logs by date range");
-            return StatusCode(500, ApiResponse<object>.Error("Failed to retrieve audit logs"));
+            return StatusCode(500, ApiResponse<object>.Fail("Failed to retrieve audit logs"));
         }
     }
 
@@ -187,7 +187,7 @@ namespace FeatureFlags.Controllers;
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error retrieving change history for flag {FlagId}", featureFlagId);
-            return StatusCode(500, ApiResponse<object>.Error("Failed to retrieve change history"));
+            return StatusCode(500, ApiResponse<object>.Fail("Failed to retrieve change history"));
         }
     }
 
@@ -230,7 +230,7 @@ namespace FeatureFlags.Controllers;
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error retrieving audit summary");
-            return StatusCode(500, ApiResponse<object>.Error("Failed to retrieve audit summary"));
+            return StatusCode(500, ApiResponse<object>.Fail("Failed to retrieve audit summary"));
         }
     }
 
@@ -259,7 +259,7 @@ namespace FeatureFlags.Controllers;
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error exporting audit logs to CSV");
-            return StatusCode(500, ApiResponse<object>.Error("Failed to export audit logs"));
+            return StatusCode(500, ApiResponse<object>.Fail("Failed to export audit logs"));
         }
     }
 

@@ -18,7 +18,7 @@ namespace FeatureFlags.Services;
 /// Service implementation for feature flag operations.
 /// Coordinates evaluation, persistence, and audit logging of feature flags.
 /// </summary>
-{public sealed class FeatureFlagService {
+public sealed class FeatureFlagService {
     private readonly IFeatureFlagRepository _featureFlagRepository;
     private readonly IAuditLogRepository _auditLogRepository;
     private readonly IRuleEvaluationService _ruleEvaluationService;

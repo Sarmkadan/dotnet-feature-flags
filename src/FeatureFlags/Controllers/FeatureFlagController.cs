@@ -16,7 +16,7 @@ namespace FeatureFlags.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-{public sealed class FeatureFlagController {
+public sealed class FeatureFlagController {
     private readonly IFeatureFlagService _featureFlagService;
     private readonly IAuditLogService _auditLogService;
     private readonly ILogger<FeatureFlagController> _logger;
