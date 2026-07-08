@@ -50,3 +50,231 @@
 +- Do NOT mention Red Rocket or Amdaris anywhere
 +- Write natural commit messages
 +- Push to main when done
+
+# 2026-07-08 16:33:24.115058
++Improve error handling in sarmkadan/dotnet-feature-flags.
++Work in: /home/redrocket/task-factory/workdir/dotnet-feature-flags
++
++1. Review the main service classes for error handling gaps
++2. Add custom exception types in an Exceptions/ folder:
++   - DotnetFeatureFlagsException (base)
++   - ConfigurationException
++   - ValidationException (if applicable)
++3. Add proper try-catch blocks where external calls happen (HTTP, DB, file I/O)
++4. Add guard clauses (ArgumentNullException) to public methods missing them
++5. Do NOT over-engineer - only add where genuinely needed
++
++Commit as: "fix: improve error handling with custom exceptions"
++
++Git config:
++  git config user.name "Vladyslav Zaiets"
++  git config user.email "rutova2@gmail.com"
++
++CRITICAL RULES:
++- Do NOT add Co-Authored-By headers
++- Do NOT mention AI, Claude, GPT, Copilot, generated, automated anywhere in code or commits
++- Do NOT mention Red Rocket or Amdaris anywhere
++- Write natural commit messages
++- Push to main when done
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- fix: resolve compile errors in FeatureFlags solution
++- fix: restore base class declarations and stray syntax lost in earlier corruption
++- perf: add BenchmarkDotNet performance benchmarks
++- chore: don't treat warnings as errors
++- chore: add examples and supporting files
++- chore: add Docker support
++- chore: add NuGet package metadata
++- docs: add usage examples
++- docs: add missing XML doc comments to services
++- ci: add badges, contributing guide, editor config
+
+# 2026-07-08 16:33:24.115124
++Improve error handling in sarmkadan/dotnet-feature-flags.
++Work in: /home/redrocket/task-factory/workdir/dotnet-feature-flags
++
++1. Review the main service classes for error handling gaps
++2. Add custom exception types in an Exceptions/ folder:
++   - DotnetFeatureFlagsException (base)
++   - ConfigurationException
++   - ValidationException (if applicable)
++3. Add proper try-catch blocks where external calls happen (HTTP, DB, file I/O)
++4. Add guard clauses (ArgumentNullException) to public methods missing them
++5. Do NOT over-engineer - only add where genuinely needed
++
++Commit as: "fix: improve error handling with custom exceptions"
++
++Git config:
++  git config user.name "Vladyslav Zaiets"
++  git config user.email "rutova2@gmail.com"
++
++CRITICAL RULES:
++- Do NOT add Co-Authored-By headers
++- Do NOT mention AI, Claude, GPT, Copilot, generated, automated anywhere in code or commits
++- Do NOT mention Red Rocket or Amdaris anywhere
++- Write natural commit messages
++- Push to main when done
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- fix: resolve compile errors in FeatureFlags solution
++- fix: restore base class declarations and stray syntax lost in earlier corruption
++- perf: add BenchmarkDotNet performance benchmarks
++- chore: don't treat warnings as errors
++- chore: add examples and supporting files
++- chore: add Docker support
++- chore: add NuGet package metadata
++- docs: add usage examples
++- docs: add missing XML doc comments to services
++- ci: add badges, contributing guide, editor config
+
+# 2026-07-08 16:34:39.237494
++Improve error handling in sarmkadan/dotnet-feature-flags.
++Work in: /home/redrocket/task-factory/workdir/dotnet-feature-flags
++
++1. Review the main service classes for error handling gaps
++2. Add custom exception types in an Exceptions/ folder:
++   - DotnetFeatureFlagsException (base)
++   - ConfigurationException
++   - ValidationException (if applicable)
++3. Add proper try-catch blocks where external calls happen (HTTP, DB, file I/O)
++4. Add guard clauses (ArgumentNullException) to public methods missing them
++5. Do NOT over-engineer - only add where genuinely needed
++
++Commit as: "fix: improve error handling with custom exceptions"
++
++Git config:
++  git config user.name "Vladyslav Zaiets"
++  git config user.email "rutova2@gmail.com"
++
++CRITICAL RULES:
++- Do NOT add Co-Authored-By headers
++- Do NOT mention AI, Claude, GPT, Copilot, generated, automated anywhere in code or commits
++- Do NOT mention Red Rocket or Amdaris anywhere
++- Write natural commit messages
++- Push to main when done
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- fix: resolve compile errors in FeatureFlags solution
++- fix: restore base class declarations and stray syntax lost in earlier corruption
++- perf: add BenchmarkDotNet performance benchmarks
++- chore: don't treat warnings as errors
++- chore: add examples and supporting files
++- chore: add Docker support
++- chore: add NuGet package metadata
++- docs: add usage examples
++- docs: add missing XML doc comments to services
++- ci: add badges, contributing guide, editor config
+
+# 2026-07-08 16:34:39.237605
++Improve error handling in sarmkadan/dotnet-feature-flags.
++Work in: /home/redrocket/task-factory/workdir/dotnet-feature-flags
++
++1. Review the main service classes for error handling gaps
++2. Add custom exception types in an Exceptions/ folder:
++   - DotnetFeatureFlagsException (base)
++   - ConfigurationException
++   - ValidationException (if applicable)
++3. Add proper try-catch blocks where external calls happen (HTTP, DB, file I/O)
++4. Add guard clauses (ArgumentNullException) to public methods missing them
++5. Do NOT over-engineer - only add where genuinely needed
++
++Commit as: "fix: improve error handling with custom exceptions"
++
++Git config:
++  git config user.name "Vladyslav Zaiets"
++  git config user.email "rutova2@gmail.com"
++
++CRITICAL RULES:
++- Do NOT add Co-Authored-By headers
++- Do NOT mention AI, Claude, GPT, Copilot, generated, automated anywhere in code or commits
++- Do NOT mention Red Rocket or Amdaris anywhere
++- Write natural commit messages
++- Push to main when done
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- fix: resolve compile errors in FeatureFlags solution
++- fix: restore base class declarations and stray syntax lost in earlier corruption
++- perf: add BenchmarkDotNet performance benchmarks
++- chore: don't treat warnings as errors
++- chore: add examples and supporting files
++- chore: add Docker support
++- chore: add NuGet package metadata
++- docs: add usage examples
++- docs: add missing XML doc comments to services
++- ci: add badges, contributing guide, editor config
+
+# 2026-07-08 16:36:22.603087
++Improve error handling in sarmkadan/dotnet-feature-flags.
++Work in: /home/redrocket/task-factory/workdir/dotnet-feature-flags
++
++1. Review the main service classes for error handling gaps
++2. Add custom exception types in an Exceptions/ folder:
++   - DotnetFeatureFlagsException (base)
++   - ConfigurationException
++   - ValidationException (if applicable)
++3. Add proper try-catch blocks where external calls happen (HTTP, DB, file I/O)
++4. Add guard clauses (ArgumentNullException) to public methods missing them
++5. Do NOT over-engineer - only add where genuinely needed
++
++Commit as: "fix: improve error handling with custom exceptions"
++
++Git config:
++  git config user.name "Vladyslav Zaiets"
++  git config user.email "rutova2@gmail.com"
++
++CRITICAL RULES:
++- Do NOT add Co-Authored-By headers
++- Do NOT mention AI, Claude, GPT, Copilot, generated, automated anywhere in code or commits
++- Do NOT mention Red Rocket or Amdaris anywhere
++- Write natural commit messages
++- Push to main when done
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- fix: resolve compile errors in FeatureFlags solution
++- fix: restore base class declarations and stray syntax lost in earlier corruption
++- perf: add BenchmarkDotNet performance benchmarks
++- chore: don't treat warnings as errors
++- chore: add examples and supporting files
++- chore: add Docker support
++- chore: add NuGet package metadata
++- docs: add usage examples
++- docs: add missing XML doc comments to services
++- ci: add badges, contributing guide, editor config
+
+# 2026-07-08 16:36:22.603165
++Improve error handling in sarmkadan/dotnet-feature-flags.
++Work in: /home/redrocket/task-factory/workdir/dotnet-feature-flags
++
++1. Review the main service classes for error handling gaps
++2. Add custom exception types in an Exceptions/ folder:
++   - DotnetFeatureFlagsException (base)
++   - ConfigurationException
++   - ValidationException (if applicable)
++3. Add proper try-catch blocks where external calls happen (HTTP, DB, file I/O)
++4. Add guard clauses (ArgumentNullException) to public methods missing them
++5. Do NOT over-engineer - only add where genuinely needed
++
++Commit as: "fix: improve error handling with custom exceptions"
++
++Git config:
++  git config user.name "Vladyslav Zaiets"
++  git config user.email "rutova2@gmail.com"
++
++CRITICAL RULES:
++- Do NOT add Co-Authored-By headers
++- Do NOT mention AI, Claude, GPT, Copilot, generated, automated anywhere in code or commits
++- Do NOT mention Red Rocket or Amdaris anywhere
++- Write natural commit messages
++- Push to main when done
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- fix: resolve compile errors in FeatureFlags solution
++- fix: restore base class declarations and stray syntax lost in earlier corruption
++- perf: add BenchmarkDotNet performance benchmarks
++- chore: don't treat warnings as errors
++- chore: add examples and supporting files
++- chore: add Docker support
++- chore: add NuGet package metadata
++- docs: add usage examples
++- docs: add missing XML doc comments to services
++- ci: add badges, contributing guide, editor config
