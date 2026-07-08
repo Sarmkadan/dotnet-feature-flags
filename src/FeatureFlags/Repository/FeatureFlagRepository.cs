@@ -8,6 +8,7 @@ using FeatureFlags.Data;
 using FeatureFlags.Exceptions;
 using FeatureFlags.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace FeatureFlags.Repository;
 
@@ -17,10 +18,12 @@ namespace FeatureFlags.Repository;
 /// </summary>
 public class FeatureFlagRepository : IFeatureFlagRepository {
     private readonly FeatureFlagDbContext _context;
+    private readonly ILogger<FeatureFlagRepository> _logger;
 
-    public FeatureFlagRepository(FeatureFlagDbContext context)
+    public FeatureFlagRepository(FeatureFlagDbContext context, ILogger<FeatureFlagRepository> logger)
     {
-        _context = context;
+        _context = context ?? throw new ArgumentNullException(nameof(context));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     public async Task<FeatureFlag?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
@@ -146,9 +149,22 @@ public class FeatureFlagRepository : IFeatureFlagRepository {
         if (!entity.IsValid())
             throw new InvalidFeatureFlagException("Feature flag configuration is invalid");
 
-        var result = _context.FeatureFlags.Add(entity);
-        await _context.SaveChangesAsync();
-        return result.Entity;
+        try
+        {
+            var result = _context.FeatureFlags.Add(entity);
+            await _context.SaveChangesAsync(cancellationToken);
+            return result.Entity;
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, "Database error while adding feature flag {Key}", entity.Key);
+            throw new FeatureFlagDataException("Failed to add feature flag due to database error", ex);
+        }
+        catch (Exception ex) when (ex is not FeatureFlagException)
+        {
+            _logger.LogError(ex, "Unexpected error while adding feature flag {Key}", entity.Key);
+            throw new FeatureFlagDataException("Failed to add feature flag", ex);
+        }
     }
 
     public async Task UpdateAsync(FeatureFlag entity, CancellationToken cancellationToken = default)
@@ -159,22 +175,48 @@ public class FeatureFlagRepository : IFeatureFlagRepository {
         if (!entity.IsValid())
             throw new InvalidFeatureFlagException("Feature flag configuration is invalid");
 
-        var existing = await GetByIdAsync(entity.Id);
-        if (existing is null)
-            throw new FeatureFlagNotFoundException(entity.Key);
+        try
+        {
+            var existing = await GetByIdAsync(entity.Id, cancellationToken);
+            if (existing is null)
+                throw new FeatureFlagNotFoundException(entity.Key);
 
-        _context.FeatureFlags.Update(entity);
-        await _context.SaveChangesAsync();
+            _context.FeatureFlags.Update(entity);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, "Database error while updating feature flag {Key}", entity.Key);
+            throw new FeatureFlagDataException("Failed to update feature flag due to database error", ex);
+        }
+        catch (Exception ex) when (ex is not FeatureFlagException)
+        {
+            _logger.LogError(ex, "Unexpected error while updating feature flag {Key}", entity.Key);
+            throw new FeatureFlagDataException("Failed to update feature flag", ex);
+        }
     }
 
     public async Task DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
-        var entity = await GetByIdAsync(id);
-        if (entity is null)
-            throw new FeatureFlagNotFoundException(id.ToString());
+        try
+        {
+            var entity = await GetByIdAsync(id, cancellationToken);
+            if (entity is null)
+                throw new FeatureFlagNotFoundException(id.ToString());
 
-        _context.FeatureFlags.Remove(entity);
-        await _context.SaveChangesAsync();
+            _context.FeatureFlags.Remove(entity);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, "Database error while deleting feature flag with id {Id}", id);
+            throw new FeatureFlagDataException("Failed to delete feature flag due to database error", ex);
+        }
+        catch (Exception ex) when (ex is not FeatureFlagException)
+        {
+            _logger.LogError(ex, "Unexpected error while deleting feature flag with id {Id}", id);
+            throw new FeatureFlagDataException("Failed to delete feature flag", ex);
+        }
     }
 
     public async Task<bool> ExistsAsync(int id, CancellationToken cancellationToken = default)

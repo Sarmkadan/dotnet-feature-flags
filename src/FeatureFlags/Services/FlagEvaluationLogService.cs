@@ -52,6 +52,12 @@ public sealed class FlagEvaluationLogService : IFlagEvaluationLogService
         if (userContext is null)
             throw new ArgumentNullException(nameof(userContext));
 
+        if (string.IsNullOrWhiteSpace(flag.Key))
+            throw new ArgumentException("Feature flag key cannot be empty", nameof(flag));
+
+        if (string.IsNullOrWhiteSpace(userContext.UserId))
+            throw new ArgumentException("User ID cannot be empty", nameof(userContext));
+
         Log(new FlagEvaluationLog
         {
             FlagName = flag.Key,
