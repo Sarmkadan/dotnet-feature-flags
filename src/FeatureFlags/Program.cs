@@ -4,20 +4,17 @@
 // CTO & Software Architect
 // =============================================================================
 
-using Serilog;
+using Microsoft.Extensions.Logging;
 using FeatureFlags.Configuration;
 using FeatureFlags.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure Serilog
-Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Debug()
-    .WriteTo.Console()
-    .CreateLogger();
-
-builder.Host.UseSerilog();
+// Configure logging using Microsoft.Extensions.Logging
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
 
 // Add services
 builder.Services.AddControllers();
@@ -26,7 +23,7 @@ builder.Services.AddSwaggerGen();
 
 // Configure database
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 builder.Services.AddDbContext<FeatureFlagDbContext>(options =>
     options.UseSqlServer(connectionString));
@@ -55,14 +52,11 @@ app.MapControllers();
 
 try
 {
-    Log.Information("Starting Feature Flag Engine");
+    app.Logger.LogInformation("Starting Feature Flag Engine");
     await app.RunAsync();
 }
 catch (Exception ex)
 {
-    Log.Fatal(ex, "Application terminated unexpectedly");
-}
-finally
-{
-    await Log.CloseAndFlushAsync();
+    app.Logger.LogError(ex, "Application terminated unexpectedly");
+    throw;
 }
