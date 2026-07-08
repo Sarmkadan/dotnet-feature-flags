@@ -62,9 +62,13 @@ public static class ConversionUtilities
             }
             else if (typeof(T).IsEnum)
             {
-                if (Enum.TryParse<T>(value, ignoreCase: true, out var enumValue))
+                try
                 {
-                    return enumValue;
+                    return (T?)Enum.Parse(typeof(T), value, ignoreCase: true);
+                }
+                catch (ArgumentException)
+                {
+                    // fall through to defaultValue below
                 }
             }
 
@@ -194,7 +198,7 @@ public static class ConversionUtilities
     /// <summary>
     /// Safely converts between enum types.
     /// </summary>
-    public static TOut? ConvertEnum<TIn, TOut>(TIn enumValue) where TIn : Enum where TOut : Enum
+    public static TOut? ConvertEnum<TIn, TOut>(TIn enumValue) where TIn : Enum where TOut : struct, Enum
     {
         try
         {
