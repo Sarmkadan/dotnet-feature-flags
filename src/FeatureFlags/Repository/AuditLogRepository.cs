@@ -9,6 +9,7 @@ using FeatureFlags.Data;
 using FeatureFlags.Exceptions;
 using FeatureFlags.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace FeatureFlags.Repository;
 
@@ -16,196 +17,235 @@ namespace FeatureFlags.Repository;
 /// Implementation of audit log repository providing persistence and retrieval of audit records.
 /// Supports comprehensive querying for audit trails and compliance reporting.
 /// </summary>
-public class AuditLogRepository : IAuditLogRepository {
-    private readonly FeatureFlagDbContext _context;
+public class AuditLogRepository : IAuditLogRepository
+{
+	private readonly FeatureFlagDbContext _context;
+	private readonly ILogger<AuditLogRepository> _logger;
 
-    public AuditLogRepository(FeatureFlagDbContext context)
-    {
-        _context = context;
-    }
+	public AuditLogRepository(FeatureFlagDbContext context, ILogger<AuditLogRepository> logger)
+	{
+		_context = context;
+		_logger = logger;
+	}
 
-    public async Task<AuditLog?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
-    {
-        return await _context.AuditLogs.FirstOrDefaultAsync(a => a.Id == id);
-    }
+	public async Task<AuditLog?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+	{
+		return await _context.AuditLogs.FirstOrDefaultAsync(a => a.Id == id);
+	}
 
-    public async Task<IEnumerable<AuditLog>> GetAllAsync()
-    {
-        return await _context.AuditLogs.OrderByDescending(a => a.ChangedAt).ToListAsync();
-    }
+	public async Task<IEnumerable<AuditLog>> GetAllAsync()
+	{
+		return await _context.AuditLogs.OrderByDescending(a => a.ChangedAt).ToListAsync();
+	}
 
-    public async Task<IEnumerable<AuditLog>> GetByFeatureFlagIdAsync(int featureFlagId)
-    {
-        if (featureFlagId <= 0)
-            throw new ArgumentException("FeatureFlagId must be > 0", nameof(featureFlagId));
+	public async Task<IEnumerable<AuditLog>> GetByFeatureFlagIdAsync(int featureFlagId)
+	{
+		if (featureFlagId <= 0)
+			throw new ArgumentException("FeatureFlagId must be > 0", nameof(featureFlagId));
 
-        return await _context.AuditLogs
-            .Where(a => a.FeatureFlagId == featureFlagId)
-            .OrderByDescending(a => a.ChangedAt)
-            .ToListAsync();
-    }
+		return await _context.AuditLogs
+			.Where(a => a.FeatureFlagId == featureFlagId)
+			.OrderByDescending(a => a.ChangedAt)
+			.ToListAsync();
+	}
 
-    public async Task<IEnumerable<AuditLog>> GetByChangedByAsync(string changedBy)
-    {
-        if (string.IsNullOrWhiteSpace(changedBy))
-            throw new ArgumentException("ChangedBy cannot be empty", nameof(changedBy));
+	public async Task<IEnumerable<AuditLog>> GetByChangedByAsync(string changedBy)
+	{
+		if (string.IsNullOrWhiteSpace(changedBy))
+			throw new ArgumentException("ChangedBy cannot be empty", nameof(changedBy));
 
-        return await _context.AuditLogs
-            .Where(a => a.ChangedBy == changedBy)
-            .OrderByDescending(a => a.ChangedAt)
-            .ToListAsync();
-    }
+		return await _context.AuditLogs
+			.Where(a => a.ChangedBy == changedBy)
+			.OrderByDescending(a => a.ChangedAt)
+			.ToListAsync();
+	}
 
-    public async Task<IEnumerable<AuditLog>> GetSinceAsync(DateTime dateTime)
-    {
-        return await _context.AuditLogs
-            .Where(a => a.ChangedAt >= dateTime)
-            .OrderByDescending(a => a.ChangedAt)
-            .ToListAsync();
-    }
+	public async Task<IEnumerable<AuditLog>> GetSinceAsync(DateTime dateTime)
+	{
+		return await _context.AuditLogs
+			.Where(a => a.ChangedAt >= dateTime)
+			.OrderByDescending(a => a.ChangedAt)
+			.ToListAsync();
+	}
 
-    public async Task<IEnumerable<AuditLog>> GetPagedAsync(int pageNumber, int pageSize)
-    {
-        if (pageNumber < 1)
-            throw new ArgumentException("Page number must be >= 1", nameof(pageNumber));
-        if (pageSize < 1 || pageSize > FeatureFlagConstants.MaxPageSize)
-            throw new ArgumentException($"Page size must be between 1 and {FeatureFlagConstants.MaxPageSize}", nameof(pageSize));
+	public async Task<IEnumerable<AuditLog>> GetPagedAsync(int pageNumber, int pageSize)
+	{
+		if (pageNumber < 1)
+			throw new ArgumentException("Page number must be >= 1", nameof(pageNumber));
+		if (pageSize < 1 || pageSize > FeatureFlagConstants.MaxPageSize)
+			throw new ArgumentException($"Page size must be between 1 and {FeatureFlagConstants.MaxPageSize}", nameof(pageSize));
 
-        return await _context.AuditLogs
-            .OrderByDescending(a => a.ChangedAt)
-            .Skip((pageNumber - 1) * pageSize)
-            .Take(pageSize)
-            .ToListAsync();
-    }
+		return await _context.AuditLogs
+			.OrderByDescending(a => a.ChangedAt)
+			.Skip((pageNumber - 1) * pageSize)
+			.Take(pageSize)
+			.ToListAsync();
+	}
 
-    public async Task<IEnumerable<AuditLog>> GetByFeatureFlagIdPagedAsync(int featureFlagId, int pageNumber, int pageSize)
-    {
-        if (featureFlagId <= 0)
-            throw new ArgumentException("FeatureFlagId must be > 0", nameof(featureFlagId));
-        if (pageNumber < 1)
-            throw new ArgumentException("Page number must be >= 1", nameof(pageNumber));
-        if (pageSize < 1 || pageSize > FeatureFlagConstants.MaxPageSize)
-            throw new ArgumentException($"Page size must be between 1 and {FeatureFlagConstants.MaxPageSize}", nameof(pageSize));
+	public async Task<IEnumerable<AuditLog>> GetByFeatureFlagIdPagedAsync(int featureFlagId, int pageNumber, int pageSize)
+	{
+		if (featureFlagId <= 0)
+			throw new ArgumentException("FeatureFlagId must be > 0", nameof(featureFlagId));
+		if (pageNumber < 1)
+			throw new ArgumentException("Page number must be >= 1", nameof(pageNumber));
+		if (pageSize < 1 || pageSize > FeatureFlagConstants.MaxPageSize)
+			throw new ArgumentException($"Page size must be between 1 and {FeatureFlagConstants.MaxPageSize}", nameof(pageSize));
 
-        return await _context.AuditLogs
-            .Where(a => a.FeatureFlagId == featureFlagId)
-            .OrderByDescending(a => a.ChangedAt)
-            .Skip((pageNumber - 1) * pageSize)
-            .Take(pageSize)
-            .ToListAsync();
-    }
+		return await _context.AuditLogs
+			.Where(a => a.FeatureFlagId == featureFlagId)
+			.OrderByDescending(a => a.ChangedAt)
+			.Skip((pageNumber - 1) * pageSize)
+			.Take(pageSize)
+			.ToListAsync();
+	}
 
-    public async Task<int> GetCountByFeatureFlagIdAsync(int featureFlagId, CancellationToken cancellationToken = default)
-    {
-        if (featureFlagId <= 0)
-            throw new ArgumentException("FeatureFlagId must be > 0", nameof(featureFlagId));
+	public async Task<int> GetCountByFeatureFlagIdAsync(int featureFlagId, CancellationToken cancellationToken = default)
+	{
+		if (featureFlagId <= 0)
+			throw new ArgumentException("FeatureFlagId must be > 0", nameof(featureFlagId));
 
-        return await _context.AuditLogs.CountAsync(a => a.FeatureFlagId == featureFlagId);
-    }
+		return await _context.AuditLogs.CountAsync(a => a.FeatureFlagId == featureFlagId);
+	}
 
-    public async Task<AuditLog?> GetLastChangeAsync(int featureFlagId, CancellationToken cancellationToken = default)
-    {
-        if (featureFlagId <= 0)
-            throw new ArgumentException("FeatureFlagId must be > 0", nameof(featureFlagId));
+	public async Task<AuditLog?> GetLastChangeAsync(int featureFlagId, CancellationToken cancellationToken = default)
+	{
+		if (featureFlagId <= 0)
+			throw new ArgumentException("FeatureFlagId must be > 0", nameof(featureFlagId));
 
-        return await _context.AuditLogs
-            .Where(a => a.FeatureFlagId == featureFlagId)
-            .OrderByDescending(a => a.ChangedAt)
-            .FirstOrDefaultAsync();
-    }
+		return await _context.AuditLogs
+			.Where(a => a.FeatureFlagId == featureFlagId)
+			.OrderByDescending(a => a.ChangedAt)
+			.FirstOrDefaultAsync();
+	}
 
-    public async Task<IEnumerable<AuditLog>> GetChangesInRangeAsync(DateTime startDate, DateTime endDate)
-    {
-        if (startDate > endDate)
-            throw new ArgumentException("Start date must be before or equal to end date");
+	public async Task<IEnumerable<AuditLog>> GetChangesInRangeAsync(DateTime startDate, DateTime endDate)
+	{
+		if (startDate > endDate)
+			throw new ArgumentException("Start date must be before or equal to end date");
 
-        return await _context.AuditLogs
-            .Where(a => a.ChangedAt >= startDate && a.ChangedAt <= endDate)
-            .OrderByDescending(a => a.ChangedAt)
-            .ToListAsync();
-    }
+		return await _context.AuditLogs
+			.Where(a => a.ChangedAt >= startDate && a.ChangedAt <= endDate)
+			.OrderByDescending(a => a.ChangedAt)
+			.ToListAsync();
+	}
 
-    public async Task<IEnumerable<AuditLog>> GetByActionAsync(string action)
-    {
-        if (string.IsNullOrWhiteSpace(action))
-            throw new ArgumentException("Action cannot be empty", nameof(action));
+	public async Task<IEnumerable<AuditLog>> GetByActionAsync(string action)
+	{
+		if (string.IsNullOrWhiteSpace(action))
+			throw new ArgumentException("Action cannot be empty", nameof(action));
 
-        return await _context.AuditLogs
-            .Where(a => a.Action.ToString() == action)
-            .OrderByDescending(a => a.ChangedAt)
-            .ToListAsync();
-    }
+		return await _context.AuditLogs
+			.Where(a => a.Action.ToString() == action)
+			.OrderByDescending(a => a.ChangedAt)
+			.ToListAsync();
+	}
 
-    public async Task<AuditLog> AddAsync(AuditLog entity, CancellationToken cancellationToken = default)
-    {
-        if (entity is null)
-            throw new ArgumentNullException(nameof(entity));
+	public async Task<AuditLog> AddAsync(AuditLog entity, CancellationToken cancellationToken = default)
+	{
+		if (entity is null)
+			throw new ArgumentNullException(nameof(entity));
 
-        if (!entity.IsValid())
-            throw new FeatureFlagDataException("Audit log is invalid");
+		if (!entity.IsValid())
+			throw new FeatureFlagDataException("Audit log is invalid");
 
-        var result = _context.AuditLogs.Add(entity);
-        await _context.SaveChangesAsync();
-        return result.Entity;
-    }
+		try
+		{
+			var result = _context.AuditLogs.Add(entity);
+			await _context.SaveChangesAsync();
+			_logger.LogInformation("Audit log added for feature flag {FeatureFlagId} by {ChangedBy}", entity.FeatureFlagId, entity.ChangedBy);
+			return result.Entity;
+		}
+		catch (Exception ex) when (ex is not FeatureFlagException)
+		{
+			_logger.LogError(ex, "Failed to add audit log for feature flag {FeatureFlagId}", entity.FeatureFlagId);
+			throw new FeatureFlagDataException("Failed to add audit log", ex);
+		}
+	}
 
-    public async Task UpdateAsync(AuditLog entity, CancellationToken cancellationToken = default)
-    {
-        if (entity is null)
-            throw new ArgumentNullException(nameof(entity));
+	public async Task UpdateAsync(AuditLog entity, CancellationToken cancellationToken = default)
+	{
+		if (entity is null)
+			throw new ArgumentNullException(nameof(entity));
 
-        var existing = await GetByIdAsync(entity.Id);
-        if (existing is null)
-            throw new FeatureFlagDataException($"Audit log with id {entity.Id} not found");
+		var existing = await GetByIdAsync(entity.Id);
+		if (existing is null)
+			throw new FeatureFlagDataException($"Audit log with id {entity.Id} not found");
 
-        _context.AuditLogs.Update(entity);
-        await _context.SaveChangesAsync();
-    }
+		try
+		{
+			_context.AuditLogs.Update(entity);
+			await _context.SaveChangesAsync();
+			_logger.LogInformation("Audit log {Id} updated by {ChangedBy}", entity.Id, entity.ChangedBy);
+		}
+		catch (Exception ex) when (ex is not FeatureFlagException)
+		{
+			_logger.LogError(ex, "Failed to update audit log {Id}", entity.Id);
+			throw new FeatureFlagDataException("Failed to update audit log", ex);
+		}
+	}
 
-    public async Task DeleteAsync(int id, CancellationToken cancellationToken = default)
-    {
-        var entity = await GetByIdAsync(id);
-        if (entity is null)
-            throw new FeatureFlagDataException($"Audit log with id {id} not found");
+	public async Task DeleteAsync(int id, CancellationToken cancellationToken = default)
+	{
+		var entity = await GetByIdAsync(id);
+		if (entity is null)
+			throw new FeatureFlagDataException($"Audit log with id {id} not found");
 
-        _context.AuditLogs.Remove(entity);
-        await _context.SaveChangesAsync();
-    }
+		try
+		{
+			_context.AuditLogs.Remove(entity);
+			await _context.SaveChangesAsync();
+			_logger.LogInformation("Audit log {Id} deleted", id);
+		}
+		catch (Exception ex) when (ex is not FeatureFlagException)
+		{
+			_logger.LogError(ex, "Failed to delete audit log {Id}", id);
+			throw new FeatureFlagDataException("Failed to delete audit log", ex);
+		}
+	}
 
-    public async Task<bool> ExistsAsync(int id, CancellationToken cancellationToken = default)
-    {
-        return await _context.AuditLogs.AnyAsync(a => a.Id == id);
-    }
+	public async Task<bool> ExistsAsync(int id, CancellationToken cancellationToken = default)
+	{
+		return await _context.AuditLogs.AnyAsync(a => a.Id == id);
+	}
 
-    public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
-    {
-        await _context.SaveChangesAsync();
-    }
+	public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
+	{
+		await _context.SaveChangesAsync();
+	}
 
-    public async Task CleanupOldLogsAsync(int retentionDays, CancellationToken cancellationToken = default)
-    {
-        if (retentionDays < 1)
-            throw new ArgumentException("Retention days must be >= 1", nameof(retentionDays));
+	public async Task CleanupOldLogsAsync(int retentionDays, CancellationToken cancellationToken = default)
+	{
+		if (retentionDays < 1)
+			throw new ArgumentException("Retention days must be >= 1", nameof(retentionDays));
 
-        var cutoffDate = DateTime.UtcNow.AddDays(-retentionDays);
-        var logsToDelete = await _context.AuditLogs
-            .Where(a => a.ChangedAt < cutoffDate)
-            .ToListAsync();
+		try
+		{
+			var cutoffDate = DateTime.UtcNow.AddDays(-retentionDays);
+			var logsToDelete = await _context.AuditLogs
+				.Where(a => a.ChangedAt < cutoffDate)
+				.ToListAsync();
 
-        if (logsToDelete.Any())
-        {
-            _context.AuditLogs.RemoveRange(logsToDelete);
-            await _context.SaveChangesAsync();
-        }
-    }
+			if (logsToDelete.Any())
+			{
+				_context.AuditLogs.RemoveRange(logsToDelete);
+				await _context.SaveChangesAsync();
+				_logger.LogInformation("Cleaned up {Count} old audit logs (older than {CutoffDate})", logsToDelete.Count, cutoffDate);
+			}
+		}
+		catch (Exception ex) when (ex is not FeatureFlagException)
+		{
+			_logger.LogError(ex, "Failed to cleanup old audit logs");
+			throw new FeatureFlagDataException("Failed to cleanup old logs", ex);
+		}
+	}
 
-    Task<AuditLog?> IRepository<AuditLog>.GetByIdAsync(int id) => GetByIdAsync(id);
-    Task<int> IAuditLogRepository.GetCountByFeatureFlagIdAsync(int featureFlagId) => GetCountByFeatureFlagIdAsync(featureFlagId);
-    Task<AuditLog?> IAuditLogRepository.GetLastChangeAsync(int featureFlagId) => GetLastChangeAsync(featureFlagId);
-    Task<AuditLog> IRepository<AuditLog>.AddAsync(AuditLog entity) => AddAsync(entity);
-    Task IRepository<AuditLog>.UpdateAsync(AuditLog entity) => UpdateAsync(entity);
-    Task IRepository<AuditLog>.DeleteAsync(int id) => DeleteAsync(id);
-    Task<bool> IRepository<AuditLog>.ExistsAsync(int id) => ExistsAsync(id);
-    Task IRepository<AuditLog>.SaveChangesAsync() => SaveChangesAsync();
-    Task IAuditLogRepository.CleanupOldLogsAsync(int retentionDays) => CleanupOldLogsAsync(retentionDays);
+	Task<AuditLog?> IRepository<AuditLog>.GetByIdAsync(int id) => GetByIdAsync(id);
+	Task<int> IAuditLogRepository.GetCountByFeatureFlagIdAsync(int featureFlagId) => GetCountByFeatureFlagIdAsync(featureFlagId);
+	Task<AuditLog?> IAuditLogRepository.GetLastChangeAsync(int featureFlagId) => GetLastChangeAsync(featureFlagId);
+	Task<AuditLog> IRepository<AuditLog>.AddAsync(AuditLog entity) => AddAsync(entity);
+	Task IRepository<AuditLog>.UpdateAsync(AuditLog entity) => UpdateAsync(entity);
+	Task IRepository<AuditLog>.DeleteAsync(int id) => DeleteAsync(id);
+	Task<bool> IRepository<AuditLog>.ExistsAsync(int id) => ExistsAsync(id);
+	Task IRepository<AuditLog>.SaveChangesAsync() => SaveChangesAsync();
+	Task IAuditLogRepository.CleanupOldLogsAsync(int retentionDays) => CleanupOldLogsAsync(retentionDays);
 }
