@@ -8,6 +8,7 @@ using FeatureFlags.Repository;
 using FeatureFlags.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace FeatureFlags.Configuration;
 
