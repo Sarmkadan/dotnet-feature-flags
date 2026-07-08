@@ -28,6 +28,7 @@ public sealed class FeatureFlagWorkflowIntegrationTests
     private readonly Mock<ILogger<FeatureFlagService>> _loggerMock;
     private readonly Mock<ILogger<RuleEvaluationService>> _ruleLoggerMock;
     private readonly Mock<ILogger<PercentageRolloutService>> _percentageLoggerMock;
+    private readonly Mock<ILogger<FlagEvaluationLogService>> _evaluationLogLoggerMock;
     private readonly FeatureFlagService _flagService;
     private readonly RuleEvaluationService _ruleService;
     private readonly PercentageRolloutService _percentageService;
@@ -39,8 +40,9 @@ public sealed class FeatureFlagWorkflowIntegrationTests
         _loggerMock = new Mock<ILogger<FeatureFlagService>>();
         _ruleLoggerMock = new Mock<ILogger<RuleEvaluationService>>();
         _percentageLoggerMock = new Mock<ILogger<PercentageRolloutService>>();
+        _evaluationLogLoggerMock = new Mock<ILogger<FlagEvaluationLogService>>();
 
-        var evaluationLogService = new FlagEvaluationLogService();
+        var evaluationLogService = new FlagEvaluationLogService(_evaluationLogLoggerMock.Object);
         var options = Options.Create(new FeatureFlagOptions());
 
         _ruleService = new RuleEvaluationService(_flagRepositoryMock.Object, _ruleLoggerMock.Object);

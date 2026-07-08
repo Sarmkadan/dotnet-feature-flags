@@ -38,7 +38,7 @@ public sealed class FeatureFlagServiceTests
         _percentageRolloutServiceMock = new Mock<IPercentageRolloutService>();
         _loggerMock = new Mock<ILogger<FeatureFlagService>>();
 
-        var evaluationLogService = new FlagEvaluationLogService();
+        var evaluationLogService = new FlagEvaluationLogService(Mock.Of<ILogger<FlagEvaluationLogService>>());
         var options = Options.Create(new FeatureFlagOptions());
 
         _service = new FeatureFlagService(
