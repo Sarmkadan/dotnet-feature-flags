@@ -14,7 +14,7 @@ namespace FeatureFlags.Repository;
 /// Repository for managing webhook persistence and queries.
 /// Handles CRUD operations and specialized queries for webhook management.
 /// </summary>
-public sealed class WebhookRepository {
+public sealed class WebhookRepository : IWebhookRepository {
     private readonly FeatureFlagDbContext _context;
     private readonly ILogger<WebhookRepository> _logger;
 
@@ -126,13 +126,21 @@ public sealed class WebhookRepository {
     {
         return await _context.Webhooks.CountAsync(w => w.IsActive);
     }
+
+    Task<Webhook> IWebhookRepository.CreateAsync(Webhook webhook) => CreateAsync(webhook);
+
+    Task<Webhook?> IWebhookRepository.GetByIdAsync(int id) => GetByIdAsync(id);
+
+    Task<bool> IWebhookRepository.UpdateAsync(Webhook webhook) => UpdateAsync(webhook);
+
+    Task<bool> IWebhookRepository.DeleteAsync(int id) => DeleteAsync(id);
 }
 
 /// <summary>
 /// Repository for managing webhook delivery attempts.
 /// Tracks delivery history and supports retry operations.
 /// </summary>
-public sealed class WebhookDeliveryRepository {
+public sealed class WebhookDeliveryRepository : IWebhookDeliveryRepository {
     private readonly FeatureFlagDbContext _context;
     private readonly ILogger<WebhookDeliveryRepository> _logger;
 
@@ -245,4 +253,6 @@ public sealed class WebhookDeliveryRepository {
 
         return deliveries.Count;
     }
+
+    Task<WebhookDelivery> IWebhookDeliveryRepository.CreateAsync(WebhookDelivery delivery) => CreateAsync(delivery);
 }

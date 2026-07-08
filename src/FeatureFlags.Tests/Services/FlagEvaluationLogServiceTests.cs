@@ -37,7 +37,7 @@ public sealed class FlagEvaluationLogServiceTests
         // Assert
         var logs = _service.GetEvaluationLogs();
         logs.Should().HaveCountGreaterThan(0);
-        logs.Last().FlagKey.Should().Be("test-flag");
+        logs.Last().FlagName.Should().Be("test-flag");
         logs.Last().UserId.Should().Be("user1");
         logs.Last().Result.Should().BeTrue();
     }
@@ -125,7 +125,7 @@ public sealed class FlagEvaluationLogServiceTests
         logs1.Should().HaveCount(1);
         logs2.Should().HaveCount(1);
         // Both should reference the same data but may be different list instances
-        logs1[0].FlagKey.Should().Be(logs2[0].FlagKey);
+        logs1[0].FlagName.Should().Be(logs2[0].FlagName);
     }
 
     [Fact]
@@ -181,7 +181,7 @@ public sealed class FlagEvaluationLogServiceTests
 
         // Assert
         flag1Logs.Should().HaveCount(2);
-        flag1Logs.Should().AllSatisfy(l => l.FlagKey.Should().Be("flag-1"));
+        flag1Logs.Should().AllSatisfy(l => l.FlagName.Should().Be("flag-1"));
     }
 
     [Fact]

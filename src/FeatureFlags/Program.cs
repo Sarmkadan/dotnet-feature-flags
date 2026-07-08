@@ -9,7 +9,7 @@ using FeatureFlags.Configuration;
 using FeatureFlags.Data;
 using Microsoft.EntityFrameworkCore;
 
-var builder = WebApplicationBuilder.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
 // Configure Serilog
 Log.Logger = new LoggerConfiguration()

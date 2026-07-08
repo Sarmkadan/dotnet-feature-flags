@@ -16,7 +16,7 @@ namespace FeatureFlags.Repository;
 /// Implementation of audit log repository providing persistence and retrieval of audit records.
 /// Supports comprehensive querying for audit trails and compliance reporting.
 /// </summary>
-public sealed class AuditLogRepository {
+public class AuditLogRepository : IAuditLogRepository {
     private readonly FeatureFlagDbContext _context;
 
     public AuditLogRepository(FeatureFlagDbContext context)
@@ -198,4 +198,14 @@ public sealed class AuditLogRepository {
             await _context.SaveChangesAsync();
         }
     }
+
+    Task<AuditLog?> IRepository<AuditLog>.GetByIdAsync(int id) => GetByIdAsync(id);
+    Task<int> IAuditLogRepository.GetCountByFeatureFlagIdAsync(int featureFlagId) => GetCountByFeatureFlagIdAsync(featureFlagId);
+    Task<AuditLog?> IAuditLogRepository.GetLastChangeAsync(int featureFlagId) => GetLastChangeAsync(featureFlagId);
+    Task<AuditLog> IRepository<AuditLog>.AddAsync(AuditLog entity) => AddAsync(entity);
+    Task IRepository<AuditLog>.UpdateAsync(AuditLog entity) => UpdateAsync(entity);
+    Task IRepository<AuditLog>.DeleteAsync(int id) => DeleteAsync(id);
+    Task<bool> IRepository<AuditLog>.ExistsAsync(int id) => ExistsAsync(id);
+    Task IRepository<AuditLog>.SaveChangesAsync() => SaveChangesAsync();
+    Task IAuditLogRepository.CleanupOldLogsAsync(int retentionDays) => CleanupOldLogsAsync(retentionDays);
 }

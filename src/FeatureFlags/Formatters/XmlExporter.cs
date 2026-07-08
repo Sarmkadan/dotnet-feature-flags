@@ -78,7 +78,7 @@ public static class XmlExporter
                 new XElement("FeatureFlagId", log.FeatureFlagId),
                 new XElement("Action", log.Action),
                 new XElement("ChangedBy", log.ChangedBy),
-                new XElement("Timestamp", log.Timestamp.ToString("O")),
+                new XElement("Timestamp", log.ChangedAt.ToString("O")),
                 new XElement("OldValue", log.OldValue ?? string.Empty),
                 new XElement("NewValue", log.NewValue ?? string.Empty)
             );

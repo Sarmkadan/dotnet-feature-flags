@@ -16,7 +16,7 @@ namespace FeatureFlags.Services;
 /// Service implementation for audit log operations.
 /// Manages retrieval and cleanup of audit trails for compliance and debugging.
 /// </summary>
-public sealed class AuditLogService {
+public class AuditLogService : IAuditLogService {
     private readonly IAuditLogRepository _repository;
     private readonly ILogger<AuditLogService> _logger;
 
@@ -145,4 +145,7 @@ public sealed class AuditLogService {
             throw new FeatureFlagDataException("Failed to cleanup old logs", ex);
         }
     }
+
+    Task<AuditLog?> IAuditLogService.GetLastChangeAsync(int featureFlagId) => GetLastChangeAsync(featureFlagId);
+    Task IAuditLogService.CleanupOldLogsAsync(int retentionDays) => CleanupOldLogsAsync(retentionDays);
 }

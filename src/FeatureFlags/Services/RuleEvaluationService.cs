@@ -15,7 +15,7 @@ namespace FeatureFlags.Services;
 /// Service implementation for rule evaluation.
 /// Evaluates complex targeting rules with support for AND/OR logic.
 /// </summary>
-public sealed class RuleEvaluationService {
+public class RuleEvaluationService : IRuleEvaluationService {
     private readonly IFeatureFlagRepository _repository;
     private readonly ILogger<RuleEvaluationService> _logger;
 
@@ -135,4 +135,7 @@ public sealed class RuleEvaluationService {
 
         return applicable;
     }
+
+    Task<bool> IRuleEvaluationService.EvaluateAsync(FeatureFlag featureFlag, UserContext userContext) => EvaluateAsync(featureFlag, userContext);
+    Task<bool> IRuleEvaluationService.EvaluateRuleAsync(Rule rule, UserContext userContext) => EvaluateRuleAsync(rule, userContext);
 }

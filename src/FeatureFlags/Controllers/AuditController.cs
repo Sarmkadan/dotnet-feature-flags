@@ -17,7 +17,7 @@ namespace FeatureFlags.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/audit")]
-public sealed class AuditController {
+public class AuditController : ControllerBase {
     private readonly IAuditLogService _auditLogService;
     private readonly IFeatureFlagService _featureFlagService;
     private readonly ILogger<AuditController> _logger;
@@ -44,9 +44,7 @@ public sealed class AuditController {
         {
             var (validPage, validPageSize) = PaginationHelper.ValidateAndNormalizePaging(page, pageSize);
 
-            var logs = await _auditLogService.GetAuditLogsPagedAsync(
-                skip: (validPage - 1) * validPageSize,
-                take: validPageSize);
+            var logs = await _auditLogService.GetAuditLogsPagedAsync(featureFlagId, validPage, validPageSize);
 
             // Filter by feature flag ID
             var filteredLogs = logs.Where(l => l.FeatureFlagId == featureFlagId).ToList();
@@ -87,7 +85,7 @@ public sealed class AuditController {
             var logs = await _auditLogService.GetAuditLogsByUserAsync(username);
             var pagedLogs = PaginationHelper.PaginateInMemory(logs, validPage, validPageSize).ToList();
 
-            var metadata = PaginationHelper.CreateMetadata(validPage, validPageSize, logs.Count);
+            var metadata = PaginationHelper.CreateMetadata(validPage, validPageSize, logs.Count());
 
             return Ok(new PaginatedApiResponse<AuditLog>
             {
@@ -97,7 +95,7 @@ public sealed class AuditController {
                 {
                     PageNumber = validPage,
                     PageSize = validPageSize,
-                    TotalCount = logs.Count,
+                    TotalCount = logs.Count(),
                     TotalPages = metadata.TotalPages
                 }
             });
@@ -133,7 +131,7 @@ public sealed class AuditController {
             var logs = await _auditLogService.GetChangeHistoryAsync(startDate, endDate);
             var pagedLogs = PaginationHelper.PaginateInMemory(logs, validPage, validPageSize).ToList();
 
-            var metadata = PaginationHelper.CreateMetadata(validPage, validPageSize, logs.Count);
+            var metadata = PaginationHelper.CreateMetadata(validPage, validPageSize, logs.Count());
 
             return Ok(new PaginatedApiResponse<AuditLog>
             {
@@ -143,7 +141,7 @@ public sealed class AuditController {
                 {
                     PageNumber = validPage,
                     PageSize = validPageSize,
-                    TotalCount = logs.Count,
+                    TotalCount = logs.Count(),
                     TotalPages = metadata.TotalPages
                 }
             });
@@ -164,17 +162,16 @@ public sealed class AuditController {
     {
         try
         {
-            var logs = await _auditLogService.GetAuditLogsAsync();
+            var logs = await _auditLogService.GetAuditLogsAsync(featureFlagId);
             var flagLogs = logs
-                .Where(l => l.FeatureFlagId == featureFlagId)
-                .OrderByDescending(l => l.Timestamp)
+                .OrderByDescending(l => l.ChangedAt)
                 .Take(maxEntries)
                 .ToList();
 
             var history = flagLogs.Select(log => new
             {
                 log.Id,
-                log.Timestamp,
+                log.ChangedAt,
                 log.Action,
                 log.ChangedBy,
                 log.OldValue,
@@ -205,7 +202,7 @@ public sealed class AuditController {
 
             var summary = new
             {
-                TotalChanges = logs.Count,
+                TotalChanges = logs.Count(),
                 UniqueUsers = logs.Select(l => l.ChangedBy).Distinct().Count(),
                 ChangesByAction = logs
                     .GroupBy(l => l.Action)
