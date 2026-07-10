@@ -1178,3 +1178,101 @@
 +- perf: add BenchmarkDotNet performance benchmarks
 +- chore: don't treat warnings as errors
 +- chore: add examples and supporting files
+
+# 2026-07-10 04:05:57.686458
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, create ONE new C# file: `benchmarks/dotnet-feature-flags.Benchmarks/FeatureFlagsBenchmarksExtensions.cs`.
++
++It must contain `public static class FeatureFlagsBenchmarksExtensions` with 2-4 genuinely useful, fully implemented extension methods for the existing type `FeatureFlagsBenchmarks` (same namespace as the original file `benchmarks/dotnet-feature-flags.Benchmarks/Program.cs`).
++
++The REAL public members of `FeatureFlagsBenchmarks` are (use ONLY these plus the .NET BCL, do not invent members):
++```
++public void Setup
++public int GetConsistentHash
++public bool PercentageRolloutEvaluation
++public bool PercentageRolloutEvaluation_100
++public bool PercentageRolloutEvaluation_0
++public bool RuleBasedEvaluation_Match
++public bool RuleBasedEvaluation_NoMatch
++public bool RuleBasedEvaluation_SingleCondition
++public string? ABTestVariantAssignment
++public string? ABTestVariantAssignment_MultipleVariants
++public bool FullFeatureFlagEvaluation_Percentage
++public bool FullFeatureFlagEvaluation_RuleBased
++public bool FullFeatureFlagEvaluation_ABTest
++public bool ComplexRuleEvaluation_ManyConditions
++public bool ComplexRuleEvaluation_ORLogic
++public bool PercentageRollout_WithCache_Hit
++public bool PercentageRollout_WithCache_Miss
++public bool RuleBased_WithCache_Hit
++public string ABTest_WithCache_Hit
++public bool FullEvaluation_WithCache_Miss
++```
++
++Every method fully implemented: NO NotImplementedException, NO TODO, no empty bodies.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- feat: add structured logging
++- chore: apply workspace updates
++- fix: improve error handling with custom exceptions
++- fix: resolve compile errors in FeatureFlags solution
++- fix: restore base class declarations and stray syntax lost in earlier corruption
++- perf: add BenchmarkDotNet performance benchmarks
++- chore: don't treat warnings as errors
+
+# 2026-07-10 04:05:57.698592
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, create ONE new C# file: `benchmarks/dotnet-feature-flags.Benchmarks/FeatureFlagsBenchmarksExtensions.cs`.
++
++It must contain `public static class FeatureFlagsBenchmarksExtensions` with 2-4 genuinely useful, fully implemented extension methods for the existing type `FeatureFlagsBenchmarks` (same namespace as the original file `benchmarks/dotnet-feature-flags.Benchmarks/Program.cs`).
++
++The REAL public members of `FeatureFlagsBenchmarks` are (use ONLY these plus the .NET BCL, do not invent members):
++```
++public void Setup
++public int GetConsistentHash
++public bool PercentageRolloutEvaluation
++public bool PercentageRolloutEvaluation_100
++public bool PercentageRolloutEvaluation_0
++public bool RuleBasedEvaluation_Match
++public bool RuleBasedEvaluation_NoMatch
++public bool RuleBasedEvaluation_SingleCondition
++public string? ABTestVariantAssignment
++public string? ABTestVariantAssignment_MultipleVariants
++public bool FullFeatureFlagEvaluation_Percentage
++public bool FullFeatureFlagEvaluation_RuleBased
++public bool FullFeatureFlagEvaluation_ABTest
++public bool ComplexRuleEvaluation_ManyConditions
++public bool ComplexRuleEvaluation_ORLogic
++public bool PercentageRollout_WithCache_Hit
++public bool PercentageRollout_WithCache_Miss
++public bool RuleBased_WithCache_Hit
++public string ABTest_WithCache_Hit
++public bool FullEvaluation_WithCache_Miss
++```
++
++Every method fully implemented: NO NotImplementedException, NO TODO, no empty bodies.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- feat: add structured logging
++- chore: apply workspace updates
++- fix: improve error handling with custom exceptions
++- fix: resolve compile errors in FeatureFlags solution
++- fix: restore base class declarations and stray syntax lost in earlier corruption
++- perf: add BenchmarkDotNet performance benchmarks
++- chore: don't treat warnings as errors
