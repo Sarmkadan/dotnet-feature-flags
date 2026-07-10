@@ -1276,3 +1276,703 @@
 +- fix: restore base class declarations and stray syntax lost in earlier corruption
 +- perf: add BenchmarkDotNet performance benchmarks
 +- chore: don't treat warnings as errors
+
+# 2026-07-10 04:56:27.682542
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, create ONE new C# file: `src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs`.
++
++It must contain `public static class FeatureFlagExceptionExtensions` with 2-4 genuinely useful, fully implemented extension methods for the existing type `FeatureFlagException` (same namespace as the original file `src/FeatureFlags/Exceptions/FeatureFlagException.cs`).
++
++The REAL public members of `FeatureFlagException` are (use ONLY these plus the .NET BCL, do not invent members):
++```
++public class FeatureFlagException : Exception
++public string? ErrorCode
++public FeatureFlagException(string message) : base
++public FeatureFlagException(string message, string errorCode) : base
++public FeatureFlagException
++public FeatureFlagException
++public class FeatureFlagNotFoundException : FeatureFlagException
++public FeatureFlagNotFoundException
++public class InvalidFeatureFlagException : FeatureFlagException
++public InvalidFeatureFlagException
++public class RuleEvaluationException : FeatureFlagException
++public RuleEvaluationException
++public RuleEvaluationException
++public class FeatureFlagDataException : FeatureFlagException
++public FeatureFlagDataException
++public FeatureFlagDataException
++```
++
++Every method fully implemented: NO NotImplementedException, NO TODO, no empty bodies.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++IMPORTANT: a previous attempt at this exact task FAILED with these compiler errors and was reverted. Do it differently and make sure these do not happen again:
++[after 346s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(15,43): error CS0103: The name 'FeatureFlagConstants' does not exist in the current context [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(26,25): error CS0029: Cannot implicitly convert type 'FeatureFlags.Exceptions.ErrorDetail' to 'string' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(15,43): error CS0103: The name 'FeatureFlagConstant
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- chore: apply workspace updates
++- (no commit message provided)
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- feat: add structured logging
++- chore: apply workspace updates
++- fix: improve error handling with custom exceptions
++- fix: resolve compile errors in FeatureFlags solution
++- fix: restore base class declarations and stray syntax lost in earlier corruption
+
+# 2026-07-10 04:56:27.682657
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, create ONE new C# file: `src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs`.
++
++It must contain `public static class FeatureFlagExceptionExtensions` with 2-4 genuinely useful, fully implemented extension methods for the existing type `FeatureFlagException` (same namespace as the original file `src/FeatureFlags/Exceptions/FeatureFlagException.cs`).
++
++The REAL public members of `FeatureFlagException` are (use ONLY these plus the .NET BCL, do not invent members):
++```
++public class FeatureFlagException : Exception
++public string? ErrorCode
++public FeatureFlagException(string message) : base
++public FeatureFlagException(string message, string errorCode) : base
++public FeatureFlagException
++public FeatureFlagException
++public class FeatureFlagNotFoundException : FeatureFlagException
++public FeatureFlagNotFoundException
++public class InvalidFeatureFlagException : FeatureFlagException
++public InvalidFeatureFlagException
++public class RuleEvaluationException : FeatureFlagException
++public RuleEvaluationException
++public RuleEvaluationException
++public class FeatureFlagDataException : FeatureFlagException
++public FeatureFlagDataException
++public FeatureFlagDataException
++```
++
++Every method fully implemented: NO NotImplementedException, NO TODO, no empty bodies.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++IMPORTANT: a previous attempt at this exact task FAILED with these compiler errors and was reverted. Do it differently and make sure these do not happen again:
++[after 346s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(15,43): error CS0103: The name 'FeatureFlagConstants' does not exist in the current context [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(26,25): error CS0029: Cannot implicitly convert type 'FeatureFlags.Exceptions.ErrorDetail' to 'string' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(15,43): error CS0103: The name 'FeatureFlagConstant
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- chore: apply workspace updates
++- (no commit message provided)
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- feat: add structured logging
++- chore: apply workspace updates
++- fix: improve error handling with custom exceptions
++- fix: resolve compile errors in FeatureFlags solution
++- fix: restore base class declarations and stray syntax lost in earlier corruption
+
+# 2026-07-10 04:58:00.164904
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, create ONE new C# file: `src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs`.
++
++It must contain `public static class FeatureFlagExceptionExtensions` with 2-4 genuinely useful, fully implemented extension methods for the existing type `FeatureFlagException` (same namespace as the original file `src/FeatureFlags/Exceptions/FeatureFlagException.cs`).
++
++The REAL public members of `FeatureFlagException` are (use ONLY these plus the .NET BCL, do not invent members):
++```
++public class FeatureFlagException : Exception
++public string? ErrorCode
++public FeatureFlagException(string message) : base
++public FeatureFlagException(string message, string errorCode) : base
++public FeatureFlagException
++public FeatureFlagException
++public class FeatureFlagNotFoundException : FeatureFlagException
++public FeatureFlagNotFoundException
++public class InvalidFeatureFlagException : FeatureFlagException
++public InvalidFeatureFlagException
++public class RuleEvaluationException : FeatureFlagException
++public RuleEvaluationException
++public RuleEvaluationException
++public class FeatureFlagDataException : FeatureFlagException
++public FeatureFlagDataException
++public FeatureFlagDataException
++```
++
++Every method fully implemented: NO NotImplementedException, NO TODO, no empty bodies.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++IMPORTANT: a previous attempt at this exact task FAILED with these compiler errors and was reverted. Do it differently and make sure these do not happen again:
++[after 346s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(15,43): error CS0103: The name 'FeatureFlagConstants' does not exist in the current context [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(26,25): error CS0029: Cannot implicitly convert type 'FeatureFlags.Exceptions.ErrorDetail' to 'string' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(15,43): error CS0103: The name 'FeatureFlagConstant
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- chore: apply workspace updates
++- (no commit message provided)
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- feat: add structured logging
++- chore: apply workspace updates
++- fix: improve error handling with custom exceptions
++- fix: resolve compile errors in FeatureFlags solution
++- fix: restore base class declarations and stray syntax lost in earlier corruption
+
+# 2026-07-10 04:58:00.164985
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, create ONE new C# file: `src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs`.
++
++It must contain `public static class FeatureFlagExceptionExtensions` with 2-4 genuinely useful, fully implemented extension methods for the existing type `FeatureFlagException` (same namespace as the original file `src/FeatureFlags/Exceptions/FeatureFlagException.cs`).
++
++The REAL public members of `FeatureFlagException` are (use ONLY these plus the .NET BCL, do not invent members):
++```
++public class FeatureFlagException : Exception
++public string? ErrorCode
++public FeatureFlagException(string message) : base
++public FeatureFlagException(string message, string errorCode) : base
++public FeatureFlagException
++public FeatureFlagException
++public class FeatureFlagNotFoundException : FeatureFlagException
++public FeatureFlagNotFoundException
++public class InvalidFeatureFlagException : FeatureFlagException
++public InvalidFeatureFlagException
++public class RuleEvaluationException : FeatureFlagException
++public RuleEvaluationException
++public RuleEvaluationException
++public class FeatureFlagDataException : FeatureFlagException
++public FeatureFlagDataException
++public FeatureFlagDataException
++```
++
++Every method fully implemented: NO NotImplementedException, NO TODO, no empty bodies.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++IMPORTANT: a previous attempt at this exact task FAILED with these compiler errors and was reverted. Do it differently and make sure these do not happen again:
++[after 346s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(15,43): error CS0103: The name 'FeatureFlagConstants' does not exist in the current context [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(26,25): error CS0029: Cannot implicitly convert type 'FeatureFlags.Exceptions.ErrorDetail' to 'string' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(15,43): error CS0103: The name 'FeatureFlagConstant
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- chore: apply workspace updates
++- (no commit message provided)
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- feat: add structured logging
++- chore: apply workspace updates
++- fix: improve error handling with custom exceptions
++- fix: resolve compile errors in FeatureFlags solution
++- fix: restore base class declarations and stray syntax lost in earlier corruption
+
+# 2026-07-10 04:59:09.711844
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, create ONE new C# file: `src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs`.
++
++It must contain `public static class FeatureFlagExceptionExtensions` with 2-4 genuinely useful, fully implemented extension methods for the existing type `FeatureFlagException` (same namespace as the original file `src/FeatureFlags/Exceptions/FeatureFlagException.cs`).
++
++The REAL public members of `FeatureFlagException` are (use ONLY these plus the .NET BCL, do not invent members):
++```
++public class FeatureFlagException : Exception
++public string? ErrorCode
++public FeatureFlagException(string message) : base
++public FeatureFlagException(string message, string errorCode) : base
++public FeatureFlagException
++public FeatureFlagException
++public class FeatureFlagNotFoundException : FeatureFlagException
++public FeatureFlagNotFoundException
++public class InvalidFeatureFlagException : FeatureFlagException
++public InvalidFeatureFlagException
++public class RuleEvaluationException : FeatureFlagException
++public RuleEvaluationException
++public RuleEvaluationException
++public class FeatureFlagDataException : FeatureFlagException
++public FeatureFlagDataException
++public FeatureFlagDataException
++```
++
++Every method fully implemented: NO NotImplementedException, NO TODO, no empty bodies.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++IMPORTANT: a previous attempt at this exact task FAILED with these compiler errors and was reverted. Do it differently and make sure these do not happen again:
++[after 346s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(15,43): error CS0103: The name 'FeatureFlagConstants' does not exist in the current context [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(26,25): error CS0029: Cannot implicitly convert type 'FeatureFlags.Exceptions.ErrorDetail' to 'string' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(15,43): error CS0103: The name 'FeatureFlagConstant
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- chore: apply workspace updates
++- (no commit message provided)
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- feat: add structured logging
++- chore: apply workspace updates
++- fix: improve error handling with custom exceptions
++- fix: resolve compile errors in FeatureFlags solution
++- fix: restore base class declarations and stray syntax lost in earlier corruption
+
+# 2026-07-10 04:59:09.711911
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, create ONE new C# file: `src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs`.
++
++It must contain `public static class FeatureFlagExceptionExtensions` with 2-4 genuinely useful, fully implemented extension methods for the existing type `FeatureFlagException` (same namespace as the original file `src/FeatureFlags/Exceptions/FeatureFlagException.cs`).
++
++The REAL public members of `FeatureFlagException` are (use ONLY these plus the .NET BCL, do not invent members):
++```
++public class FeatureFlagException : Exception
++public string? ErrorCode
++public FeatureFlagException(string message) : base
++public FeatureFlagException(string message, string errorCode) : base
++public FeatureFlagException
++public FeatureFlagException
++public class FeatureFlagNotFoundException : FeatureFlagException
++public FeatureFlagNotFoundException
++public class InvalidFeatureFlagException : FeatureFlagException
++public InvalidFeatureFlagException
++public class RuleEvaluationException : FeatureFlagException
++public RuleEvaluationException
++public RuleEvaluationException
++public class FeatureFlagDataException : FeatureFlagException
++public FeatureFlagDataException
++public FeatureFlagDataException
++```
++
++Every method fully implemented: NO NotImplementedException, NO TODO, no empty bodies.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++IMPORTANT: a previous attempt at this exact task FAILED with these compiler errors and was reverted. Do it differently and make sure these do not happen again:
++[after 346s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(15,43): error CS0103: The name 'FeatureFlagConstants' does not exist in the current context [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(26,25): error CS0029: Cannot implicitly convert type 'FeatureFlags.Exceptions.ErrorDetail' to 'string' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(15,43): error CS0103: The name 'FeatureFlagConstant
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- chore: apply workspace updates
++- (no commit message provided)
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- feat: add structured logging
++- chore: apply workspace updates
++- fix: improve error handling with custom exceptions
++- fix: resolve compile errors in FeatureFlags solution
++- fix: restore base class declarations and stray syntax lost in earlier corruption
+
+# 2026-07-10 05:00:18.384576
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, create ONE new C# file: `src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs`.
++
++It must contain `public static class FeatureFlagExceptionExtensions` with 2-4 genuinely useful, fully implemented extension methods for the existing type `FeatureFlagException` (same namespace as the original file `src/FeatureFlags/Exceptions/FeatureFlagException.cs`).
++
++The REAL public members of `FeatureFlagException` are (use ONLY these plus the .NET BCL, do not invent members):
++```
++public class FeatureFlagException : Exception
++public string? ErrorCode
++public FeatureFlagException(string message) : base
++public FeatureFlagException(string message, string errorCode) : base
++public FeatureFlagException
++public FeatureFlagException
++public class FeatureFlagNotFoundException : FeatureFlagException
++public FeatureFlagNotFoundException
++public class InvalidFeatureFlagException : FeatureFlagException
++public InvalidFeatureFlagException
++public class RuleEvaluationException : FeatureFlagException
++public RuleEvaluationException
++public RuleEvaluationException
++public class FeatureFlagDataException : FeatureFlagException
++public FeatureFlagDataException
++public FeatureFlagDataException
++```
++
++Every method fully implemented: NO NotImplementedException, NO TODO, no empty bodies.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++IMPORTANT: a previous attempt at this exact task FAILED with these compiler errors and was reverted. Do it differently and make sure these do not happen again:
++[after 346s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(15,43): error CS0103: The name 'FeatureFlagConstants' does not exist in the current context [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(26,25): error CS0029: Cannot implicitly convert type 'FeatureFlags.Exceptions.ErrorDetail' to 'string' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(15,43): error CS0103: The name 'FeatureFlagConstant
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- chore: apply workspace updates
++- (no commit message provided)
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- feat: add structured logging
++- chore: apply workspace updates
++- fix: improve error handling with custom exceptions
++- fix: resolve compile errors in FeatureFlags solution
++- fix: restore base class declarations and stray syntax lost in earlier corruption
+
+# 2026-07-10 05:00:18.384889
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, create ONE new C# file: `src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs`.
++
++It must contain `public static class FeatureFlagExceptionExtensions` with 2-4 genuinely useful, fully implemented extension methods for the existing type `FeatureFlagException` (same namespace as the original file `src/FeatureFlags/Exceptions/FeatureFlagException.cs`).
++
++The REAL public members of `FeatureFlagException` are (use ONLY these plus the .NET BCL, do not invent members):
++```
++public class FeatureFlagException : Exception
++public string? ErrorCode
++public FeatureFlagException(string message) : base
++public FeatureFlagException(string message, string errorCode) : base
++public FeatureFlagException
++public FeatureFlagException
++public class FeatureFlagNotFoundException : FeatureFlagException
++public FeatureFlagNotFoundException
++public class InvalidFeatureFlagException : FeatureFlagException
++public InvalidFeatureFlagException
++public class RuleEvaluationException : FeatureFlagException
++public RuleEvaluationException
++public RuleEvaluationException
++public class FeatureFlagDataException : FeatureFlagException
++public FeatureFlagDataException
++public FeatureFlagDataException
++```
++
++Every method fully implemented: NO NotImplementedException, NO TODO, no empty bodies.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++IMPORTANT: a previous attempt at this exact task FAILED with these compiler errors and was reverted. Do it differently and make sure these do not happen again:
++[after 346s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(15,43): error CS0103: The name 'FeatureFlagConstants' does not exist in the current context [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(26,25): error CS0029: Cannot implicitly convert type 'FeatureFlags.Exceptions.ErrorDetail' to 'string' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(15,43): error CS0103: The name 'FeatureFlagConstant
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- chore: apply workspace updates
++- (no commit message provided)
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- feat: add structured logging
++- chore: apply workspace updates
++- fix: improve error handling with custom exceptions
++- fix: resolve compile errors in FeatureFlags solution
++- fix: restore base class declarations and stray syntax lost in earlier corruption
+
+# 2026-07-10 05:01:29.019791
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, create ONE new C# file: `src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs`.
++
++It must contain `public static class FeatureFlagExceptionExtensions` with 2-4 genuinely useful, fully implemented extension methods for the existing type `FeatureFlagException` (same namespace as the original file `src/FeatureFlags/Exceptions/FeatureFlagException.cs`).
++
++The REAL public members of `FeatureFlagException` are (use ONLY these plus the .NET BCL, do not invent members):
++```
++public class FeatureFlagException : Exception
++public string? ErrorCode
++public FeatureFlagException(string message) : base
++public FeatureFlagException(string message, string errorCode) : base
++public FeatureFlagException
++public FeatureFlagException
++public class FeatureFlagNotFoundException : FeatureFlagException
++public FeatureFlagNotFoundException
++public class InvalidFeatureFlagException : FeatureFlagException
++public InvalidFeatureFlagException
++public class RuleEvaluationException : FeatureFlagException
++public RuleEvaluationException
++public RuleEvaluationException
++public class FeatureFlagDataException : FeatureFlagException
++public FeatureFlagDataException
++public FeatureFlagDataException
++```
++
++Every method fully implemented: NO NotImplementedException, NO TODO, no empty bodies.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++IMPORTANT: a previous attempt at this exact task FAILED with these compiler errors and was reverted. Do it differently and make sure these do not happen again:
++[after 346s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(15,43): error CS0103: The name 'FeatureFlagConstants' does not exist in the current context [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(26,25): error CS0029: Cannot implicitly convert type 'FeatureFlags.Exceptions.ErrorDetail' to 'string' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(15,43): error CS0103: The name 'FeatureFlagConstant
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- chore: apply workspace updates
++- (no commit message provided)
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- feat: add structured logging
++- chore: apply workspace updates
++- fix: improve error handling with custom exceptions
++- fix: resolve compile errors in FeatureFlags solution
++- fix: restore base class declarations and stray syntax lost in earlier corruption
+
+# 2026-07-10 05:01:29.020135
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, create ONE new C# file: `src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs`.
++
++It must contain `public static class FeatureFlagExceptionExtensions` with 2-4 genuinely useful, fully implemented extension methods for the existing type `FeatureFlagException` (same namespace as the original file `src/FeatureFlags/Exceptions/FeatureFlagException.cs`).
++
++The REAL public members of `FeatureFlagException` are (use ONLY these plus the .NET BCL, do not invent members):
++```
++public class FeatureFlagException : Exception
++public string? ErrorCode
++public FeatureFlagException(string message) : base
++public FeatureFlagException(string message, string errorCode) : base
++public FeatureFlagException
++public FeatureFlagException
++public class FeatureFlagNotFoundException : FeatureFlagException
++public FeatureFlagNotFoundException
++public class InvalidFeatureFlagException : FeatureFlagException
++public InvalidFeatureFlagException
++public class RuleEvaluationException : FeatureFlagException
++public RuleEvaluationException
++public RuleEvaluationException
++public class FeatureFlagDataException : FeatureFlagException
++public FeatureFlagDataException
++public FeatureFlagDataException
++```
++
++Every method fully implemented: NO NotImplementedException, NO TODO, no empty bodies.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++IMPORTANT: a previous attempt at this exact task FAILED with these compiler errors and was reverted. Do it differently and make sure these do not happen again:
++[after 346s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(15,43): error CS0103: The name 'FeatureFlagConstants' does not exist in the current context [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(26,25): error CS0029: Cannot implicitly convert type 'FeatureFlags.Exceptions.ErrorDetail' to 'string' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(15,43): error CS0103: The name 'FeatureFlagConstant
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- chore: apply workspace updates
++- (no commit message provided)
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- feat: add structured logging
++- chore: apply workspace updates
++- fix: improve error handling with custom exceptions
++- fix: resolve compile errors in FeatureFlags solution
++- fix: restore base class declarations and stray syntax lost in earlier corruption
+
+# 2026-07-10 05:02:35.944312
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, create ONE new C# file: `src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs`.
++
++It must contain `public static class FeatureFlagExceptionExtensions` with 2-4 genuinely useful, fully implemented extension methods for the existing type `FeatureFlagException` (same namespace as the original file `src/FeatureFlags/Exceptions/FeatureFlagException.cs`).
++
++The REAL public members of `FeatureFlagException` are (use ONLY these plus the .NET BCL, do not invent members):
++```
++public class FeatureFlagException : Exception
++public string? ErrorCode
++public FeatureFlagException(string message) : base
++public FeatureFlagException(string message, string errorCode) : base
++public FeatureFlagException
++public FeatureFlagException
++public class FeatureFlagNotFoundException : FeatureFlagException
++public FeatureFlagNotFoundException
++public class InvalidFeatureFlagException : FeatureFlagException
++public InvalidFeatureFlagException
++public class RuleEvaluationException : FeatureFlagException
++public RuleEvaluationException
++public RuleEvaluationException
++public class FeatureFlagDataException : FeatureFlagException
++public FeatureFlagDataException
++public FeatureFlagDataException
++```
++
++Every method fully implemented: NO NotImplementedException, NO TODO, no empty bodies.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++IMPORTANT: a previous attempt at this exact task FAILED with these compiler errors and was reverted. Do it differently and make sure these do not happen again:
++[after 346s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(15,43): error CS0103: The name 'FeatureFlagConstants' does not exist in the current context [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(26,25): error CS0029: Cannot implicitly convert type 'FeatureFlags.Exceptions.ErrorDetail' to 'string' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(15,43): error CS0103: The name 'FeatureFlagConstant
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- chore: apply workspace updates
++- (no commit message provided)
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- feat: add structured logging
++- chore: apply workspace updates
++- fix: improve error handling with custom exceptions
++- fix: resolve compile errors in FeatureFlags solution
++- fix: restore base class declarations and stray syntax lost in earlier corruption
+
+# 2026-07-10 05:02:35.944372
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, create ONE new C# file: `src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs`.
++
++It must contain `public static class FeatureFlagExceptionExtensions` with 2-4 genuinely useful, fully implemented extension methods for the existing type `FeatureFlagException` (same namespace as the original file `src/FeatureFlags/Exceptions/FeatureFlagException.cs`).
++
++The REAL public members of `FeatureFlagException` are (use ONLY these plus the .NET BCL, do not invent members):
++```
++public class FeatureFlagException : Exception
++public string? ErrorCode
++public FeatureFlagException(string message) : base
++public FeatureFlagException(string message, string errorCode) : base
++public FeatureFlagException
++public FeatureFlagException
++public class FeatureFlagNotFoundException : FeatureFlagException
++public FeatureFlagNotFoundException
++public class InvalidFeatureFlagException : FeatureFlagException
++public InvalidFeatureFlagException
++public class RuleEvaluationException : FeatureFlagException
++public RuleEvaluationException
++public RuleEvaluationException
++public class FeatureFlagDataException : FeatureFlagException
++public FeatureFlagDataException
++public FeatureFlagDataException
++```
++
++Every method fully implemented: NO NotImplementedException, NO TODO, no empty bodies.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++IMPORTANT: a previous attempt at this exact task FAILED with these compiler errors and was reverted. Do it differently and make sure these do not happen again:
++[after 346s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(15,43): error CS0103: The name 'FeatureFlagConstants' does not exist in the current context [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(26,25): error CS0029: Cannot implicitly convert type 'FeatureFlags.Exceptions.ErrorDetail' to 'string' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(15,43): error CS0103: The name 'FeatureFlagConstant
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- chore: apply workspace updates
++- (no commit message provided)
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- feat: add structured logging
++- chore: apply workspace updates
++- fix: improve error handling with custom exceptions
++- fix: resolve compile errors in FeatureFlags solution
++- fix: restore base class declarations and stray syntax lost in earlier corruption
+
+# 2026-07-10 05:03:44.576652
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, create ONE new C# file: `src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs`.
++
++It must contain `public static class FeatureFlagExceptionExtensions` with 2-4 genuinely useful, fully implemented extension methods for the existing type `FeatureFlagException` (same namespace as the original file `src/FeatureFlags/Exceptions/FeatureFlagException.cs`).
++
++The REAL public members of `FeatureFlagException` are (use ONLY these plus the .NET BCL, do not invent members):
++```
++public class FeatureFlagException : Exception
++public string? ErrorCode
++public FeatureFlagException(string message) : base
++public FeatureFlagException(string message, string errorCode) : base
++public FeatureFlagException
++public FeatureFlagException
++public class FeatureFlagNotFoundException : FeatureFlagException
++public FeatureFlagNotFoundException
++public class InvalidFeatureFlagException : FeatureFlagException
++public InvalidFeatureFlagException
++public class RuleEvaluationException : FeatureFlagException
++public RuleEvaluationException
++public RuleEvaluationException
++public class FeatureFlagDataException : FeatureFlagException
++public FeatureFlagDataException
++public FeatureFlagDataException
++```
++
++Every method fully implemented: NO NotImplementedException, NO TODO, no empty bodies.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++IMPORTANT: a previous attempt at this exact task FAILED with these compiler errors and was reverted. Do it differently and make sure these do not happen again:
++[after 346s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(15,43): error CS0103: The name 'FeatureFlagConstants' does not exist in the current context [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(26,25): error CS0029: Cannot implicitly convert type 'FeatureFlags.Exceptions.ErrorDetail' to 'string' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(15,43): error CS0103: The name 'FeatureFlagConstant
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- chore: apply workspace updates
++- (no commit message provided)
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- feat: add structured logging
++- chore: apply workspace updates
++- fix: improve error handling with custom exceptions
++- fix: resolve compile errors in FeatureFlags solution
++- fix: restore base class declarations and stray syntax lost in earlier corruption
+
+# 2026-07-10 05:03:44.576754
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, create ONE new C# file: `src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs`.
++
++It must contain `public static class FeatureFlagExceptionExtensions` with 2-4 genuinely useful, fully implemented extension methods for the existing type `FeatureFlagException` (same namespace as the original file `src/FeatureFlags/Exceptions/FeatureFlagException.cs`).
++
++The REAL public members of `FeatureFlagException` are (use ONLY these plus the .NET BCL, do not invent members):
++```
++public class FeatureFlagException : Exception
++public string? ErrorCode
++public FeatureFlagException(string message) : base
++public FeatureFlagException(string message, string errorCode) : base
++public FeatureFlagException
++public FeatureFlagException
++public class FeatureFlagNotFoundException : FeatureFlagException
++public FeatureFlagNotFoundException
++public class InvalidFeatureFlagException : FeatureFlagException
++public InvalidFeatureFlagException
++public class RuleEvaluationException : FeatureFlagException
++public RuleEvaluationException
++public RuleEvaluationException
++public class FeatureFlagDataException : FeatureFlagException
++public FeatureFlagDataException
++public FeatureFlagDataException
++```
++
++Every method fully implemented: NO NotImplementedException, NO TODO, no empty bodies.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++IMPORTANT: a previous attempt at this exact task FAILED with these compiler errors and was reverted. Do it differently and make sure these do not happen again:
++[after 346s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(15,43): error CS0103: The name 'FeatureFlagConstants' does not exist in the current context [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(26,25): error CS0029: Cannot implicitly convert type 'FeatureFlags.Exceptions.ErrorDetail' to 'string' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs(15,43): error CS0103: The name 'FeatureFlagConstant
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- chore: apply workspace updates
++- (no commit message provided)
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- feat: add structured logging
++- chore: apply workspace updates
++- fix: improve error handling with custom exceptions
++- fix: resolve compile errors in FeatureFlags solution
++- fix: restore base class declarations and stray syntax lost in earlier corruption
