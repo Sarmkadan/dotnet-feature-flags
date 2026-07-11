@@ -21,6 +21,7 @@ public static class RolloutStrategyExtensions
     /// </summary>
     /// <param name="strategy">The rollout strategy to check.</param>
     /// <returns>True if the strategy is percentage-based; otherwise, false.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="strategy"/> is null.</exception>
     public static bool IsPercentageBased(this RolloutStrategy strategy)
     {
         ArgumentNullException.ThrowIfNull(strategy);
@@ -32,6 +33,7 @@ public static class RolloutStrategyExtensions
     /// </summary>
     /// <param name="strategy">The rollout strategy to check.</param>
     /// <returns>True if the strategy is rules-based; otherwise, false.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="strategy"/> is null.</exception>
     public static bool IsRulesBased(this RolloutStrategy strategy)
     {
         ArgumentNullException.ThrowIfNull(strategy);
@@ -43,6 +45,7 @@ public static class RolloutStrategyExtensions
     /// </summary>
     /// <param name="strategy">The rollout strategy to check.</param>
     /// <returns>True if the strategy is an A/B test; otherwise, false.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="strategy"/> is null.</exception>
     public static bool IsABTest(this RolloutStrategy strategy)
     {
         ArgumentNullException.ThrowIfNull(strategy);
@@ -54,6 +57,7 @@ public static class RolloutStrategyExtensions
     /// </summary>
     /// <param name="strategy">The rollout strategy to check.</param>
     /// <returns>True if the strategy represents full rollout; otherwise, false.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="strategy"/> is null.</exception>
     public static bool IsFullRollout(this RolloutStrategy strategy)
     {
         ArgumentNullException.ThrowIfNull(strategy);
@@ -65,6 +69,7 @@ public static class RolloutStrategyExtensions
     /// </summary>
     /// <param name="strategy">The rollout strategy to check.</param>
     /// <returns>True if the strategy represents no rollout; otherwise, false.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="strategy"/> is null.</exception>
     public static bool IsNoRollout(this RolloutStrategy strategy)
     {
         ArgumentNullException.ThrowIfNull(strategy);
@@ -77,6 +82,7 @@ public static class RolloutStrategyExtensions
     /// </summary>
     /// <param name="strategy">The rollout strategy.</param>
     /// <returns>The effective percentage (0-100).</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="strategy"/> is null.</exception>
     public static int GetEffectivePercentage(this RolloutStrategy strategy)
     {
         ArgumentNullException.ThrowIfNull(strategy);
@@ -109,6 +115,7 @@ public static class RolloutStrategyExtensions
     /// </summary>
     /// <param name="strategy">The rollout strategy.</param>
     /// <returns>Progress percentage (0-100), or 0 if not applicable.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="strategy"/> is null.</exception>
     public static int GetProgressPercentage(this RolloutStrategy strategy)
     {
         ArgumentNullException.ThrowIfNull(strategy);
@@ -122,11 +129,13 @@ public static class RolloutStrategyExtensions
         var start = strategy.StartPercentage.Value;
         var end = strategy.EndPercentage.Value;
 
+        // Handle edge case where start equals end
         if (start >= end)
         {
             return current >= end ? 100 : 0;
         }
 
+        // Prevent division by zero and ensure progress stays within bounds
         var range = end - start;
         var progress = current - start;
 
@@ -138,6 +147,7 @@ public static class RolloutStrategyExtensions
     /// </summary>
     /// <param name="strategy">The rollout strategy.</param>
     /// <returns>True if the strategy has reached or exceeded its target; otherwise, false.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="strategy"/> is null.</exception>
     public static bool HasReachedTarget(this RolloutStrategy strategy)
     {
         ArgumentNullException.ThrowIfNull(strategy);
@@ -158,6 +168,7 @@ public static class RolloutStrategyExtensions
     /// </summary>
     /// <param name="strategy">The rollout strategy.</param>
     /// <returns>A description string.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="strategy"/> is null.</exception>
     public static string GetDescription(this RolloutStrategy strategy)
     {
         ArgumentNullException.ThrowIfNull(strategy);
