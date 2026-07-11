@@ -3512,3 +3512,291 @@
 +- feat(repository): add validation helpers for AuditLogRepository
 +- feat(models): add validation helpers for AuditLog
 +- feat(models): introduce FlagEvaluationLog validation helpers
+
+# 2026-07-11 17:32:09.083635
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, create ONE new C# file: `src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorkerExtensions.cs`.
++
++It must contain `public static class GradualRolloutSchedulerWorkerExtensions` with 2-4 genuinely useful, fully implemented extension methods for the existing type `GradualRolloutSchedulerWorker` (same namespace as the original file `src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorker.cs`).
++
++The REAL public members of `GradualRolloutSchedulerWorker` are (use ONLY these plus the .NET BCL, do not invent members):
++```
++public GradualRolloutSchedulerWorker
++public int CheckIntervalMinutes
++public bool Enabled
++public static IServiceCollection AddGradualRolloutScheduler
++```
++
++QUALITY BAR (an automated review rejects the commit if violated):
++- Every method solves its problem COMPLETELY. If you cannot implement something for real, OMIT that method entirely - never fake a result, never hardcode a return value, never write "simplified for demo" / "in a real application". A smaller honest class beats a padded fake one.
++- Guard clauses first: ArgumentNullException.ThrowIfNull(x) / ArgumentException.ThrowIfNullOrEmpty(s) at the top of each public method.
++- Modern C#: expression-bodied members where they fit on one line, pattern matching over if-chains, target-typed new.
++- Return IReadOnlyList<T>/IEnumerable<T> from queries, not List<T>. Use CultureInfo.InvariantCulture for machine-facing parsing/formatting of numbers/dates.
++- XML doc comments on every public member, including <exception> tags for every throw.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++NOTE: three previous attempts at this task were reverted because the build broke. The exact compiler errors were:
++[after 288s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorkerExtensions.cs(21,27): error CS1061: 'GradualRolloutSchedulerWorker' does not contain a definition for 'Enabled' and no accessible extension method 'Enabled' accepting a first argument of type 'GradualRolloutSchedulerWorker' could be found (are you missing a using directive or an assembly reference?) [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorkerExtensions.cs(21,45): error CS1061: 'GradualRolloutSchedulerWorker' does not contain a definition for 'CheckIntervalMinutes' and no accessible extension method 'Che
++
++Re-do the task from scratch avoiding these errors. If the error references a type that does not exist, use only types that actually exist in the repo.
++
++IMPORTANT: a previous attempt at this exact task FAILED with these compiler errors and was reverted. Do it differently and make sure these do not happen again:
++[after 110s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorkerExtensions.cs(11,39): error CS0246: The type or namespace name 'GradualRolloutSchedulerWorker' could not be found (are you missing a using directive or an assembly reference?) [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorkerExtensions.cs(22,52): error CS0246: The type or namespace name 'GradualRolloutSchedulerWorker' could not be found (are you missing a using directive or an assembly reference?) [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- refactor(services): tighten guard clauses and docs in PercentageRolloutServiceExtensions
++- refactor(cli): tighten guard clauses and docs in CliArgumentParserExtensions
++- refactor(middleware): tighten guard clauses and docs in AuthenticationMiddlewareExtensions
++- refactor(repository): tighten guard clauses and docs in WebhookRepositoryJsonExtensions
++- refactor(models): tighten guard clauses and docs in ResultJsonExtensions
++- refactor(models): tighten guard clauses and docs in AuditLogExtensions
++- refactor(models): tighten guard clauses and docs in FlagEvaluationLogExtensions
++- refactor(models): tighten guard clauses and docs in RolloutStrategyExtensions
++- refactor(models): tighten guard clauses and docs in FeatureFlagJsonExtensions
++- refactor(backgroundjobs): tighten guard clauses and docs in AuditLogCleanupWorker
+
+# 2026-07-11 17:32:09.083726
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, create ONE new C# file: `src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorkerExtensions.cs`.
++
++It must contain `public static class GradualRolloutSchedulerWorkerExtensions` with 2-4 genuinely useful, fully implemented extension methods for the existing type `GradualRolloutSchedulerWorker` (same namespace as the original file `src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorker.cs`).
++
++The REAL public members of `GradualRolloutSchedulerWorker` are (use ONLY these plus the .NET BCL, do not invent members):
++```
++public GradualRolloutSchedulerWorker
++public int CheckIntervalMinutes
++public bool Enabled
++public static IServiceCollection AddGradualRolloutScheduler
++```
++
++QUALITY BAR (an automated review rejects the commit if violated):
++- Every method solves its problem COMPLETELY. If you cannot implement something for real, OMIT that method entirely - never fake a result, never hardcode a return value, never write "simplified for demo" / "in a real application". A smaller honest class beats a padded fake one.
++- Guard clauses first: ArgumentNullException.ThrowIfNull(x) / ArgumentException.ThrowIfNullOrEmpty(s) at the top of each public method.
++- Modern C#: expression-bodied members where they fit on one line, pattern matching over if-chains, target-typed new.
++- Return IReadOnlyList<T>/IEnumerable<T> from queries, not List<T>. Use CultureInfo.InvariantCulture for machine-facing parsing/formatting of numbers/dates.
++- XML doc comments on every public member, including <exception> tags for every throw.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++NOTE: three previous attempts at this task were reverted because the build broke. The exact compiler errors were:
++[after 288s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorkerExtensions.cs(21,27): error CS1061: 'GradualRolloutSchedulerWorker' does not contain a definition for 'Enabled' and no accessible extension method 'Enabled' accepting a first argument of type 'GradualRolloutSchedulerWorker' could be found (are you missing a using directive or an assembly reference?) [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorkerExtensions.cs(21,45): error CS1061: 'GradualRolloutSchedulerWorker' does not contain a definition for 'CheckIntervalMinutes' and no accessible extension method 'Che
++
++Re-do the task from scratch avoiding these errors. If the error references a type that does not exist, use only types that actually exist in the repo.
++
++IMPORTANT: a previous attempt at this exact task FAILED with these compiler errors and was reverted. Do it differently and make sure these do not happen again:
++[after 110s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorkerExtensions.cs(11,39): error CS0246: The type or namespace name 'GradualRolloutSchedulerWorker' could not be found (are you missing a using directive or an assembly reference?) [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorkerExtensions.cs(22,52): error CS0246: The type or namespace name 'GradualRolloutSchedulerWorker' could not be found (are you missing a using directive or an assembly reference?) [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- refactor(services): tighten guard clauses and docs in PercentageRolloutServiceExtensions
++- refactor(cli): tighten guard clauses and docs in CliArgumentParserExtensions
++- refactor(middleware): tighten guard clauses and docs in AuthenticationMiddlewareExtensions
++- refactor(repository): tighten guard clauses and docs in WebhookRepositoryJsonExtensions
++- refactor(models): tighten guard clauses and docs in ResultJsonExtensions
++- refactor(models): tighten guard clauses and docs in AuditLogExtensions
++- refactor(models): tighten guard clauses and docs in FlagEvaluationLogExtensions
++- refactor(models): tighten guard clauses and docs in RolloutStrategyExtensions
++- refactor(models): tighten guard clauses and docs in FeatureFlagJsonExtensions
++- refactor(backgroundjobs): tighten guard clauses and docs in AuditLogCleanupWorker
+
+# 2026-07-11 17:33:29.956221
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, create ONE new C# file: `src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorkerExtensions.cs`.
++
++It must contain `public static class GradualRolloutSchedulerWorkerExtensions` with 2-4 genuinely useful, fully implemented extension methods for the existing type `GradualRolloutSchedulerWorker` (same namespace as the original file `src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorker.cs`).
++
++The REAL public members of `GradualRolloutSchedulerWorker` are (use ONLY these plus the .NET BCL, do not invent members):
++```
++public GradualRolloutSchedulerWorker
++public int CheckIntervalMinutes
++public bool Enabled
++public static IServiceCollection AddGradualRolloutScheduler
++```
++
++QUALITY BAR (an automated review rejects the commit if violated):
++- Every method solves its problem COMPLETELY. If you cannot implement something for real, OMIT that method entirely - never fake a result, never hardcode a return value, never write "simplified for demo" / "in a real application". A smaller honest class beats a padded fake one.
++- Guard clauses first: ArgumentNullException.ThrowIfNull(x) / ArgumentException.ThrowIfNullOrEmpty(s) at the top of each public method.
++- Modern C#: expression-bodied members where they fit on one line, pattern matching over if-chains, target-typed new.
++- Return IReadOnlyList<T>/IEnumerable<T> from queries, not List<T>. Use CultureInfo.InvariantCulture for machine-facing parsing/formatting of numbers/dates.
++- XML doc comments on every public member, including <exception> tags for every throw.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++NOTE: three previous attempts at this task were reverted because the build broke. The exact compiler errors were:
++[after 288s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorkerExtensions.cs(21,27): error CS1061: 'GradualRolloutSchedulerWorker' does not contain a definition for 'Enabled' and no accessible extension method 'Enabled' accepting a first argument of type 'GradualRolloutSchedulerWorker' could be found (are you missing a using directive or an assembly reference?) [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorkerExtensions.cs(21,45): error CS1061: 'GradualRolloutSchedulerWorker' does not contain a definition for 'CheckIntervalMinutes' and no accessible extension method 'Che
++
++Re-do the task from scratch avoiding these errors. If the error references a type that does not exist, use only types that actually exist in the repo.
++
++IMPORTANT: a previous attempt at this exact task FAILED with these compiler errors and was reverted. Do it differently and make sure these do not happen again:
++[after 110s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorkerExtensions.cs(11,39): error CS0246: The type or namespace name 'GradualRolloutSchedulerWorker' could not be found (are you missing a using directive or an assembly reference?) [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorkerExtensions.cs(22,52): error CS0246: The type or namespace name 'GradualRolloutSchedulerWorker' could not be found (are you missing a using directive or an assembly reference?) [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- refactor(services): tighten guard clauses and docs in PercentageRolloutServiceExtensions
++- refactor(cli): tighten guard clauses and docs in CliArgumentParserExtensions
++- refactor(middleware): tighten guard clauses and docs in AuthenticationMiddlewareExtensions
++- refactor(repository): tighten guard clauses and docs in WebhookRepositoryJsonExtensions
++- refactor(models): tighten guard clauses and docs in ResultJsonExtensions
++- refactor(models): tighten guard clauses and docs in AuditLogExtensions
++- refactor(models): tighten guard clauses and docs in FlagEvaluationLogExtensions
++- refactor(models): tighten guard clauses and docs in RolloutStrategyExtensions
++- refactor(models): tighten guard clauses and docs in FeatureFlagJsonExtensions
++- refactor(backgroundjobs): tighten guard clauses and docs in AuditLogCleanupWorker
+
+# 2026-07-11 17:33:29.956736
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, create ONE new C# file: `src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorkerExtensions.cs`.
++
++It must contain `public static class GradualRolloutSchedulerWorkerExtensions` with 2-4 genuinely useful, fully implemented extension methods for the existing type `GradualRolloutSchedulerWorker` (same namespace as the original file `src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorker.cs`).
++
++The REAL public members of `GradualRolloutSchedulerWorker` are (use ONLY these plus the .NET BCL, do not invent members):
++```
++public GradualRolloutSchedulerWorker
++public int CheckIntervalMinutes
++public bool Enabled
++public static IServiceCollection AddGradualRolloutScheduler
++```
++
++QUALITY BAR (an automated review rejects the commit if violated):
++- Every method solves its problem COMPLETELY. If you cannot implement something for real, OMIT that method entirely - never fake a result, never hardcode a return value, never write "simplified for demo" / "in a real application". A smaller honest class beats a padded fake one.
++- Guard clauses first: ArgumentNullException.ThrowIfNull(x) / ArgumentException.ThrowIfNullOrEmpty(s) at the top of each public method.
++- Modern C#: expression-bodied members where they fit on one line, pattern matching over if-chains, target-typed new.
++- Return IReadOnlyList<T>/IEnumerable<T> from queries, not List<T>. Use CultureInfo.InvariantCulture for machine-facing parsing/formatting of numbers/dates.
++- XML doc comments on every public member, including <exception> tags for every throw.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++NOTE: three previous attempts at this task were reverted because the build broke. The exact compiler errors were:
++[after 288s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorkerExtensions.cs(21,27): error CS1061: 'GradualRolloutSchedulerWorker' does not contain a definition for 'Enabled' and no accessible extension method 'Enabled' accepting a first argument of type 'GradualRolloutSchedulerWorker' could be found (are you missing a using directive or an assembly reference?) [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorkerExtensions.cs(21,45): error CS1061: 'GradualRolloutSchedulerWorker' does not contain a definition for 'CheckIntervalMinutes' and no accessible extension method 'Che
++
++Re-do the task from scratch avoiding these errors. If the error references a type that does not exist, use only types that actually exist in the repo.
++
++IMPORTANT: a previous attempt at this exact task FAILED with these compiler errors and was reverted. Do it differently and make sure these do not happen again:
++[after 110s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorkerExtensions.cs(11,39): error CS0246: The type or namespace name 'GradualRolloutSchedulerWorker' could not be found (are you missing a using directive or an assembly reference?) [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorkerExtensions.cs(22,52): error CS0246: The type or namespace name 'GradualRolloutSchedulerWorker' could not be found (are you missing a using directive or an assembly reference?) [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- refactor(services): tighten guard clauses and docs in PercentageRolloutServiceExtensions
++- refactor(cli): tighten guard clauses and docs in CliArgumentParserExtensions
++- refactor(middleware): tighten guard clauses and docs in AuthenticationMiddlewareExtensions
++- refactor(repository): tighten guard clauses and docs in WebhookRepositoryJsonExtensions
++- refactor(models): tighten guard clauses and docs in ResultJsonExtensions
++- refactor(models): tighten guard clauses and docs in AuditLogExtensions
++- refactor(models): tighten guard clauses and docs in FlagEvaluationLogExtensions
++- refactor(models): tighten guard clauses and docs in RolloutStrategyExtensions
++- refactor(models): tighten guard clauses and docs in FeatureFlagJsonExtensions
++- refactor(backgroundjobs): tighten guard clauses and docs in AuditLogCleanupWorker
+
+# 2026-07-11 17:33:53.450034
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, create ONE new C# file: `src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorkerExtensions.cs`.
++
++It must contain `public static class GradualRolloutSchedulerWorkerExtensions` with 2-4 genuinely useful, fully implemented extension methods for the existing type `GradualRolloutSchedulerWorker` (same namespace as the original file `src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorker.cs`).
++
++The REAL public members of `GradualRolloutSchedulerWorker` are (use ONLY these plus the .NET BCL, do not invent members):
++```
++public GradualRolloutSchedulerWorker
++public int CheckIntervalMinutes
++public bool Enabled
++public static IServiceCollection AddGradualRolloutScheduler
++```
++
++QUALITY BAR (an automated review rejects the commit if violated):
++- Every method solves its problem COMPLETELY. If you cannot implement something for real, OMIT that method entirely - never fake a result, never hardcode a return value, never write "simplified for demo" / "in a real application". A smaller honest class beats a padded fake one.
++- Guard clauses first: ArgumentNullException.ThrowIfNull(x) / ArgumentException.ThrowIfNullOrEmpty(s) at the top of each public method.
++- Modern C#: expression-bodied members where they fit on one line, pattern matching over if-chains, target-typed new.
++- Return IReadOnlyList<T>/IEnumerable<T> from queries, not List<T>. Use CultureInfo.InvariantCulture for machine-facing parsing/formatting of numbers/dates.
++- XML doc comments on every public member, including <exception> tags for every throw.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++NOTE: three previous attempts at this task were reverted because the build broke. The exact compiler errors were:
++[after 288s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorkerExtensions.cs(21,27): error CS1061: 'GradualRolloutSchedulerWorker' does not contain a definition for 'Enabled' and no accessible extension method 'Enabled' accepting a first argument of type 'GradualRolloutSchedulerWorker' could be found (are you missing a using directive or an assembly reference?) [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorkerExtensions.cs(21,45): error CS1061: 'GradualRolloutSchedulerWorker' does not contain a definition for 'CheckIntervalMinutes' and no accessible extension method 'Che
++
++Re-do the task from scratch avoiding these errors. If the error references a type that does not exist, use only types that actually exist in the repo.
++
++IMPORTANT: a previous attempt at this exact task FAILED with these compiler errors and was reverted. Do it differently and make sure these do not happen again:
++[after 110s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorkerExtensions.cs(11,39): error CS0246: The type or namespace name 'GradualRolloutSchedulerWorker' could not be found (are you missing a using directive or an assembly reference?) [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorkerExtensions.cs(22,52): error CS0246: The type or namespace name 'GradualRolloutSchedulerWorker' could not be found (are you missing a using directive or an assembly reference?) [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- refactor(services): tighten guard clauses and docs in PercentageRolloutServiceExtensions
++- refactor(cli): tighten guard clauses and docs in CliArgumentParserExtensions
++- refactor(middleware): tighten guard clauses and docs in AuthenticationMiddlewareExtensions
++- refactor(repository): tighten guard clauses and docs in WebhookRepositoryJsonExtensions
++- refactor(models): tighten guard clauses and docs in ResultJsonExtensions
++- refactor(models): tighten guard clauses and docs in AuditLogExtensions
++- refactor(models): tighten guard clauses and docs in FlagEvaluationLogExtensions
++- refactor(models): tighten guard clauses and docs in RolloutStrategyExtensions
++- refactor(models): tighten guard clauses and docs in FeatureFlagJsonExtensions
++- refactor(backgroundjobs): tighten guard clauses and docs in AuditLogCleanupWorker
+
+# 2026-07-11 17:33:53.451870
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, create ONE new C# file: `src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorkerExtensions.cs`.
++
++It must contain `public static class GradualRolloutSchedulerWorkerExtensions` with 2-4 genuinely useful, fully implemented extension methods for the existing type `GradualRolloutSchedulerWorker` (same namespace as the original file `src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorker.cs`).
++
++The REAL public members of `GradualRolloutSchedulerWorker` are (use ONLY these plus the .NET BCL, do not invent members):
++```
++public GradualRolloutSchedulerWorker
++public int CheckIntervalMinutes
++public bool Enabled
++public static IServiceCollection AddGradualRolloutScheduler
++```
++
++QUALITY BAR (an automated review rejects the commit if violated):
++- Every method solves its problem COMPLETELY. If you cannot implement something for real, OMIT that method entirely - never fake a result, never hardcode a return value, never write "simplified for demo" / "in a real application". A smaller honest class beats a padded fake one.
++- Guard clauses first: ArgumentNullException.ThrowIfNull(x) / ArgumentException.ThrowIfNullOrEmpty(s) at the top of each public method.
++- Modern C#: expression-bodied members where they fit on one line, pattern matching over if-chains, target-typed new.
++- Return IReadOnlyList<T>/IEnumerable<T> from queries, not List<T>. Use CultureInfo.InvariantCulture for machine-facing parsing/formatting of numbers/dates.
++- XML doc comments on every public member, including <exception> tags for every throw.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++NOTE: three previous attempts at this task were reverted because the build broke. The exact compiler errors were:
++[after 288s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorkerExtensions.cs(21,27): error CS1061: 'GradualRolloutSchedulerWorker' does not contain a definition for 'Enabled' and no accessible extension method 'Enabled' accepting a first argument of type 'GradualRolloutSchedulerWorker' could be found (are you missing a using directive or an assembly reference?) [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorkerExtensions.cs(21,45): error CS1061: 'GradualRolloutSchedulerWorker' does not contain a definition for 'CheckIntervalMinutes' and no accessible extension method 'Che
++
++Re-do the task from scratch avoiding these errors. If the error references a type that does not exist, use only types that actually exist in the repo.
++
++IMPORTANT: a previous attempt at this exact task FAILED with these compiler errors and was reverted. Do it differently and make sure these do not happen again:
++[after 110s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorkerExtensions.cs(11,39): error CS0246: The type or namespace name 'GradualRolloutSchedulerWorker' could not be found (are you missing a using directive or an assembly reference?) [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorkerExtensions.cs(22,52): error CS0246: The type or namespace name 'GradualRolloutSchedulerWorker' could not be found (are you missing a using directive or an assembly reference?) [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- refactor(services): tighten guard clauses and docs in PercentageRolloutServiceExtensions
++- refactor(cli): tighten guard clauses and docs in CliArgumentParserExtensions
++- refactor(middleware): tighten guard clauses and docs in AuthenticationMiddlewareExtensions
++- refactor(repository): tighten guard clauses and docs in WebhookRepositoryJsonExtensions
++- refactor(models): tighten guard clauses and docs in ResultJsonExtensions
++- refactor(models): tighten guard clauses and docs in AuditLogExtensions
++- refactor(models): tighten guard clauses and docs in FlagEvaluationLogExtensions
++- refactor(models): tighten guard clauses and docs in RolloutStrategyExtensions
++- refactor(models): tighten guard clauses and docs in FeatureFlagJsonExtensions
++- refactor(backgroundjobs): tighten guard clauses and docs in AuditLogCleanupWorker
