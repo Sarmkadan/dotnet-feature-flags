@@ -19,41 +19,51 @@ public static class AuditLogExtensions
     /// <summary>
     /// Determines if this audit log entry represents a state change (as opposed to creation or deletion).
     /// </summary>
-    /// <param name="log">The audit log entry to check</param>
-    /// <returns>True if the action is Updated, Enabled, or Disabled; false otherwise</returns>
+    /// <param name="log">The audit log entry to check.</param>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="log"/> is <see langword="null"/>.</exception>
+    /// <returns>True if the action is Updated, Enabled, or Disabled; false otherwise.</returns>
     public static bool IsStateChange(this AuditLog log)
     {
+        ArgumentNullException.ThrowIfNull(log);
         return log.Action is AuditAction.Updated or AuditAction.Enabled or AuditAction.Disabled;
     }
 
     /// <summary>
     /// Determines if this audit log entry represents a creation event.
     /// </summary>
-    /// <param name="log">The audit log entry to check</param>
-    /// <returns>True if the action is Created; false otherwise</returns>
+    /// <param name="log">The audit log entry to check.</param>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="log"/> is <see langword="null"/>.</exception>
+    /// <returns>True if the action is Created; false otherwise.</returns>
     public static bool IsCreation(this AuditLog log)
     {
+        ArgumentNullException.ThrowIfNull(log);
         return log.Action == AuditAction.Created;
     }
 
     /// <summary>
     /// Determines if this audit log entry represents a deletion event.
     /// </summary>
-    /// <param name="log">The audit log entry to check</param>
-    /// <returns>True if the action is Deleted; false otherwise</returns>
+    /// <param name="log">The audit log entry to check.</param>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="log"/> is <see langword="null"/>.</exception>
+    /// <returns>True if the action is Deleted; false otherwise.</returns>
     public static bool IsDeletion(this AuditLog log)
     {
+        ArgumentNullException.ThrowIfNull(log);
         return log.Action == AuditAction.Deleted;
     }
 
     /// <summary>
     /// Gets the duration since this change was made in a human-readable format.
     /// </summary>
-    /// <param name="log">The audit log entry</param>
-    /// <param name="format">Optional format string for TimeSpan (default: "d' days, 'h' hours, 'm' minutes ago")</param>
-    /// <returns>Formatted time duration string</returns>
+    /// <param name="log">The audit log entry.</param>
+    /// <param name="format">Optional format string for TimeSpan (default: "d' days, 'h' hours, 'm' minutes ago").</param>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="log"/> is <see langword="null"/>.</exception>
+    /// <returns>Formatted time duration string.</returns>
     public static string GetTimeSinceChange(this AuditLog log, string format = "d' days, 'h' hours, 'm' minutes ago")
     {
+        ArgumentNullException.ThrowIfNull(log);
+        ArgumentException.ThrowIfNullOrEmpty(format);
+
         var duration = DateTime.UtcNow - log.ChangedAt;
 
         if (duration.TotalMinutes < 1)
@@ -71,18 +81,21 @@ public static class AuditLogExtensions
             return $"{duration.Hours} hours ago";
         }
 
-        return format.Replace("d", duration.Days.ToString())
-                     .Replace("h", duration.Hours.ToString())
-                     .Replace("m", duration.Minutes.ToString());
+        return format
+            .Replace("d", duration.Days.ToString())
+            .Replace("h", duration.Hours.ToString())
+            .Replace("m", duration.Minutes.ToString());
     }
 
     /// <summary>
     /// Creates a detailed change description that includes both the summary and change details.
     /// </summary>
-    /// <param name="log">The audit log entry</param>
-    /// <returns>Formatted string with full change details</returns>
+    /// <param name="log">The audit log entry.</param>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="log"/> is <see langword="null"/>.</exception>
+    /// <returns>Formatted string with full change details.</returns>
     public static string GetDetailedChangeDescription(this AuditLog log)
     {
+        ArgumentNullException.ThrowIfNull(log);
         var summary = log.GetSummary();
         var (oldState, newState) = log.GetChangeDetails();
 
@@ -92,21 +105,31 @@ public static class AuditLogExtensions
     /// <summary>
     /// Determines if this audit log entry is recent (within the specified time threshold).
     /// </summary>
-    /// <param name="log">The audit log entry to check</param>
-    /// <param name="thresholdMinutes">Time threshold in minutes (default: 30)</param>
-    /// <returns>True if the change was made within the threshold; false otherwise</returns>
+    /// <param name="log">The audit log entry to check.</param>
+    /// <param name="thresholdMinutes">Time threshold in minutes (default: 30).</param>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="log"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="thresholdMinutes"/> is negative.</exception>
+    /// <returns>True if the change was made within the threshold; false otherwise.</returns>
     public static bool IsRecent(this AuditLog log, int thresholdMinutes = 30)
     {
+        ArgumentNullException.ThrowIfNull(log);
+        if (thresholdMinutes < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(thresholdMinutes), "Threshold must be non-negative.");
+        }
+
         return DateTime.UtcNow - log.ChangedAt <= TimeSpan.FromMinutes(thresholdMinutes);
     }
 
     /// <summary>
     /// Gets a simplified action name suitable for UI display.
     /// </summary>
-    /// <param name="log">The audit log entry</param>
-    /// <returns>Simplified action name (e.g., "Updated", "Created", "Deleted")</returns>
+    /// <param name="log">The audit log entry.</param>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="log"/> is <see langword="null"/>.</exception>
+    /// <returns>Simplified action name (e.g., "Updated", "Created", "Deleted").</returns>
     public static string GetActionDisplayName(this AuditLog log)
     {
+        ArgumentNullException.ThrowIfNull(log);
         return log.Action switch
         {
             AuditAction.Created => "Created",
