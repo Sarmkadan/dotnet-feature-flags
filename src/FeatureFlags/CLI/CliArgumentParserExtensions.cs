@@ -5,6 +5,7 @@
 // CTO & Software Architect
 // =============================================================================
 
+using System;
 using System.Text;
 
 namespace FeatureFlags.CLI;
@@ -20,14 +21,12 @@ public static class CliArgumentParserExtensions
     /// <param name="parser">The argument parser instance.</param>
     /// <param name="args">The command line arguments.</param>
     /// <returns>The parsed command, or empty string if no command provided.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="args"/> is <see langword="null"/>.</exception>
     public static string GetCommand(this CliArgumentParser parser, string[] args)
     {
-        if (args.Length == 0)
-        {
-            return string.Empty;
-        }
+        ArgumentNullException.ThrowIfNull(args);
 
-        return args[0].ToLower();
+        return args.Length == 0 ? string.Empty : args[0].ToLowerInvariant();
     }
 
     /// <summary>
@@ -37,9 +36,15 @@ public static class CliArgumentParserExtensions
     /// <param name="args">The command line arguments.</param>
     /// <param name="requiredArguments">Collection of required argument keys.</param>
     /// <returns>The parsed command.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="args"/> or <paramref name="requiredArguments"/> is <see langword="null"/>.
+    /// </exception>
     /// <exception cref="ArgumentException">Thrown when required arguments are missing.</exception>
     public static CliCommand ParseWithValidation(this CliArgumentParser parser, string[] args, params string[] requiredArguments)
     {
+        ArgumentNullException.ThrowIfNull(args);
+        ArgumentNullException.ThrowIfNull(requiredArguments);
+
         var command = CliArgumentParser.Parse(args);
 
         if (command.ShowHelp)
@@ -67,9 +72,15 @@ public static class CliArgumentParserExtensions
     /// <param name="args">The command line arguments.</param>
     /// <param name="requiredGroups">Collection of argument groups where at least one must be present.</param>
     /// <returns>The parsed command.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="args"/> or <paramref name="requiredGroups"/> is <see langword="null"/>.
+    /// </exception>
     /// <exception cref="ArgumentException">Thrown when no arguments from any required group are provided.</exception>
     public static CliCommand ParseWithGroupValidation(this CliArgumentParser parser, string[] args, params string[][] requiredGroups)
     {
+        ArgumentNullException.ThrowIfNull(args);
+        ArgumentNullException.ThrowIfNull(requiredGroups);
+
         var command = CliArgumentParser.Parse(args);
 
         if (command.ShowHelp)
@@ -96,14 +107,17 @@ public static class CliArgumentParserExtensions
     /// <param name="command">The parsed command.</param>
     /// <param name="key">The argument key to retrieve.</param>
     /// <returns>Collection of values for the specified key.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="command"/> or <paramref name="key"/> is <see langword="null"/>.
+    /// </exception>
     public static IReadOnlyCollection<string> GetAllArguments(this CliArgumentParser parser, CliCommand command, string key)
     {
-        if (command.Arguments.TryGetValue(key, out var value))
-        {
-            return new[] { value };
-        }
+        ArgumentNullException.ThrowIfNull(command);
+        ArgumentNullException.ThrowIfNull(key);
 
-        return Array.Empty<string>();
+        return command.Arguments.TryGetValue(key, out var value)
+            ? new[] { value }
+            : Array.Empty<string>();
     }
 
     /// <summary>
@@ -112,8 +126,11 @@ public static class CliArgumentParserExtensions
     /// <param name="parser">The argument parser instance.</param>
     /// <param name="commandName">Name of the command to get help for.</param>
     /// <returns>Formatted help string.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="commandName"/> is <see langword="null"/>.</exception>
     public static string GetCommandHelp(this CliArgumentParser parser, string commandName)
     {
+        ArgumentNullException.ThrowIfNull(commandName);
+
         var sb = new StringBuilder();
         sb.AppendLine($"Help for command: {commandName}");
         sb.AppendLine();
@@ -148,8 +165,10 @@ public static class CliArgumentParserExtensions
     /// <param name="parser">The argument parser instance.</param>
     /// <param name="command">The parsed command.</param>
     /// <returns>True if the command has arguments; otherwise, false.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="command"/> is <see langword="null"/>.</exception>
     public static bool HasAnyArguments(this CliArgumentParser parser, CliCommand command)
     {
+        ArgumentNullException.ThrowIfNull(command);
         return command.Arguments.Count > 0;
     }
 
@@ -159,8 +178,10 @@ public static class CliArgumentParserExtensions
     /// <param name="parser">The argument parser instance.</param>
     /// <param name="command">The parsed command.</param>
     /// <returns>Number of arguments.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="command"/> is <see langword="null"/>.</exception>
     public static int GetArgumentCount(this CliArgumentParser parser, CliCommand command)
     {
+        ArgumentNullException.ThrowIfNull(command);
         return command.Arguments.Count;
     }
 
