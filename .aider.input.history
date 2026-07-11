@@ -3396,3 +3396,119 @@
 +- chore: apply workspace updates
 +- chore: apply workspace updates
 +- chore: apply workspace updates
+
+# 2026-07-11 07:21:05.926211
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, create ONE new C# file: `src/FeatureFlags/Repository/FeatureFlagRepositoryExtensions.cs`.
++
++It must contain `public static class FeatureFlagRepositoryExtensions` with 2-4 genuinely useful, fully implemented extension methods for the existing type `FeatureFlagRepository` (same namespace as the original file `src/FeatureFlags/Repository/FeatureFlagRepository.cs`).
++
++The REAL public members of `FeatureFlagRepository` are (use ONLY these plus the .NET BCL, do not invent members):
++```
++public class FeatureFlagRepository : IFeatureFlagRepository
++public FeatureFlagRepository
++public async Task<FeatureFlag?> GetByIdAsync
++public async Task<FeatureFlag?> GetByKeyAsync
++public async Task<IEnumerable<FeatureFlag>> GetAllAsync
++public async Task<IEnumerable<FeatureFlag>> GetEnabledAsync
++public async Task<IEnumerable<FeatureFlag>> GetByCreatorAsync
++public async Task<IEnumerable<FeatureFlag>> GetModifiedSinceAsync
++public async Task<int> GetTotalCountAsync
++public async Task<IEnumerable<FeatureFlag>> GetPagedAsync
++public async Task<IEnumerable<FeatureFlag>> SearchAsync
++public async Task<FeatureFlag?> GetWithRulesAsync
++public async Task<FeatureFlag?> GetWithVariantsAsync
++public async Task<FeatureFlag?> GetWithAuditLogsAsync
++public async Task<bool> KeyExistsAsync
++public async Task<IEnumerable<FeatureFlag>> GetRecentlyModifiedAsync
++public async Task<FeatureFlag> AddAsync
++public async Task UpdateAsync
++public async Task DeleteAsync
++public async Task<bool> ExistsAsync
++```
++
++QUALITY BAR (an automated review rejects the commit if violated):
++- Every method solves its problem COMPLETELY. If you cannot implement something for real, OMIT that method entirely - never fake a result, never hardcode a return value, never write "simplified for demo" / "in a real application". A smaller honest class beats a padded fake one.
++- Guard clauses first: ArgumentNullException.ThrowIfNull(x) / ArgumentException.ThrowIfNullOrEmpty(s) at the top of each public method.
++- Modern C#: expression-bodied members where they fit on one line, pattern matching over if-chains, target-typed new.
++- Return IReadOnlyList<T>/IEnumerable<T> from queries, not List<T>. Use CultureInfo.InvariantCulture for machine-facing parsing/formatting of numbers/dates.
++- XML doc comments on every public member, including <exception> tags for every throw.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++IMPORTANT: a previous attempt at this exact task FAILED with these compiler errors and was reverted. Do it differently and make sure these do not happen again:
++[after 278s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Repository/FeatureFlagRepositoryExtensions.cs(15,44): error CS0246: The type or namespace name 'FeatureFlag' could not be found (are you missing a using directive or an assembly reference?) [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Repository/FeatureFlagRepositoryExtensions.cs(15,44): error CS0246: The type or namespace name 'FeatureFlag' could not be found (are you missing a using directive or an assembly reference?) [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- refactor(exceptions): tighten guard clauses and docs in FeatureFlagExceptionExtensions
++- refactor(exceptions): tighten guard clauses and docs in ValidationExceptionJsonExtensions
++- refactor(dotnet-feature-flags.benchmarks): tighten guard clauses and docs in FeatureFlagsBenchmarksExtensions
++- feat(utilities): add validation helpers for DateTimeExtensions
++- feat(data): add validation helpers for DatabaseSeeder
++- feat(services): introduce FeatureFlagService validation helpers
++- feat(middleware): add validation helpers for RateLimitingMiddleware
++- feat(repository): add validation helpers for AuditLogRepository
++- feat(models): add validation helpers for AuditLog
++- feat(models): introduce FlagEvaluationLog validation helpers
+
+# 2026-07-11 07:21:05.926328
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, create ONE new C# file: `src/FeatureFlags/Repository/FeatureFlagRepositoryExtensions.cs`.
++
++It must contain `public static class FeatureFlagRepositoryExtensions` with 2-4 genuinely useful, fully implemented extension methods for the existing type `FeatureFlagRepository` (same namespace as the original file `src/FeatureFlags/Repository/FeatureFlagRepository.cs`).
++
++The REAL public members of `FeatureFlagRepository` are (use ONLY these plus the .NET BCL, do not invent members):
++```
++public class FeatureFlagRepository : IFeatureFlagRepository
++public FeatureFlagRepository
++public async Task<FeatureFlag?> GetByIdAsync
++public async Task<FeatureFlag?> GetByKeyAsync
++public async Task<IEnumerable<FeatureFlag>> GetAllAsync
++public async Task<IEnumerable<FeatureFlag>> GetEnabledAsync
++public async Task<IEnumerable<FeatureFlag>> GetByCreatorAsync
++public async Task<IEnumerable<FeatureFlag>> GetModifiedSinceAsync
++public async Task<int> GetTotalCountAsync
++public async Task<IEnumerable<FeatureFlag>> GetPagedAsync
++public async Task<IEnumerable<FeatureFlag>> SearchAsync
++public async Task<FeatureFlag?> GetWithRulesAsync
++public async Task<FeatureFlag?> GetWithVariantsAsync
++public async Task<FeatureFlag?> GetWithAuditLogsAsync
++public async Task<bool> KeyExistsAsync
++public async Task<IEnumerable<FeatureFlag>> GetRecentlyModifiedAsync
++public async Task<FeatureFlag> AddAsync
++public async Task UpdateAsync
++public async Task DeleteAsync
++public async Task<bool> ExistsAsync
++```
++
++QUALITY BAR (an automated review rejects the commit if violated):
++- Every method solves its problem COMPLETELY. If you cannot implement something for real, OMIT that method entirely - never fake a result, never hardcode a return value, never write "simplified for demo" / "in a real application". A smaller honest class beats a padded fake one.
++- Guard clauses first: ArgumentNullException.ThrowIfNull(x) / ArgumentException.ThrowIfNullOrEmpty(s) at the top of each public method.
++- Modern C#: expression-bodied members where they fit on one line, pattern matching over if-chains, target-typed new.
++- Return IReadOnlyList<T>/IEnumerable<T> from queries, not List<T>. Use CultureInfo.InvariantCulture for machine-facing parsing/formatting of numbers/dates.
++- XML doc comments on every public member, including <exception> tags for every throw.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++IMPORTANT: a previous attempt at this exact task FAILED with these compiler errors and was reverted. Do it differently and make sure these do not happen again:
++[after 278s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Repository/FeatureFlagRepositoryExtensions.cs(15,44): error CS0246: The type or namespace name 'FeatureFlag' could not be found (are you missing a using directive or an assembly reference?) [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Repository/FeatureFlagRepositoryExtensions.cs(15,44): error CS0246: The type or namespace name 'FeatureFlag' could not be found (are you missing a using directive or an assembly reference?) [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- refactor(exceptions): tighten guard clauses and docs in FeatureFlagExceptionExtensions
++- refactor(exceptions): tighten guard clauses and docs in ValidationExceptionJsonExtensions
++- refactor(dotnet-feature-flags.benchmarks): tighten guard clauses and docs in FeatureFlagsBenchmarksExtensions
++- feat(utilities): add validation helpers for DateTimeExtensions
++- feat(data): add validation helpers for DatabaseSeeder
++- feat(services): introduce FeatureFlagService validation helpers
++- feat(middleware): add validation helpers for RateLimitingMiddleware
++- feat(repository): add validation helpers for AuditLogRepository
++- feat(models): add validation helpers for AuditLog
++- feat(models): introduce FlagEvaluationLog validation helpers
