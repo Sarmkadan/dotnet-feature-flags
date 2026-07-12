@@ -37,9 +37,9 @@ public sealed class RateLimitingMiddleware
         if (!IsRequestAllowed(clientId))
         {
             context.Response.StatusCode = (int)HttpStatusCode.TooManyRequests;
-            context.Response.Headers.Add("Retry-After", _options.WindowSeconds.ToString());
-            context.Response.Headers.Add("X-RateLimit-Limit", _options.MaxRequests.ToString());
-            context.Response.Headers.Add("X-RateLimit-Remaining", "0");
+            context.Response.Headers["Retry-After"] = _options.WindowSeconds.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            context.Response.Headers["X-RateLimit-Limit"] = _options.MaxRequests.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            context.Response.Headers["X-RateLimit-Remaining"] = "0";
 
             await context.Response.WriteAsJsonAsync(new
             {
@@ -54,9 +54,9 @@ public sealed class RateLimitingMiddleware
 
         // Add rate limit headers to response
         var remaining = GetRemainingRequests(clientId);
-        context.Response.Headers.Add("X-RateLimit-Limit", _options.MaxRequests.ToString());
-        context.Response.Headers.Add("X-RateLimit-Remaining", remaining.ToString());
-        context.Response.Headers.Add("X-RateLimit-Reset", GetResetTime(clientId).ToString());
+        context.Response.Headers["X-RateLimit-Limit"] = _options.MaxRequests.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        context.Response.Headers["X-RateLimit-Remaining"] = remaining.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        context.Response.Headers["X-RateLimit-Reset"] = GetResetTime(clientId).ToString(System.Globalization.CultureInfo.InvariantCulture);
 
         await _next(context);
     }
@@ -70,21 +70,25 @@ public sealed class RateLimitingMiddleware
 
         // Remove expired requests outside the window
         var cutoffTime = DateTime.UtcNow.AddSeconds(-_options.WindowSeconds);
-        history.Timestamps = new Queue<DateTime>(history.Timestamps.Where(t => t > cutoffTime));
+        lock (history.SyncRoot)
+        {
+            while (history.Timestamps.Count > 0 && history.Timestamps.Peek() <= cutoffTime)
+            {
+                history.Timestamps.Dequeue();
+            }
 
-        return history.Timestamps.Count < _options.MaxRequests;
+            return history.Timestamps.Count < _options.MaxRequests;
+        }
     }
 
     private void RecordRequest(string clientId)
     {
-        _requestHistory.AddOrUpdate(clientId,
-            new RequestHistory { Timestamps = new Queue<DateTime>(new[] { DateTime.UtcNow }) },
-            (_, history) =>
-            {
-                history.Timestamps.Enqueue(DateTime.UtcNow);
-                history.LastAccessTime = DateTime.UtcNow;
-                return history;
-            });
+        var history = _requestHistory.GetOrAdd(clientId, _ => new RequestHistory());
+        lock (history.SyncRoot)
+        {
+            history.Timestamps.Enqueue(DateTime.UtcNow);
+            history.LastAccessTime = DateTime.UtcNow;
+        }
     }
 
     private int GetRemainingRequests(string clientId)
@@ -95,7 +99,11 @@ public sealed class RateLimitingMiddleware
         }
 
         var cutoffTime = DateTime.UtcNow.AddSeconds(-_options.WindowSeconds);
-        var validRequests = history.Timestamps.Count(t => t > cutoffTime);
+        int validRequests;
+        lock (history.SyncRoot)
+        {
+            validRequests = history.Timestamps.Count(t => t > cutoffTime);
+        }
 
         return Math.Max(0, _options.MaxRequests - validRequests);
     }
@@ -107,7 +115,17 @@ public sealed class RateLimitingMiddleware
             return 0;
         }
 
-        var oldestRequest = history.Timestamps.Peek();
+        DateTime oldestRequest;
+        lock (history.SyncRoot)
+        {
+            if (history.Timestamps.Count == 0)
+            {
+                return 0;
+            }
+
+            oldestRequest = history.Timestamps.Peek();
+        }
+
         var resetTime = oldestRequest.AddSeconds(_options.WindowSeconds);
 
         return (long)Math.Max(0, (resetTime - DateTime.UtcNow).TotalSeconds);
@@ -152,9 +170,10 @@ public sealed class RateLimitingMiddleware
         }
     }
 
-    private class RequestHistory
+    private sealed class RequestHistory
     {
-        public Queue<DateTime> Timestamps { get; set; } = new();
+        public object SyncRoot { get; } = new();
+        public Queue<DateTime> Timestamps { get; } = new();
         public DateTime LastAccessTime { get; set; } = DateTime.UtcNow;
     }
 }

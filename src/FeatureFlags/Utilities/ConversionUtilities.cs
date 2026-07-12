@@ -41,7 +41,7 @@ public static class ConversionUtilities
             }
             else if (typeof(T) == typeof(double))
             {
-                if (double.TryParse(value, out var doubleValue))
+                if (double.TryParse(value, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var doubleValue))
                 {
                     return (T?)(object)doubleValue;
                 }
@@ -55,7 +55,7 @@ public static class ConversionUtilities
             }
             else if (typeof(T) == typeof(DateTime))
             {
-                if (DateTime.TryParse(value, out var dateValue))
+                if (DateTime.TryParse(value, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.RoundtripKind, out var dateValue))
                 {
                     return (T?)(object)dateValue;
                 }
