@@ -3800,3 +3800,119 @@
 +- refactor(models): tighten guard clauses and docs in RolloutStrategyExtensions
 +- refactor(models): tighten guard clauses and docs in FeatureFlagJsonExtensions
 +- refactor(backgroundjobs): tighten guard clauses and docs in AuditLogCleanupWorker
+
+# 2026-07-12 19:37:41.396999
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, create ONE new C# file: `src/FeatureFlags/Models/RuleExtensions.cs`.
++
++It must contain `public static class RuleExtensions` with 2-4 genuinely useful, fully implemented extension methods for the existing type `Rule` (same namespace as the original file `src/FeatureFlags/Models/Rule.cs`).
++
++The REAL public members of `Rule` are (use ONLY these plus the .NET BCL, do not invent members):
++```
++public int Id
++public int FeatureFlagId
++public string Name
++public string Description
++public int Priority
++public bool IsActive
++public string ConditionLogic
++public DateTime CreatedAt
++public DateTime UpdatedAt
++public FeatureFlag? FeatureFlag
++public ICollection<Condition> Conditions
++public bool IsValid
++public int GetActiveConditionCount
++public int GetEvaluationPriority
++```
++
++QUALITY BAR (an automated review rejects the commit if violated):
++- Every method solves its problem COMPLETELY. If you cannot implement something for real, OMIT that method entirely - never fake a result, never hardcode a return value, never write "simplified for demo" / "in a real application". A smaller honest class beats a padded fake one.
++- Guard clauses first: ArgumentNullException.ThrowIfNull(x) / ArgumentException.ThrowIfNullOrEmpty(s) at the top of each public method.
++- Modern C#: expression-bodied members where they fit on one line, pattern matching over if-chains, target-typed new.
++- Return IReadOnlyList<T>/IEnumerable<T> from queries, not List<T>. Use CultureInfo.InvariantCulture for machine-facing parsing/formatting of numbers/dates.
++- XML doc comments on every public member, including <exception> tags for every throw.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++NOTE: three previous attempts at this task were reverted because the build broke. The exact compiler errors were:
++[after 218s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Models/RuleExtensions.cs(24,20): error CS0019: Operator '&&' cannot be applied to operands of type 'bool' and 'method group' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++
++Re-do the task from scratch avoiding these errors. If the error references a type that does not exist, use only types that actually exist in the repo.
++
++IMPORTANT: a previous attempt at this exact task FAILED with these compiler errors and was reverted. Do it differently and make sure these do not happen again:
++[after 155s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Models/RuleExtensions.cs(13,37): error CS0246: The type or namespace name 'Rule' could not be found (are you missing a using directive or an assembly reference?) [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Models/RuleExtensions.cs(24,51): error CS0246: The type or namespace name 'Rule' could not be found (are you missing a using directive or an assembly reference?) [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Models/RuleExtensions.cs(35,67): error CS0246: The type o
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- refactor(examples): tighten guard clauses and docs in FeatureFlagServiceTestExampleExtensions
++- refactor(tests): add guard clauses and comprehensive XML documentation to RuleEvaluationServiceTestsExtensions
++- refactor(models): tighten guard clauses and docs in ConditionEvaluationTestsExtensions
++- refactor(utilities): tighten guard clauses and docs in StringExtensionTestsExtensions
++- chore: remove stray scratch files from repository root
++- fix: invariant-culture parsing, rate limiter races, and real webhook listing
++- fix: restore mockable seams and align webhook and formatter behavior with tests
++- refactor(models): tighten guard clauses and docs in UserContextTestsExtensions
++- refactor(controllers): tighten guard clauses and docs in AuditControllerExtensions
++- refactor(utilities): tighten guard clauses and docs in ValidationExtensions
+
+# 2026-07-12 19:37:41.397071
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, create ONE new C# file: `src/FeatureFlags/Models/RuleExtensions.cs`.
++
++It must contain `public static class RuleExtensions` with 2-4 genuinely useful, fully implemented extension methods for the existing type `Rule` (same namespace as the original file `src/FeatureFlags/Models/Rule.cs`).
++
++The REAL public members of `Rule` are (use ONLY these plus the .NET BCL, do not invent members):
++```
++public int Id
++public int FeatureFlagId
++public string Name
++public string Description
++public int Priority
++public bool IsActive
++public string ConditionLogic
++public DateTime CreatedAt
++public DateTime UpdatedAt
++public FeatureFlag? FeatureFlag
++public ICollection<Condition> Conditions
++public bool IsValid
++public int GetActiveConditionCount
++public int GetEvaluationPriority
++```
++
++QUALITY BAR (an automated review rejects the commit if violated):
++- Every method solves its problem COMPLETELY. If you cannot implement something for real, OMIT that method entirely - never fake a result, never hardcode a return value, never write "simplified for demo" / "in a real application". A smaller honest class beats a padded fake one.
++- Guard clauses first: ArgumentNullException.ThrowIfNull(x) / ArgumentException.ThrowIfNullOrEmpty(s) at the top of each public method.
++- Modern C#: expression-bodied members where they fit on one line, pattern matching over if-chains, target-typed new.
++- Return IReadOnlyList<T>/IEnumerable<T> from queries, not List<T>. Use CultureInfo.InvariantCulture for machine-facing parsing/formatting of numbers/dates.
++- XML doc comments on every public member, including <exception> tags for every throw.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++NOTE: three previous attempts at this task were reverted because the build broke. The exact compiler errors were:
++[after 218s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Models/RuleExtensions.cs(24,20): error CS0019: Operator '&&' cannot be applied to operands of type 'bool' and 'method group' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++
++Re-do the task from scratch avoiding these errors. If the error references a type that does not exist, use only types that actually exist in the repo.
++
++IMPORTANT: a previous attempt at this exact task FAILED with these compiler errors and was reverted. Do it differently and make sure these do not happen again:
++[after 155s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Models/RuleExtensions.cs(13,37): error CS0246: The type or namespace name 'Rule' could not be found (are you missing a using directive or an assembly reference?) [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Models/RuleExtensions.cs(24,51): error CS0246: The type or namespace name 'Rule' could not be found (are you missing a using directive or an assembly reference?) [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/FeatureFlags.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags/Models/RuleExtensions.cs(35,67): error CS0246: The type o
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- refactor(examples): tighten guard clauses and docs in FeatureFlagServiceTestExampleExtensions
++- refactor(tests): add guard clauses and comprehensive XML documentation to RuleEvaluationServiceTestsExtensions
++- refactor(models): tighten guard clauses and docs in ConditionEvaluationTestsExtensions
++- refactor(utilities): tighten guard clauses and docs in StringExtensionTestsExtensions
++- chore: remove stray scratch files from repository root
++- fix: invariant-culture parsing, rate limiter races, and real webhook listing
++- fix: restore mockable seams and align webhook and formatter behavior with tests
++- refactor(models): tighten guard clauses and docs in UserContextTestsExtensions
++- refactor(controllers): tighten guard clauses and docs in AuditControllerExtensions
++- refactor(utilities): tighten guard clauses and docs in ValidationExtensions
