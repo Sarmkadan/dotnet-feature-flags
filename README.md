@@ -578,6 +578,85 @@ foreach (var flag in results.Items)
 }
 ```
 
+### Example 10: Search and Filter
+
+```csharp
+// Search flags
+var results = await featureFlagService.SearchFeatureFlagsAsync(
+  query: new SearchQuery 
+  {
+    Term = "checkout",
+    CreatedBy = "admin@company.com",
+    IsEnabled = true,
+    PageNumber = 1,
+    PageSize = 20
+  }
+);
+
+foreach (var flag in results.Items)
+{
+  Console.WriteLine($"{flag.Key}: {flag.DisplayName}");
+}
+```
+
+## FeatureFlagEventExtensions
+
+The `FeatureFlagEventExtensions` class provides a set of extension methods for the `FeatureFlagEvent` type that enable common operations for filtering, metadata access, and event manipulation. These methods allow you to easily check event types, access metadata values, create modified copies of events, and format events for logging purposes.
+
+Below is a realistic usage example demonstrating the most commonly used extension methods:
+
+```csharp
+// Create a feature flag event
+var featureEvent = new FeatureFlagEvent
+{
+    EventType = "feature.enabled",
+    FeatureFlagId = Guid.NewGuid(),
+    FeatureFlagKey = "new-checkout-flow",
+    TriggeredBy = "admin@company.com",
+    OccurredAt = DateTime.UtcNow,
+    Metadata = new Dictionary<string, object?>
+    {
+        { "userId", "user123" },
+        { "environment", "production" },
+        { "version", "2.1.0" }
+    }
+};
+
+// Check if event matches a specific type
+bool isEnabledEvent = featureEvent.IsType("feature.enabled");
+
+// Check if metadata contains a specific key
+bool hasUserId = featureEvent.HasMetadataKey("userId");
+
+// Get a typed metadata value with a default fallback
+string? userId = featureEvent.GetMetadataValue<string>("userId", "anonymous");
+string? environment = featureEvent.GetMetadataValue<string>("environment");
+int? version = featureEvent.GetMetadataValue<int>("version", 1);
+
+// Check if event was triggered by a specific user
+bool isAdminTriggered = featureEvent.IsTriggeredBy("admin@company.com");
+
+// Check if event occurred within a specific time range
+bool isRecent = featureEvent.OccurredBetween(
+    DateTime.UtcNow.AddHours(-1),
+    DateTime.UtcNow
+);
+
+// Create a new event with additional metadata
+var eventWithTimestamp = featureEvent.WithMetadata("timestamp", DateTime.UtcNow.ToString("O"));
+
+// Create a new event with updated timestamp
+var eventWithNewTime = featureEvent.WithOccurredAt(DateTime.UtcNow.AddMinutes(-5));
+
+// Format event for logging
+string logString = featureEvent.ToLogString();
+Console.WriteLine(logString);
+// Output: FeatureFlagEvent { Type=feature.enabled, Key=new-checkout-flow, Id=<guid>, TriggeredBy=admin@company.com, Time=<timestamp> }
+
+// Create a shallow copy of the event
+var eventCopy = featureEvent.Clone();
+```
+
 ## API Reference
 
 ### Feature Flag Endpoints
