@@ -657,6 +657,34 @@ Console.WriteLine(logString);
 var eventCopy = featureEvent.Clone();
 ```
 
+## AuditLogCleanupWorkerExtensions
+
+The `AuditLogCleanupWorkerExtensions` class provides extension methods to configure and manage the `AuditLogCleanupWorker`, which automatically purges old audit logs based on defined retention policies. It simplifies the registration of the background worker in your dependency injection container and provides fluent configuration for retention days, cleanup intervals, and worker status.
+
+Below is a realistic usage example for registering the worker:
+
+```csharp
+// Register the cleanup worker with default options
+services.AddAuditLogCleanupWorker();
+
+// Register with custom configuration using method chaining
+services.AddAuditLogCleanupWorker(options =>
+    options.WithRetentionDays(30)
+           .WithCleanupIntervalHours(12)
+           .WithEnabled(true)
+);
+
+// Retrieve effective configuration from the worker instance (e.g., for monitoring)
+var cleanupWorker = serviceProvider.GetRequiredService<IHostedService>() as AuditLogCleanupWorker;
+if (cleanupWorker != null)
+{
+    int retentionDays = cleanupWorker.GetRetentionDays();
+    int intervalSeconds = cleanupWorker.GetCleanupIntervalSeconds();
+    
+    Console.WriteLine($"Retention: {retentionDays} days, Interval: {intervalSeconds} seconds");
+}
+```
+
 ## API Reference
 
 ### Feature Flag Endpoints
