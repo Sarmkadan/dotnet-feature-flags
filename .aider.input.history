@@ -5192,3 +5192,95 @@
 +- refactor(utilities): tighten guard clauses and docs in StringExtensionTestsExtensions
 +- chore: remove stray scratch files from repository root
 +- fix: invariant-culture parsing, rate limiter races, and real webhook listing
+
+# 2026-07-13 00:01:05.020274
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, add XML documentation comments (///) to the file `benchmarks/dotnet-feature-flags.Benchmarks/FeatureFlagsBenchmarksExtensions.cs`.
++
++Document the type `FeatureFlagsBenchmarksExtensions` and every public member with /// <summary>, <param>, <returns> where applicable. Descriptions must be specific to what the code actually does - read the method bodies first. Do NOT change any code, signature, whitespace of code lines, or behavior - ONLY add /// comment lines to `benchmarks/dotnet-feature-flags.Benchmarks/FeatureFlagsBenchmarksExtensions.cs`.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- fix: resolve build errors in .aider.chat.history
++- (no commit message provided)
++- fix(repository): resolve build errors in AuditLogRepositoryExtensions
++- fix: resolve build errors in .aider.chat.history
++- feat: add FeatureFlagExtensions with ThrowIfNull, ToDisplayString, IsEnabled, and HasRules methods.
++- fix: resolve build errors in .aider.chat.history
++- refactor(examples): tighten guard clauses and docs in FeatureFlagServiceTestExampleExtensions
++- refactor(tests): add guard clauses and comprehensive XML documentation to RuleEvaluationServiceTestsExtensions
++- refactor(models): tighten guard clauses and docs in ConditionEvaluationTestsExtensions
++- refactor(utilities): tighten guard clauses and docs in StringExtensionTestsExtensions
+
+# 2026-07-13 00:01:05.020586
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, add XML documentation comments (///) to the file `benchmarks/dotnet-feature-flags.Benchmarks/FeatureFlagsBenchmarksExtensions.cs`.
++
++Document the type `FeatureFlagsBenchmarksExtensions` and every public member with /// <summary>, <param>, <returns> where applicable. Descriptions must be specific to what the code actually does - read the method bodies first. Do NOT change any code, signature, whitespace of code lines, or behavior - ONLY add /// comment lines to `benchmarks/dotnet-feature-flags.Benchmarks/FeatureFlagsBenchmarksExtensions.cs`.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- fix: resolve build errors in .aider.chat.history
++- (no commit message provided)
++- fix(repository): resolve build errors in AuditLogRepositoryExtensions
++- fix: resolve build errors in .aider.chat.history
++- feat: add FeatureFlagExtensions with ThrowIfNull, ToDisplayString, IsEnabled, and HasRules methods.
++- fix: resolve build errors in .aider.chat.history
++- refactor(examples): tighten guard clauses and docs in FeatureFlagServiceTestExampleExtensions
++- refactor(tests): add guard clauses and comprehensive XML documentation to RuleEvaluationServiceTestsExtensions
++- refactor(models): tighten guard clauses and docs in ConditionEvaluationTestsExtensions
++- refactor(utilities): tighten guard clauses and docs in StringExtensionTestsExtensions
+
+# 2026-07-13 00:02:20.458949
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, add XML documentation comments (///) to the file `benchmarks/dotnet-feature-flags.Benchmarks/FeatureFlagsBenchmarksExtensions.cs`.
++
++Document the type `FeatureFlagsBenchmarksExtensions` and every public member with /// <summary>, <param>, <returns> where applicable. Descriptions must be specific to what the code actually does - read the method bodies first. Do NOT change any code, signature, whitespace of code lines, or behavior - ONLY add /// comment lines to `benchmarks/dotnet-feature-flags.Benchmarks/FeatureFlagsBenchmarksExtensions.cs`.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- fix: resolve build errors in .aider.chat.history
++- (no commit message provided)
++- fix(repository): resolve build errors in AuditLogRepositoryExtensions
++- fix: resolve build errors in .aider.chat.history
++- feat: add FeatureFlagExtensions with ThrowIfNull, ToDisplayString, IsEnabled, and HasRules methods.
++- fix: resolve build errors in .aider.chat.history
++- refactor(examples): tighten guard clauses and docs in FeatureFlagServiceTestExampleExtensions
++- refactor(tests): add guard clauses and comprehensive XML documentation to RuleEvaluationServiceTestsExtensions
++- refactor(models): tighten guard clauses and docs in ConditionEvaluationTestsExtensions
++- refactor(utilities): tighten guard clauses and docs in StringExtensionTestsExtensions
+
+# 2026-07-13 00:02:20.459026
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, add XML documentation comments (///) to the file `benchmarks/dotnet-feature-flags.Benchmarks/FeatureFlagsBenchmarksExtensions.cs`.
++
++Document the type `FeatureFlagsBenchmarksExtensions` and every public member with /// <summary>, <param>, <returns> where applicable. Descriptions must be specific to what the code actually does - read the method bodies first. Do NOT change any code, signature, whitespace of code lines, or behavior - ONLY add /// comment lines to `benchmarks/dotnet-feature-flags.Benchmarks/FeatureFlagsBenchmarksExtensions.cs`.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- fix: resolve build errors in .aider.chat.history
++- (no commit message provided)
++- fix(repository): resolve build errors in AuditLogRepositoryExtensions
++- fix: resolve build errors in .aider.chat.history
++- feat: add FeatureFlagExtensions with ThrowIfNull, ToDisplayString, IsEnabled, and HasRules methods.
++- fix: resolve build errors in .aider.chat.history
++- refactor(examples): tighten guard clauses and docs in FeatureFlagServiceTestExampleExtensions
++- refactor(tests): add guard clauses and comprehensive XML documentation to RuleEvaluationServiceTestsExtensions
++- refactor(models): tighten guard clauses and docs in ConditionEvaluationTestsExtensions
++- refactor(utilities): tighten guard clauses and docs in StringExtensionTestsExtensions
