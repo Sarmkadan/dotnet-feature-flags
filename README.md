@@ -177,6 +177,55 @@ bool result2 = percentageService.IsUserInRollout(userContext, "test-flag", 50);
 Console.WriteLine($"Consistent hashing test: {result1 == result2}"); // true
 ```
 
+## AuditLogServiceTests
+
+Unit tests for the `AuditLogService` covering audit retrieval, filtering, and error handling. The `AuditLogServiceTests` class tests all public methods of the `AuditLogService` class including retrieving audit logs by feature flag ID, user, and recency, as well as paged retrieval with validation and error handling scenarios.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Models;
+using FeatureFlags.Services;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+// Setup dependency injection
+var services = new ServiceCollection();
+services.AddLogging(logging => logging.AddConsole());
+
+// Register the service
+services.AddScoped<IAuditLogRepository, AuditLogRepository>();
+services.AddScoped<IAuditLogService, AuditLogService>();
+
+var serviceProvider = services.BuildServiceProvider();
+
+// Create service instance
+var auditLogService = serviceProvider.GetRequiredService<IAuditLogService>();
+
+// Get all audit logs for a specific feature flag
+var logs = await auditLogService.GetAuditLogsAsync(1);
+Console.WriteLine($"Found {logs.Count()} audit logs for flag ID 1");
+
+// Get paged audit logs for a feature flag (page 1, 10 entries per page)
+var pagedLogs = await auditLogService.GetAuditLogsPagedAsync(1, 1, 10);
+Console.WriteLine($"Page 1 of audit logs: {pagedLogs.Count()} entries");
+
+// Get audit logs by user who made the changes
+var userLogs = await auditLogService.GetAuditLogsByUserAsync("admin@example.com");
+Console.WriteLine($"User 'admin@example.com' made {userLogs.Count()} changes");
+
+// Get recent audit logs (last 10 changes)
+var recentLogs = await auditLogService.GetRecentAuditLogsAsync(10);
+Console.WriteLine($"Most recent changes: {recentLogs.Count()} entries");
+
+// Get the last change for a specific feature flag
+var lastChange = await auditLogService.GetLastChangeAsync(1);
+if (lastChange != null)
+{
+    Console.WriteLine($"Last change by {lastChange.ChangedBy} at {lastChange.ChangedAt}");
+}
+```
+
 ## FlagEvaluationLogServiceTests
 
 Unit tests for the `FlagEvaluationLogService` that verify flag evaluation tracking, metrics aggregation, and in-memory log management. The `FlagEvaluationLogServiceTests` class tests all public methods of the `FlagEvaluationLogService` class including evaluation logging, retrieval by flag/user, log filtering, and log cleanup operations.
