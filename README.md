@@ -1020,6 +1020,81 @@ var instantStrategy = new RolloutStrategy
 Console.WriteLine($"Instant rollout at {instantStrategy.GetCurrentPercentage()}%");
 ```
 
+## PercentageRolloutService
+
+The `PercentageRolloutService` provides percentage-based rollout evaluation for feature flags using consistent hashing to ensure stable, reproducible decisions across application restarts. It determines whether a user should receive a feature based on a percentage threshold and the user's consistent hash bucket, making it ideal for gradual feature rollouts and A/B testing scenarios.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Services;
+using FeatureFlags.Models;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+// Setup dependency injection
+var services = new ServiceCollection();
+services.AddLogging(logging => logging.AddConsole());
+
+// Register the service
+services.AddScoped<IPercentageRolloutService, PercentageRolloutService>();
+
+var serviceProvider = services.BuildServiceProvider();
+
+// Create service instance
+var percentageService = serviceProvider.GetRequiredService<IPercentageRolloutService>();
+
+// Create a feature flag with percentage rollout configuration
+var featureFlag = new FeatureFlag
+{
+    Key = "new_checkout_flow",
+    DisplayName = "New Checkout Flow",
+    Description = "Enables the redesigned checkout process",
+    IsEnabled = true,
+    RolloutType = RolloutType.Percentage,
+    PercentageRollout = 50 // Enable for 50% of users
+};
+
+// Create a user context for evaluation
+var userContext = new UserContext
+{
+    UserId = "user123",
+    Email = "user@example.com",
+    Country = "US",
+    Tier = "Premium"
+};
+
+// Evaluate the feature flag for the user (async)
+bool isEnabled = await percentageService.EvaluateAsync(featureFlag, userContext);
+Console.WriteLine($"Feature enabled for user: {isEnabled}");
+
+// Get the user's bucket for consistent hashing (0-99)
+int userBucket = percentageService.GetUserBucket(userContext, featureFlag.Key);
+Console.WriteLine($"User bucket: {userBucket}");
+
+// Check if user is in rollout directly
+bool isInRollout = percentageService.IsUserInRollout(userContext, featureFlag.Key, featureFlag.PercentageRollout!.Value);
+Console.WriteLine($"User in rollout: {isInRollout}");
+
+// Example: 100% rollout (all users get the feature)
+var fullRolloutFlag = new FeatureFlag
+{
+    Key = "full_feature",
+    PercentageRollout = 100
+};
+bool fullRolloutResult = await percentageService.EvaluateAsync(fullRolloutFlag, userContext);
+Console.WriteLine($"100% rollout result: {fullRolloutResult}"); // true
+
+// Example: 0% rollout (no users get the feature)
+var noRolloutFlag = new FeatureFlag
+{
+    Key = "disabled_feature",
+    PercentageRollout = 0
+};
+bool noRolloutResult = await percentageService.EvaluateAsync(noRolloutFlag, userContext);
+Console.WriteLine($"0% rollout result: {noRolloutResult}"); // false
+```
+
 ## IGradualRolloutSchedulerService
 
 The `IGradualRolloutSchedulerService` interface manages the scheduling and advancement of gradual feature flag rollouts. It supports time-based percentage advancement with configurable daily increment steps, start dates, and end dates. The service automatically processes scheduled rollouts to advance percentage allocations based on elapsed time, and provides methods to check rollout status and manually advance specific rollouts.
