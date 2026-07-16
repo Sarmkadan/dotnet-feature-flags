@@ -1174,6 +1174,47 @@ bool advanced = await schedulerService.AdvanceRolloutAsync(featureFlag.Id, "admi
 Console.WriteLine($"Manual rollout advance: {(advanced ? "Success" : "Failed")}");
 ```
 
+## Phase2DependencyInjectionExtensions
+
+The `Phase2DependencyInjectionExtensions` class provides dependency injection configuration for Phase 2 components including middleware, caching, webhooks, event system, background workers, and rate limiting. It registers all services, repositories, HTTP clients, and hosted services required for the enhanced feature flag system.
+
+This extension class provides methods to configure services (`AddPhase2Services`), register middleware (`UsePhase2Middleware`), and initialize event subscribers (`InitializeEventSubscribers`) in your ASP.NET Core application.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Configuration;
+using FeatureFlags.Services;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+// Setup dependency injection
+var services = new ServiceCollection();
+services.AddLogging(logging => logging.AddConsole());
+
+// Load configuration (typically from appsettings.json)
+var configuration = new ConfigurationBuilder()
+    .AddJsonFile("appsettings.json")
+    .Build();
+
+// Register Phase 2 services
+services.AddPhase2Services(configuration);
+
+// Build service provider
+var serviceProvider = services.BuildServiceProvider();
+
+// Configure the application pipeline
+var app = new ApplicationBuilder(serviceProvider);
+
+// Add Phase 2 middleware
+app.UsePhase2Middleware();
+
+// Initialize event subscribers (webhooks, logging, etc.)
+app.InitializeEventSubscribers();
+```
+
 ## DatabaseSeeder
 
 The `DatabaseSeeder` class provides methods for seeding and clearing test data in the feature flag database. It supports creating sample feature flags, rules, conditions, variants, and audit logs with realistic configurations for development, testing, and performance benchmarking scenarios.
