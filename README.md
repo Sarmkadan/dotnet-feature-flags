@@ -1020,9 +1020,11 @@ var instantStrategy = new RolloutStrategy
 Console.WriteLine($"Instant rollout at {instantStrategy.GetCurrentPercentage()}%");
 ```
 
-## GradualRolloutSchedulerService
+## IGradualRolloutSchedulerService
 
-Manages the scheduling and advancement of gradual feature flag rollouts. This service processes scheduled rollouts by advancing percentage allocations according to configured start dates, end dates, and daily increment values. It provides methods to process scheduled rollouts automatically, check rollout status, and manually advance specific rollouts.
+The `IGradualRolloutSchedulerService` interface manages the scheduling and advancement of gradual feature flag rollouts. It supports time-based percentage advancement with configurable daily increment steps, start dates, and end dates. The service automatically processes scheduled rollouts to advance percentage allocations based on elapsed time, and provides methods to check rollout status and manually advance specific rollouts.
+
+This service is typically invoked from a background worker or hosted service to ensure gradual rollouts progress according to schedule without manual intervention.
 
 Example usage:
 
@@ -1083,12 +1085,13 @@ var status = await schedulerService.GetScheduleStatusAsync(featureFlag.Id);
 if (status != null)
 {
     Console.WriteLine($"Feature flag '{status.FeatureFlagKey}' rollout status:");
-    Console.WriteLine($"  Current: {status.CurrentPercentage}%");
-    Console.WriteLine($"  Target: {status.TargetPercentage}%");
-    Console.WriteLine($"  Daily increment: {status.DailyIncrement}%");
-    Console.WriteLine($"  Days remaining: {status.EstimatedDaysRemaining}");
-    Console.WriteLine($"  Active: {status.IsActive}");
-    Console.WriteLine($"  Complete: {status.IsComplete}");
+    Console.WriteLine($"    FeatureFlagId: {status.FeatureFlagId}");
+    Console.WriteLine($"    CurrentPercentage: {status.CurrentPercentage}%");
+    Console.WriteLine($"    TargetPercentage: {status.TargetPercentage}%");
+    Console.WriteLine($"    DailyIncrement: {status.DailyIncrement}%");
+    Console.WriteLine($"    IsActive: {status.IsActive}");
+    Console.WriteLine($"    IsComplete: {status.IsComplete}");
+    Console.WriteLine($"  EstimatedDaysRemaining: {status.EstimatedDaysRemaining}");
 }
 
 // Manually advance a specific rollout
