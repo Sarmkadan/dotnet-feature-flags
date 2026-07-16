@@ -31,11 +31,10 @@ public static class Phase2DependencyInjectionExtensions
         ArgumentNullException.ThrowIfNull(services);
         ArgumentNullException.ThrowIfNull(configuration);
 
-        // Register middleware
-        services.AddSingleton<ErrorHandlingMiddleware>();
-        services.AddSingleton<RequestLoggingMiddleware>();
-        services.AddSingleton<RateLimitingMiddleware>();
-        services.AddSingleton<AuthenticationMiddleware>();
+        // Middleware here is convention-based (RequestDelegate ctor), so it is
+        // activated by UseMiddleware<T>() in UsePhase2Middleware - registering
+        // the types in DI would never resolve (RequestDelegate is not in the
+        // container) and is intentionally not done.
 
         // Register caching
         var cacheProvider = configuration.GetValue("Cache:Provider", "InMemory");
