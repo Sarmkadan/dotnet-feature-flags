@@ -1679,6 +1679,55 @@ if (statsResult is OkObjectResult statsOkResult)
 }
 ```
 
+## HealthController
+
+Provides health check endpoints for monitoring application status and dependencies. The `HealthController` exposes two endpoints: a basic liveness check (`GET /health`) that returns 200 if the application is running, and a readiness check (`GET /health/ready`) that verifies all dependencies (database, feature flag service) are available before accepting traffic.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Controllers;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+// Setup dependency injection
+var services = new ServiceCollection();
+services.AddLogging(logging => logging.AddConsole());
+services.AddDbContext<FeatureFlagDbContext>(options => 
+    options.UseSqlite("Data Source=featureflags.db"));
+services.AddScoped<IFeatureFlagService, FeatureFlagService>();
+services.AddScoped<HealthController>();
+
+var serviceProvider = services.BuildServiceProvider();
+
+// Create controller instance
+var healthController = serviceProvider.GetRequiredService<HealthController>();
+
+// Call liveness endpoint (returns 200 OK if application is running)
+var livenessResult = healthController.GetLiveness();
+if (livenessResult is OkObjectResult okResult)
+{
+    var healthResponse = (HealthResponse)okResult.Value!;
+    Console.WriteLine($"Status: {healthResponse.Status}");
+    Console.WriteLine($"Version: {healthResponse.Version}");
+    Console.WriteLine($"Uptime: {healthResponse.Uptime}");
+}
+
+// Call readiness endpoint (returns 200 OK if all dependencies are healthy, 503 if unhealthy)
+var readinessResult = await healthController.GetReadiness();
+if (readinessResult is OkObjectResult readyOkResult)
+{
+    var readyResponse = (HealthResponse)readyOkResult.Value!;
+    Console.WriteLine($"Readiness Status: {readyResponse.Status}");
+    Console.WriteLine($"Dependencies: {string.Join(", ", readyResponse.Dependencies!.Select(d => $"{d.Key}={d.Value}"))}");
+}
+else if (readinessResult is StatusCodeResult statusCodeResult && statusCodeResult.StatusCode == 503)
+{
+    Console.WriteLine("Service unavailable - dependencies are not ready");
+}
+```
+
 ## FeatureFlagSearchBuilder
 
 The `FeatureFlagSearchBuilder` provides a fluent, chainable API for constructing complex feature flag searches with filtering, sorting, and pagination. It eliminates the need to write LINQ queries directly and supports building search criteria programmatically with a clean, readable syntax. The builder can work with both `IQueryable<FeatureFlag>` for database queries and `IEnumerable<FeatureFlag>` for in-memory collections.
