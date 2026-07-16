@@ -279,6 +279,41 @@ var (oldState, newState) = auditLog.GetChangeDetails();
 Console.WriteLine($"Changed from {oldState} to {newState}");
 ```
 
+## FeatureFlagRepository
+
+Provides database persistence operations for managing feature flag entities, supporting CRUD operations and complex queries with eager loading of related configuration and audit logs. It serves as the primary interface for accessing feature flags within the application's data layer.
+
+Example usage:
+```csharp
+using FeatureFlags.Repository;
+using FeatureFlags.Models;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+// Setup dependency injection
+var services = new ServiceCollection();
+// Configure DbContext and Logging as needed...
+var serviceProvider = services.BuildServiceProvider();
+
+// Create repository instance
+var repository = new FeatureFlagRepository(
+    serviceProvider.GetRequiredService<FeatureFlagDbContext>(),
+    serviceProvider.GetRequiredService<ILogger<FeatureFlagRepository>>()
+);
+
+// Create a new feature flag
+var newFlag = new FeatureFlag { Key = "new_checkout", IsEnabled = false, DisplayName = "New Checkout" };
+var addedFlag = await repository.AddAsync(newFlag);
+
+// Retrieve and update a flag
+var flag = await repository.GetByKeyAsync("new_checkout");
+if (flag != null)
+{
+    flag.IsEnabled = true;
+    await repository.UpdateAsync(flag);
+}
+```
+
 ## WebhookRepository
 
 Manages webhook persistence and retrieval for feature flag event notifications. The `WebhookRepository` handles CRUD operations for webhooks and provides specialized queries to find active webhooks, webhooks by event type, and recently failed deliveries for monitoring and retry operations.
