@@ -105,6 +105,78 @@ if (userContext.IsValid())
 
 Unit tests for the `UserContext` model that verify attribute retrieval, validation logic, and consistent hashing functionality. The `UserContextTests` class tests all public methods of the `UserContext` class including validation, attribute access, custom attribute management, and hash generation.
 
+## PercentageRolloutServiceTests
+
+Unit tests for percentage-based rollout evaluation that verify consistent hashing and rollout percentage calculations. The `PercentageRolloutServiceTests` class tests all public methods of the `PercentageRolloutService` class including percentage-based rollout evaluation, user bucket calculation, and validation logic.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Models;
+using FeatureFlags.Services;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+// Setup dependency injection
+var services = new ServiceCollection();
+services.AddLogging(logging => logging.AddConsole());
+
+// Register the service
+services.AddScoped<IPercentageRolloutService, PercentageRolloutService>();
+
+var serviceProvider = services.BuildServiceProvider();
+
+// Create service instance
+var percentageService = serviceProvider.GetRequiredService<IPercentageRolloutService>();
+
+// Create a feature flag with percentage rollout configuration
+var featureFlag = new FeatureFlag
+{
+    Key = "new_checkout_flow",
+    DisplayName = "New Checkout Flow",
+    Description = "Enables the redesigned checkout process",
+    IsEnabled = true,
+    RolloutType = RolloutType.Percentage,
+    PercentageRollout = 50 // Enable for 50% of users
+};
+
+// Create a user context for evaluation
+var userContext = new UserContext
+{
+    UserId = "user123",
+    Email = "user@example.com",
+    Country = "US",
+    Tier = "Premium"
+};
+
+// Test basic evaluation with 100% rollout
+bool is100PercentEnabled = await percentageService.EvaluateAsync(
+    new FeatureFlag { Key = "test-flag", PercentageRollout = 100 },
+    new UserContext { UserId = "user1", Email = "user@example.com" }
+);
+Console.WriteLine($"100% rollout result: {is100PercentEnabled}"); // true
+
+// Test basic evaluation with 0% rollout
+bool is0PercentEnabled = await percentageService.EvaluateAsync(
+    new FeatureFlag { Key = "test-flag", PercentageRollout = 0 },
+    new UserContext { UserId = "user1", Email = "user@example.com" }
+);
+Console.WriteLine($"0% rollout result: {is0PercentEnabled}"); // false
+
+// Get the user's bucket for consistent hashing (0-99)
+int userBucket = percentageService.GetUserBucket(userContext, featureFlag.Key);
+Console.WriteLine($"User bucket: {userBucket}");
+
+// Check if user is in rollout directly
+bool isInRollout = percentageService.IsUserInRollout(userContext, featureFlag.Key, featureFlag.PercentageRollout!.Value);
+Console.WriteLine($"User in rollout: {isInRollout}");
+
+// Verify consistent hashing (same user should always return same result)
+bool result1 = percentageService.IsUserInRollout(userContext, "test-flag", 50);
+bool result2 = percentageService.IsUserInRollout(userContext, "test-flag", 50);
+Console.WriteLine($"Consistent hashing test: {result1 == result2}"); // true
+```
+
 ## ConditionTests
 
 Unit tests for the `Condition` model that verify all condition operators and evaluation logic. The `ConditionTests` class tests the `Condition` model's evaluation methods with various operators including Equals, NotEquals, Contains, StartsWith, EndsWith, GreaterThan, LessThan, and In operators.
