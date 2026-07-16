@@ -298,6 +298,88 @@ Console.WriteLine($"False results: {stats.FalseCount}");
 // evaluationLogService.ClearLogs();
 ```
 
+## GradualRolloutSchedulerServiceTests
+
+Unit tests for the `GradualRolloutSchedulerService` that verify scheduled rollout processing, status tracking, and manual advancement of gradual feature flag rollouts. The `GradualRolloutSchedulerServiceTests` class tests all public methods of the `GradualRolloutSchedulerService` including scheduled rollout processing with time-based advancement, rollout status retrieval, and manual rollout advancement with validation.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Services;
+using FeatureFlags.Models;
+using FeatureFlags.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Moq;
+using Xunit;
+
+// Setup test dependencies
+var contextMock = new Mock<FeatureFlagDbContext>();
+var auditLogRepositoryMock = new Mock<IAuditLogRepository>();
+var loggerMock = new Mock<ILogger<GradualRolloutSchedulerService>>();
+
+// Create service instance
+var schedulerService = new GradualRolloutSchedulerService(
+    contextMock.Object,
+    auditLogRepositoryMock.Object,
+    loggerMock.Object
+);
+
+// Test 1: Process scheduled rollouts with no strategies returns 0
+int result = await schedulerService.ProcessScheduledRolloutsAsync();
+Assert.Equal(0, result);
+
+// Test 2: Advance rollout with invalid ID throws exception
+await Assert.ThrowsAsync<ArgumentException>(
+    () => schedulerService.AdvanceRolloutAsync(0, "admin")
+);
+
+// Test 3: Advance rollout with empty user throws exception
+await Assert.ThrowsAsync<ArgumentException>(
+    () => schedulerService.AdvanceRolloutAsync(1, "")
+);
+
+// Test 4: Get schedule status with negative ID throws exception
+await Assert.ThrowsAsync<ArgumentException>(
+    () => schedulerService.GetScheduleStatusAsync(-1)
+);
+
+// Test 5: Process scheduled rollouts with cancellation stops processing
+var cts = new CancellationTokenSource();
+cts.Cancel();
+int cancelledResult = await schedulerService.ProcessScheduledRolloutsAsync(cts.Token);
+Assert.Equal(0, cancelledResult);
+
+// Test 6: Process scheduled rollouts with active strategy updates flag
+var featureFlag = new FeatureFlag
+{
+    Id = 1,
+    Key = "test-flag",
+    IsEnabled = true,
+    PercentageRollout = 10
+};
+
+var rolloutStrategy = new RolloutStrategy
+{
+    Id = 1,
+    FeatureFlagId = 1,
+    IsGradual = true,
+    StartDate = DateTime.UtcNow.AddDays(-10),
+    DailyIncrement = 5,
+    FeatureFlag = featureFlag
+};
+
+// Setup mock DbSet with the strategy
+var strategies = new List<RolloutStrategy> { rolloutStrategy };
+var strategyDbSet = strategies.BuildMockDbSet().Object;
+contextMock.Setup(c => c.RolloutStrategies).Returns(strategyDbSet);
+contextMock.Setup(c => c.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
+auditLogRepositoryMock.Setup(r => r.AddAsync(It.IsAny<AuditLog>())).ReturnsAsync(new AuditLog());
+
+bool advanceResult = await schedulerService.AdvanceRolloutAsync(1, "admin");
+Assert.True(advanceResult);
+```
+
 ## ConditionTests
 
 Unit tests for the `Condition` model that verify all condition operators and evaluation logic. The `ConditionTests` class tests the `Condition` model's evaluation methods with various operators including Equals, NotEquals, Contains, StartsWith, EndsWith, GreaterThan, LessThan, and In operators.
