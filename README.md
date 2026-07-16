@@ -1892,6 +1892,82 @@ Console.WriteLine($"Total items: {paginatedResponse.Pagination.TotalCount}");
 Console.WriteLine($"Returned items: {paginatedResponse.Items.Count}");
 ```
 
+## WebhookServiceTests
+
+Integration tests for the `WebhookService` that verify webhook registration, retrieval, updates, deletion, and event triggering functionality. These tests ensure that webhooks are properly persisted, activated, and triggered when feature flag events occur, with comprehensive coverage of success and failure scenarios including retry mechanisms and filtering by event types.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Integration;
+using FeatureFlags.Models;
+using FeatureFlags.Services;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+// Setup dependency injection for testing
+var services = new ServiceCollection();
+services.AddLogging(logging => logging.AddConsole());
+services.AddDbContext<FeatureFlagDbContext>(options =>
+    options.UseSqlite("Data Source=:memory:"));
+
+// Register repositories and services
+services.AddScoped<IWebhookRepository, WebhookRepository>();
+services.AddScoped<IWebhookDeliveryRepository, WebhookDeliveryRepository>();
+services.AddScoped<IWebhookService, WebhookService>();
+
+var serviceProvider = services.BuildServiceProvider();
+
+// Create service instance
+var webhookService = serviceProvider.GetRequiredService<IWebhookService>();
+
+// Register a new webhook for feature flag update events
+var webhook = new Webhook
+{
+    Url = "https://api.example.com/webhooks/feature-flags",
+    Description = "Feature flag update notifications",
+    IsActive = true,
+    EventTypes = WebhookEventType.FeatureFlagUpdated | WebhookEventType.FeatureFlagCreated,
+    FeatureFlagKey = "new_checkout_flow",
+    CreatedBy = "admin@example.com",
+    MaxRetries = 3,
+    RetryDelaySeconds = 60,
+    AuthorizationHeader = "Bearer your-secret-token",
+    Secret = "your-webhook-secret"
+};
+
+// Register the webhook
+var registeredWebhook = await webhookService.RegisterWebhookAsync(webhook);
+Console.WriteLine($"Registered webhook with ID: {registeredWebhook.Id}");
+
+// Get webhook by ID
+var retrievedWebhook = await webhookService.GetWebhookAsync(registeredWebhook.Id);
+if (retrievedWebhook != null)
+{
+    Console.WriteLine($"Retrieved webhook: {retrievedWebhook.Url}");
+}
+
+// Get active webhooks filtered by event type
+var activeWebhooks = await webhookService.GetActiveWebhooksAsync(WebhookEventType.FeatureFlagUpdated);
+Console.WriteLine($"Active webhooks for update events: {activeWebhooks.Count}");
+
+// Update webhook configuration
+retrievedWebhook!.IsActive = false;
+var updateSuccess = await webhookService.UpdateWebhookAsync(retrievedWebhook);
+Console.WriteLine($"Update successful: {updateSuccess}");
+
+// Trigger webhooks for a specific event type
+var triggerResult = await webhookService.TriggerWebhooksAsync(
+    WebhookEventType.FeatureFlagUpdated,
+    new FeatureFlag { Key = "new_checkout_flow", IsEnabled = true }
+);
+Console.WriteLine($"Triggered {triggerResult.SuccessCount} webhooks successfully");
+
+// Delete webhook when no longer needed
+var deleteSuccess = await webhookService.DeleteWebhookAsync(registeredWebhook.Id);
+Console.WriteLine($"Delete successful: {deleteSuccess}");
+```
+
 ## DateTimeExtensions
 
 Extension methods for DateTime operations including Unix timestamp conversion, date range calculations, business day counting, and human-readable time formatting. Simplifies common date/time operations used in audit logging, scheduling, and feature flag evaluation timestamp handling.
