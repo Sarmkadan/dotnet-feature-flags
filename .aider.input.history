@@ -9142,3 +9142,131 @@
 +- docs: write up .aider.chat.history docs
 +- fix
 +- update readme
+
+# 2026-07-16 07:56:54.165751
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, extend README.md with a documentation section for the type `ErrorHandlingMiddleware` (defined in `src/FeatureFlags/Middleware/ErrorHandlingMiddleware.cs`).
++
++Add a "## ErrorHandlingMiddleware" section: 2-3 sentences on what it does and a realistic, compiling C# usage example based on its REAL public members:
++```
++public ErrorHandlingMiddleware
++public async Task InvokeAsync
++public int StatusCode
++public string Message
++public string ErrorCode
++public DateTime Timestamp
++```
++Only edit README.md. Do not invent members that are not listed.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- docs: add FeatureFlagRepository documentation to README.md
++- Fix
++- readme: .aider.chat.history usage
++- docs: extend README.md with AuditLogRepository documentation
++- open sourcing this - been sitting in my private repos for a while
++- Readme tweaks
++- Readme tweaks
++- docs: update redame
++- document README in the readme
++- docs: write up .aider.chat.history docs
+
+# 2026-07-16 07:56:54.166119
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, extend README.md with a documentation section for the type `ErrorHandlingMiddleware` (defined in `src/FeatureFlags/Middleware/ErrorHandlingMiddleware.cs`).
++
++Add a "## ErrorHandlingMiddleware" section: 2-3 sentences on what it does and a realistic, compiling C# usage example based on its REAL public members:
++```
++public ErrorHandlingMiddleware
++public async Task InvokeAsync
++public int StatusCode
++public string Message
++public string ErrorCode
++public DateTime Timestamp
++```
++Only edit README.md. Do not invent members that are not listed.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- docs: add FeatureFlagRepository documentation to README.md
++- Fix
++- readme: .aider.chat.history usage
++- docs: extend README.md with AuditLogRepository documentation
++- open sourcing this - been sitting in my private repos for a while
++- Readme tweaks
++- Readme tweaks
++- docs: update redame
++- document README in the readme
++- docs: write up .aider.chat.history docs
+
+# 2026-07-16 08:02:16.482129
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, extend README.md with a documentation section for the type `ErrorHandlingMiddleware` (defined in `src/FeatureFlags/Middleware/ErrorHandlingMiddleware.cs`).
++
++Add a "## ErrorHandlingMiddleware" section: 2-3 sentences on what it does and a realistic, compiling C# usage example based on its REAL public members:
++```
++public ErrorHandlingMiddleware
++public async Task InvokeAsync
++public int StatusCode
++public string Message
++public string ErrorCode
++public DateTime Timestamp
++```
++Only edit README.md. Do not invent members that are not listed.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- docs: add FeatureFlagRepository documentation to README.md
++- Fix
++- readme: .aider.chat.history usage
++- docs: extend README.md with AuditLogRepository documentation
++- open sourcing this - been sitting in my private repos for a while
++- Readme tweaks
++- Readme tweaks
++- docs: update redame
++- document README in the readme
++- docs: write up .aider.chat.history docs
+
+# 2026-07-16 08:02:16.482529
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, extend README.md with a documentation section for the type `ErrorHandlingMiddleware` (defined in `src/FeatureFlags/Middleware/ErrorHandlingMiddleware.cs`).
++
++Add a "## ErrorHandlingMiddleware" section: 2-3 sentences on what it does and a realistic, compiling C# usage example based on its REAL public members:
++```
++public ErrorHandlingMiddleware
++public async Task InvokeAsync
++public int StatusCode
++public string Message
++public string ErrorCode
++public DateTime Timestamp
++```
++Only edit README.md. Do not invent members that are not listed.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- docs: add FeatureFlagRepository documentation to README.md
++- Fix
++- readme: .aider.chat.history usage
++- docs: extend README.md with AuditLogRepository documentation
++- open sourcing this - been sitting in my private repos for a while
++- Readme tweaks
++- Readme tweaks
++- docs: update redame
++- document README in the readme
++- docs: write up .aider.chat.history docs
