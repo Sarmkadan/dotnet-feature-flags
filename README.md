@@ -279,6 +279,55 @@ var (oldState, newState) = auditLog.GetChangeDetails();
 Console.WriteLine($"Changed from {oldState} to {newState}");
 ```
 
+## CliArgumentParser
+
+Parses command-line arguments and converts them to structured command objects. Provides help text generation and validation for CLI arguments, supporting all available commands like `evaluate`, `create`, `update`, `list`, `get`, `enable`, `disable`, `audit`, `export`, `import`, and `webhook`.
+
+Example usage:
+```csharp
+using FeatureFlags.CLI;
+
+// Parse command line arguments
+string[] args = new[] { "evaluate", "--key", "new_checkout_flow", "--user", "user123@example.com" };
+var command = CliArgumentParser.Parse(args);
+
+// Check if help was requested
+if (command.ShowHelp)
+{
+    CliArgumentParser.PrintHelp();
+    return;
+}
+
+// Get command name
+Console.WriteLine($"Command: {command.Command}"); // "evaluate"
+
+// Access arguments
+if (command.HasArgument("key"))
+{
+    string key = command.GetArgument("key");
+    Console.WriteLine($"Key: {key}"); // "new_checkout_flow"
+}
+
+if (command.HasArgument("user"))
+{
+    string user = command.GetArgument("user");
+    Console.WriteLine($"User: {user}"); // "user123@example.com"
+}
+
+// Check if an argument exists
+bool hasContext = command.HasArgument("context");
+Console.WriteLine($"Has context: {hasContext}");
+
+// Get all arguments
+foreach (var arg in command.Arguments)
+{
+    Console.WriteLine($"{arg.Key}: {arg.Value}");
+}
+
+// Print help message
+CliArgumentParser.PrintHelp();
+```
+
 ## FeatureFlagRepository
 
 Provides database persistence operations for managing feature flag entities, supporting CRUD operations and complex queries with eager loading of related configuration and audit logs. It serves as the primary interface for accessing feature flags within the application's data layer.
