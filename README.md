@@ -1174,6 +1174,43 @@ bool advanced = await schedulerService.AdvanceRolloutAsync(featureFlag.Id, "admi
 Console.WriteLine($"Manual rollout advance: {(advanced ? "Success" : "Failed")}");
 ```
 
+## DatabaseSeeder
+
+The `DatabaseSeeder` class provides methods for seeding and clearing test data in the feature flag database. It supports creating sample feature flags, rules, conditions, variants, and audit logs with realistic configurations for development, testing, and performance benchmarking scenarios.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Data;
+using FeatureFlags.Models;
+using FeatureFlags.Enums;
+
+// Seed the database with sample data for development/testing
+await DatabaseSeeder.SeedSampleDataAsync();
+
+// Seed minimal data required for basic functionality
+await DatabaseSeeder.SeedMinimalDataAsync();
+
+// Clear all seeded data from the database
+await DatabaseSeeder.ClearDatabaseAsync();
+
+// Seed performance test data with many flags and rules
+await DatabaseSeeder.SeedPerformanceTestDataAsync();
+
+// Get statistics about the seeded data
+var stats = await DatabaseSeeder.GetStatisticsAsync();
+Console.WriteLine($"Total flags: {stats.TotalFeatureFlags}");
+Console.WriteLine($"Enabled flags: {stats.EnabledFlags}");
+Console.WriteLine($"Disabled flags: {stats.DisabledFlags}");
+Console.WriteLine($"Total rules: {stats.TotalRules}");
+Console.WriteLine($"Total conditions: {stats.TotalConditions}");
+Console.WriteLine($"Total variants: {stats.TotalVariants}");
+Console.WriteLine($"Total audit logs: {stats.TotalAuditLogs}");
+Console.WriteLine($"Percentage rollout count: {stats.PercentageRolloutCount}");
+Console.WriteLine($"Rules-based count: {stats.RulesBasedCount}");
+Console.WriteLine($"A/B test count: {stats.ABTestCount}");
+```
+
 ## FlagEvaluationLogService
 
 Provides thread-safe logging and retrieval of feature flag evaluation events. The `FlagEvaluationLogService` records when and how feature flags are evaluated for users, enabling debugging of "why did user X see feature Y" scenarios and providing an audit trail for feature flag evaluations. It supports filtering logs by user ID, flag name, and provides methods for bulk retrieval and log cleanup.
