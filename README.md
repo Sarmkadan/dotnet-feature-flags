@@ -1405,6 +1405,87 @@ bool isEmpty = ValidationExtensions.IsEmpty(emptyCollection);
 Console.WriteLine($"Is empty collection: {isEmpty}"); // true
 ```
 
+## AdminController
+
+Provides administrative endpoints for managing webhooks, exports, imports, cache operations, and system health monitoring. The `AdminController` requires proper authorization and is designed for administrative users who need to manage system configuration, perform data migrations, and monitor system status.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Controllers;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+// Setup dependency injection
+var services = new ServiceCollection();
+services.AddLogging(logging => logging.AddConsole());
+services.AddScoped<AdminController>();
+
+var serviceProvider = services.BuildServiceProvider();
+
+// Create controller instance
+var adminController = serviceProvider.GetRequiredService<AdminController>();
+
+// Register a new webhook endpoint
+var registerResult = await adminController.RegisterWebhook(new RegisterWebhookRequest
+{
+    Url = "https://api.example.com/webhooks/feature-flags",
+    Description = "Feature flag update notifications",
+    EventTypes = Integration.WebhookEventType.FeatureFlagUpdated | Integration.WebhookEventType.FeatureFlagCreated,
+    FeatureFlagKey = "new_checkout_flow",
+    Secret = "your-webhook-secret"
+});
+
+if (registerResult is CreatedResult createdResult)
+{
+    Console.WriteLine($"Webhook registered successfully at: {createdResult.Location}");
+}
+
+// Get all active webhooks
+var webhooksResult = await adminController.GetWebhooks();
+if (webhooksResult is OkObjectResult okResult)
+{
+    var webhooks = (dynamic)okResult.Value;
+    Console.WriteLine($"Active webhooks count: {webhooks.webhooks.Count}");
+}
+
+// Export feature flags to CSV
+var csvResult = await adminController.ExportCsv(includeRules: true);
+if (csvResult is FileContentResult fileResult)
+{
+    Console.WriteLine($"CSV export generated: {fileResult.FileDownloadName}");
+    string csvContent = System.Text.Encoding.UTF8.GetString(fileResult.FileContents);
+    Console.WriteLine($"CSV content length: {csvContent.Length} bytes");
+}
+
+// Clear the cache to force fresh database load
+var clearCacheResult = await adminController.ClearCache();
+if (clearCacheResult is NoContentResult)
+{
+    Console.WriteLine("Cache cleared successfully");
+}
+
+// Get system health status
+var healthResult = adminController.GetHealth();
+if (healthResult is OkObjectResult healthOkResult)
+{
+    var healthData = (dynamic)healthOkResult.Value;
+    Console.WriteLine($"System status: {healthData.status}");
+    Console.WriteLine($"Version: {healthData.version}");
+}
+
+// Get system statistics
+var statsResult = await adminController.GetStats();
+if (statsResult is OkObjectResult statsOkResult)
+{
+    var statsData = (dynamic)statsOkResult.Value;
+    Console.WriteLine($"Total flags: {statsData.totalFlags}");
+    Console.WriteLine($"Enabled: {statsData.enabledFlags}");
+    Console.WriteLine($"Disabled: {statsData.disabledFlags}");
+}
+```
+
 ## FeatureFlagSearchBuilder
 
 The `FeatureFlagSearchBuilder` provides a fluent, chainable API for constructing complex feature flag searches with filtering, sorting, and pagination. It eliminates the need to write LINQ queries directly and supports building search criteria programmatically with a clean, readable syntax. The builder can work with both `IQueryable<FeatureFlag>` for database queries and `IEnumerable<FeatureFlag>` for in-memory collections.
