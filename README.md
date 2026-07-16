@@ -101,6 +101,53 @@ if (userContext.IsValid())
 }
 ```
 
+## UserContextTests
+
+Unit tests for the `UserContext` model that verify attribute retrieval, validation logic, and consistent hashing functionality. The `UserContextTests` class tests all public methods of the `UserContext` class including validation, attribute access, custom attribute management, and hash generation.
+
+Example usage:
+```csharp
+using FeatureFlags.Models;
+using Xunit;
+
+// Test validation with required fields
+var validUser = new UserContext
+{
+    UserId = "user123",
+    Email = "user@example.com"
+};
+Assert.True(validUser.IsValid()); // Returns true when both UserId and Email are set
+
+// Test validation without UserId
+var invalidUser = new UserContext
+{
+    UserId = string.Empty,
+    Email = "user@example.com"
+};
+Assert.False(invalidUser.IsValid()); // Returns false when UserId is empty
+
+// Test attribute retrieval with standard attributes
+var userWithAttributes = new UserContext
+{
+    UserId = "user123",
+    Email = "user@example.com",
+    Country = "US"
+};
+Assert.Equal("US", userWithAttributes.GetAttribute("Country")); // Returns "US"
+
+// Test custom attribute management
+userWithAttributes.SetCustomAttribute("subscriptionLevel", "premium");
+Assert.Equal("premium", userWithAttributes.GetAttribute("subscriptionLevel")); // Returns "premium"
+
+// Test consistent hashing
+var hash1 = userWithAttributes.GetConsistentHash("feature.new_ui");
+var hash2 = userWithAttributes.GetConsistentHash("feature.new_ui");
+Assert.Equal(hash1, hash2); // Same input returns same hash
+
+// Test case-insensitive attribute access
+Assert.Equal("user123", userWithAttributes.GetAttribute("USERID")); // Case insensitive
+```
+
 ## Result
 
 A generic result wrapper class that represents the outcome of an operation. The `Result<T>` class provides a consistent way to return success/failure with data or error messages, making it ideal for error handling in feature flag operations and other business logic.
