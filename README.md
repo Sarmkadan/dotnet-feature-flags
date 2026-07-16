@@ -1098,3 +1098,81 @@ if (status != null)
 bool advanced = await schedulerService.AdvanceRolloutAsync(featureFlag.Id, "admin@example.com");
 Console.WriteLine($"Manual rollout advance: {(advanced ? "Success" : "Failed")}");
 ```
+
+## FlagEvaluationLogService
+
+Provides thread-safe logging and retrieval of feature flag evaluation events. The `FlagEvaluationLogService` records when and how feature flags are evaluated for users, enabling debugging of "why did user X see feature Y" scenarios and providing an audit trail for feature flag evaluations. It supports filtering logs by user ID, flag name, and provides methods for bulk retrieval and log cleanup.
+
+Example usage:
+
+
+```csharp
+using FeatureFlags.Services;
+using FeatureFlags.Models;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+// Setup dependency injection
+var services = new ServiceCollection();
+services.AddLogging(logging => logging.AddConsole());
+
+// Register the service
+services.AddScoped<IFlagEvaluationLogService, FlagEvaluationLogService>();
+
+var serviceProvider = services.BuildServiceProvider();
+
+// Create service instance
+var evaluationLogService = serviceProvider.GetRequiredService<IFlagEvaluationLogService>();
+
+// Create a feature flag and user context
+var featureFlag = new FeatureFlag
+{
+    Key = "new_ui",
+    DisplayName = "New User Interface",
+    IsEnabled = true,
+    Description = "Enables the redesigned user interface"
+};
+
+var userContext = new UserContext
+{
+    UserId = "user123",
+    Email = "user@example.com",
+    Country = "US",
+    Tier = "Premium"
+};
+
+// Log a feature flag evaluation
+// Method 1: Using the convenience method
+evaluationLogService.LogEvaluation(featureFlag, userContext, true);
+
+// Method 2: Using the direct Log method with a pre-created log entry
+var evaluationLog = new FlagEvaluationLog
+{
+    FlagName = "beta_feature",
+    UserId = "user456",
+    Result = false,
+    Reason = "PercentageRollout",
+    Timestamp = DateTime.UtcNow
+};
+evaluationLogService.Log(evaluationLog);
+
+// Retrieve all evaluation logs
+var allLogs = evaluationLogService.GetAll();
+Console.WriteLine($"Total evaluation logs: {allLogs.Count}");
+
+// Retrieve logs for a specific user
+var userLogs = evaluationLogService.GetByUserId("user123");
+Console.WriteLine($"Logs for user123: {userLogs.Count}");
+
+// Retrieve logs for a specific flag
+var flagLogs = evaluationLogService.GetByFlagName("new_ui");
+Console.WriteLine($"Logs for new_ui flag: {flagLogs.Count}");
+
+// Use convenience aliases
+var evaluationLogs = evaluationLogService.GetEvaluationLogs();
+var userEvaluationLogs = evaluationLogService.GetEvaluationLogsForUser("user456");
+var flagEvaluationLogs = evaluationLogService.GetEvaluationLogsForFlag("beta_feature");
+
+// Clear all logs when needed (e.g., for testing or cleanup)
+evaluationLogService.ClearLogs();
+```
