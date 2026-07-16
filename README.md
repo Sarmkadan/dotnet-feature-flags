@@ -247,6 +247,96 @@ if (!operationResult.IsSuccess)
 }
 ```
 
+## RuleEvaluationService
+
+Evaluates targeting rules for feature flags with support for AND/OR logic between conditions. This service determines whether a feature should be enabled for a specific user based on their context attributes and the flag's configured rules. It supports both synchronous condition evaluation and asynchronous flag evaluation with database-backed rules.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Services;
+using FeatureFlags.Models;
+using FeatureFlags.Repository;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+// Setup dependency injection
+var services = new ServiceCollection();
+services.AddLogging(logging => logging.AddConsole());
+services.AddDbContext<FeatureFlagDbContext>(options =>
+    options.UseSqlite("Data Source=featureflags.db"));
+
+// Register repositories and services
+services.AddScoped<IFeatureFlagRepository, FeatureFlagRepository>();
+services.AddScoped<IRuleEvaluationService, RuleEvaluationService>();
+
+var serviceProvider = services.BuildServiceProvider();
+
+// Create service instance
+var evaluationService = serviceProvider.GetRequiredService<IRuleEvaluationService>();
+
+// Create a feature flag with rules
+var featureFlag = new FeatureFlag
+{
+    Key = "new_checkout_flow",
+    DisplayName = "New Checkout Flow",
+    IsEnabled = true,
+    Description = "Enables the redesigned checkout process"
+};
+
+// Add a rule with conditions
+featureFlag.Rules.Add(new Rule
+{
+    Name = "Premium US Users",
+    Priority = 10,
+    IsActive = true,
+    ConditionLogic = "AND"
+});
+
+featureFlag.Rules[0].Conditions.Add(new Condition
+{
+    AttributeName = "country",
+    Operator = ConditionOperator.Equals,
+    ExpectedValue = "US",
+    IsActive = true
+});
+
+featureFlag.Rules[0].Conditions.Add(new Condition
+{
+    AttributeName = "tier",
+    Operator = ConditionOperator.Equals,
+    ExpectedValue = "Premium",
+    IsActive = true
+});
+
+// Create user context
+var userContext = new UserContext
+{
+    UserId = "user123",
+    Country = "US",
+    Tier = "Premium"
+};
+
+// Evaluate the feature flag for the user
+bool isEnabled = await evaluationService.EvaluateAsync(featureFlag, userContext);
+Console.WriteLine($"Feature enabled for user: {isEnabled}");
+
+// Evaluate a specific rule
+bool ruleMatches = await evaluationService.EvaluateRuleAsync(featureFlag.Rules[0], userContext);
+Console.WriteLine($"Rule matches: {ruleMatches}");
+
+// Get all applicable rules for the user
+var applicableRules = await evaluationService.GetApplicableRulesAsync(featureFlag, userContext);
+Console.WriteLine($"Applicable rules count: {applicableRules.Count()}");
+
+// Evaluate individual conditions
+bool countryMatches = evaluationService.EvaluateCondition(
+    featureFlag.Rules[0].Conditions[0],
+    userContext
+);
+Console.WriteLine($"Country condition matches: {countryMatches}");
+```
+
 ## AuditLog
 
 Records all changes to feature flags for compliance, debugging, and audit trail requirements. It tracks who made what changes and when, enabling rollback analysis and change history review.
