@@ -2262,6 +2262,59 @@ Console.WriteLine(search.GetSummary());
 // Output: Key contains 'beta' | IsEnabled = False | Sort: Key ASC | Paging: Skip 0, Take 20
 ```
 
+## StringExtensionTests
+
+Unit tests for string extension methods that verify hashing, validation, and string transformation utilities. The `StringExtensionTests` class tests all public methods of the `StringExtensions` static class, ensuring consistent behavior for feature flag evaluation and user context processing.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Utilities;
+
+// Hash a user identifier for consistent bucketing in percentage-based rollouts
+string userId = "user123@example.com";
+string hash = userId.ToSha256();
+Console.WriteLine($"SHA-256 hash: {hash}");
+
+// Get a numeric hash for percentage calculations (0-99 range)
+int hashBucket = userId.ToHash32();
+Console.WriteLine($"Hash bucket: {hashBucket}");
+
+// Validate email format for user registration
+string email = "user@example.com";
+bool isValidEmail = email.IsValidEmail();
+Console.WriteLine($"Is valid email: {isValidEmail}"); // true
+
+// Convert between naming conventions for API compatibility
+string snakeCase = "feature_flag_key";
+string pascalCase = snakeCase.SnakeCaseToPascalCase();
+Console.WriteLine($"Converted to PascalCase: {pascalCase}"); // "FeatureFlagKey"
+
+string camelCase = "FeatureFlagKey";
+string snakeCaseResult = camelCase.ToSnakeCase();
+Console.WriteLine($"Converted to snake_case: {snakeCaseResult}"); // "feature_flag_key"
+
+// Truncate long strings for display
+string longText = "This is a very long feature flag description that needs to be shortened";
+string truncated = longText.Truncate(30);
+Console.WriteLine($"Truncated: {truncated}"); // "This is a very long ..."
+
+// Parse strings to integers safely
+string numberString = "42";
+int parsedNumber = numberString.ToIntOrDefault();
+Console.WriteLine($"Parsed number: {parsedNumber}"); // 42
+
+// Check if string contains any of multiple substrings
+string featureName = "feature-flag-engine";
+bool containsFlag = featureName.ContainsAny("flag", "engine");
+Console.WriteLine($"Contains 'flag' or 'engine': {containsFlag}"); // true
+
+// Repeat strings for testing patterns
+string separator = "-";
+string repeated = separator.Repeat(3);
+Console.WriteLine($"Repeated separator: {repeated}"); // "---"
+```
+
 ## ConversionUtilities
 
 The `ConversionUtilities` class provides safe type conversion and transformation utilities for converting between different data types, dictionaries, collections, and enums. It handles null values, type mismatches, and conversion failures gracefully, making it ideal for working with dynamic data, configuration parsing, and data transformation scenarios.
