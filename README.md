@@ -768,6 +768,133 @@ Console.WriteLine($"Concurrent evaluations completed: {results.Count}");
 Console.WriteLine($"All successful: {results.All(r => r)}");
 ```
 
+## RuleEvaluationServiceTests
+
+Unit tests for the `RuleEvaluationService` that verify condition evaluation, rule-based targeting with AND/OR logic, and inactive rule handling. The `RuleEvaluationServiceTests` class tests all public methods of the `RuleEvaluationService` class including synchronous condition evaluation, asynchronous rule evaluation, and validation scenarios.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Models;
+using FeatureFlags.Services;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Moq;
+
+// Setup dependency injection with mocked dependencies
+var services = new ServiceCollection();
+services.AddLogging(logging => logging.AddConsole());
+
+// Register mocked services
+services.AddScoped<IFeatureFlagRepository>(_ => new Mock<IFeatureFlagRepository>().Object);
+services.AddScoped<ILogger<RuleEvaluationService>>(_ => new Mock<ILogger<RuleEvaluationService>>().Object);
+
+var serviceProvider = services.BuildServiceProvider();
+
+// Create service instance
+var ruleEvaluationService = new RuleEvaluationService(
+    serviceProvider.GetRequiredService<IFeatureFlagRepository>(),
+    serviceProvider.GetRequiredService<ILogger<RuleEvaluationService>>()
+);
+
+// Test 1: Evaluate condition with inactive condition returns false
+var inactiveCondition = new Condition
+{
+    AttributeName = "country",
+    Operator = ConditionOperator.Equals,
+    ExpectedValue = "US",
+    IsActive = false
+};
+var userContext = new UserContext { UserId = "user1", Email = "user@test.com", Country = "US" };
+bool inactiveResult = ruleEvaluationService.EvaluateCondition(inactiveCondition, userContext);
+Console.WriteLine($"Inactive condition result: {inactiveResult}"); // false
+
+// Test 2: Evaluate condition with null condition throws exception
+try
+{
+    ruleEvaluationService.EvaluateCondition(null!, userContext);
+    Console.WriteLine("ERROR: Should have thrown exception");
+}
+catch (ArgumentNullException)
+{
+    Console.WriteLine("✓ Null condition validation works");
+}
+
+// Test 3: Evaluate rule with inactive rule returns false
+var inactiveRule = new Rule
+{
+    Name = "Inactive Rule",
+    IsActive = false,
+    ConditionLogic = "AND",
+    Conditions = new List<Condition>
+    {
+        new Condition { AttributeName = "country", Operator = ConditionOperator.Equals, ExpectedValue = "US", IsActive = true }
+    }
+};
+bool inactiveRuleResult = await ruleEvaluationService.EvaluateRuleAsync(inactiveRule, userContext);
+Console.WriteLine($"Inactive rule result: {inactiveRuleResult}"); // false
+
+// Test 4: Evaluate rule with AND logic - all conditions match returns true
+var premiumUserContext = new UserContext
+{
+    UserId = "user1",
+    Email = "user@test.com",
+    Country = "US",
+    Tier = "premium"
+};
+
+var andRule = new Rule
+{
+    Name = "US Premium Rule",
+    IsActive = true,
+    ConditionLogic = "AND",
+    Conditions = new List<Condition>
+    {
+        new Condition { AttributeName = "country", Operator = ConditionOperator.Equals, ExpectedValue = "US", IsActive = true },
+        new Condition { AttributeName = "tier", Operator = ConditionOperator.Equals, ExpectedValue = "premium", IsActive = true }
+    }
+};
+bool andResult = await ruleEvaluationService.EvaluateRuleAsync(andRule, premiumUserContext);
+Console.WriteLine($"AND rule result: {andResult}"); // true
+
+// Test 5: Evaluate rule with AND logic - one condition fails returns false
+var freeUserContext = new UserContext
+{
+    UserId = "user2",
+    Email = "user2@test.com",
+    Country = "CA",
+    Tier = "premium"
+};
+bool andFailedResult = await ruleEvaluationService.EvaluateRuleAsync(andRule, freeUserContext);
+Console.WriteLine($"AND rule with mismatch: {andFailedResult}"); // false
+
+// Test 6: Evaluate rule with OR logic - one condition matches returns true
+var orRule = new Rule
+{
+    Name = "CA or Premium Rule",
+    IsActive = true,
+    ConditionLogic = "OR",
+    Conditions = new List<Condition>
+    {
+        new Condition { AttributeName = "country", Operator = ConditionOperator.Equals, ExpectedValue = "CA", IsActive = true },
+        new Condition { AttributeName = "tier", Operator = ConditionOperator.Equals, ExpectedValue = "premium", IsActive = true }
+    }
+};
+bool orResult = await ruleEvaluationService.EvaluateRuleAsync(orRule, freeUserContext);
+Console.WriteLine($"OR rule result: {orResult}"); // true
+
+// Test 7: Evaluate rule with OR logic - no conditions match returns false
+var germanUserContext = new UserContext
+{
+    UserId = "user3",
+    Email = "user3@test.com",
+    Country = "DE",
+    Tier = "free"
+};
+bool orFailedResult = await ruleEvaluationService.EvaluateRuleAsync(orRule, germanUserContext);
+Console.WriteLine($"OR rule with no matches: {orFailedResult}"); // false
+```
+
 ## ConditionEvaluationTests
 
 Unit tests for `Condition` evaluation logic covering all supported operators. The `ConditionEvaluationTests` class verifies that conditions correctly evaluate user context values against expected values using various comparison operators including Equals, GreaterThan, In, and string-based operators.
