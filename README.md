@@ -452,6 +452,218 @@ bool advanceResult = await schedulerService.AdvanceRolloutAsync(1, "admin");
 Assert.True(advanceResult);
 ```
 
+## FeatureFlagWorkflowIntegrationTests
+
+Integration tests for the complete feature flag workflow that verify end-to-end scenarios including percentage rollouts, rule-based targeting, A/B testing variants, concurrent evaluations, and error handling. The `FeatureFlagWorkflowIntegrationTests` class tests the full feature flag evaluation pipeline with mocked dependencies to ensure correct behavior across different rollout strategies and user contexts.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Tests.Integration;
+using FeatureFlags.Models;
+using FeatureFlags.Enums;
+using FeatureFlags.Services;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Moq;
+
+// Setup dependency injection with mocked services
+var services = new ServiceCollection();
+services.AddLogging(logging => logging.AddConsole());
+
+// Register the integration test service with mocked dependencies
+var flagRepositoryMock = new Mock<IFeatureFlagRepository>();
+var auditLogRepositoryMock = new Mock<IAuditLogRepository>();
+var loggerMock = new Mock<ILogger<FeatureFlagService>>();
+var ruleLoggerMock = new Mock<ILogger<RuleEvaluationService>>();
+var percentageLoggerMock = new Mock<ILogger<PercentageRolloutService>>();
+var evaluationLogLoggerMock = new Mock<ILogger<FlagEvaluationLogService>>();
+
+// Create the integration test instance
+var evaluationLogService = new FlagEvaluationLogService(evaluationLogLoggerMock.Object);
+var options = Microsoft.Extensions.Options.Options.Create(new FeatureFlagOptions());
+
+var ruleService = new RuleEvaluationService(flagRepositoryMock.Object, ruleLoggerMock.Object);
+var percentageService = new PercentageRolloutService(percentageLoggerMock.Object);
+
+var flagService = new FeatureFlagService(
+    flagRepositoryMock.Object,
+    auditLogRepositoryMock.Object,
+    ruleService,
+    percentageService,
+    evaluationLogService,
+    options,
+    loggerMock.Object
+);
+
+// Test 1: Enable/Disable feature flag workflow
+var featureFlag = new FeatureFlag
+{
+    Id = 1,
+    Key = "new-feature",
+    DisplayName = "New Feature",
+    IsEnabled = false,
+    RolloutType = RolloutType.Full
+};
+
+flagRepositoryMock
+    .Setup(r => r.GetByKeyAsync("new-feature"))
+    .ReturnsAsync(featureFlag);
+
+// Initially disabled
+bool resultDisabled = await flagService.IsEnabledAsync("new-feature", 
+    new UserContext { UserId = "user1", Email = "user@test.com" });
+Console.WriteLine($"Feature disabled: {resultDisabled}"); // false
+
+// Enable feature
+featureFlag.IsEnabled = true;
+bool resultEnabled = await flagService.IsEnabledAsync("new-feature",
+    new UserContext { UserId = "user1", Email = "user@test.com" });
+Console.WriteLine($"Feature enabled: {resultEnabled}"); // true
+
+// Test 2: Percentage rollout with consistent user buckets
+var gradualFlag = new FeatureFlag
+{
+    Id = 2,
+    Key = "gradual-rollout",
+    DisplayName = "Gradual Rollout",
+    IsEnabled = true,
+    RolloutType = RolloutType.Percentage,
+    PercentageRollout = 50
+};
+
+flagRepositoryMock
+    .Setup(r => r.GetByKeyAsync("gradual-rollout"))
+    .ReturnsAsync(gradualFlag);
+
+var user = new UserContext { UserId = "user123", Email = "user123@test.com" };
+bool result1 = await flagService.IsEnabledAsync("gradual-rollout", user);
+bool result2 = await flagService.IsEnabledAsync("gradual-rollout", user);
+Console.WriteLine($"Consistent results: {result1 == result2}"); // true
+
+// Test 3: Rule-based targeting with AND logic
+var rule = new Rule
+{
+    Id = 1,
+    Name = "Premium Users",
+    IsActive = true,
+    ConditionLogic = "AND",
+    Conditions = new List<Condition>
+    {
+        new Condition
+        {
+            AttributeName = "tier",
+            Operator = ConditionOperator.Equals,
+            ExpectedValue = "premium",
+            IsActive = true
+        },
+        new Condition
+        {
+            AttributeName = "country",
+            Operator = ConditionOperator.In,
+            ExpectedValue = "US,CA,UK",
+            IsActive = true
+        }
+    }
+};
+
+var premiumUser = new UserContext
+{
+    UserId = "premium-user",
+    Email = "premium@test.com",
+    Tier = "premium",
+    Country = "US"
+};
+
+var freeUser = new UserContext
+{
+    UserId = "free-user",
+    Email = "free@test.com",
+    Tier = "free",
+    Country = "US"
+};
+
+bool premiumResult = await ruleService.EvaluateRuleAsync(rule, premiumUser);
+bool freeResult = await ruleService.EvaluateRuleAsync(rule, freeUser);
+Console.WriteLine($"Premium user matches: {premiumResult}"); // true
+Console.WriteLine($"Free user matches: {freeResult}"); // false
+
+// Test 4: Rule-based targeting with OR logic
+var orRule = new Rule
+{
+    Name = "US or Premium",
+    IsActive = true,
+    ConditionLogic = "OR",
+    Conditions = new List<Condition>
+    {
+        new Condition { AttributeName = "country", Operator = ConditionOperator.Equals, ExpectedValue = "US", IsActive = true },
+        new Condition { AttributeName = "tier", Operator = ConditionOperator.Equals, ExpectedValue = "premium", IsActive = true }
+    }
+};
+
+var usUser = new UserContext { UserId = "us-user", Email = "us@test.com", Country = "US", Tier = "free" };
+var otherUser = new UserContext { UserId = "other-user", Email = "other@test.com", Country = "DE", Tier = "free" };
+
+bool usResult = await ruleService.EvaluateRuleAsync(orRule, usUser);
+bool otherResult = await ruleService.EvaluateRuleAsync(orRule, otherUser);
+Console.WriteLine($"US user matches: {usResult}"); // true
+Console.WriteLine($"Other user matches: {otherResult}"); // false
+
+// Test 5: Progressive rollout distribution accuracy
+var distributionFlag = new FeatureFlag
+{
+    Id = 3,
+    Key = "distribution-test",
+    IsEnabled = true,
+    RolloutType = RolloutType.Percentage,
+    PercentageRollout = 25
+};
+
+flagRepositoryMock
+    .Setup(r => r.GetByKeyAsync("distribution-test"))
+    .ReturnsAsync(distributionFlag);
+
+int enabledCount = 0;
+for (int i = 0; i < 100; i++)
+{
+    var testUser = new UserContext { UserId = $"user{i}", Email = $"user{i}@test.com" };
+    if (await flagService.IsEnabledAsync("distribution-test", testUser))
+        enabledCount++;
+}
+
+Console.WriteLine($"Enabled count: {enabledCount} (expected ~25)");
+
+// Test 6: Concurrent evaluations for thread safety
+var concurrentFlag = new FeatureFlag
+{
+    Id = 4,
+    Key = "concurrent-test",
+    IsEnabled = true,
+    RolloutType = RolloutType.Full
+};
+
+flagRepositoryMock
+    .Setup(r => r.GetByKeyAsync("concurrent-test"))
+    .ReturnsAsync(concurrentFlag);
+
+var results = new List<bool>();
+var lockObj = new object();
+
+var tasks = Enumerable.Range(0, 50).Select(i => Task.Run(async () =>
+{
+    var concurrentUser = new UserContext { UserId = $"user{i}", Email = $"user{i}@test.com" };
+    var result = await flagService.IsEnabledAsync("concurrent-test", concurrentUser);
+    lock (lockObj)
+    {
+        results.Add(result);
+    }
+})).ToList();
+
+await Task.WhenAll(tasks);
+Console.WriteLine($"Concurrent evaluations completed: {results.Count}");
+Console.WriteLine($"All successful: {results.All(r => r)}");
+```
+
 ## ConditionTests
 
 Unit tests for the `Condition` model that verify all condition operators and evaluation logic. The `ConditionTests` class tests the `Condition` model's evaluation methods with various operators including Equals, NotEquals, Contains, StartsWith, EndsWith, GreaterThan, LessThan, and In operators.
