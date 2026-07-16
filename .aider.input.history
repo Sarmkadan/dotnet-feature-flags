@@ -8866,3 +8866,279 @@
 +- update readme
 +- Readme tweaks
 +- document README in the readme
+
+# 2026-07-16 06:45:51.291027
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, extend README.md with a documentation section for the type `WebhookRepository` (defined in `src/FeatureFlags/Repository/WebhookRepository.cs`).
++
++Add a "## WebhookRepository" section: 2-3 sentences on what it does and a realistic, compiling C# usage example based on its REAL public members:
++```
++public sealed class WebhookRepository : IWebhookRepository
++public WebhookRepository
++public async Task<Webhook> CreateAsync
++public async Task<Webhook?> GetByIdAsync
++public async Task<List<Webhook>> GetActiveAsync
++public async Task<List<Webhook>> GetByEventTypeAsync
++public async Task<List<Webhook>> GetRecentFailuresAsync
++public async Task<bool> UpdateAsync
++public async Task<bool> DeleteAsync
++public async Task<int> GetCountAsync
++public async Task<int> GetActiveCountAsync
++public sealed class WebhookDeliveryRepository : IWebhookDeliveryRepository
++public WebhookDeliveryRepository
++public async Task<WebhookDelivery> CreateAsync
++public async Task<WebhookDelivery?> GetByIdAsync
++public async Task<List<WebhookDelivery>> GetByWebhookIdAsync
++public async Task<List<WebhookDelivery>> GetPendingRetriesAsync
++public async Task<List<WebhookDelivery>> GetRecentDeliveriesAsync
++public async Task<(int Successful, int Failed)> GetDeliveryStatsAsync
++public async Task<bool> UpdateAsync
++```
++Only edit README.md. Do not invent members that are not listed.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- readme: .aider.chat.history usage
++- docs: extend README.md with AuditLogRepository documentation
++- open sourcing this - been sitting in my private repos for a while
++- Readme tweaks
++- Readme tweaks
++- docs: update redame
++- document README in the readme
++- docs: write up .aider.chat.history docs
++- fix
++- update readme
+
+# 2026-07-16 06:45:51.291120
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, extend README.md with a documentation section for the type `WebhookRepository` (defined in `src/FeatureFlags/Repository/WebhookRepository.cs`).
++
++Add a "## WebhookRepository" section: 2-3 sentences on what it does and a realistic, compiling C# usage example based on its REAL public members:
++```
++public sealed class WebhookRepository : IWebhookRepository
++public WebhookRepository
++public async Task<Webhook> CreateAsync
++public async Task<Webhook?> GetByIdAsync
++public async Task<List<Webhook>> GetActiveAsync
++public async Task<List<Webhook>> GetByEventTypeAsync
++public async Task<List<Webhook>> GetRecentFailuresAsync
++public async Task<bool> UpdateAsync
++public async Task<bool> DeleteAsync
++public async Task<int> GetCountAsync
++public async Task<int> GetActiveCountAsync
++public sealed class WebhookDeliveryRepository : IWebhookDeliveryRepository
++public WebhookDeliveryRepository
++public async Task<WebhookDelivery> CreateAsync
++public async Task<WebhookDelivery?> GetByIdAsync
++public async Task<List<WebhookDelivery>> GetByWebhookIdAsync
++public async Task<List<WebhookDelivery>> GetPendingRetriesAsync
++public async Task<List<WebhookDelivery>> GetRecentDeliveriesAsync
++public async Task<(int Successful, int Failed)> GetDeliveryStatsAsync
++public async Task<bool> UpdateAsync
++```
++Only edit README.md. Do not invent members that are not listed.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- readme: .aider.chat.history usage
++- docs: extend README.md with AuditLogRepository documentation
++- open sourcing this - been sitting in my private repos for a while
++- Readme tweaks
++- Readme tweaks
++- docs: update redame
++- document README in the readme
++- docs: write up .aider.chat.history docs
++- fix
++- update readme
+
+# 2026-07-16 06:46:38.741924
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, extend README.md with a documentation section for the type `WebhookRepository` (defined in `src/FeatureFlags/Repository/WebhookRepository.cs`).
++
++Add a "## WebhookRepository" section: 2-3 sentences on what it does and a realistic, compiling C# usage example based on its REAL public members:
++```
++public sealed class WebhookRepository : IWebhookRepository
++public WebhookRepository
++public async Task<Webhook> CreateAsync
++public async Task<Webhook?> GetByIdAsync
++public async Task<List<Webhook>> GetActiveAsync
++public async Task<List<Webhook>> GetByEventTypeAsync
++public async Task<List<Webhook>> GetRecentFailuresAsync
++public async Task<bool> UpdateAsync
++public async Task<bool> DeleteAsync
++public async Task<int> GetCountAsync
++public async Task<int> GetActiveCountAsync
++public sealed class WebhookDeliveryRepository : IWebhookDeliveryRepository
++public WebhookDeliveryRepository
++public async Task<WebhookDelivery> CreateAsync
++public async Task<WebhookDelivery?> GetByIdAsync
++public async Task<List<WebhookDelivery>> GetByWebhookIdAsync
++public async Task<List<WebhookDelivery>> GetPendingRetriesAsync
++public async Task<List<WebhookDelivery>> GetRecentDeliveriesAsync
++public async Task<(int Successful, int Failed)> GetDeliveryStatsAsync
++public async Task<bool> UpdateAsync
++```
++Only edit README.md. Do not invent members that are not listed.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- readme: .aider.chat.history usage
++- docs: extend README.md with AuditLogRepository documentation
++- open sourcing this - been sitting in my private repos for a while
++- Readme tweaks
++- Readme tweaks
++- docs: update redame
++- document README in the readme
++- docs: write up .aider.chat.history docs
++- fix
++- update readme
+
+# 2026-07-16 06:46:38.742007
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, extend README.md with a documentation section for the type `WebhookRepository` (defined in `src/FeatureFlags/Repository/WebhookRepository.cs`).
++
++Add a "## WebhookRepository" section: 2-3 sentences on what it does and a realistic, compiling C# usage example based on its REAL public members:
++```
++public sealed class WebhookRepository : IWebhookRepository
++public WebhookRepository
++public async Task<Webhook> CreateAsync
++public async Task<Webhook?> GetByIdAsync
++public async Task<List<Webhook>> GetActiveAsync
++public async Task<List<Webhook>> GetByEventTypeAsync
++public async Task<List<Webhook>> GetRecentFailuresAsync
++public async Task<bool> UpdateAsync
++public async Task<bool> DeleteAsync
++public async Task<int> GetCountAsync
++public async Task<int> GetActiveCountAsync
++public sealed class WebhookDeliveryRepository : IWebhookDeliveryRepository
++public WebhookDeliveryRepository
++public async Task<WebhookDelivery> CreateAsync
++public async Task<WebhookDelivery?> GetByIdAsync
++public async Task<List<WebhookDelivery>> GetByWebhookIdAsync
++public async Task<List<WebhookDelivery>> GetPendingRetriesAsync
++public async Task<List<WebhookDelivery>> GetRecentDeliveriesAsync
++public async Task<(int Successful, int Failed)> GetDeliveryStatsAsync
++public async Task<bool> UpdateAsync
++```
++Only edit README.md. Do not invent members that are not listed.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- readme: .aider.chat.history usage
++- docs: extend README.md with AuditLogRepository documentation
++- open sourcing this - been sitting in my private repos for a while
++- Readme tweaks
++- Readme tweaks
++- docs: update redame
++- document README in the readme
++- docs: write up .aider.chat.history docs
++- fix
++- update readme
+
+# 2026-07-16 06:48:57.670504
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, extend README.md with a documentation section for the type `WebhookRepository` (defined in `src/FeatureFlags/Repository/WebhookRepository.cs`).
++
++Add a "## WebhookRepository" section: 2-3 sentences on what it does and a realistic, compiling C# usage example based on its REAL public members:
++```
++public sealed class WebhookRepository : IWebhookRepository
++public WebhookRepository
++public async Task<Webhook> CreateAsync
++public async Task<Webhook?> GetByIdAsync
++public async Task<List<Webhook>> GetActiveAsync
++public async Task<List<Webhook>> GetByEventTypeAsync
++public async Task<List<Webhook>> GetRecentFailuresAsync
++public async Task<bool> UpdateAsync
++public async Task<bool> DeleteAsync
++public async Task<int> GetCountAsync
++public async Task<int> GetActiveCountAsync
++public sealed class WebhookDeliveryRepository : IWebhookDeliveryRepository
++public WebhookDeliveryRepository
++public async Task<WebhookDelivery> CreateAsync
++public async Task<WebhookDelivery?> GetByIdAsync
++public async Task<List<WebhookDelivery>> GetByWebhookIdAsync
++public async Task<List<WebhookDelivery>> GetPendingRetriesAsync
++public async Task<List<WebhookDelivery>> GetRecentDeliveriesAsync
++public async Task<(int Successful, int Failed)> GetDeliveryStatsAsync
++public async Task<bool> UpdateAsync
++```
++Only edit README.md. Do not invent members that are not listed.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- readme: .aider.chat.history usage
++- docs: extend README.md with AuditLogRepository documentation
++- open sourcing this - been sitting in my private repos for a while
++- Readme tweaks
++- Readme tweaks
++- docs: update redame
++- document README in the readme
++- docs: write up .aider.chat.history docs
++- fix
++- update readme
+
+# 2026-07-16 06:48:57.670588
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, extend README.md with a documentation section for the type `WebhookRepository` (defined in `src/FeatureFlags/Repository/WebhookRepository.cs`).
++
++Add a "## WebhookRepository" section: 2-3 sentences on what it does and a realistic, compiling C# usage example based on its REAL public members:
++```
++public sealed class WebhookRepository : IWebhookRepository
++public WebhookRepository
++public async Task<Webhook> CreateAsync
++public async Task<Webhook?> GetByIdAsync
++public async Task<List<Webhook>> GetActiveAsync
++public async Task<List<Webhook>> GetByEventTypeAsync
++public async Task<List<Webhook>> GetRecentFailuresAsync
++public async Task<bool> UpdateAsync
++public async Task<bool> DeleteAsync
++public async Task<int> GetCountAsync
++public async Task<int> GetActiveCountAsync
++public sealed class WebhookDeliveryRepository : IWebhookDeliveryRepository
++public WebhookDeliveryRepository
++public async Task<WebhookDelivery> CreateAsync
++public async Task<WebhookDelivery?> GetByIdAsync
++public async Task<List<WebhookDelivery>> GetByWebhookIdAsync
++public async Task<List<WebhookDelivery>> GetPendingRetriesAsync
++public async Task<List<WebhookDelivery>> GetRecentDeliveriesAsync
++public async Task<(int Successful, int Failed)> GetDeliveryStatsAsync
++public async Task<bool> UpdateAsync
++```
++Only edit README.md. Do not invent members that are not listed.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- readme: .aider.chat.history usage
++- docs: extend README.md with AuditLogRepository documentation
++- open sourcing this - been sitting in my private repos for a while
++- Readme tweaks
++- Readme tweaks
++- docs: update redame
++- document README in the readme
++- docs: write up .aider.chat.history docs
++- fix
++- update readme

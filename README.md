@@ -279,6 +279,161 @@ var (oldState, newState) = auditLog.GetChangeDetails();
 Console.WriteLine($"Changed from {oldState} to {newState}");
 ```
 
+## WebhookRepository
+
+Manages webhook persistence and retrieval for feature flag event notifications. The `WebhookRepository` handles CRUD operations for webhooks and provides specialized queries to find active webhooks, webhooks by event type, and recently failed deliveries for monitoring and retry operations.
+
+Example usage:
+```csharp
+using FeatureFlags.Repository;
+using FeatureFlags.Integration;
+using Microsoft.Extensions.DependencyInjection;
+
+// Setup dependency injection
+var services = new ServiceCollection();
+services.AddDbContext<FeatureFlagDbContext>(options => 
+    options.UseSqlite("Data Source=featureflags.db"));
+services.AddLogging();
+var serviceProvider = services.BuildServiceProvider();
+
+// Create repository
+var repository = new WebhookRepository(
+    serviceProvider.GetRequiredService<FeatureFlagDbContext>(),
+    serviceProvider.GetRequiredService<ILogger<WebhookRepository>>()
+);
+
+// Create a new webhook for feature flag update events
+var webhook = new Webhook
+{
+    Url = "https://api.example.com/webhooks/feature-flags",
+    Description = "Feature flag update notifications",
+    IsActive = true,
+    EventTypes = WebhookEventType.FeatureFlagUpdated | WebhookEventType.FeatureFlagCreated,
+    FeatureFlagKey = "new_checkout_flow",
+    CreatedBy = "admin@example.com",
+    MaxRetries = 3,
+    RetryDelaySeconds = 60,
+    AuthorizationHeader = "Bearer your-secret-token",
+    Secret = "your-webhook-secret"
+};
+
+// Create the webhook in database
+var createdWebhook = await repository.CreateAsync(webhook);
+Console.WriteLine($"Created webhook with ID: {createdWebhook.Id}");
+
+// Get webhook by ID
+var retrievedWebhook = await repository.GetByIdAsync(createdWebhook.Id);
+if (retrievedWebhook != null)
+{
+    Console.WriteLine($"Retrieved webhook: {retrievedWebhook.Url}");
+}
+
+// Get all active webhooks
+var activeWebhooks = await repository.GetActiveAsync();
+Console.WriteLine($"Active webhooks count: {activeWebhooks.Count}");
+
+// Get webhooks that handle specific event types
+var updateWebhooks = await repository.GetByEventTypeAsync(WebhookEventType.FeatureFlagUpdated);
+Console.WriteLine($"Webhooks for update events: {updateWebhooks.Count}");
+
+// Get webhooks with recent failures for retry processing
+var failedWebhooks = await repository.GetRecentFailuresAsync();
+Console.WriteLine($"Webhooks with recent failures: {failedWebhooks.Count}");
+
+// Update webhook configuration
+retrievedWebhook!.IsActive = false;
+var updateSuccess = await repository.UpdateAsync(retrievedWebhook);
+Console.WriteLine($"Update successful: {updateSuccess}");
+
+// Get statistics
+var totalCount = await repository.GetCountAsync();
+var activeCount = await repository.GetActiveCountAsync();
+Console.WriteLine($"Total webhooks: {totalCount}, Active: {activeCount}");
+
+// Delete webhook when no longer needed
+var deleteSuccess = await repository.DeleteAsync(createdWebhook.Id);
+Console.WriteLine($"Delete successful: {deleteSuccess}");
+```
+
+## WebhookDeliveryRepository
+
+Tracks webhook delivery attempts and their outcomes. The `WebhookDeliveryRepository` stores delivery history, supports retry operations, and provides statistics for monitoring webhook performance and reliability.
+
+Example usage:
+```csharp
+using FeatureFlags.Repository;
+using FeatureFlags.Integration;
+using Microsoft.Extensions.DependencyInjection;
+
+// Setup dependency injection
+var services = new ServiceCollection();
+services.AddDbContext<FeatureFlagDbContext>(options => 
+    options.UseSqlite("Data Source=featureflags.db"));
+services.AddLogging();
+var serviceProvider = services.BuildServiceProvider();
+
+// Create repository
+var deliveryRepository = new WebhookDeliveryRepository(
+    serviceProvider.GetRequiredService<FeatureFlagDbContext>(),
+    serviceProvider.GetRequiredService<ILogger<WebhookDeliveryRepository>>()
+);
+
+// Create a webhook first
+var webhookRepository = new WebhookRepository(
+    serviceProvider.GetRequiredService<FeatureFlagDbContext>(),
+    serviceProvider.GetRequiredService<ILogger<WebhookRepository>>()
+);
+var webhook = new Webhook
+{
+    Url = "https://api.example.com/webhooks/feature-flags",
+    Description = "Feature flag notifications",
+    IsActive = true
+};
+await webhookRepository.CreateAsync(webhook);
+
+// Create a delivery record
+var delivery = new WebhookDelivery
+{
+    WebhookId = webhook.Id,
+    Payload = "{\"eventType\":\"FeatureFlagUpdated\",\"flagKey\":\"new_ui\"}",
+    TriggeredAt = DateTime.UtcNow,
+    IsSuccess = true,
+    ResponseStatusCode = 200,
+    ResponseBody = "{\"status\":\"received\"}"
+};
+
+var createdDelivery = await deliveryRepository.CreateAsync(delivery);
+Console.WriteLine($"Created delivery with ID: {createdDelivery.Id}");
+
+// Get delivery by ID
+var retrievedDelivery = await deliveryRepository.GetByIdAsync(createdDelivery.Id);
+if (retrievedDelivery != null)
+{
+    Console.WriteLine($"Retrieved delivery for webhook: {retrievedDelivery.WebhookId}");
+}
+
+// Get all deliveries for a specific webhook
+var webhookDeliveries = await deliveryRepository.GetByWebhookIdAsync(webhook.Id);
+Console.WriteLine($"Deliveries for webhook {webhook.Id}: {webhookDeliveries.Count}");
+
+// Get pending retries (deliveries that need to be retried)
+var pendingRetries = await deliveryRepository.GetPendingRetriesAsync();
+Console.WriteLine($"Pending retries: {pendingRetries.Count}");
+
+// Get recent deliveries for a webhook (last 7 days)
+var recentDeliveries = await deliveryRepository.GetRecentDeliveriesAsync(webhook.Id, 7);
+Console.WriteLine($"Recent deliveries: {recentDeliveries.Count}");
+
+// Get delivery statistics (successful vs failed)
+var (successful, failed) = await deliveryRepository.GetDeliveryStatsAsync(webhook.Id, 7);
+Console.WriteLine($"Delivery stats - Successful: {successful}, Failed: {failed}");
+
+// Update delivery status
+retrievedDelivery!.MarkFailed("Connection timeout", 3, 60);
+var updateSuccess = await deliveryRepository.UpdateAsync(retrievedDelivery);
+Console.WriteLine($"Update delivery status: {updateSuccess}");
+```
+
 ## FlagEvaluationLog
 
 Records a single feature flag evaluation event, capturing the flag name, user identity, outcome, and reasoning for debugging "why did user X see feature Y". Use `FlagEvaluationLog` to audit feature flag evaluations and track which users received which feature states.
