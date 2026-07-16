@@ -2262,9 +2262,74 @@ Console.WriteLine(search.GetSummary());
 // Output: Key contains 'beta' | IsEnabled = False | Sort: Key ASC | Paging: Skip 0, Take 20
 ```
 
-## StringExtensionTests
+## CsvFormatterTests
 
-Unit tests for string extension methods that verify hashing, validation, and string transformation utilities. The `StringExtensionTests` class tests all public methods of the `StringExtensions` static class, ensuring consistent behavior for feature flag evaluation and user context processing.
+Unit tests for CSV export and import functionality. The `CsvFormatterTests` class tests all public methods of the CSV formatter including feature flag export, audit log export, CSV parsing with quoted values, and XML export functionality.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Formatters;
+using FeatureFlags.Models;
+using FeatureFlags.Enums;
+
+// Export feature flags to CSV format
+var featureFlags = new List<FeatureFlag>
+{
+    new FeatureFlag
+    {
+        Id = 1,
+        Key = "new_checkout_flow",
+        DisplayName = "New Checkout Flow",
+        Description = "Enables the redesigned checkout process",
+        IsEnabled = true,
+        RolloutType = RolloutType.Percentage,
+        PercentageRollout = 50,
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
+        CreatedBy = "admin@example.com"
+    }
+};
+
+string csv = CsvExporter.ExportFeatureFlags(featureFlags);
+Console.WriteLine("CSV Export:");
+Console.WriteLine(csv);
+
+// Export audit logs to CSV format
+var auditLogs = new List<AuditLog>
+{
+    new AuditLog
+    {
+        Id = 1,
+        FeatureFlagId = 1,
+        Action = AuditAction.Created,
+        ChangedBy = "admin@example.com",
+        ChangedAt = DateTime.UtcNow,
+        OldValue = null,
+        NewValue = "created"
+    }
+};
+
+string auditCsv = CsvExporter.ExportAuditLogs(auditLogs);
+Console.WriteLine("\nAudit Log CSV Export:");
+Console.WriteLine(auditCsv);
+
+// Parse CSV back to feature flags
+string csvData = @"Id,Key,DisplayName,Description,IsEnabled,RolloutType,PercentageRollout,CreatedAt,UpdatedAt,CreatedBy
+1,new_checkout_flow,New Checkout Flow,Enables the redesigned checkout process,True,1,50,2024-01-01T00:00:00Z,2024-01-01T00:00:00Z,admin@example.com";
+
+var parsedFlags = CsvParser.ParseFeatureFlags(csvData);
+Console.WriteLine($"\nParsed {parsedFlags.Count} feature flags from CSV");
+
+// Parse the quoted CSV
+var quotedFlags = CsvParser.ParseFeatureFlags(quotedCsv);
+Console.WriteLine($"Parsed {quotedFlags.Count} feature flags with quoted values");
+
+// Export feature flags to XML format (also tested in this class)
+string xml = XmlExporter.ExportFeatureFlags(featureFlags);
+Console.WriteLine("\nXML Export:");
+Console.WriteLine(xml);
+```
 
 Example usage:
 
