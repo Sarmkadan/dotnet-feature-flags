@@ -664,9 +664,75 @@ Console.WriteLine($"Concurrent evaluations completed: {results.Count}");
 Console.WriteLine($"All successful: {results.All(r => r)}");
 ```
 
-## ConditionTests
+## ConditionEvaluationTests
 
-Unit tests for the `Condition` model that verify all condition operators and evaluation logic. The `ConditionTests` class tests the `Condition` model's evaluation methods with various operators including Equals, NotEquals, Contains, StartsWith, EndsWith, GreaterThan, LessThan, and In operators.
+Unit tests for `Condition` evaluation logic covering all supported operators. The `ConditionEvaluationTests` class verifies that conditions correctly evaluate user context values against expected values using various comparison operators including Equals, GreaterThan, In, and string-based operators.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Models;
+using FeatureFlags.Enums;
+
+// Test equals operator with case-insensitive matching
+var countryCondition = new Condition
+{
+    AttributeName = "country",
+    Operator = ConditionOperator.Equals,
+    ExpectedValue = "US",
+    IsActive = true
+};
+
+bool isUsMatch = countryCondition.Evaluate("us"); // Returns true (case-insensitive)
+bool isEuMatch = countryCondition.Evaluate("EU"); // Returns false
+
+// Test greater than operator with numeric comparison
+var accountAgeCondition = new Condition
+{
+    AttributeName = "accountAge",
+    Operator = ConditionOperator.GreaterThan,
+    ExpectedValue = "30",
+    IsActive = true
+};
+
+bool isOldAccount = accountAgeCondition.Evaluate("45"); // Returns true
+bool isNewAccount = accountAgeCondition.Evaluate("15"); // Returns false
+
+// Test in operator with comma-separated list
+var tierCondition = new Condition
+{
+    AttributeName = "tier",
+    Operator = ConditionOperator.In,
+    ExpectedValue = "gold,platinum,enterprise",
+    IsActive = true
+};
+
+bool isPremium = tierCondition.Evaluate("premium"); // Returns false
+bool isEnterprise = tierCondition.Evaluate("enterprise"); // Returns true
+
+// Test string operators
+var emailCondition = new Condition
+{
+    AttributeName = "email",
+    Operator = ConditionOperator.Contains,
+    ExpectedValue = "@example.com",
+    IsActive = true
+};
+
+bool hasCorpEmail = emailCondition.Evaluate("user@corp.com"); // Returns true
+
+// Validate condition configuration
+var invalidCondition = new Condition
+{
+    AttributeName = "",
+    Operator = ConditionOperator.Equals,
+    ExpectedValue = "US"
+};
+
+bool isValid = invalidCondition.IsValid(); // Returns false (missing required fields)
+```
+
+## ConditionTests
 
 Example usage:
 ```csharp
