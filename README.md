@@ -1655,6 +1655,47 @@ var variantKey = await featureFlagService.GetVariantAsync("ab_test_feature", use
 Console.WriteLine($"User assigned variant: {variantKey ?? "None"}");
 ```
 
+## FeatureFlagMiddleware
+
+Middleware that integrates feature flag evaluation into the ASP.NET Core request pipeline. `FeatureFlagMiddleware` extracts user context from the HTTP request and evaluates feature flags for route-based feature toggling, enabling or disabling specific endpoints based on feature configuration.
+
+The middleware works with `IFeatureFlagService` to check feature availability and can be extended with additional middleware components like `FeatureFlagCachingMiddleware` and `FeatureFlagRateLimitMiddleware` for advanced feature-flag-driven behaviors.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Middleware;
+using FeatureFlags.Models;
+using FeatureFlags.Services;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+
+// Setup dependency injection
+var services = new ServiceCollection();
+services.AddLogging(logging => logging.AddConsole());
+services.AddScoped<IFeatureFlagService, FeatureFlagService>();
+
+var serviceProvider = services.BuildServiceProvider();
+
+// Create middleware instance
+var middleware = new FeatureFlagMiddleware(
+    next: async (context) => await Task.CompletedTask,
+    featureFlagService: serviceProvider.GetRequiredService<IFeatureFlagService>()
+);
+
+// Example: Simulate HTTP context
+var httpContext = new DefaultHttpContext();
+httpContext.Request.Path = "/ff-new-checkout";
+httpContext.Response.Body = new MemoryStream();
+
+// Invoke the middleware
+await middleware.InvokeAsync(httpContext);
+
+// Check response status
+Console.WriteLine($"Status Code: {httpContext.Response.StatusCode}");
+```
+
 ## ErrorHandlingMiddleware
 
 Global exception handler middleware that catches all unhandled exceptions during HTTP request processing and returns standardized error responses. The middleware logs exceptions at appropriate levels (Error for unexpected exceptions, Warning for validation errors, etc.) and ensures consistent error response format across the API. It handles specific exception types like `FeatureFlagException`, `KeyNotFoundException`, and `ArgumentException` with appropriate HTTP status codes.
