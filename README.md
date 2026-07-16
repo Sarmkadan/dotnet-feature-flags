@@ -1405,6 +1405,52 @@ bool isEmpty = ValidationExtensions.IsEmpty(emptyCollection);
 Console.WriteLine($"Is empty collection: {isEmpty}"); // true
 ```
 
+## FeatureFlagSearchBuilder
+
+The `FeatureFlagSearchBuilder` provides a fluent, chainable API for constructing complex feature flag searches with filtering, sorting, and pagination. It eliminates the need to write LINQ queries directly and supports building search criteria programmatically with a clean, readable syntax. The builder can work with both `IQueryable<FeatureFlag>` for database queries and `IEnumerable<FeatureFlag>` for in-memory collections.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Utilities;
+using FeatureFlags.Models;
+using FeatureFlags.Enums;
+
+// Create a search builder with multiple criteria
+var results = new FeatureFlagSearchBuilder()
+    .WithKeyContaining("checkout")
+    .WithEnabledStatus(true)
+    .WithRolloutType(RolloutType.Percentage)
+    .WithCreatedBy("admin@example.com")
+    .WithPaging(0, 50)
+    .SortBy("name", descending: false)
+    .Build(dbContext.FeatureFlags);
+
+// Execute the search on an in-memory collection
+var enabledFlags = new FeatureFlagSearchBuilder()
+    .WithEnabledStatus(true)
+    .WithPage(1, 25)
+    .SortBy("created", descending: true)
+    .Execute(allFlags);
+
+// Use preset queries for common scenarios
+var allEnabled = FeatureFlagSearchBuilder.AllEnabled()
+    .WithPage(1, 100)
+    .Build(dbContext.FeatureFlags);
+
+var percentageRollouts = FeatureFlagSearchBuilder.AllPercentageRollouts()
+    .WithCreatedDateRange(DateTime.UtcNow.AddDays(-30), null)
+    .Build(dbContext.FeatureFlags);
+
+// Get a summary of the current search criteria
+var search = new FeatureFlagSearchBuilder()
+    .WithKeyContaining("beta")
+    .WithEnabledStatus(false);
+
+Console.WriteLine(search.GetSummary());
+// Output: Key contains 'beta' | IsEnabled = False | Sort: Key ASC | Paging: Skip 0, Take 20
+```
+
 ## ConversionUtilities
 
 The `ConversionUtilities` class provides safe type conversion and transformation utilities for converting between different data types, dictionaries, collections, and enums. It handles null values, type mismatches, and conversion failures gracefully, making it ideal for working with dynamic data, configuration parsing, and data transformation scenarios.
