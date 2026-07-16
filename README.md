@@ -105,6 +105,100 @@ if (userContext.IsValid())
 
 Unit tests for the `UserContext` model that verify attribute retrieval, validation logic, and consistent hashing functionality. The `UserContextTests` class tests all public methods of the `UserContext` class including validation, attribute access, custom attribute management, and hash generation.
 
+## ConditionTests
+
+Unit tests for the `Condition` model that verify all condition operators and evaluation logic. The `ConditionTests` class tests the `Condition` model's evaluation methods with various operators including Equals, NotEquals, Contains, StartsWith, EndsWith, GreaterThan, LessThan, and In operators.
+
+Example usage:
+```csharp
+using FeatureFlags.Models;
+using Xunit;
+
+// Test equals operator with exact match
+var equalsCondition = new Condition
+{
+    AttributeName = "country",
+    Operator = ConditionOperator.Equals,
+    ExpectedValue = "US"
+};
+Assert.True(equalsCondition.Evaluate("US")); // Returns true for match
+
+// Test equals operator with case-insensitive match
+Assert.True(equalsCondition.Evaluate("us")); // Returns true for case-insensitive match
+
+// Test not equals operator
+var notEqualsCondition = new Condition
+{
+    AttributeName = "country",
+    Operator = ConditionOperator.NotEquals,
+    ExpectedValue = "US"
+};
+Assert.True(notEqualsCondition.Evaluate("CA")); // Returns true for different value
+
+// Test contains operator
+var containsCondition = new Condition
+{
+    AttributeName = "email",
+    Operator = ConditionOperator.Contains,
+    ExpectedValue = "@example.com"
+};
+Assert.True(containsCondition.Evaluate("user@example.com")); // Returns true for substring match
+
+// Test starts with operator
+var startsWithCondition = new Condition
+{
+    AttributeName = "email",
+    Operator = ConditionOperator.StartsWith,
+    ExpectedValue = "user"
+};
+Assert.True(startsWithCondition.Evaluate("user@example.com")); // Returns true for prefix match
+
+// Test ends with operator
+var endsWithCondition = new Condition
+{
+    AttributeName = "email",
+    Operator = ConditionOperator.EndsWith,
+    ExpectedValue = ".com"
+};
+Assert.True(endsWithCondition.Evaluate("user@example.com")); // Returns true for suffix match
+
+// Test greater than operator
+var greaterThanCondition = new Condition
+{
+    AttributeName = "account-age",
+    Operator = ConditionOperator.GreaterThan,
+    ExpectedValue = "30"
+};
+Assert.True(greaterThanCondition.Evaluate("45")); // Returns true for numeric comparison
+
+// Test less than operator
+var lessThanCondition = new Condition
+{
+    AttributeName = "account-age",
+    Operator = ConditionOperator.LessThan,
+    ExpectedValue = "30"
+};
+Assert.True(lessThanCondition.Evaluate("15")); // Returns true for numeric comparison
+
+// Test in operator with comma-separated list
+var inCondition = new Condition
+{
+    AttributeName = "tier",
+    Operator = ConditionOperator.In,
+    ExpectedValue = "premium,gold,platinum"
+};
+Assert.True(inCondition.Evaluate("gold")); // Returns true if value is in list
+
+// Test validation
+var invalidCondition = new Condition
+{
+    AttributeName = "",
+    Operator = ConditionOperator.Equals,
+    ExpectedValue = "US"
+};
+Assert.False(invalidCondition.IsValid()); // Returns false for missing required fields
+```
+
 Example usage:
 ```csharp
 using FeatureFlags.Models;
