@@ -1520,6 +1520,55 @@ bool canConvert = ConversionUtilities.CanConvertTo<int>("123");
 Console.WriteLine($"Can convert: {canConvert}"); // true
 ```
 
+## PaginationHelper
+
+Helper class for pagination calculations and metadata generation. Provides utilities for offset/limit calculations, page information, and in-memory pagination of collections. Ideal for implementing consistent pagination across API endpoints.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Utilities;
+
+// Validate and normalize paging parameters
+var (pageNumber, pageSize) = PaginationHelper.ValidateAndNormalizePaging(2, 50);
+Console.WriteLine($"Validated page: {pageNumber}, size: {pageSize}");
+
+// Calculate offset for database queries
+int offset = PaginationHelper.CalculateOffset(3, 25);
+Console.WriteLine($"Database offset: {offset}");
+
+// Create pagination metadata for API responses
+var metadata = PaginationHelper.CreateMetadata(1, 20, 150);
+Console.WriteLine($"Page {metadata.PageNumber} of {metadata.TotalPages}");
+Console.WriteLine($"Items: {metadata.ItemRange}");
+Console.WriteLine($"Has next: {metadata.HasNextPage}");
+Console.WriteLine($"Has previous: {metadata.HasPreviousPage}");
+
+// Paginate in-memory collection
+var allItems = Enumerable.Range(1, 100).ToList();
+var pageItems = PaginationHelper.PaginateInMemory(allItems, 2, 20);
+Console.WriteLine($"Page items count: {pageItems.Count()}");
+
+// Get item range string for display
+string itemRange = PaginationHelper.GetItemRange(1, 20, 150);
+Console.WriteLine($"Items shown: {itemRange}");
+
+// Use PaginatedResponse wrapper for consistent API responses
+var paginatedResponse = new PaginationHelper.PaginatedResponse<int>
+{
+    Items = pageItems.ToList(),
+    Pagination = new PaginationHelper.PaginationMetadata
+    {
+        PageNumber = 2,
+        PageSize = 20,
+        TotalCount = 150
+    }
+};
+
+Console.WriteLine($"Total items: {paginatedResponse.Pagination.TotalCount}");
+Console.WriteLine($"Returned items: {paginatedResponse.Items.Count}");
+```
+
 ## DateTimeExtensions
 
 Extension methods for DateTime operations including Unix timestamp conversion, date range calculations, business day counting, and human-readable time formatting. Simplifies common date/time operations used in audit logging, scheduling, and feature flag evaluation timestamp handling.
