@@ -556,6 +556,41 @@ bool advanceResult = await schedulerService.AdvanceRolloutAsync(1, "admin");
 Assert.True(advanceResult);
 ```
 
+## FeatureFlagServiceTestExample
+
+Provides comprehensive testing and monitoring utilities for feature flags including unit tests for percentage-based rollouts, rule-based evaluation, and A/B test variant assignment. This example class demonstrates how to test feature flag behavior and includes performance monitoring, health checks, and load testing capabilities to ensure production readiness.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Models;
+using FeatureFlags.Services;
+using Moq;
+
+// Create test instance
+var mockRepository = new MockFeatureFlagRepository();
+var service = new FeatureFlagService(mockRepository, null!);
+
+// Test percentage rollout
+var flag = new FeatureFlag
+{
+    Id = Guid.NewGuid(),
+    Key = "test-flag",
+    PercentageRollout = 50,
+    IsEnabled = true
+};
+
+var context = new UserContext { UserId = "test-user-001" };
+
+// Test rule-based evaluation
+var ruleBasedTest = new FeatureFlagServiceTestExample();
+ruleBasedTest.TestRuleBasedEvaluation();
+
+// Test A/B test variant assignment
+var abTest = new FeatureFlagServiceTestExample();
+abTest.TestABTestVariantAssignment();
+```
+
 ## FeatureFlagWorkflowIntegrationTests
 
 Integration tests for the complete feature flag workflow that verify end-to-end scenarios including percentage rollouts, rule-based targeting, A/B testing variants, concurrent evaluations, and error handling. The `FeatureFlagWorkflowIntegrationTests` class tests the full feature flag evaluation pipeline with mocked dependencies to ensure correct behavior across different rollout strategies and user contexts.
