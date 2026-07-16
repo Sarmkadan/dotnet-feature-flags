@@ -1405,6 +1405,83 @@ bool isEmpty = ValidationExtensions.IsEmpty(emptyCollection);
 Console.WriteLine($"Is empty collection: {isEmpty}"); // true
 ```
 
+## AuditController
+
+Provides API endpoints for accessing and analyzing audit logs of feature flag changes. The `AuditController` enables comprehensive audit trail querying for compliance, debugging, and change tracking. It offers endpoints to retrieve audit logs by feature flag, user, date range, and provides change history, summaries, and CSV exports of all audit activity.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Controllers;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+// Setup dependency injection
+var services = new ServiceCollection();
+services.AddLogging(logging => logging.AddConsole());
+services.AddScoped<IAuditLogService, AuditLogService>();
+services.AddScoped<IFeatureFlagService, FeatureFlagService>();
+services.AddScoped<AuditController>();
+
+var serviceProvider = services.BuildServiceProvider();
+
+// Create controller instance
+var auditController = serviceProvider.GetRequiredService<AuditController>();
+
+// Get all audit logs for a specific feature flag
+var flagLogsResult = await auditController.GetFlagAuditLog(1);
+if (flagLogsResult is OkObjectResult okResult)
+{
+    var logs = (dynamic)okResult.Value;
+    Console.WriteLine($"Found {logs.Data.Count} audit logs for flag ID 1");
+}
+
+// Get audit logs by user
+var userLogsResult = await auditController.GetAuditLogsByUser("admin@example.com");
+if (userLogsResult is OkObjectResult userOkResult)
+{
+    var userLogs = (dynamic)userOkResult.Value;
+    Console.WriteLine($"User 'admin@example.com' made {userLogs.Data.Count} changes");
+}
+
+// Get audit logs within a date range
+var startDate = DateTime.UtcNow.AddDays(-30);
+var endDate = DateTime.UtcNow;
+var dateRangeLogsResult = await auditController.GetAuditLogsByDateRange(startDate, endDate);
+if (dateRangeLogsResult is OkObjectResult dateRangeOkResult)
+{
+    var dateRangeLogs = (dynamic)dateRangeOkResult.Value;
+    Console.WriteLine($"Changes in last 30 days: {dateRangeLogs.Data.Count} entries");
+}
+
+// Get change history for a specific feature flag
+var historyResult = await auditController.GetChangeHistory(1);
+if (historyResult is OkObjectResult historyOkResult)
+{
+    var history = (dynamic)historyOkResult.Value;
+    Console.WriteLine($"Change history entries: {history.Data.Count}");
+}
+
+// Get audit summary for the last 30 days
+var summaryResult = await auditController.GetAuditSummary(30);
+if (summaryResult is OkObjectResult summaryOkResult)
+{
+    var summary = (dynamic)summaryOkResult.Value;
+    Console.WriteLine($"Total changes: {summary.Data.totalChanges}");
+    Console.WriteLine($"Unique users: {summary.Data.uniqueUsers}");
+}
+
+// Export audit logs to CSV
+var csvResult = await auditController.ExportAuditLogsCsv(days: 30);
+if (csvResult is FileContentResult fileResult)
+{
+    Console.WriteLine($"CSV export generated: {fileResult.FileDownloadName}");
+    string csvContent = System.Text.Encoding.UTF8.GetString(fileResult.FileContents);
+    Console.WriteLine($"CSV content length: {csvContent.Length} bytes");
+}
+```
+
 ## AdminController
 
 Provides administrative endpoints for managing webhooks, exports, imports, cache operations, and system health monitoring. The `AdminController` requires proper authorization and is designed for administrative users who need to manage system configuration, perform data migrations, and monitor system status.
