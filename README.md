@@ -424,6 +424,68 @@ foreach (var arg in command.Arguments)
 CliArgumentParser.PrintHelp();
 ```
 
+## AuditLogService
+
+Manages retrieval and cleanup of audit trails for compliance and debugging purposes. The `AuditLogService` provides methods to query audit logs by feature flag, user, date range, or recency, and includes functionality for maintaining log retention through scheduled cleanup operations.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Services;
+using FeatureFlags.Models;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+// Setup dependency injection
+var services = new ServiceCollection();
+services.AddLogging(logging => logging.AddConsole());
+services.AddDbContext<FeatureFlagDbContext>(options =>
+    options.UseSqlite("Data Source=featureflags.db"));
+
+// Register repositories and services
+services.AddScoped<IAuditLogRepository, AuditLogRepository>();
+services.AddScoped<IAuditLogService, AuditLogService>();
+
+var serviceProvider = services.BuildServiceProvider();
+
+// Create service instance
+var auditLogService = serviceProvider.GetRequiredService<IAuditLogService>();
+
+// Get all audit logs for a specific feature flag
+var logs = await auditLogService.GetAuditLogsAsync(1);
+Console.WriteLine($"Found {logs.Count()} audit logs for flag ID 1");
+
+// Get paged audit logs for a feature flag
+var pagedLogs = await auditLogService.GetAuditLogsPagedAsync(1, 1, 10);
+Console.WriteLine($"Page 1 of audit logs: {pagedLogs.Count()} entries");
+
+// Get audit logs by user who made the changes
+var userLogs = await auditLogService.GetAuditLogsByUserAsync("admin@example.com");
+Console.WriteLine($"User 'admin@example.com' made {userLogs.Count()} changes");
+
+// Get recent audit logs (last 10 changes)
+var recentLogs = await auditLogService.GetRecentAuditLogsAsync(10);
+Console.WriteLine($"Most recent changes: {recentLogs.Count()} entries");
+
+// Get the last change for a specific feature flag
+var lastChange = await auditLogService.GetLastChangeAsync(1);
+if (lastChange != null)
+{
+    Console.WriteLine($"Last change by {lastChange.ChangedBy} at {lastChange.ChangedAt}");
+}
+
+// Get change history for a specific date range
+var history = await auditLogService.GetChangeHistoryAsync(
+    DateTime.UtcNow.AddDays(-30),
+    DateTime.UtcNow
+);
+Console.WriteLine($"Changes in last 30 days: {history.Count()} entries");
+
+// Clean up old logs (older than 90 days)
+await auditLogService.CleanupOldLogsAsync(90);
+Console.WriteLine("Old audit logs cleaned up");
+```
+
 ## FeatureFlagRepository
 
 Provides database persistence operations for managing feature flag entities, supporting CRUD operations and complex queries with eager loading of related configuration and audit logs. It serves as the primary interface for accessing feature flags within the application's data layer.
