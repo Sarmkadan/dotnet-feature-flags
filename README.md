@@ -1135,6 +1135,57 @@ if (featureFlagOptions.IsValid())
 }
 ```
 
+## ICacheService
+
+The `ICacheService` interface provides a unified abstraction for caching feature flag evaluations, configurations, and other frequently accessed data. It supports both in-memory and distributed caching implementations, making it suitable for single-server deployments (using `InMemoryCacheService`) or multi-server deployments (using `DistributedCacheService`).
+
+The cache service helps improve performance by reducing database queries and computation for repeated feature flag evaluations, while supporting time-based cache invalidation through TTL (Time To Live) values.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Caching;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+// Setup dependency injection for in-memory cache
+var services = new ServiceCollection();
+services.AddLogging(logging => logging.AddConsole());
+
+// Register the in-memory cache service with default 5-minute TTL
+services.AddSingleton<ICacheService, InMemoryCacheService>();
+
+var serviceProvider = services.BuildServiceProvider();
+
+// Create cache service instance
+var cacheService = serviceProvider.GetRequiredService<ICacheService>();
+
+// Store feature flag evaluation result in cache
+var featureFlagKey = "new_checkout_flow";
+var userContextKey = "user123_context";
+var cacheKey = $"{featureFlagKey}:{userContextKey}";
+
+// Set a feature flag evaluation result with 10-minute TTL
+cacheService.Set(cacheKey, true, TimeSpan.FromMinutes(10));
+
+// Retrieve cached evaluation result
+bool isEnabled = cacheService.Get<bool>(cacheKey);
+Console.WriteLine($"Cached result: {isEnabled}");
+
+// Update the cache with new value
+cacheService.Set(cacheKey, false, TimeSpan.FromMinutes(15));
+
+// Remove specific cache entry
+cacheService.Remove(cacheKey);
+
+// Clear all cache entries (use with caution in production)
+cacheService.Clear();
+
+// Async operations are also supported
+await cacheService.SetAsync(cacheKey, true, TimeSpan.FromMinutes(5));
+bool cachedValue = await cacheService.GetAsync<bool>(cacheKey);
+```
+
 ## IGradualRolloutSchedulerService
 
 The `IGradualRolloutSchedulerService` interface manages the scheduling and advancement of gradual feature flag rollouts. It supports time-based percentage advancement with configurable daily increment steps, start dates, and end dates. The service automatically processes scheduled rollouts to advance percentage allocations based on elapsed time, and provides methods to check rollout status and manually advance specific rollouts.
