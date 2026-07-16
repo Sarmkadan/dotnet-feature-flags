@@ -1315,6 +1315,96 @@ await cacheService.SetAsync(cacheKey, true, TimeSpan.FromMinutes(5));
 bool cachedValue = await cacheService.GetAsync<bool>(cacheKey);
 ```
 
+## ValidationExtensions
+
+The `ValidationExtensions` class provides validation utilities for common data validation scenarios including null checks, empty collections, numeric ranges, percentage validation, duplicate detection, and string format validation. These extension methods help ensure data integrity when working with feature flag configurations, user inputs, and configuration values.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Utilities;
+using System;
+using System.Collections.Generic;
+
+// Validate null values
+string? nullableString = null;
+ValidationExtensions.ThrowIfNull(nullableString, nameof(nullableString));
+// Throws ArgumentNullException
+
+// Validate empty strings and whitespace
+string emptyString = "";
+ValidationExtensions.ThrowIfNullOrEmpty(emptyString);
+// Throws ArgumentException
+
+string whitespaceString = "   ";
+ValidationExtensions.ThrowIfNullOrWhiteSpace(whitespaceString);
+// Throws ArgumentException
+
+// Validate non-negative integers
+int negativeValue = -5;
+bool isNonNegative = ValidationExtensions.IsValidNonNegativeInteger(negativeValue);
+Console.WriteLine($"Is non-negative: {isNonNegative}"); // false
+
+int validValue = 42;
+isNonNegative = ValidationExtensions.IsValidNonNegativeInteger(validValue);
+Console.WriteLine($"Is non-negative: {isNonNegative}"); // true
+
+// Validate percentage values (0-100)
+double invalidPercentage = 150;
+bool isValidPercentage = ValidationExtensions.IsValidPercentage(invalidPercentage);
+Console.WriteLine($"Is valid percentage: {isValidPercentage}"); // false
+
+ValidationExtensions.ThrowIfNotValidPercentage(invalidPercentage);
+// Throws ArgumentOutOfRangeException
+
+double validPercentage = 75.5;
+isValidPercentage = ValidationExtensions.IsValidPercentage(validPercentage);
+Console.WriteLine($"Is valid percentage: {isValidPercentage}"); // true
+
+// Validate ranges
+int value = 42;
+bool isInRange = ValidationExtensions.IsInRange(value, 10, 100);
+Console.WriteLine($"Is in range [10, 100]: {isInRange}"); // true
+
+// Check for duplicates in collections
+var items = new List<string> { "item1", "item2", "item1" };
+bool hasDuplicates = ValidationExtensions.HasDuplicates(items);
+Console.WriteLine($"Has duplicates: {hasDuplicates}"); // true
+
+// Validate string length
+string longString = new string('a', 101);
+bool isLengthValid = ValidationExtensions.IsLengthValid(longString, 1, 100);
+Console.WriteLine($"Is length valid (1-100): {isLengthValid}"); // false
+
+// Validate key format (alphanumeric with underscores)
+string invalidKey = "invalid-key!";
+bool isValidKey = ValidationExtensions.IsValidKeyFormat(invalidKey);
+Console.WriteLine($"Is valid key format: {isValidKey}"); // false
+
+string validKey = "feature_flag_key_123";
+isValidKey = ValidationExtensions.IsValidKeyFormat(validKey);
+Console.WriteLine($"Is valid key format: {isValidKey}"); // true
+
+// Validate alphanumeric strings
+string nonAlphanumeric = "feature-flag";
+bool isAlphanumeric = ValidationExtensions.IsAlphanumeric(nonAlphanumeric);
+Console.WriteLine($"Is alphanumeric: {isAlphanumeric}"); // false
+
+string validAlphanumeric = "featureflag123";
+isAlphanumeric = ValidationExtensions.IsAlphanumeric(validAlphanumeric);
+Console.WriteLine($"Is alphanumeric: {isAlphanumeric}"); // true
+
+// Check for default values
+int defaultInt = default;
+bool isDefault = ValidationExtensions.IsDefault(defaultInt);
+Console.WriteLine($"Is default int: {isDefault}"); // true
+
+// Check for empty collections
+var emptyCollection = new List<string>();
+bool isEmpty = ValidationExtensions.IsEmpty(emptyCollection);
+Console.WriteLine($"Is empty collection: {isEmpty}"); // true
+```
+
 ## ConversionUtilities
 
 The `ConversionUtilities` class provides safe type conversion and transformation utilities for converting between different data types, dictionaries, collections, and enums. It handles null values, type mismatches, and conversion failures gracefully, making it ideal for working with dynamic data, configuration parsing, and data transformation scenarios.
