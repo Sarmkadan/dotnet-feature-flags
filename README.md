@@ -1133,6 +1133,64 @@ Assert.Equal(hash1, hash2); // Same input returns same hash
 Assert.Equal("user123", userWithAttributes.GetAttribute("USERID")); // Case insensitive
 ```
 
+## ApplicationIntegrationExample
+
+Demonstrates how to integrate feature flags into a real application workflow. This example shows practical usage patterns for feature flag evaluation in business scenarios like payment processing, recommendation engines, and notification systems.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Services;
+using FeatureFlags.Models;
+
+// Create the integration example with required services
+var integrationExample = new ApplicationIntegrationExample(
+    new FeatureFlagService(
+        new FeatureFlagRepository(dbContext, logger),
+        new AuditLogRepository(dbContext, logger),
+        new RuleEvaluationService(featureFlagRepository, ruleLogger),
+        new PercentageRolloutService(percentageLogger),
+        new FlagEvaluationLogService(evaluationLogLogger),
+        Options.Create(new FeatureFlagOptions { EnableAuditLogging = true }),
+        featureFlagLogger
+    )
+);
+
+// Run the integration examples
+await integrationExample.RunAsync();
+
+// Example output:
+// === Application Integration Examples ===
+// 
+// 1. Checkout Process Integration
+//
+// Processing order for user...
+// User: user-shop-001
+// Order Total: $99.99
+// Payment Processor: NewPaymentGateway
+// ✓ Payment successful: NEW-5f7a3b1
+//
+// 2. Recommendation Engine
+//
+// Loading recommendations for users:
+//
+//  power-buyer:
+//   Engine: MLRecommendationEngine
+//   Products: ML-Product-X, ML-Product-Y, ML-Product-Z
+//
+//  casual-shopper:
+//   Engine: RuleBasedRecommendationEngine
+//   Products: Product-A, Product-B, Product-C
+//
+// 3. Notification System
+//
+// Generating notifications:
+//
+//  user-001@example.com: AI-Generated
+//  user-002@example.com: Template-Based
+//  user-003@example.com: AI-Generated
+```
+
 ## Result
 
 A generic result wrapper class that represents the outcome of an operation. The `Result<T>` class provides a consistent way to return success/failure with data or error messages, making it ideal for error handling in feature flag operations and other business logic.
