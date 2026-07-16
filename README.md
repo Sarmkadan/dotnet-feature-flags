@@ -1304,6 +1304,64 @@ bool canConvert = ConversionUtilities.CanConvertTo<int>("123");
 Console.WriteLine($"Can convert: {canConvert}"); // true
 ```
 
+## DateTimeExtensions
+
+Extension methods for DateTime operations including Unix timestamp conversion, date range calculations, business day counting, and human-readable time formatting. Simplifies common date/time operations used in audit logging, scheduling, and feature flag evaluation timestamp handling.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Utilities;
+
+// Convert DateTime to Unix timestamp
+DateTime now = DateTime.UtcNow;
+long unixTimestamp = now.ToUnixTimestamp();
+Console.WriteLine($"Unix timestamp: {unixTimestamp}");
+
+// Convert Unix timestamp back to DateTime
+DateTime fromTimestamp = DateTimeExtensions.FromUnixTimestamp(unixTimestamp);
+Console.WriteLine($"From timestamp: {fromTimestamp}");
+
+// Get start and end of day
+DateTime today = DateTime.Today;
+DateTime startOfDay = today.StartOfDay();
+DateTime endOfDay = today.EndOfDay();
+Console.WriteLine($"Day range: {startOfDay} to {endOfDay}");
+
+// Get start of week (Monday)
+DateTime thisWeek = DateTime.Today.StartOfWeek();
+Console.WriteLine($"Week starts: {thisWeek:yyyy-MM-dd}");
+
+// Get start and end of month
+DateTime startOfMonth = DateTime.Today.StartOfMonth();
+DateTime endOfMonth = DateTime.Today.EndOfMonth();
+Console.WriteLine($"Month range: {startOfMonth:yyyy-MM-dd} to {endOfMonth:yyyy-MM-dd}");
+
+// Check if a date is between two dates
+DateTime testDate = DateTime.Today.AddDays(5);
+bool isBetween = testDate.IsBetween(DateTime.Today, DateTime.Today.AddDays(10));
+Console.WriteLine($"Is between: {isBetween}");
+
+// Calculate business days between two dates
+int businessDays = DateTime.Today.GetBusinessDaysBetween(DateTime.Today.AddDays(30));
+Console.WriteLine($"Business days in 30 days: {businessDays}");
+
+// Get human-readable relative time
+DateTime yesterday = DateTime.Today.AddDays(-1);
+string relativeTime = yesterday.ToRelativeTime();
+Console.WriteLine($"Relative time: {relativeTime}");
+
+// Check date properties
+DateTime tomorrow = DateTime.Today.AddDays(1);
+Console.WriteLine($"Is today: {DateTime.Today.IsToday()}");
+Console.WriteLine($"Is past: {DateTime.Today.AddDays(-1).IsPast()}");
+Console.WriteLine($"Is future: {tomorrow.IsFuture()}");
+
+// Round to nearest time interval
+DateTime rounded = DateTime.Now.RoundTo(TimeSpan.FromMinutes(15));
+Console.WriteLine($"Rounded to 15 minutes: {rounded}");
+```
+
 ## StringExtensions
 
 Extension methods for string operations including hashing, validation, and transformation. Provides common string utilities used throughout the feature flag engine for consistent user bucketing, identifier normalization, and safe parsing operations.
