@@ -459,6 +459,108 @@ if (flag != null)
 }
 ```
 
+## FeatureFlagService
+
+Central service that coordinates all feature flag operations including evaluation, creation, updates, deletion, and audit logging. The `FeatureFlagService` implements `IFeatureFlagService` and provides methods for checking feature availability, managing flag states, and retrieving flag configurations.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Services;
+using FeatureFlags.Models;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+// Setup dependency injection
+var services = new ServiceCollection();
+services.AddLogging(logging => logging.AddConsole());
+services.AddDbContext<FeatureFlagDbContext>(options =>
+    options.UseSqlite("Data Source=featureflags.db"));
+
+// Register repositories and services
+services.AddScoped<IFeatureFlagRepository, FeatureFlagRepository>();
+services.AddScoped<IAuditLogRepository, AuditLogRepository>();
+services.AddScoped<IRuleEvaluationService, RuleEvaluationService>();
+services.AddScoped<IPercentageRolloutService, PercentageRolloutService>();
+services.AddScoped<IFlagEvaluationLogService, FlagEvaluationLogService>();
+services.AddScoped<IFeatureFlagService, FeatureFlagService>();
+services.Configure<FeatureFlagOptions>(options => 
+{
+    options.EnableAuditLog = true;
+});
+
+var serviceProvider = services.BuildServiceProvider();
+
+// Create service instance
+var featureFlagService = serviceProvider.GetRequiredService<IFeatureFlagService>();
+
+// Create a user context for evaluation
+var userContext = new UserContext
+{
+    UserId = "user123",
+    Email = "user@example.com",
+    Country = "US",
+    Tier = "Premium"
+};
+
+// Check if a feature is enabled for a user
+bool isNewCheckoutEnabled = await featureFlagService.IsEnabledAsync("new_checkout", userContext);
+Console.WriteLine($"New checkout feature enabled: {isNewCheckoutEnabled}");
+
+// Create a new feature flag
+var newFlag = new FeatureFlag
+{
+    Key = "new_checkout_flow",
+    DisplayName = "New Checkout Flow",
+    Description = "Enables the redesigned checkout process",
+    IsEnabled = true,
+    RolloutType = RolloutType.Percentage,
+    PercentageRollout = 50
+};
+
+var createdFlag = await featureFlagService.CreateFeatureFlagAsync(newFlag, "admin@example.com");
+Console.WriteLine($"Created feature flag: {createdFlag.Key}");
+
+// Get a feature flag by ID
+var retrievedFlag = await featureFlagService.GetFeatureFlagAsync(createdFlag.Id);
+if (retrievedFlag != null)
+{
+    Console.WriteLine($"Retrieved flag: {retrievedFlag.Key}");
+}
+
+// Get a feature flag by key
+var flagByKey = await featureFlagService.GetFeatureFlagByKeyAsync("new_checkout_flow");
+Console.WriteLine($"Flag by key: {flagByKey?.DisplayName}");
+
+// Get all feature flags
+var allFlags = await featureFlagService.GetAllFeatureFlagsAsync();
+Console.WriteLine($"Total flags: {allFlags.Count()}");
+
+// Get only enabled feature flags
+var enabledFlags = await featureFlagService.GetEnabledFeatureFlagsAsync();
+Console.WriteLine($"Enabled flags: {enabledFlags.Count()}");
+
+// Enable or disable a feature flag
+await featureFlagService.EnableFeatureFlagAsync(createdFlag.Id, "admin@example.com");
+await featureFlagService.DisableFeatureFlagAsync(createdFlag.Id, "admin@example.com");
+
+// Update a feature flag
+retrievedFlag!.IsEnabled = true;
+retrievedFlag.Description = "Updated description";
+await featureFlagService.UpdateFeatureFlagAsync(retrievedFlag, "admin@example.com");
+
+// Delete a feature flag
+await featureFlagService.DeleteFeatureFlagAsync(createdFlag.Id, "admin@example.com");
+
+// Search for feature flags
+var searchResults = await featureFlagService.SearchFeatureFlagsAsync("checkout");
+Console.WriteLine($"Search results: {searchResults.Count()}");
+
+// Get A/B test variant for a user
+var variantKey = await featureFlagService.GetVariantAsync("ab_test_feature", userContext);
+Console.WriteLine($"User assigned variant: {variantKey ?? "None"}");
+```
+
 ## ErrorHandlingMiddleware
 
 Global exception handler middleware that catches all unhandled exceptions during HTTP request processing and returns standardized error responses. The middleware logs exceptions at appropriate levels (Error for unexpected exceptions, Warning for validation errors, etc.) and ensures consistent error response format across the API. It handles specific exception types like `FeatureFlagException`, `KeyNotFoundException`, and `ArgumentException` with appropriate HTTP status codes.
