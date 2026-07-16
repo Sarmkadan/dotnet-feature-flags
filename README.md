@@ -1482,6 +1482,122 @@ if (csvResult is FileContentResult fileResult)
 }
 ```
 
+## FeatureFlagController
+
+API controller that provides endpoints for evaluating, managing, and auditing feature flags. The `FeatureFlagController` exposes RESTful endpoints for checking feature availability, creating/updating flags, enabling/disabling features, and retrieving audit logs. It uses dependency injection to access the `IFeatureFlagService` and `IAuditLogService` for business logic operations.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Controllers;
+using FeatureFlags.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+// Setup dependency injection
+var services = new ServiceCollection();
+services.AddLogging(logging => logging.AddConsole());
+services.AddScoped<IFeatureFlagService, FeatureFlagService>();
+services.AddScoped<IAuditLogService, AuditLogService>();
+services.AddScoped<FeatureFlagController>();
+
+var serviceProvider = services.BuildServiceProvider();
+
+// Create controller instance
+var controller = serviceProvider.GetRequiredService<FeatureFlagController>();
+
+// Evaluate if a feature is enabled for a user
+var evaluationResult = await controller.EvaluateFeatureFlag(new EvaluationRequest
+{
+    FeatureFlagKey = "new_checkout_flow",
+    UserId = "user123",
+    Email = "user@example.com",
+    Country = "US",
+    Tier = "Premium"
+});
+
+if (evaluationResult is OkObjectResult okResult)
+{
+    var result = (dynamic)okResult.Value;
+    Console.WriteLine($"Feature enabled: {result.enabled}");
+}
+
+// Get A/B test variant for a user
+var variantResult = await controller.GetVariant(new EvaluationRequest
+{
+    FeatureFlagKey = "ab_test_feature",
+    UserId = "user456",
+    Email = "user456@example.com"
+});
+
+if (variantResult is OkObjectResult variantOkResult)
+{
+    var variantData = (dynamic)variantOkResult.Value;
+    Console.WriteLine($"User variant: {variantData.variant ?? "None"}");
+}
+
+// Get all feature flags
+var allFlagsResult = await controller.GetAll();
+if (allFlagsResult is OkObjectResult allFlagsOkResult)
+{
+    var flags = (IEnumerable<FeatureFlag>)allFlagsOkResult.Value;
+    Console.WriteLine($"Total flags: {flags.Count()}");
+}
+
+// Get a specific feature flag by key
+var flagResult = await controller.GetByKey("new_checkout_flow");
+if (flagResult is OkObjectResult flagOkResult)
+{
+    var flag = (FeatureFlag)flagOkResult.Value;
+    Console.WriteLine($"Retrieved flag: {flag.DisplayName}");
+}
+
+// Create a new feature flag
+var newFlag = new FeatureFlag
+{
+    Key = "new_ui_feature",
+    DisplayName = "New UI Feature",
+    Description = "Enables the new user interface components",
+    IsEnabled = true,
+    RolloutType = RolloutType.Percentage,
+    PercentageRollout = 50
+};
+
+var createResult = await controller.Create(newFlag);
+if (createResult is CreatedAtActionResult createdResult)
+{
+    var createdFlag = (FeatureFlag)createdResult.Value!;
+    Console.WriteLine($"Created flag with ID: {createdFlag.Id}");
+}
+
+// Update an existing feature flag
+if (flagResult is OkObjectResult existingFlagResult)
+{
+    var existingFlag = (FeatureFlag)existingFlagResult.Value;
+    existingFlag.IsEnabled = true;
+    existingFlag.Description = "Updated description";
+    
+    var updateResult = await controller.Update(existingFlag.Id, existingFlag);
+    Console.WriteLine($"Update result: {updateResult}");
+}
+
+// Enable or disable a feature flag
+var enableResult = await controller.Enable(createdFlag.Id);
+Console.WriteLine($"Enable result: {enableResult}");
+
+var disableResult = await controller.Disable(createdFlag.Id);
+Console.WriteLine($"Disable result: {disableResult}");
+
+// Get audit logs for a feature flag
+var auditResult = await controller.GetAuditLogs(createdFlag.Id);
+if (auditResult is OkObjectResult auditOkResult)
+{
+    var auditLogs = (IEnumerable<AuditLog>)auditOkResult.Value;
+    Console.WriteLine($"Audit logs count: {auditLogs.Count()}");
+}
+```
+
 ## AdminController
 
 Provides administrative endpoints for managing webhooks, exports, imports, cache operations, and system health monitoring. The `AdminController` requires proper authorization and is designed for administrative users who need to manage system configuration, perform data migrations, and monitor system status.
