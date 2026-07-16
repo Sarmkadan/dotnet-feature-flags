@@ -370,6 +370,110 @@ Console.WriteLine($"False results: {stats.FalseCount}");
 // evaluationLogService.ClearLogs();
 ```
 
+## FeatureFlagServiceTests
+
+Unit tests for the `FeatureFlagService` covering flag evaluation, routing by rollout type, and validation of inputs using mocked repository dependencies. The `FeatureFlagServiceTests` class tests all public methods of the `FeatureFlagService` class including error handling for invalid inputs, flag state evaluation, percentage-based rollouts, and creation validation.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Models;
+using FeatureFlags.Services;
+using FeatureFlags.Enums;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+
+// Setup dependency injection with mocked dependencies
+var services = new ServiceCollection();
+services.AddLogging(logging => logging.AddConsole());
+
+// Register mocked services
+services.AddScoped<IFeatureFlagRepository>(_ => new Mock<IFeatureFlagRepository>().Object);
+services.AddScoped<IAuditLogRepository>(_ => new Mock<IAuditLogRepository>().Object);
+services.AddScoped<IRuleEvaluationService>(_ => new Mock<IRuleEvaluationService>().Object);
+services.AddScoped<IPercentageRolloutService>(_ => new Mock<IPercentageRolloutService>().Object);
+services.AddScoped<IFlagEvaluationLogService, FlagEvaluationLogService>();
+services.Configure<FeatureFlagOptions>(options => 
+{
+    options.EnableAuditLogging = true;
+});
+
+var serviceProvider = services.BuildServiceProvider();
+
+// Create service instance
+var featureFlagService = serviceProvider.GetRequiredService<IFeatureFlagService>();
+
+// Test 1: Validate empty key throws exception
+try
+{
+    var userContext = new UserContext { UserId = "user1", Email = "user@test.com" };
+    await featureFlagService.IsEnabledAsync(string.Empty, userContext);
+    Console.WriteLine("ERROR: Should have thrown exception");
+}
+catch (ArgumentException)
+{
+    Console.WriteLine("✓ Empty key validation works");
+}
+
+// Test 2: Validate invalid user context throws exception
+try
+{
+    var invalidUserContext = new UserContext { Email = "user@test.com" };
+    await featureFlagService.IsEnabledAsync("some-flag", invalidUserContext);
+    Console.WriteLine("ERROR: Should have thrown exception");
+}
+catch (InvalidOperationException)
+{
+    Console.WriteLine("✓ Invalid user context validation works");
+}
+
+// Test 3: Missing flag returns false
+var missingFlagResult = await featureFlagService.IsEnabledAsync("missing-flag", 
+    new UserContext { UserId = "user1", Email = "user@test.com" });
+Console.WriteLine($"Missing flag returns false: {missingFlagResult == false}"); // true
+
+// Test 4: Disabled flag returns false
+var disabledFlagResult = await featureFlagService.IsEnabledAsync("disabled-flag",
+    new UserContext { UserId = "user1", Email = "user@test.com" });
+Console.WriteLine($"Disabled flag returns false: {disabledFlagResult == false}"); // true
+
+// Test 5: Full rollout with enabled flag returns true
+var fullRolloutResult = await featureFlagService.IsEnabledAsync("full-flag",
+    new UserContext { UserId = "user1", Email = "user@test.com" });
+Console.WriteLine($"Full rollout returns true: {fullRolloutResult == true}"); // true
+
+// Test 6: None rollout with enabled flag returns false
+var noneRolloutResult = await featureFlagService.IsEnabledAsync("none-flag",
+    new UserContext { UserId = "user1", Email = "user@test.com" });
+Console.WriteLine($"None rollout returns false: {noneRolloutResult == false}"); // true
+
+// Test 7: Percentage rollout delegates to percentage service
+var percentageFlag = new FeatureFlag
+{
+    Key = "pct-flag",
+    IsEnabled = true,
+    RolloutType = RolloutType.Percentage,
+    PercentageRollout = 50
+};
+
+var percentageResult = await featureFlagService.IsEnabledAsync("pct-flag",
+    new UserContext { UserId = "user1", Email = "user@test.com" });
+Console.WriteLine($"Percentage rollout evaluated: {percentageResult}"); // true/false based on mock
+
+// Test 8: Create flag with existing key throws exception
+try
+{
+    var existingFlag = new FeatureFlag { Key = "existing-flag", DisplayName = "Existing Flag" };
+    await featureFlagService.CreateFeatureFlagAsync(existingFlag, "admin");
+    Console.WriteLine("ERROR: Should have thrown exception");
+}
+catch (InvalidOperationException)
+{
+    Console.WriteLine("✓ Duplicate key validation works");
+}
+```
+
 ## GradualRolloutSchedulerServiceTests
 
 Unit tests for the `GradualRolloutSchedulerService` that verify scheduled rollout processing, status tracking, and manual advancement of gradual feature flag rollouts. The `GradualRolloutSchedulerServiceTests` class tests all public methods of the `GradualRolloutSchedulerService` including scheduled rollout processing with time-based advancement, rollout status retrieval, and manual rollout advancement with validation.
