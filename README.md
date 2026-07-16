@@ -314,6 +314,61 @@ if (flag != null)
 }
 ```
 
+## ErrorHandlingMiddleware
+
+Global exception handler middleware that catches all unhandled exceptions during HTTP request processing and returns standardized error responses. The middleware logs exceptions at appropriate levels (Error for unexpected exceptions, Warning for validation errors, etc.) and ensures consistent error response format across the API. It handles specific exception types like `FeatureFlagException`, `KeyNotFoundException`, and `ArgumentException` with appropriate HTTP status codes.
+
+Example usage:
+```csharp
+using FeatureFlags.Middleware;
+using FeatureFlags.Exceptions;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+
+// Setup dependency injection
+var services = new ServiceCollection();
+services.AddLogging(logging => logging.AddConsole());
+
+// Configure HTTP context accessor
+services.AddHttpContextAccessor();
+
+var serviceProvider = services.BuildServiceProvider();
+
+// Create middleware instance (typically registered in Startup/Program.cs)
+// app.UseMiddleware<ErrorHandlingMiddleware>();
+
+// Example of how the middleware handles exceptions
+try
+{
+    // Simulate an operation that might throw
+    throw new FeatureFlagException("Feature flag 'new_ui' not found");
+}
+catch (Exception ex)
+{
+    // The middleware would catch this and return:
+    // {
+    //   "StatusCode": 400,
+    //   "Message": "Feature flag 'new_ui' not found",
+    //   "ErrorCode": "FeatureFlagException",
+    //   "Timestamp": "2024-01-15T10:30:00Z"
+    // }
+    
+    var errorResponse = new
+    {
+        StatusCode = 400,
+        Message = ex.Message,
+        ErrorCode = ex.GetType().Name,
+        Timestamp = DateTime.UtcNow
+    };
+    
+    Console.WriteLine($"Error Response: {System.Text.Json.JsonSerializer.Serialize(errorResponse)}");
+}
+```
+
 ## WebhookRepository
 
 Manages webhook persistence and retrieval for feature flag event notifications. The `WebhookRepository` handles CRUD operations for webhooks and provides specialized queries to find active webhooks, webhooks by event type, and recently failed deliveries for monitoring and retry operations.
