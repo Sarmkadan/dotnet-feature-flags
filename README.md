@@ -1019,3 +1019,79 @@ var instantStrategy = new RolloutStrategy
 
 Console.WriteLine($"Instant rollout at {instantStrategy.GetCurrentPercentage()}%");
 ```
+
+## GradualRolloutSchedulerService
+
+Manages the scheduling and advancement of gradual feature flag rollouts. This service processes scheduled rollouts by advancing percentage allocations according to configured start dates, end dates, and daily increment values. It provides methods to process scheduled rollouts automatically, check rollout status, and manually advance specific rollouts.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Services;
+using FeatureFlags.Models;
+using FeatureFlags.Enums;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
+
+// Setup dependency injection
+var services = new ServiceCollection();
+services.AddLogging(logging => logging.AddConsole());
+services.AddDbContext<FeatureFlagDbContext>(options =>
+    options.UseSqlite("Data Source=featureflags.db"));
+
+// Register repositories and services
+services.AddScoped<IFeatureFlagRepository, FeatureFlagRepository>();
+services.AddScoped<IAuditLogRepository, AuditLogRepository>();
+services.AddScoped<IGradualRolloutSchedulerService, GradualRolloutSchedulerService>();
+
+var serviceProvider = services.BuildServiceProvider();
+
+// Create service instance
+var schedulerService = serviceProvider.GetRequiredService<IGradualRolloutSchedulerService>();
+
+// Create a feature flag with gradual rollout strategy
+var featureFlag = new FeatureFlag
+{
+    Key = "new_checkout_flow",
+    DisplayName = "New Checkout Flow",
+    Description = "Enables the redesigned checkout process",
+    IsEnabled = true,
+    RolloutType = RolloutType.Percentage,
+    PercentageRollout = 0 // Start at 0%
+};
+
+// Create a gradual rollout strategy
+var rolloutStrategy = new RolloutStrategy
+{
+    FeatureFlagId = featureFlag.Id,
+    Type = RolloutType.Percentage,
+    StartPercentage = 0,
+    EndPercentage = 100,
+    IsGradual = true,
+    DailyIncrement = 10,
+    StartDate = DateTime.UtcNow.AddDays(-5), // Started 5 days ago
+    EndDate = DateTime.UtcNow.AddDays(15) // Ends in 15 days
+};
+
+// Process all scheduled rollouts (typically called from a background service)
+int updatedFlags = await schedulerService.ProcessScheduledRolloutsAsync();
+Console.WriteLine($"Processed {updatedFlags} feature flags");
+
+// Check rollout status for a specific feature flag
+var status = await schedulerService.GetScheduleStatusAsync(featureFlag.Id);
+if (status != null)
+{
+    Console.WriteLine($"Feature flag '{status.FeatureFlagKey}' rollout status:");
+    Console.WriteLine($"  Current: {status.CurrentPercentage}%");
+    Console.WriteLine($"  Target: {status.TargetPercentage}%");
+    Console.WriteLine($"  Daily increment: {status.DailyIncrement}%");
+    Console.WriteLine($"  Days remaining: {status.EstimatedDaysRemaining}");
+    Console.WriteLine($"  Active: {status.IsActive}");
+    Console.WriteLine($"  Complete: {status.IsComplete}");
+}
+
+// Manually advance a specific rollout
+bool advanced = await schedulerService.AdvanceRolloutAsync(featureFlag.Id, "admin@example.com");
+Console.WriteLine($"Manual rollout advance: {(advanced ? "Success" : "Failed")}");
+```
