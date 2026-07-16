@@ -1020,6 +1020,55 @@ var instantStrategy = new RolloutStrategy
 Console.WriteLine($"Instant rollout at {instantStrategy.GetCurrentPercentage()}%");
 ```
 
+## HashingUtilities
+
+The `HashingUtilities` class provides various cryptographic and non-cryptographic hashing functions for feature flag evaluation, security operations, and data integrity checks. It includes algorithms for consistent hashing, password hashing, HMAC signatures, and secure token generation.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Utilities;
+
+// Compute SHA-256 hash for consistent bucketing
+string userId = "user123@example.com";
+string sha256Hash = HashingUtilities.ComputeSha256(userId);
+Console.WriteLine($"SHA-256 hash: {sha256Hash}");
+
+// Compute hash bucket for percentage-based rollout (0-99 range)
+int bucket = HashingUtilities.ComputeHashBucket(userId);
+Console.WriteLine($"Hash bucket: {bucket}");
+
+// Check if user is in rollout (e.g., 50% of users)
+bool isInRollout = bucket < 50;
+Console.WriteLine($"User in 50% rollout: {isInRollout}");
+
+// Hash and verify passwords for user authentication
+string password = "SecurePassword123!";
+string hashedPassword = HashingUtilities.HashPassword(password);
+Console.WriteLine($"Hashed password: {hashedPassword}");
+
+bool isValid = HashingUtilities.VerifyPassword(password, hashedPassword);
+Console.WriteLine($"Password verification: {(isValid ? "Valid" : "Invalid")}");
+
+// Generate secure random tokens
+string token = HashingUtilities.GenerateSecureHash(32);
+Console.WriteLine($"Secure token: {token}");
+
+// Compute HMAC-SHA256 for webhook signature verification
+string payload = "{\"eventType\":\"FeatureFlagUpdated\",\"flagKey\":\"new_ui\"}";
+string secret = "my-secret-key";
+string hmacSignature = HashingUtilities.ComputeHmacSha256(payload, secret);
+Console.WriteLine($"HMAC signature: {hmacSignature}");
+
+// Use FNV-1a for faster non-cryptographic hashing
+uint fnvHash = HashingUtilities.ComputeFnv1aHash(userId);
+Console.WriteLine($"FNV-1a hash: {fnvHash}");
+
+// Compute MD5 for quick checksums (not for security)
+string md5Hash = HashingUtilities.ComputeMd5(userId);
+Console.WriteLine($"MD5 hash: {md5Hash}");
+```
+
 ## PercentageRolloutService
 
 The `PercentageRolloutService` provides percentage-based rollout evaluation for feature flags using consistent hashing to ensure stable, reproducible decisions across application restarts. It determines whether a user should receive a feature based on a percentage threshold and the user's consistent hash bucket, making it ideal for gradual feature rollouts and A/B testing scenarios.
