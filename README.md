@@ -1020,6 +1020,86 @@ var instantStrategy = new RolloutStrategy
 Console.WriteLine($"Instant rollout at {instantStrategy.GetCurrentPercentage()}%");
 ```
 
+## PerformanceMonitor
+
+The `PerformanceMonitor` class provides performance measurement utilities for tracking operation execution time and collecting metrics. It helps identify performance bottlenecks by measuring execution time and automatically logging warnings when operations exceed configured thresholds. The class supports both synchronous and asynchronous operations with convenient static methods for one-line measurements.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Utilities;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
+
+// Setup dependency injection
+var services = new ServiceCollection();
+services.AddLogging(logging => logging.AddConsole());
+var serviceProvider = services.BuildServiceProvider();
+var logger = serviceProvider.GetRequiredService<ILogger<PerformanceMonitor>>();
+
+// Example 1: Measure synchronous operation
+int result = PerformanceMonitor.Measure(
+    "DatabaseQuery",
+    () => {
+        // Simulate database operation
+        Thread.Sleep(150);
+        return 42;
+    },
+    logger,
+    warningThresholdMs: 100
+);
+Console.WriteLine($"Result: {result}");
+
+// Example 2: Measure asynchronous operation
+string userData = await PerformanceMonitor.MeasureAsync(
+    "APICall",
+    async () => {
+        // Simulate API call
+        await Task.Delay(250);
+        return "user_data";
+    },
+    logger,
+    warningThresholdMs: 200
+);
+Console.WriteLine($"User data: {userData}");
+
+// Example 3: Manual monitoring with IDisposable
+using (var monitor = new PerformanceMonitor("FileProcessing", logger))
+{
+    // Simulate file processing
+    await Task.Delay(300);
+    // Monitor automatically stops and logs when disposed
+}
+
+// Example 4: Using PerformanceMetrics for aggregated statistics
+var metrics = new PerformanceMetrics();
+
+// Record multiple operations
+for (int i = 0; i < 100; i++)
+{
+    metrics.RecordOperation("DatabaseQuery", Random.Shared.Next(50, 200));
+}
+
+// Get statistics for an operation
+var stats = metrics.GetStatistics("DatabaseQuery");
+if (stats != null)
+{
+    Console.WriteLine($"DatabaseQuery - Calls: {stats.CallCount}");
+    Console.WriteLine($"  Average: {stats.AverageMs}ms");
+    Console.WriteLine($"  Min: {stats.MinMs}ms");
+    Console.WriteLine($"  Max: {stats.MaxMs}ms");
+    Console.WriteLine($"  P95: {stats.P95Ms}ms");
+    Console.WriteLine($"  P99: {stats.P99Ms}ms");
+}
+
+// Get all operation statistics
+var allStats = metrics.GetAllStatistics();
+Console.WriteLine($"Total operations tracked: {allStats.Count}");
+
+// Clear metrics when needed
+metrics.Clear();
+```
+
 ## HashingUtilities
 
 The `HashingUtilities` class provides various cryptographic and non-cryptographic hashing functions for feature flag evaluation, security operations, and data integrity checks. It includes algorithms for consistent hashing, password hashing, HMAC signatures, and secure token generation.
