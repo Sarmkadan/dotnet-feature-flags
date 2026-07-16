@@ -1235,6 +1235,61 @@ await cacheService.SetAsync(cacheKey, true, TimeSpan.FromMinutes(5));
 bool cachedValue = await cacheService.GetAsync<bool>(cacheKey);
 ```
 
+## StringExtensions
+
+Extension methods for string operations including hashing, validation, and transformation. Provides common string utilities used throughout the feature flag engine for consistent user bucketing, identifier normalization, and safe parsing operations.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Utilities;
+
+// Hashing for consistent user bucketing in percentage-based rollouts
+string userId = "user123@example.com";
+string sha256Hash = userId.ToSha256();
+Console.WriteLine($"SHA-256 hash: {sha256Hash}");
+
+int userBucket = userId.ToHash32();
+Console.WriteLine($"User bucket (0-99): {userBucket}");
+
+// Email validation
+string email = "user@example.com";
+bool isValidEmail = email.IsValidEmail();
+Console.WriteLine("Email is valid: {isValidEmail}");
+
+// Case conversion for identifier normalization
+string snakeCase = "feature_flag_key";
+string pascalCase = snakeCase.SnakeCaseToPascalCase();
+Console.WriteLine($"Snake to Pascal: {pascalCase}"); // "FeatureFlagKey"
+
+string camelCase = "FeatureFlagKey";
+string snakeCaseResult = camelCase.ToSnakeCase();
+Console.WriteLine($"Pascal to snake: {snakeCaseResult}"); // "feature_flag_key"
+
+// String truncation for display purposes
+string longText = "This is a very long text that needs to be truncated";
+string truncated = longText.Truncate(20);
+Console.WriteLine($"Truncated: {truncated}"); // "This is a very long..."
+
+// Safe parsing with default values
+string numberString = "42";
+int parsedInt = numberString.ToIntOrDefault();
+Console.WriteLine($"Parsed int: {parsedInt}"); // 42
+
+string invalidNumber = "abc";
+int defaultValue = invalidNumber.ToIntOrDefault(99);
+Console.WriteLine($"Default int: {defaultValue}"); // 99
+
+// String repetition
+a string repeated = "hello_".Repeat(3);
+Console.WriteLine($"Repeated: {repeated}"); // "hello_hello_hello_"
+
+// Contains check with multiple values
+string testString = "This is a test string";
+bool containsAny = testString.ContainsAny("test", "example", "demo");
+Console.WriteLine($"Contains any: {containsAny}"); // true
+```
+
 ## IGradualRolloutSchedulerService
 
 The `IGradualRolloutSchedulerService` interface manages the scheduling and advancement of gradual feature flag rollouts. It supports time-based percentage advancement with configurable daily increment steps, start dates, and end dates. The service automatically processes scheduled rollouts to advance percentage allocations based on elapsed time, and provides methods to check rollout status and manually advance specific rollouts.
