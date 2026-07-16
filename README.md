@@ -177,6 +177,78 @@ bool result2 = percentageService.IsUserInRollout(userContext, "test-flag", 50);
 Console.WriteLine($"Consistent hashing test: {result1 == result2}"); // true
 ```
 
+## FlagEvaluationLogServiceTests
+
+Unit tests for the `FlagEvaluationLogService` that verify flag evaluation tracking, metrics aggregation, and in-memory log management. The `FlagEvaluationLogServiceTests` class tests all public methods of the `FlagEvaluationLogService` class including evaluation logging, retrieval by flag/user, log filtering, and log cleanup operations.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Models;
+using FeatureFlags.Services;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+// Setup dependency injection
+var services = new ServiceCollection();
+services.AddLogging(logging => logging.AddConsole());
+
+// Register the service
+services.AddScoped<IFlagEvaluationLogService, FlagEvaluationLogService>();
+
+var serviceProvider = services.BuildServiceProvider();
+
+// Create service instance
+var evaluationLogService = serviceProvider.GetRequiredService<IFlagEvaluationLogService>();
+
+// Create a feature flag and user context
+var featureFlag = new FeatureFlag
+{
+  Key = "new_ui",
+  DisplayName = "New User Interface",
+  IsEnabled = true
+};
+
+var userContext = new UserContext
+{
+  UserId = "user123",
+  Email = "user@example.com",
+  Country = "US"
+};
+
+// Log feature flag evaluations
+evaluationLogService.LogEvaluation(featureFlag, userContext, true);
+evaluationLogService.LogEvaluation(featureFlag, userContext, false);
+
+// Log evaluation for another user
+evaluationLogService.LogEvaluation(
+  new FeatureFlag { Key = "beta_feature", IsEnabled = true },
+  new UserContext { UserId = "user456", Email = "user456@example.com" },
+  true
+);
+
+// Retrieve all evaluation logs
+var allLogs = evaluationLogService.GetEvaluationLogs();
+Console.WriteLine($"Total evaluation logs: {allLogs.Count}"); // 3
+
+// Retrieve logs for a specific user
+var userLogs = evaluationLogService.GetEvaluationLogsForUser("user123");
+Console.WriteLine($"Logs for user123: {userLogs.Count}"); // 2
+
+// Retrieve logs for a specific flag
+var flagLogs = evaluationLogService.GetEvaluationLogsForFlag("new_ui");
+Console.WriteLine($"Logs for new_ui flag: {flagLogs.Count}"); // 2
+
+// Get evaluation log statistics
+var stats = evaluationLogService.GetEvaluationLogStats();
+Console.WriteLine($"Total evaluations: {stats.TotalEvaluations}");
+Console.WriteLine($"True results: {stats.TrueCount}");
+Console.WriteLine($"False results: {stats.FalseCount}");
+
+// Clear all logs when needed
+// evaluationLogService.ClearLogs();
+```
+
 ## ConditionTests
 
 Unit tests for the `Condition` model that verify all condition operators and evaluation logic. The `ConditionTests` class tests the `Condition` model's evaluation methods with various operators including Equals, NotEquals, Contains, StartsWith, EndsWith, GreaterThan, LessThan, and In operators.
