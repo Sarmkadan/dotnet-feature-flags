@@ -226,6 +226,78 @@ if (lastChange != null)
 }
 ```
 
+## CacheServiceTests
+
+Unit tests for the in-memory cache service implementation. The `CacheServiceTests` class tests all public methods of the `InMemoryCacheService` class including basic get/set operations, expiration handling, complex object storage, and asynchronous operations. These tests verify that the cache correctly stores, retrieves, and expires values while maintaining thread safety and proper error handling.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Caching;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+// Setup dependency injection for in-memory cache
+var services = new ServiceCollection();
+services.AddLogging(logging => logging.AddConsole());
+
+var serviceProvider = services.BuildServiceProvider();
+
+// Create cache service instance
+var cacheService = new InMemoryCacheService(
+    serviceProvider.GetRequiredService<ILogger<InMemoryCacheService>>()
+);
+
+// Store a simple value with default TTL (5 minutes)
+cacheService.Set("user_session_123", "session_data_here");
+
+// Retrieve the cached value
+string? cachedValue = cacheService.Get<string>("user_session_123");
+Console.WriteLine($"Cached value: {cachedValue}"); // "session_data_here"
+
+// Store with custom TTL (30 seconds)
+cacheService.Set("temp_data", "temporary_value", TimeSpan.FromSeconds(30));
+
+// Check if key exists (returns null if not found)
+var nonExistentValue = cacheService.Get<string>("nonexistent_key");
+Console.WriteLine($"Non-existent key returns: {nonExistentValue}"); // null
+
+// Overwrite existing key
+cacheService.Set("config_flag", "value_v1");
+cacheService.Set("config_flag", "value_v2"); // Overwrites previous value
+var updatedValue = cacheService.Get<string>("config_flag");
+Console.WriteLine($"Updated value: {updatedValue}"); // "value_v2"
+
+// Remove a specific entry
+cacheService.Remove("temp_data");
+var removedValue = cacheService.Get<string>("temp_data");
+Console.WriteLine($"After removal: {removedValue}"); // null
+
+// Store complex objects
+var featureConfig = new { 
+    Key = "new_ui", 
+    IsEnabled = true,
+    Percentage = 50,
+    LastUpdated = DateTime.UtcNow
+};
+cacheService.Set("feature_config", featureConfig);
+
+// Retrieve complex object
+var retrievedConfig = cacheService.Get<object>("feature_config");
+Console.WriteLine($"Complex object stored: {retrievedConfig != null}"); // true
+
+// Async operations
+await cacheService.SetAsync("async_key", "async_value");
+var asyncValue = await cacheService.GetAsync<string>("async_key");
+Console.WriteLine($"Async value: {asyncValue}"); // "async_value"
+
+// Clear all entries (use with caution)
+await cacheService.ClearAsync();
+var allCleared = cacheService.Get<string>("user_session_123")           == null
+    && cacheService.Get<string>("config_flag") == null;
+Console.WriteLine($"All entries cleared: {allCleared}"); // true
+```
+
 ## FlagEvaluationLogServiceTests
 
 Unit tests for the `FlagEvaluationLogService` that verify flag evaluation tracking, metrics aggregation, and in-memory log management. The `FlagEvaluationLogServiceTests` class tests all public methods of the `FlagEvaluationLogService` class including evaluation logging, retrieval by flag/user, log filtering, and log cleanup operations.
