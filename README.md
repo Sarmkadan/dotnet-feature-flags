@@ -1235,6 +1235,75 @@ await cacheService.SetAsync(cacheKey, true, TimeSpan.FromMinutes(5));
 bool cachedValue = await cacheService.GetAsync<bool>(cacheKey);
 ```
 
+## ConversionUtilities
+
+The `ConversionUtilities` class provides safe type conversion and transformation utilities for converting between different data types, dictionaries, collections, and enums. It handles null values, type mismatches, and conversion failures gracefully, making it ideal for working with dynamic data, configuration parsing, and data transformation scenarios.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Utilities;
+using System.Text.Json;
+
+// Convert string to various types safely
+int? intValue = ConversionUtilities.ConvertTo<int>("42");
+Console.WriteLine($"Converted to int: {intValue}"); // 42
+
+double? doubleValue = ConversionUtilities.ConvertTo<double>("3.14");
+Console.WriteLine($"Converted to double: {doubleValue}"); // 3.14
+
+bool? boolValue = ConversionUtilities.ConvertTo<bool>("true");
+Console.WriteLine($"Converted to bool: {boolValue}"); // true
+
+DateTime? dateValue = ConversionUtilities.ConvertTo<DateTime>("2024-01-15T10:30:00Z");
+Console.WriteLine($"Converted to DateTime: {dateValue}"); // 2024-01-15 10:30:00
+
+// Convert enum value
+var userRole = UserRole.Admin;
+var roleString = ConversionUtilities.ConvertToString(userRole);
+Console.WriteLine($"Enum to string: {roleString}"); // "Admin"
+
+// Convert between enum types
+var convertedRole = ConversionUtilities.ConvertEnum<UserRole, int>(UserRole.User);
+Console.WriteLine($"Enum conversion: {convertedRole}"); // 1
+
+// Convert object to dictionary for serialization
+var config = new FeatureFlagConfig
+{
+    Key = "new_ui",
+    IsEnabled = true,
+    Percentage = 50
+};
+
+var configDict = ConversionUtilities.ObjectToDictionary(config);
+Console.WriteLine($"Object to dictionary: {JsonSerializer.Serialize(configDict)}");
+
+// Convert dictionary to strongly-typed object
+var dict = new Dictionary<string, object?>
+{
+    {"Key", "beta_feature"},
+    {"IsEnabled", true},
+    {"Percentage", 75}
+};
+
+var flagConfig = ConversionUtilities.DictionaryToObject<FeatureFlagConfig>(dict);
+Console.WriteLine($"Dictionary to object: Key={flagConfig?.Key}, Enabled={flagConfig?.IsEnabled}");
+
+// Convert collection of objects
+var objects = new List<object?> { "item1", "item2", "item3" };
+var stringList = ConversionUtilities.ConvertCollection<string>(objects);
+Console.WriteLine($"Collection conversion count: {stringList.Count}");
+
+// Deep clone an object
+var original = new FeatureFlagConfig { Key = "original", IsEnabled = true };
+var cloned = ConversionUtilities.DeepClone(original);
+Console.WriteLine($"Deep clone: Original={original?.Key}, Clone={cloned?.Key}");
+
+// Check if conversion is possible
+bool canConvert = ConversionUtilities.CanConvertTo<int>("123");
+Console.WriteLine($"Can convert: {canConvert}"); // true
+```
+
 ## StringExtensions
 
 Extension methods for string operations including hashing, validation, and transformation. Provides common string utilities used throughout the feature flag engine for consistent user bucketing, identifier normalization, and safe parsing operations.
