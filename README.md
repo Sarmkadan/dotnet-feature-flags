@@ -1,4 +1,10 @@
-// existing content ...
+# dotnet-feature-flags
+
+A feature flag engine for .NET: percentage rollouts with consistent hashing, rule-based targeting, A/B variants, and a full audit trail, exposed as an ASP.NET Core REST API backed by EF Core / SQL Server.
+
+## Architecture
+
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the solution layout, evaluation data flow, DI composition, design decisions and known limitations. The sections below are per-type reference docs.
 
 ## FeatureFlag
 
