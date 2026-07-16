@@ -369,6 +369,58 @@ catch (Exception ex)
 }
 ```
 
+## RateLimitingMiddleware
+
+Rate limiting middleware that restricts the number of requests per client within a configurable time window. The `RateLimitingMiddleware` uses a sliding window approach to track request timestamps and prevent API abuse by enforcing rate limits based on client identifiers (user ID or IP address). It automatically cleans up expired entries and provides standard HTTP headers for rate limit information.
+
+Example usage:
+```csharp
+using FeatureFlags.Middleware;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using System.Net;
+using System.Security.Claims;
+
+// Setup dependency injection
+var services = new ServiceCollection();
+services.AddLogging(logging => logging.AddConsole());
+services.AddHttpContextAccessor();
+
+var serviceProvider = services.BuildServiceProvider();
+
+// Configure rate limiting options
+var rateLimitOptions = new RateLimitOptions
+{
+    MaxRequests = 100,      // Maximum 100 requests
+    WindowSeconds = 60        // per 60-second window
+};
+
+// Create middleware instance
+var middleware = new RateLimitingMiddleware(
+    next: async (context) => await Task.CompletedTask,
+    options: rateLimitOptions
+);
+
+// Example: Simulate request handling
+var httpContext = new DefaultHttpContext();
+httpContext.Request.Path = "/api/feature-flags";
+httpContext.Connection.RemoteIpAddress = IPAddress.Parse("192.168.1.100");
+
+// Simulate user context
+httpContext.User = new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim("sub", "user123") }));
+
+// Invoke the middleware
+await middleware.InvokeAsync(httpContext);
+
+// Check rate limit headers
+var remaining = httpContext.Response.Headers["X-RateLimit-Remaining"];
+var reset = httpContext.Response.Headers["X-RateLimit-Reset"];
+Console.WriteLine($"Remaining requests: {remaining}, Reset in: {reset} seconds");
+```
+
 ## WebhookRepository
 
 Manages webhook persistence and retrieval for feature flag event notifications. The `WebhookRepository` handles CRUD operations for webhooks and provides specialized queries to find active webhooks, webhooks by event type, and recently failed deliveries for monitoring and retry operations.
