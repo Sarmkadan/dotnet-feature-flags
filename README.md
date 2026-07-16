@@ -1095,6 +1095,46 @@ bool noRolloutResult = await percentageService.EvaluateAsync(noRolloutFlag, user
 Console.WriteLine($"0% rollout result: {noRolloutResult}"); // false
 ```
 
+## FeatureFlagOptions
+
+Configuration options for the feature flag engine that control caching, audit logging, performance limits, and evaluation behavior. These options are loaded from `appsettings.json` under the `FeatureFlags` section and can be configured via dependency injection.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+// Configure FeatureFlagOptions in your service setup
+var services = new ServiceCollection();
+
+services.Configure<FeatureFlagOptions>(options =>
+{
+    options.EnableCache = true;
+    options.CacheDurationMinutes = 10;
+    options.AuditLogRetentionDays = 90;
+    options.EnableAuditLogging = true;
+    options.MaxRulesPerFlag = 50;
+    options.MaxConditionsPerRule = 25;
+    options.MaxVariantsPerFlag = 5;
+    options.LogEvaluationDetails = false;
+    options.EnableAuditLog = true;
+    options.DefaultRolloutPercentage = 75
+});
+
+var serviceProvider = services.BuildServiceProvider();
+
+// Access the configured options
+var featureFlagOptions = serviceProvider.GetRequiredService<IOptions<FeatureFlagOptions>>().Value;
+
+if (featureFlagOptions.IsValid())
+{
+    Console.WriteLine($"Cache enabled: {featureFlagOptions.EnableCache}");
+    Console.WriteLine($"Cache duration: {featureFlagOptions.CacheDurationMinutes} minutes");
+    Console.WriteLine($"Audit retention: {featureFlagOptions.AuditLogRetentionDays} days");
+}
+```
+
 ## IGradualRolloutSchedulerService
 
 The `IGradualRolloutSchedulerService` interface manages the scheduling and advancement of gradual feature flag rollouts. It supports time-based percentage advancement with configurable daily increment steps, start dates, and end dates. The service automatically processes scheduled rollouts to advance percentage allocations based on elapsed time, and provides methods to check rollout status and manually advance specific rollouts.
