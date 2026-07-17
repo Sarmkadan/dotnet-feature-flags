@@ -1263,6 +1263,131 @@ var invalidErrors = invalidOptions.Validate();
 Console.WriteLine($"Invalid options have {invalidErrors.Count} validation problems");
 ```
 
+
+## FeatureFlagServiceValidation
+
+Provides validation helpers for the `FeatureFlagService` class. This static class offers extension methods to validate constructor arguments, service instances, and public method parameters, ensuring they meet business rules and constraints before operations are performed. It helps prevent invalid states and provides clear error messages when validation fails.
+
+The validation methods return `IReadOnlyList<string>` with error messages, and there are convenience methods like `IsValid()` and `EnsureValid()` for different validation styles.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Services;
+using FeatureFlags.Models;
+using Microsoft.Extensions.DependencyInjection;
+
+// Setup dependency injection
+var services = new ServiceCollection();
+services.AddScoped<IFeatureFlagService, FeatureFlagService>();
+services.AddScoped<IFeatureFlagRepository, FeatureFlagRepository>();
+// Add other required services...
+
+var serviceProvider = services.BuildServiceProvider();
+
+// Create service instance
+var featureFlagService = serviceProvider.GetRequiredService<IFeatureFlagService>();
+
+// Example 1: Validate service instance
+var serviceErrors = featureFlagService.Validate();
+if (serviceErrors.Count > 0)
+{
+    Console.WriteLine("Service validation errors:");
+    foreach (var error in serviceErrors)
+    {
+        Console.WriteLine($"- {error}");
+    }
+}
+
+// Example 2: Use IsValid() for conditional checks
+bool isServiceValid = featureFlagService.IsValid();
+Console.WriteLine($"Service is valid: {isServiceValid}");
+
+// Example 3: Use EnsureValid() to throw on invalid service
+try
+{
+    featureFlagService.EnsureValid();
+    Console.WriteLine("Service is properly configured");
+}
+catch (ArgumentException ex)
+{
+    Console.WriteLine($"Service validation failed: {ex.Message}");
+}
+
+// Example 4: Validate method parameters before calling service methods
+var userContext = new UserContext
+{
+    UserId = "user123",
+    Email = "user@example.com"
+};
+
+// Validate parameters for IsEnabledAsync
+var validationErrors = FeatureFlagServiceValidation.ValidateForIsEnabledAsync(
+    "new_checkout_flow",
+    userContext
+);
+
+if (validationErrors.Count > 0)
+{
+    Console.WriteLine("Parameter validation errors:");
+    foreach (var error in validationErrors)
+    {
+        Console.WriteLine($"- {error}");
+    }
+}
+else
+{
+    // Parameters are valid, proceed with the operation
+    bool isEnabled = await featureFlagService.IsEnabledAsync("new_checkout_flow", userContext);
+    Console.WriteLine($"Feature enabled: {isEnabled}");
+}
+
+// Example 5: Validate feature flag creation
+var newFlag = new FeatureFlag
+{
+    Key = "new_checkout_flow",
+    DisplayName = "New Checkout Flow",
+    Description = "Enables the redesigned checkout process",
+    IsEnabled = true,
+    RolloutType = Enums.RolloutType.Percentage,
+    PercentageRollout = 50,
+    CreatedAt = DateTime.UtcNow,
+    UpdatedAt = DateTime.UtcNow
+};
+
+var createErrors = FeatureFlagServiceValidation.ValidateForCreateFeatureFlagAsync(
+    newFlag,
+    "admin@example.com"
+);
+
+if (createErrors.Count == 0)
+{
+    var createdFlag = await featureFlagService.CreateFeatureFlagAsync(newFlag, "admin@example.com");
+    Console.WriteLine($"Created feature flag: {createdFlag.Key}");
+}
+else
+{
+    Console.WriteLine("Cannot create feature flag due to validation errors:");
+    foreach (var error in createErrors)
+    {
+        Console.WriteLine($"- {error}");
+    }
+}
+
+// Example 6: Validate feature flag update
+newFlag.Description = "Updated description for the new checkout flow";
+var updateErrors = FeatureFlagServiceValidation.ValidateForUpdateFeatureFlagAsync(
+    newFlag,
+    "admin@example.com"
+);
+
+if (updateErrors.Count == 0)
+{
+    await featureFlagService.UpdateFeatureFlagAsync(newFlag, "admin@example.com");
+    Console.WriteLine("Feature flag updated successfully");
+}
+```
+
 ## Result
 
 A generic result wrapper class that represents the outcome of an operation. The `Result<T>` class provides a consistent way to return success/failure with data or error messages, making it ideal for error handling in feature flag operations and other business logic.
