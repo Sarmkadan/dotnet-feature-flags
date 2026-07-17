@@ -29,8 +29,11 @@ public static class WebhookValidation
         {
             problems.Add("Url cannot be null or whitespace.");
         }
-        else if (!Uri.TryCreate(value.Url, UriKind.Absolute, out var uri) ||
-                 (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
+        else if (!Uri.TryCreate(value.Url, UriKind.Absolute, out var uri))
+        {
+            problems.Add("Url must be a valid absolute URI.");
+        }
+        else if (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps)
         {
             problems.Add("Url must be a valid absolute HTTP or HTTPS URI.");
         }
@@ -76,7 +79,7 @@ public static class WebhookValidation
         }
 
         // Validate LastTriggeredAt
-        if (value.LastTriggeredAt.HasValue && value.LastTriggeredAt.Value == default)
+        if (value.LastTriggeredAt is { } lastTriggered && lastTriggered == default)
         {
             problems.Add("LastTriggeredAt cannot be default(DateTime) if set.");
         }
@@ -115,10 +118,7 @@ public static class WebhookValidation
     /// <param name="value">The webhook to check.</param>
     /// <returns>True if the webhook is valid; otherwise, false.</returns>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
-    public static bool IsValid(this Webhook value)
-    {
-        return value.Validate().Count == 0;
-    }
+    public static bool IsValid(this Webhook value) => value.Validate().Count == 0;
 
     /// <summary>
     /// Ensures that a webhook instance is valid, throwing an <see cref="ArgumentException"/>
@@ -136,9 +136,7 @@ public static class WebhookValidation
         if (problems.Count > 0)
         {
             throw new ArgumentException(
-                $"Webhook validation failed:{Environment.NewLine}- {
-                    string.Join($"{Environment.NewLine}- ", problems)
-                }");
+            $"Webhook validation failed:{Environment.NewLine}- {string.Join($"{Environment.NewLine}- ", problems)}");
         }
     }
 }
