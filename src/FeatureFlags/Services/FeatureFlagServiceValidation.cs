@@ -5,6 +5,7 @@
 // =============================================================================
 
 using System.Globalization;
+using System.ComponentModel;
 using FeatureFlags.Models;
 
 namespace FeatureFlags.Services;
@@ -29,12 +30,7 @@ public static class FeatureFlagServiceValidation
         if (value is null)
         {
             errors.Add("FeatureFlagService instance cannot be null.");
-            return errors.AsReadOnly();
         }
-
-        // Validate all injected dependencies are not null
-        // Note: We can't directly access private fields, so we validate through public behavior
-        // The actual null checks happen in the service methods themselves
 
         return errors.AsReadOnly();
     }
@@ -45,10 +41,7 @@ public static class FeatureFlagServiceValidation
     /// </summary>
     /// <param name="value">The service instance to check.</param>
     /// <returns>True if the service instance is valid; otherwise, false.</returns>
-    public static bool IsValid(this FeatureFlagService? value)
-    {
-        return Validate(value).Count == 0;
-    }
+    public static bool IsValid(this FeatureFlagService? value) => Validate(value).Count == 0;
 
     /// <summary>
     /// Ensures that the specified <see cref="FeatureFlagService"/> instance is valid.
@@ -61,12 +54,12 @@ public static class FeatureFlagServiceValidation
     {
         var errors = Validate(value);
 
-        if (errors.Count == 0)
-            return;
-
-        throw new ArgumentException(
-            $"FeatureFlagService validation failed:{Environment.NewLine}- {
-                string.Join($"{Environment.NewLine}- ", errors)}");
+        if (errors.Count != 0)
+        {
+            throw new ArgumentException(
+                $"FeatureFlagService validation failed:{Environment.NewLine}- {
+                    string.Join($"{Environment.NewLine}- ", errors)}");
+        }
     }
 
     /// <summary>
@@ -74,25 +67,21 @@ public static class FeatureFlagServiceValidation
     /// </summary>
     /// <param name="featureFlagKey">The feature flag key.</param>
     /// <param name="userContext">The user context.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>An empty list if valid, otherwise a list of human-readable validation errors.</returns>
-    public static IReadOnlyList<string> ValidateForIsEnabledAsync(string? featureFlagKey, UserContext? userContext)
+    /// <exception cref="ArgumentException">Thrown when featureFlagKey is null, empty, or whitespace.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when userContext is null.</exception>
+    public static IReadOnlyList<string> ValidateForIsEnabledAsync(
+        string? featureFlagKey,
+        UserContext? userContext,
+        CancellationToken cancellationToken = default)
     {
         var errors = new List<string>();
 
-        if (string.IsNullOrWhiteSpace(featureFlagKey))
-        {
-            errors.Add("Feature flag key cannot be null, empty, or whitespace.");
-        }
-        else if (featureFlagKey!.Length > 100)
-        {
-            errors.Add("Feature flag key cannot exceed 100 characters.");
-        }
+        ArgumentException.ThrowIfNullOrWhiteSpace(featureFlagKey);
+        ArgumentNullException.ThrowIfNull(userContext);
 
-        if (userContext is null)
-        {
-            errors.Add("User context cannot be null.");
-        }
-        else if (!userContext.IsValid())
+        if (userContext.IsValid() is false)
         {
             errors.Add("User context is invalid.");
         }
@@ -104,38 +93,32 @@ public static class FeatureFlagServiceValidation
     /// Validates the parameters for <see cref="FeatureFlagService.GetFeatureFlagAsync(int, CancellationToken)"/>.
     /// </summary>
     /// <param name="id">The feature flag ID.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>An empty list if valid, otherwise a list of human-readable validation errors.</returns>
-    public static IReadOnlyList<string> ValidateForGetFeatureFlagAsync(int id)
+    /// <exception cref="ArgumentException">Thrown when id is less than or equal to 0.</exception>
+    public static IReadOnlyList<string> ValidateForGetFeatureFlagAsync(
+        int id,
+        CancellationToken cancellationToken = default)
     {
-        var errors = new List<string>();
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(id, 0);
 
-        if (id <= 0)
-        {
-            errors.Add("Id must be greater than 0.");
-        }
-
-        return errors.AsReadOnly();
+        return Array.Empty<string>();
     }
 
     /// <summary>
     /// Validates the parameters for <see cref="FeatureFlagService.GetFeatureFlagByKeyAsync(string, CancellationToken)"/>.
     /// </summary>
     /// <param name="key">The feature flag key.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>An empty list if valid, otherwise a list of human-readable validation errors.</returns>
-    public static IReadOnlyList<string> ValidateForGetFeatureFlagByKeyAsync(string? key)
+    /// <exception cref="ArgumentException">Thrown when key is null, empty, or whitespace.</exception>
+    public static IReadOnlyList<string> ValidateForGetFeatureFlagByKeyAsync(
+        string? key,
+        CancellationToken cancellationToken = default)
     {
-        var errors = new List<string>();
+        ArgumentException.ThrowIfNullOrWhiteSpace(key);
 
-        if (string.IsNullOrWhiteSpace(key))
-        {
-            errors.Add("Key cannot be null, empty, or whitespace.");
-        }
-        else if (key!.Length > 100)
-        {
-            errors.Add("Key cannot exceed 100 characters.");
-        }
-
-        return errors.AsReadOnly();
+        return Array.Empty<string>();
     }
 
     /// <summary>
@@ -143,31 +126,28 @@ public static class FeatureFlagServiceValidation
     /// </summary>
     /// <param name="featureFlag">The feature flag to create.</param>
     /// <param name="createdBy">The user who created the flag.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>An empty list if valid, otherwise a list of human-readable validation errors.</returns>
-    public static IReadOnlyList<string> ValidateForCreateFeatureFlagAsync(FeatureFlag? featureFlag, string? createdBy)
+    /// <exception cref="ArgumentNullException">Thrown when featureFlag is null.</exception>
+    /// <exception cref="ArgumentException">Thrown when createdBy is null or empty, or when feature flag properties are invalid.</exception>
+    public static IReadOnlyList<string> ValidateForCreateFeatureFlagAsync(
+        FeatureFlag? featureFlag,
+        string? createdBy,
+        CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(featureFlag);
+        ArgumentException.ThrowIfNullOrWhiteSpace(createdBy);
+
         var errors = new List<string>();
 
-        if (featureFlag is null)
-        {
-            errors.Add("Feature flag cannot be null.");
-            return errors.AsReadOnly();
-        }
-
-        if (string.IsNullOrWhiteSpace(featureFlag.Key))
-        {
-            errors.Add("Feature flag key cannot be null or empty.");
-        }
-        else if (featureFlag.Key.Length > 100)
+        ArgumentException.ThrowIfNullOrWhiteSpace(featureFlag.Key);
+        if (featureFlag.Key.Length > 100)
         {
             errors.Add("Feature flag key cannot exceed 100 characters.");
         }
 
-        if (string.IsNullOrWhiteSpace(featureFlag.DisplayName))
-        {
-            errors.Add("Feature flag display name cannot be null or empty.");
-        }
-        else if (featureFlag.DisplayName.Length > 200)
+        ArgumentException.ThrowIfNullOrWhiteSpace(featureFlag.DisplayName);
+        if (featureFlag.DisplayName.Length > 200)
         {
             errors.Add("Feature flag display name cannot exceed 200 characters.");
         }
@@ -175,15 +155,6 @@ public static class FeatureFlagServiceValidation
         if (featureFlag.Description?.Length > 1000)
         {
             errors.Add("Feature flag description cannot exceed 1000 characters.");
-        }
-
-        if (string.IsNullOrWhiteSpace(createdBy))
-        {
-            errors.Add("CreatedBy cannot be null or empty.");
-        }
-        else if (createdBy.Length > 100)
-        {
-            errors.Add("CreatedBy cannot exceed 100 characters.");
         }
 
         if (featureFlag.CreatedAt == default)
@@ -226,36 +197,33 @@ public static class FeatureFlagServiceValidation
     /// </summary>
     /// <param name="featureFlag">The feature flag to update.</param>
     /// <param name="updatedBy">The user who updated the flag.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>An empty list if valid, otherwise a list of human-readable validation errors.</returns>
-    public static IReadOnlyList<string> ValidateForUpdateFeatureFlagAsync(FeatureFlag? featureFlag, string? updatedBy)
+    /// <exception cref="ArgumentNullException">Thrown when featureFlag is null.</exception>
+    /// <exception cref="ArgumentException">Thrown when updatedBy is null or empty, or when feature flag properties are invalid.</exception>
+    public static IReadOnlyList<string> ValidateForUpdateFeatureFlagAsync(
+        FeatureFlag? featureFlag,
+        string? updatedBy,
+        CancellationToken cancellationToken = default)
     {
-        var errors = new List<string>();
+        ArgumentNullException.ThrowIfNull(featureFlag);
+        ArgumentException.ThrowIfNullOrWhiteSpace(updatedBy);
 
-        if (featureFlag is null)
-        {
-            errors.Add("Feature flag cannot be null.");
-            return errors.AsReadOnly();
-        }
+        var errors = new List<string>();
 
         if (featureFlag.Id <= 0)
         {
             errors.Add("Feature flag ID must be greater than 0.");
         }
 
-        if (string.IsNullOrWhiteSpace(featureFlag.Key))
-        {
-            errors.Add("Feature flag key cannot be null or empty.");
-        }
-        else if (featureFlag.Key.Length > 100)
+        ArgumentException.ThrowIfNullOrWhiteSpace(featureFlag.Key);
+        if (featureFlag.Key.Length > 100)
         {
             errors.Add("Feature flag key cannot exceed 100 characters.");
         }
 
-        if (string.IsNullOrWhiteSpace(featureFlag.DisplayName))
-        {
-            errors.Add("Feature flag display name cannot be null or empty.");
-        }
-        else if (featureFlag.DisplayName.Length > 200)
+        ArgumentException.ThrowIfNullOrWhiteSpace(featureFlag.DisplayName);
+        if (featureFlag.DisplayName.Length > 200)
         {
             errors.Add("Feature flag display name cannot exceed 200 characters.");
         }
@@ -263,15 +231,6 @@ public static class FeatureFlagServiceValidation
         if (featureFlag.Description?.Length > 1000)
         {
             errors.Add("Feature flag description cannot exceed 1000 characters.");
-        }
-
-        if (string.IsNullOrWhiteSpace(updatedBy))
-        {
-            errors.Add("UpdatedBy cannot be null or empty.");
-        }
-        else if (updatedBy.Length > 100)
-        {
-            errors.Add("UpdatedBy cannot exceed 100 characters.");
         }
 
         if (featureFlag.UpdatedAt == default)
@@ -309,26 +268,18 @@ public static class FeatureFlagServiceValidation
     /// </summary>
     /// <param name="id">The feature flag ID to delete.</param>
     /// <param name="deletedBy">The user who deleted the flag.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>An empty list if valid, otherwise a list of human-readable validation errors.</returns>
-    public static IReadOnlyList<string> ValidateForDeleteFeatureFlagAsync(int id, string? deletedBy)
+    /// <exception cref="ArgumentException">Thrown when id is less than or equal to 0, or when deletedBy is null or empty.</exception>
+    public static IReadOnlyList<string> ValidateForDeleteFeatureFlagAsync(
+        int id,
+        string? deletedBy,
+        CancellationToken cancellationToken = default)
     {
-        var errors = new List<string>();
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(id, 0);
+        ArgumentException.ThrowIfNullOrWhiteSpace(deletedBy);
 
-        if (id <= 0)
-        {
-            errors.Add("Id must be greater than 0.");
-        }
-
-        if (string.IsNullOrWhiteSpace(deletedBy))
-        {
-            errors.Add("DeletedBy cannot be null or empty.");
-        }
-        else if (deletedBy.Length > 100)
-        {
-            errors.Add("DeletedBy cannot exceed 100 characters.");
-        }
-
-        return errors.AsReadOnly();
+        return Array.Empty<string>();
     }
 
     /// <summary>
@@ -337,26 +288,18 @@ public static class FeatureFlagServiceValidation
     /// </summary>
     /// <param name="id">The feature flag ID.</param>
     /// <param name="modifiedBy">The user who modified the flag.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>An empty list if valid, otherwise a list of human-readable validation errors.</returns>
-    public static IReadOnlyList<string> ValidateForModifyFeatureFlagAsync(int id, string? modifiedBy)
+    /// <exception cref="ArgumentException">Thrown when id is less than or equal to 0, or when modifiedBy is null or empty.</exception>
+    public static IReadOnlyList<string> ValidateForModifyFeatureFlagAsync(
+        int id,
+        string? modifiedBy,
+        CancellationToken cancellationToken = default)
     {
-        var errors = new List<string>();
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(id, 0);
+        ArgumentException.ThrowIfNullOrWhiteSpace(modifiedBy);
 
-        if (id <= 0)
-        {
-            errors.Add("Id must be greater than 0.");
-        }
-
-        if (string.IsNullOrWhiteSpace(modifiedBy))
-        {
-            errors.Add("ModifiedBy cannot be null or empty.");
-        }
-        else if (modifiedBy.Length > 100)
-        {
-            errors.Add("ModifiedBy cannot exceed 100 characters.");
-        }
-
-        return errors.AsReadOnly();
+        return Array.Empty<string>();
     }
 
     /// <summary>
@@ -364,46 +307,41 @@ public static class FeatureFlagServiceValidation
     /// </summary>
     /// <param name="featureFlagKey">The feature flag key.</param>
     /// <param name="userContext">The user context.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>An empty list if valid, otherwise a list of human-readable validation errors.</returns>
-    public static IReadOnlyList<string> ValidateForGetVariantAsync(string? featureFlagKey, UserContext? userContext)
+    /// <exception cref="ArgumentException">Thrown when featureFlagKey is null, empty, or whitespace.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when userContext is null.</exception>
+    public static IReadOnlyList<string> ValidateForGetVariantAsync(
+        string? featureFlagKey,
+        UserContext? userContext,
+        CancellationToken cancellationToken = default)
     {
-        var errors = new List<string>();
+        ArgumentException.ThrowIfNullOrWhiteSpace(featureFlagKey);
+        ArgumentNullException.ThrowIfNull(userContext);
 
-        if (string.IsNullOrWhiteSpace(featureFlagKey))
+        if (userContext.IsValid() is false)
         {
-            errors.Add("Feature flag key cannot be null, empty, or whitespace.");
-        }
-        else if (featureFlagKey!.Length > 100)
-        {
-            errors.Add("Feature flag key cannot exceed 100 characters.");
+            return new[] { "User context is invalid." };
         }
 
-        if (userContext is null)
-        {
-            errors.Add("User context cannot be null.");
-        }
-        else if (!userContext.IsValid())
-        {
-            errors.Add("User context is invalid.");
-        }
-
-        return errors.AsReadOnly();
+        return Array.Empty<string>();
     }
 
     /// <summary>
     /// Validates the parameters for <see cref="FeatureFlagService.SearchFeatureFlagsAsync(string)"/>.
     /// </summary>
     /// <param name="searchTerm">The search term.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>An empty list if valid, otherwise a list of human-readable validation errors.</returns>
-    public static IReadOnlyList<string> ValidateForSearchFeatureFlagsAsync(string? searchTerm)
+    public static IReadOnlyList<string> ValidateForSearchFeatureFlagsAsync(
+        string? searchTerm,
+        CancellationToken cancellationToken = default)
     {
-        var errors = new List<string>();
-
         if (!string.IsNullOrWhiteSpace(searchTerm) && searchTerm.Length > 100)
         {
-            errors.Add("Search term cannot exceed 100 characters.");
+            return new[] { "Search term cannot exceed 100 characters." };
         }
 
-        return errors.AsReadOnly();
+        return Array.Empty<string>();
     }
 }
