@@ -50,7 +50,7 @@ public static class FeatureFlagRepositoryExtensions
     /// </summary>
     /// <param name="repository">The feature flag repository instance.</param>
     /// <param name="creator">The username or ID of the creator.</param>
-    /// <returns>A collection of enabled feature flags.</returns>
+    /// <returns>A collection of enabled <see cref="FeatureFlag"/> instances.</returns>
     /// <exception cref="ArgumentNullException">Thrown when repository is null.</exception>
     /// <exception cref="ArgumentException">Thrown when creator is null or empty.</exception>
     public static async Task<IEnumerable<FeatureFlag>> GetEnabledByCreatorAsync(this FeatureFlagRepository repository, string creator)
@@ -59,6 +59,6 @@ public static class FeatureFlagRepositoryExtensions
         ArgumentException.ThrowIfNullOrEmpty(creator);
 
         var flags = await repository.GetByCreatorAsync(creator);
-        return flags.Where(f => f.IsEnabled).ToList();
+        return flags?.Where(f => f.IsEnabled) ?? Enumerable.Empty<FeatureFlag>();
     }
 }
