@@ -31,8 +31,8 @@ public static class ABTestVariantExtensions
             return false;
 
         // Calculate the maximum users allowed based on allocation percentage
-        // Use a reasonable default of 1000 total users if FeatureFlag is null
-        long maxUsersAllowed = (long)Math.Ceiling((double)variant.AllocationPercentage / 100 * 1000);
+        // The allocation is a percentage of total users assigned to this feature flag
+        long maxUsersAllowed = (long)Math.Ceiling((double)variant.AllocationPercentage / 100 * variant.UserCount);
 
         return variant.UserCount >= maxUsersAllowed;
     }
