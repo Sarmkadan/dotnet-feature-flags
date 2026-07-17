@@ -14,6 +14,10 @@ namespace FeatureFlags.Services;
 /// <summary>
 /// Provides System.Text.Json serialization extensions for <see cref="AuditLogService"/>.
 /// </summary>
+/// <remarks>
+/// This class provides JSON serialization/deserialization utilities for <see cref="AuditLogService"/> instances.
+/// All methods are thread-safe as they use immutable <see cref="JsonSerializerOptions"/> instances.
+/// </remarks>
 public static class AuditLogServiceJsonExtensions
 {
     private static readonly JsonSerializerOptions _jsonOptions = new(JsonSerializerDefaults.Web)
@@ -21,7 +25,8 @@ public static class AuditLogServiceJsonExtensions
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         WriteIndented = false,
         TypeInfoResolver = new DefaultJsonTypeInfoResolver(),
-        ReferenceHandler = ReferenceHandler.IgnoreCycles
+        ReferenceHandler = ReferenceHandler.IgnoreCycles,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
     };
 
     /// <summary>
