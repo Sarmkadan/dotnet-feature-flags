@@ -2,7 +2,7 @@
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
-// =============================================================================
+// =====================================================================
 
 namespace FeatureFlags.Models;
 
@@ -41,9 +41,13 @@ public static class FlagEvaluationLogValidation
         {
             errors.Add("Timestamp must be in UTC kind.");
         }
-        else if (value.Timestamp > DateTime.UtcNow.AddMinutes(5))
+        else if (value.Timestamp > DateTime.UtcNow)
         {
             errors.Add("Timestamp cannot be in the future.");
+        }
+        else if (value.Timestamp < DateTime.UtcNow.AddYears(-1))
+        {
+            errors.Add("Timestamp cannot be more than one year in the past.");
         }
 
         if (string.IsNullOrWhiteSpace(value.Reason))
@@ -59,10 +63,8 @@ public static class FlagEvaluationLogValidation
     /// </summary>
     /// <param name="value">The log entry to check.</param>
     /// <returns><see langword="true"/> if valid; otherwise, <see langword="false"/>.</returns>
-    public static bool IsValid(this FlagEvaluationLog value)
-    {
-        return value.Validate().Count == 0;
-    }
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is <see langword="null"/>.</exception>
+    public static bool IsValid(this FlagEvaluationLog? value) => value?.Validate().Count == 0;
 
     /// <summary>
     /// Ensures that a <see cref="FlagEvaluationLog"/> instance is valid, throwing an <see cref="ArgumentException"/>
@@ -77,12 +79,10 @@ public static class FlagEvaluationLogValidation
 
         var errors = value.Validate();
 
-        if (errors.Count == 0)
+        if (errors.Count > 0)
         {
-            return;
+            throw new ArgumentException(
+                $"FlagEvaluationLog is invalid:{Environment.NewLine}{string.Join(Environment.NewLine, errors)}");
         }
-
-        throw new ArgumentException(
-            $"FlagEvaluationLog is invalid:{Environment.NewLine}{string.Join(Environment.NewLine, errors)}");
     }
 }
