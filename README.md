@@ -998,6 +998,116 @@ var invalidCondition = new Condition
 bool isValid = invalidCondition.IsValid(); // Returns false (missing required fields)
 ```
 
+## XmlExporterJsonExtensions
+
+Provides System.Text.Json serialization extensions for converting XML-exported feature flag data to JSON format and vice versa. This class enables seamless interoperability between XML exporters and JSON-based APIs or storage systems, supporting FeatureFlag, AuditLog, and Rule collections with both serialization and deserialization methods.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Formatters;
+using FeatureFlags.Models;
+using System.Text.Json;
+
+// Example 1: Serialize FeatureFlag collection to JSON
+var flags = new List<FeatureFlag>
+{
+    new FeatureFlag
+    {
+        Key = "new_checkout_flow",
+        DisplayName = "New Checkout Flow",
+        IsEnabled = true,
+        PercentageRollout = 50
+    },
+    new FeatureFlag
+    {
+        Key = "beta_feature",
+        DisplayName = "Beta Feature",
+        IsEnabled = false,
+        RolloutType = RolloutType.Full
+    }
+};
+
+// Serialize to compact JSON (default)
+string json = flags.ToJson();
+Console.WriteLine(json);
+
+// Serialize to indented JSON for readability
+string indentedJson = flags.ToJson(indented: true);
+Console.WriteLine(indentedJson);
+
+// Example 2: Deserialize FeatureFlag collection from JSON
+string featureFlagsJson = """[
+    {
+        "key": "new_checkout_flow",
+        "displayName": "New Checkout Flow",
+        "isEnabled": true,
+        "percentageRollout": 50
+    },
+    {
+        "key": "beta_feature",
+        "displayName": "Beta Feature",
+        "isEnabled": false
+    }
+]""";
+
+var deserializedFlags = XmlExporterJsonExtensions.FromJsonToFeatureFlags(featureFlagsJson);
+if (deserializedFlags != null)
+{
+    Console.WriteLine($"Deserialized {deserializedFlags.Count} feature flags");
+}
+
+// Example 3: Try deserialize with error handling
+string invalidJson = "invalid json";
+bool success = XmlExporterJsonExtensions.TryFromJson(invalidJson, out var result);
+Console.WriteLine($"TryFromJson with invalid input succeeded: {success}"); // false
+
+// Example 4: Serialize AuditLog collection to JSON
+var auditLogs = new List<AuditLog>
+{
+    new AuditLog
+    {
+        FeatureFlagId = 1,
+        Action = AuditAction.FeatureFlagCreated,
+        ChangedBy = "admin@example.com",
+        ChangedAt = DateTime.UtcNow,
+        Description = "Created new feature flag"
+    }
+};
+
+string auditLogsJson = auditLogs.ToJson();
+Console.WriteLine(auditLogsJson);
+
+// Example 5: Deserialize AuditLog collection from JSON
+var deserializedLogs = XmlExporterJsonExtensions.FromJsonToAuditLogs(auditLogsJson);
+if (deserializedLogs != null)
+{
+    Console.WriteLine($"Deserialized {deserializedLogs.Count} audit logs");
+}
+
+// Example 6: Serialize Rule collection to JSON
+var rules = new List<Rule>
+{
+    new Rule
+    {
+        Name = "Premium Users",
+        Priority = 10,
+        IsActive = true,
+        ConditionLogic = "AND"
+    }
+};
+
+string rulesJson = rules.ToJson();
+Console.WriteLine(rulesJson);
+
+// Example 7: Deserialize Rule collection from JSON
+var deserializedRules = XmlExporterJsonExtensions.FromJsonToRules(rulesJson);
+if (deserializedRules != null)
+{
+    Console.WriteLine($"Deserialized {deserializedRules.Count} rules");
+}
+```
+
 ## ConditionTests
 
 Example usage:
