@@ -1191,6 +1191,78 @@ await integrationExample.RunAsync();
 //  user-003@example.com: AI-Generated
 ```
 
+## RateLimitingMiddlewareValidation
+
+Provides validation helpers for `RateLimitingMiddleware` and `RateLimitOptions`. This static class offers extension methods to validate rate limiting configuration and middleware instances, ensuring proper configuration before use in ASP.NET Core applications.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Middleware;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+
+// Setup dependency injection
+var services = new ServiceCollection();
+services.AddRateLimiting(new RateLimitOptions
+{
+    MaxRequests = 100,
+    WindowSeconds = 60
+});
+
+var serviceProvider = services.BuildServiceProvider();
+
+// Create middleware instance with configured options
+var middleware = new RateLimitingMiddleware(
+    next: async (context) => await Task.CompletedTask,
+    options: serviceProvider.GetRequiredService<RateLimitOptions>()
+);
+
+// Validate RateLimitOptions before use
+var options = serviceProvider.GetRequiredService<RateLimitOptions>();
+if (options.IsValid())
+{
+    Console.WriteLine("Rate limit options are valid");
+}
+
+var validationErrors = options.Validate();
+if (validationErrors.Count > 0)
+{
+    Console.WriteLine("Validation problems:");
+    foreach (var error in validationErrors)
+    {
+        Console.WriteLine($"- {error}");
+    }
+}
+
+// Validate middleware instance
+if (middleware.IsValid())
+{
+    Console.WriteLine("Middleware is properly configured");
+}
+
+// Use EnsureValid to throw if invalid (useful for startup validation)
+try
+{
+    options.EnsureValid();
+    Console.WriteLine("Options validated successfully");
+}
+catch (ArgumentException ex)
+{
+    Console.WriteLine($"Validation failed: {ex.Message}");
+}
+
+// Example with invalid configuration
+var invalidOptions = new RateLimitOptions
+{
+    MaxRequests = 0, // Invalid: must be > 0
+    WindowSeconds = 60
+};
+
+var invalidErrors = invalidOptions.Validate();
+Console.WriteLine($"Invalid options have {invalidErrors.Count} validation problems");
+```
+
 ## Result
 
 A generic result wrapper class that represents the outcome of an operation. The `Result<T>` class provides a consistent way to return success/failure with data or error messages, making it ideal for error handling in feature flag operations and other business logic.
