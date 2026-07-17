@@ -62,14 +62,10 @@ public static class FeatureFlagSearchBuilderJsonExtensions
     /// <param name="json">The JSON string to deserialize.</param>
     /// <param name="value">Receives the deserialized search builder if successful.</param>
     /// <returns>True if deserialization succeeded; otherwise, false.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="json"/> is null or empty.</exception>
     public static bool TryFromJson(string json, out FeatureFlagSearchBuilder? value)
     {
-        value = null;
-
-        if (string.IsNullOrEmpty(json))
-        {
-            return false;
-        }
+        ArgumentException.ThrowIfNullOrEmpty(json);
 
         try
         {
@@ -78,6 +74,7 @@ public static class FeatureFlagSearchBuilderJsonExtensions
         }
         catch (JsonException)
         {
+            value = null;
             return false;
         }
     }
