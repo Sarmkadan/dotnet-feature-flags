@@ -131,6 +131,15 @@ public sealed class RateLimitingMiddleware
         return (long)Math.Max(0, (resetTime - DateTime.UtcNow).TotalSeconds);
     }
 
+    /// <summary>
+    /// Gets the rate limit options used by this middleware instance.
+    /// </summary>
+    /// <returns>The rate limit options.</returns>
+    public RateLimitOptions GetRateLimitOptions()
+    {
+        return _options;
+    }
+
     private string GetClientIdentifier(HttpContext context)
     {
         // Try to get user ID first, fallback to IP
