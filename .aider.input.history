@@ -9606,3 +9606,307 @@
 +- Cleanup
 +- Tighten guard clauses in StringExtensionsJsonExtensions
 +- refactor(data): cleanup in DatabaseSeederValidation
+
+# 2026-07-18 23:24:51.986957
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, extend README.md with a documentation section for the type `FeatureFlagServiceValidation` (defined in `src/FeatureFlags/Services/FeatureFlagServiceValidation.cs`).
++
++Add a "## FeatureFlagServiceValidation" section: 2-3 sentences on what it does and a realistic, compiling C# usage example based on its REAL public members:
++```
++public static IReadOnlyList<string> Validate
++public static bool IsValid
++public static void EnsureValid
++public static IReadOnlyList<string> ValidateForIsEnabledAsync
++public static IReadOnlyList<string> ValidateForGetFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForGetFeatureFlagByKeyAsync
++public static IReadOnlyList<string> ValidateForCreateFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForUpdateFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForDeleteFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForModifyFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForGetVariantAsync
++public static IReadOnlyList<string> ValidateForSearchFeatureFlagsAsync
++```
++Only edit README.md. Do not invent members that are not listed.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- document README in the readme
++- update readme
++- Small refactor - GradualRolloutSchedulerServiceTestsJsonExtensions
++- Cleanup in CacheServiceTestsJsonExtensions
++- refactor: polish ConditionTestsJsonExtensions
++- refactor: dedupe some logic in XmlExporter
++- Tidy up FeatureFlagControllerJsonExtensions
++- Tidy up FeatureFlagSearchBuilderJsonExtnesions
++- cleanup in DateTimeExtensionsValidation
++- Cleanup
+
+# 2026-07-18 23:24:51.988556
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, extend README.md with a documentation section for the type `FeatureFlagServiceValidation` (defined in `src/FeatureFlags/Services/FeatureFlagServiceValidation.cs`).
++
++Add a "## FeatureFlagServiceValidation" section: 2-3 sentences on what it does and a realistic, compiling C# usage example based on its REAL public members:
++```
++public static IReadOnlyList<string> Validate
++public static bool IsValid
++public static void EnsureValid
++public static IReadOnlyList<string> ValidateForIsEnabledAsync
++public static IReadOnlyList<string> ValidateForGetFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForGetFeatureFlagByKeyAsync
++public static IReadOnlyList<string> ValidateForCreateFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForUpdateFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForDeleteFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForModifyFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForGetVariantAsync
++public static IReadOnlyList<string> ValidateForSearchFeatureFlagsAsync
++```
++Only edit README.md. Do not invent members that are not listed.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- document README in the readme
++- update readme
++- Small refactor - GradualRolloutSchedulerServiceTestsJsonExtensions
++- Cleanup in CacheServiceTestsJsonExtensions
++- refactor: polish ConditionTestsJsonExtensions
++- refactor: dedupe some logic in XmlExporter
++- Tidy up FeatureFlagControllerJsonExtensions
++- Tidy up FeatureFlagSearchBuilderJsonExtnesions
++- cleanup in DateTimeExtensionsValidation
++- Cleanup
+
+# 2026-07-18 23:26:01.232065
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, extend README.md with a documentation section for the type `FeatureFlagServiceValidation` (defined in `src/FeatureFlags/Services/FeatureFlagServiceValidation.cs`).
++
++Add a "## FeatureFlagServiceValidation" section: 2-3 sentences on what it does and a realistic, compiling C# usage example based on its REAL public members:
++```
++public static IReadOnlyList<string> Validate
++public static bool IsValid
++public static void EnsureValid
++public static IReadOnlyList<string> ValidateForIsEnabledAsync
++public static IReadOnlyList<string> ValidateForGetFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForGetFeatureFlagByKeyAsync
++public static IReadOnlyList<string> ValidateForCreateFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForUpdateFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForDeleteFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForModifyFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForGetVariantAsync
++public static IReadOnlyList<string> ValidateForSearchFeatureFlagsAsync
++```
++Only edit README.md. Do not invent members that are not listed.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- document README in the readme
++- update readme
++- Small refactor - GradualRolloutSchedulerServiceTestsJsonExtensions
++- Cleanup in CacheServiceTestsJsonExtensions
++- refactor: polish ConditionTestsJsonExtensions
++- refactor: dedupe some logic in XmlExporter
++- Tidy up FeatureFlagControllerJsonExtensions
++- Tidy up FeatureFlagSearchBuilderJsonExtnesions
++- cleanup in DateTimeExtensionsValidation
++- Cleanup
+
+# 2026-07-18 23:26:01.232158
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, extend README.md with a documentation section for the type `FeatureFlagServiceValidation` (defined in `src/FeatureFlags/Services/FeatureFlagServiceValidation.cs`).
++
++Add a "## FeatureFlagServiceValidation" section: 2-3 sentences on what it does and a realistic, compiling C# usage example based on its REAL public members:
++```
++public static IReadOnlyList<string> Validate
++public static bool IsValid
++public static void EnsureValid
++public static IReadOnlyList<string> ValidateForIsEnabledAsync
++public static IReadOnlyList<string> ValidateForGetFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForGetFeatureFlagByKeyAsync
++public static IReadOnlyList<string> ValidateForCreateFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForUpdateFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForDeleteFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForModifyFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForGetVariantAsync
++public static IReadOnlyList<string> ValidateForSearchFeatureFlagsAsync
++```
++Only edit README.md. Do not invent members that are not listed.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- document README in the readme
++- update readme
++- Small refactor - GradualRolloutSchedulerServiceTestsJsonExtensions
++- Cleanup in CacheServiceTestsJsonExtensions
++- refactor: polish ConditionTestsJsonExtensions
++- refactor: dedupe some logic in XmlExporter
++- Tidy up FeatureFlagControllerJsonExtensions
++- Tidy up FeatureFlagSearchBuilderJsonExtnesions
++- cleanup in DateTimeExtensionsValidation
++- Cleanup
+
+# 2026-07-18 23:26:10.756997
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, extend README.md with a documentation section for the type `FeatureFlagServiceValidation` (defined in `src/FeatureFlags/Services/FeatureFlagServiceValidation.cs`).
++
++Add a "## FeatureFlagServiceValidation" section: 2-3 sentences on what it does and a realistic, compiling C# usage example based on its REAL public members:
++```
++public static IReadOnlyList<string> Validate
++public static bool IsValid
++public static void EnsureValid
++public static IReadOnlyList<string> ValidateForIsEnabledAsync
++public static IReadOnlyList<string> ValidateForGetFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForGetFeatureFlagByKeyAsync
++public static IReadOnlyList<string> ValidateForCreateFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForUpdateFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForDeleteFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForModifyFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForGetVariantAsync
++public static IReadOnlyList<string> ValidateForSearchFeatureFlagsAsync
++```
++Only edit README.md. Do not invent members that are not listed.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- document README in the readme
++- update readme
++- Small refactor - GradualRolloutSchedulerServiceTestsJsonExtensions
++- Cleanup in CacheServiceTestsJsonExtensions
++- refactor: polish ConditionTestsJsonExtensions
++- refactor: dedupe some logic in XmlExporter
++- Tidy up FeatureFlagControllerJsonExtensions
++- Tidy up FeatureFlagSearchBuilderJsonExtnesions
++- cleanup in DateTimeExtensionsValidation
++- Cleanup
+
+# 2026-07-18 23:26:10.757051
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, extend README.md with a documentation section for the type `FeatureFlagServiceValidation` (defined in `src/FeatureFlags/Services/FeatureFlagServiceValidation.cs`).
++
++Add a "## FeatureFlagServiceValidation" section: 2-3 sentences on what it does and a realistic, compiling C# usage example based on its REAL public members:
++```
++public static IReadOnlyList<string> Validate
++public static bool IsValid
++public static void EnsureValid
++public static IReadOnlyList<string> ValidateForIsEnabledAsync
++public static IReadOnlyList<string> ValidateForGetFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForGetFeatureFlagByKeyAsync
++public static IReadOnlyList<string> ValidateForCreateFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForUpdateFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForDeleteFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForModifyFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForGetVariantAsync
++public static IReadOnlyList<string> ValidateForSearchFeatureFlagsAsync
++```
++Only edit README.md. Do not invent members that are not listed.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- document README in the readme
++- update readme
++- Small refactor - GradualRolloutSchedulerServiceTestsJsonExtensions
++- Cleanup in CacheServiceTestsJsonExtensions
++- refactor: polish ConditionTestsJsonExtensions
++- refactor: dedupe some logic in XmlExporter
++- Tidy up FeatureFlagControllerJsonExtensions
++- Tidy up FeatureFlagSearchBuilderJsonExtnesions
++- cleanup in DateTimeExtensionsValidation
++- Cleanup
+
+# 2026-07-18 23:27:19.961563
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, extend README.md with a documentation section for the type `FeatureFlagServiceValidation` (defined in `src/FeatureFlags/Services/FeatureFlagServiceValidation.cs`).
++
++Add a "## FeatureFlagServiceValidation" section: 2-3 sentences on what it does and a realistic, compiling C# usage example based on its REAL public members:
++```
++public static IReadOnlyList<string> Validate
++public static bool IsValid
++public static void EnsureValid
++public static IReadOnlyList<string> ValidateForIsEnabledAsync
++public static IReadOnlyList<string> ValidateForGetFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForGetFeatureFlagByKeyAsync
++public static IReadOnlyList<string> ValidateForCreateFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForUpdateFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForDeleteFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForModifyFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForGetVariantAsync
++public static IReadOnlyList<string> ValidateForSearchFeatureFlagsAsync
++```
++Only edit README.md. Do not invent members that are not listed.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- document README in the readme
++- update readme
++- Small refactor - GradualRolloutSchedulerServiceTestsJsonExtensions
++- Cleanup in CacheServiceTestsJsonExtensions
++- refactor: polish ConditionTestsJsonExtensions
++- refactor: dedupe some logic in XmlExporter
++- Tidy up FeatureFlagControllerJsonExtensions
++- Tidy up FeatureFlagSearchBuilderJsonExtnesions
++- cleanup in DateTimeExtensionsValidation
++- Cleanup
+
+# 2026-07-18 23:27:19.961698
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, extend README.md with a documentation section for the type `FeatureFlagServiceValidation` (defined in `src/FeatureFlags/Services/FeatureFlagServiceValidation.cs`).
++
++Add a "## FeatureFlagServiceValidation" section: 2-3 sentences on what it does and a realistic, compiling C# usage example based on its REAL public members:
++```
++public static IReadOnlyList<string> Validate
++public static bool IsValid
++public static void EnsureValid
++public static IReadOnlyList<string> ValidateForIsEnabledAsync
++public static IReadOnlyList<string> ValidateForGetFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForGetFeatureFlagByKeyAsync
++public static IReadOnlyList<string> ValidateForCreateFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForUpdateFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForDeleteFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForModifyFeatureFlagAsync
++public static IReadOnlyList<string> ValidateForGetVariantAsync
++public static IReadOnlyList<string> ValidateForSearchFeatureFlagsAsync
++```
++Only edit README.md. Do not invent members that are not listed.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- document README in the readme
++- update readme
++- Small refactor - GradualRolloutSchedulerServiceTestsJsonExtensions
++- Cleanup in CacheServiceTestsJsonExtensions
++- refactor: polish ConditionTestsJsonExtensions
++- refactor: dedupe some logic in XmlExporter
++- Tidy up FeatureFlagControllerJsonExtensions
++- Tidy up FeatureFlagSearchBuilderJsonExtnesions
++- cleanup in DateTimeExtensionsValidation
++- Cleanup
