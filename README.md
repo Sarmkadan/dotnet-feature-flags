@@ -1090,6 +1090,84 @@ var invalidCondition = new Condition
 Assert.False(invalidCondition.IsValid()); // Returns false for missing required fields
 ```
 
+## DateTimeExtensionsValidation
+
+Provides validation helpers for DateTime values used with DateTimeExtensions methods. This static class ensures DateTime and TimeSpan values are semantically valid for operations like date comparisons, range operations, and rounding operations. It offers three validation styles: returning error lists, boolean checks, and exception-throwing validations.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Utilities;
+using System;
+
+// Example 1: Validate a single DateTime value
+DateTime? nullableDate = DateTime.Now;
+var validationErrors = nullableDate.Validate();
+
+if (validationErrors.Count > 0)
+{
+    Console.WriteLine("DateTime validation problems:");
+    foreach (var error in validationErrors)
+    {
+        Console.WriteLine($"- {error}");
+    }
+}
+else
+{
+    Console.WriteLine("DateTime is valid for DateTimeExtensions operations");
+}
+
+// Example 2: Use IsValid() for conditional checks
+DateTime? validDate = new DateTime(2024, 1, 15);
+bool isValid = validDate.IsValid();
+Console.WriteLine($"Date is valid: {isValid}"); // true
+
+DateTime? invalidDate = DateTime.MinValue;
+bool isInvalid = invalidDate.IsValid();
+Console.WriteLine($"MinValue is valid: {isInvalid}"); // false
+
+// Example 3: Validate a date range for operations like IsBetween or GetBusinessDaysBetween
+DateTime? startDate = new DateTime(2024, 1, 1);
+DateTime? endDate = new DateTime(2024, 12, 31);
+
+var rangeErrors = startDate.ValidateRange(endDate);
+if (rangeErrors.Count == 0)
+{
+    Console.WriteLine("Date range is valid for range operations");
+}
+
+// Example 4: Use EnsureValid() to throw exceptions on invalid values
+try
+{
+    DateTime? problemDate = DateTime.MaxValue;
+    problemDate.EnsureValid(); // Throws ArgumentException
+}
+catch (ArgumentException ex)
+{
+    Console.WriteLine($"Validation failed: {ex.Message}");
+}
+
+// Example 5: Validate TimeSpan for RoundTo operations
+TimeSpan? validSpan = TimeSpan.FromHours(1);
+var spanErrors = validSpan.Validate();
+Console.WriteLine($"TimeSpan validation errors: {spanErrors.Count}"); // 0
+
+TimeSpan? invalidSpan = TimeSpan.Zero;
+var invalidSpanErrors = invalidSpan.Validate();
+Console.WriteLine($"Zero TimeSpan has {invalidSpanErrors.Count} validation errors"); // 1
+
+// Example 6: Use IsValidRange() for range-based operations
+DateTime? validStart = new DateTime(2024, 1, 1);
+DateTime? validEnd = new DateTime(2024, 12, 31);
+bool isRangeValid = validStart.IsValidRange(validEnd);
+Console.WriteLine($"Valid range check: {isRangeValid}"); // true
+
+DateTime? invalidStart = new DateTime(2024, 12, 31);
+DateTime? invalidEnd = new DateTime(2024, 1, 1);
+bool isInvalidRange = invalidStart.IsValidRange(invalidEnd);
+Console.WriteLine($"Invalid range check: {isInvalidRange}"); // false
+```
+
 Example usage:
 ```csharp
 using FeatureFlags.Models;
