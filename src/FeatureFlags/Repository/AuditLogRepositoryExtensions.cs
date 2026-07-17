@@ -7,7 +7,6 @@
 
 using FeatureFlags.Enums;
 using FeatureFlags.Models;
-using System.Globalization;
 
 namespace FeatureFlags.Repository;
 
@@ -24,12 +23,15 @@ public static class AuditLogRepositoryExtensions
     /// <param name="featureFlagId">The feature flag identifier.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>The most recent audit log entry, or null if none exists.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when repository is null.</exception>
     /// <exception cref="ArgumentException">Thrown when featureFlagId is not positive.</exception>
     public static async Task<AuditLog?> GetMostRecentAsync(
         this AuditLogRepository repository,
         int featureFlagId,
         CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(repository);
+
         if (featureFlagId <= 0)
         {
             throw new ArgumentException("FeatureFlagId must be positive", nameof(featureFlagId));
@@ -45,12 +47,15 @@ public static class AuditLogRepositoryExtensions
     /// <param name="action">The action type to filter by.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Read-only list of matching audit logs ordered by most recent first.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when repository is null.</exception>
     /// <exception cref="ArgumentException">Thrown when action is not defined.</exception>
     public static async Task<IReadOnlyList<AuditLog>> GetByActionAsync(
         this AuditLogRepository repository,
         AuditAction action,
         CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(repository);
+
         if (!Enum.IsDefined(typeof(AuditAction), action))
         {
             throw new ArgumentException("Action must be a valid AuditAction value", nameof(action));
@@ -69,6 +74,7 @@ public static class AuditLogRepositoryExtensions
     /// <param name="endDate">End of date range (inclusive).</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Read-only list of matching audit logs ordered by most recent first.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when repository is null.</exception>
     /// <exception cref="ArgumentException">Thrown when changedBy is null or empty, or startDate is after endDate.</exception>
     public static async Task<IReadOnlyList<AuditLog>> GetByUserInRangeAsync(
         this AuditLogRepository repository,
@@ -77,10 +83,8 @@ public static class AuditLogRepositoryExtensions
         DateTime endDate,
         CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrWhiteSpace(changedBy))
-        {
-            throw new ArgumentException("ChangedBy cannot be empty", nameof(changedBy));
-        }
+        ArgumentNullException.ThrowIfNull(repository);
+        ArgumentException.ThrowIfNullOrEmpty(changedBy);
 
         if (startDate > endDate)
         {
@@ -100,10 +104,13 @@ public static class AuditLogRepositoryExtensions
     /// <param name="repository">The audit log repository instance.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>The total count of audit log entries.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when repository is null.</exception>
     public static async Task<int> GetTotalCountAsync(
         this AuditLogRepository repository,
         CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(repository);
+
         return await repository.GetCountByFeatureFlagIdAsync(0, cancellationToken);
     }
 
@@ -114,12 +121,14 @@ public static class AuditLogRepositoryExtensions
     /// <param name="featureFlagIds">Collection of feature flag identifiers to filter by.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Read-only list of audit logs matching any of the provided feature flag IDs.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when featureFlagIds is null.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when repository or featureFlagIds is null.</exception>
+    /// <exception cref="ArgumentException">Thrown when any feature flag ID is not positive.</exception>
     public static async Task<IReadOnlyList<AuditLog>> GetByFeatureFlagIdsAsync(
         this AuditLogRepository repository,
         IEnumerable<int> featureFlagIds,
         CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(repository);
         ArgumentNullException.ThrowIfNull(featureFlagIds);
 
         var flagIds = featureFlagIds.ToList();
@@ -148,6 +157,7 @@ public static class AuditLogRepositoryExtensions
     /// <param name="includeRollbacks">Whether to include rollback entries in results.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Read-only list of audit logs with optional rollback filtering.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when repository is null.</exception>
     /// <exception cref="ArgumentException">Thrown when featureFlagId is not positive.</exception>
     public static async Task<IReadOnlyList<AuditLog>> GetWithDetailsAsync(
         this AuditLogRepository repository,
@@ -155,18 +165,14 @@ public static class AuditLogRepositoryExtensions
         bool includeRollbacks = true,
         CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(repository);
+
         if (featureFlagId <= 0)
         {
             throw new ArgumentException("FeatureFlagId must be positive", nameof(featureFlagId));
         }
 
         var logs = await repository.GetByFeatureFlagIdAsync(featureFlagId);
-
-        if (!includeRollbacks)
-        {
-            return logs.ToList().AsReadOnly();
-        }
-
         return logs.ToList().AsReadOnly();
     }
 }
