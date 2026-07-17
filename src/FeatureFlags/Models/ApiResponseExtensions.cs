@@ -27,16 +27,29 @@ public static class ApiResponseExtensions
     public static bool HasData<T>(this ApiResponse<T> response)
     {
         ArgumentNullException.ThrowIfNull(response);
-        return response.Success && response.Data != null;
+        return response.Success && response.Data is not null;
     }
 
     /// <summary>
-    /// Gets a human-readable representation of an <see cref="ApiResponse"/> or <see cref="ApiResponse{T}"/> error.
+    /// Gets a human-readable representation of an <see cref="ApiResponse"/> error.
     /// </summary>
     /// <param name="response">The response to get the error from.</param>
     /// <returns>A human-readable representation of the error; or null if there is no error.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="response"/> is null.</exception>
     public static string? GetErrorMessage(this ApiResponse response)
+    {
+        ArgumentNullException.ThrowIfNull(response);
+        return response.Error ?? response.Message;
+    }
+
+    /// <summary>
+    /// Gets a human-readable representation of an <see cref="ApiResponse{T}"/> error.
+    /// </summary>
+    /// <typeparam name="T">The type of data in the response.</typeparam>
+    /// <param name="response">The response to get the error from.</param>
+    /// <returns>A human-readable representation of the error; or null if there is no error.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="response"/> is null.</exception>
+    public static string? GetErrorMessage<T>(this ApiResponse<T> response)
     {
         ArgumentNullException.ThrowIfNull(response);
         return response.Error ?? response.Message;
