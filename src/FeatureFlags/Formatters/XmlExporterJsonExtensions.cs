@@ -12,8 +12,9 @@ using FeatureFlags.Models;
 namespace FeatureFlags.Formatters;
 
 /// <summary>
-/// Provides System.Text.Json serialization extensions for working with XmlExporter
-/// data types to enable conversion between XML and JSON formats.
+/// Provides System.Text.Json serialization extensions for converting XML-exported data
+/// to JSON format and vice versa. Enables seamless interoperability between XML
+/// exporters and JSON-based APIs or storage systems.
 /// </summary>
 public static class XmlExporterJsonExtensions
 {
@@ -21,7 +22,9 @@ public static class XmlExporterJsonExtensions
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         WriteIndented = false,
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        PropertyNameCaseInsensitive = true,
+        ReferenceHandler = ReferenceHandler.IgnoreCycles
     };
 
     /// <summary>
@@ -53,18 +56,12 @@ public static class XmlExporterJsonExtensions
     /// <returns>A collection of FeatureFlag objects populated from the JSON data, or null if parsing fails.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="json"/> is null.</exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="json"/> is empty or whitespace.</exception>
+    /// <exception cref="JsonException">Thrown when the JSON is malformed and cannot be parsed.</exception>
     public static IReadOnlyList<FeatureFlag>? FromJsonToFeatureFlags(string json)
     {
         ArgumentException.ThrowIfNullOrEmpty(json);
 
-        try
-        {
-            return JsonSerializer.Deserialize<List<FeatureFlag>>(json, _jsonOptions)?.AsReadOnly();
-        }
-        catch (JsonException)
-        {
-            return null;
-        }
+        return JsonSerializer.Deserialize<List<FeatureFlag>>(json, _jsonOptions)?.AsReadOnly();
     }
 
     /// <summary>
@@ -121,18 +118,12 @@ public static class XmlExporterJsonExtensions
     /// <returns>A collection of AuditLog objects populated from the JSON data, or null if parsing fails.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="json"/> is null.</exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="json"/> is empty or whitespace.</exception>
+    /// <exception cref="JsonException">Thrown when the JSON is malformed and cannot be parsed.</exception>
     public static IReadOnlyList<AuditLog>? FromJsonToAuditLogs(string json)
     {
         ArgumentException.ThrowIfNullOrEmpty(json);
 
-        try
-        {
-            return JsonSerializer.Deserialize<List<AuditLog>>(json, _jsonOptions)?.AsReadOnly();
-        }
-        catch (JsonException)
-        {
-            return null;
-        }
+        return JsonSerializer.Deserialize<List<AuditLog>>(json, _jsonOptions)?.AsReadOnly();
     }
 
     /// <summary>
@@ -164,17 +155,11 @@ public static class XmlExporterJsonExtensions
     /// <returns>A collection of Rule objects populated from the JSON data, or null if parsing fails.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="json"/> is null.</exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="json"/> is empty or whitespace.</exception>
+    /// <exception cref="JsonException">Thrown when the JSON is malformed and cannot be parsed.</exception>
     public static IReadOnlyList<Rule>? FromJsonToRules(string json)
     {
         ArgumentException.ThrowIfNullOrEmpty(json);
 
-        try
-        {
-            return JsonSerializer.Deserialize<List<Rule>>(json, _jsonOptions)?.AsReadOnly();
-        }
-        catch (JsonException)
-        {
-            return null;
-        }
+        return JsonSerializer.Deserialize<List<Rule>>(json, _jsonOptions)?.AsReadOnly();
     }
 }

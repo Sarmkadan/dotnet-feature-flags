@@ -19,7 +19,7 @@ public static class XmlExporter
     /// <summary>
     /// Exports feature flags collection to XML document string with proper formatting.
     /// </summary>
-    public static string ExportFeatureFlags(IEnumerable<FeatureFlag> flags, bool pretty = true)
+    public static string ExportFeatureFlags(IEnumerable<FeatureFlag> flags, bool pretty = false)
     {
         var root = new XElement("FeatureFlags");
 
@@ -67,7 +67,7 @@ public static class XmlExporter
     /// <summary>
     /// Exports audit logs to XML format for compliance reporting.
     /// </summary>
-    public static string ExportAuditLogs(IEnumerable<AuditLog> logs, bool pretty = true)
+    public static string ExportAuditLogs(IEnumerable<AuditLog> logs, bool pretty = false)
     {
         var root = new XElement("AuditLogs");
 
@@ -108,7 +108,7 @@ public static class XmlExporter
     /// <summary>
     /// Exports rules to XML format for backup and analysis.
     /// </summary>
-    public static string ExportRules(IEnumerable<Rule> rules, bool pretty = true)
+    public static string ExportRules(IEnumerable<Rule> rules, bool pretty = false)
     {
         var root = new XElement("Rules");
 
