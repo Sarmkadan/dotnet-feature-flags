@@ -76,16 +76,14 @@ public static class UserContextValidation
             }
         }
 
-        if (value.Region is not null)
+        if (value.Region is not null && value.Region.Length > 100)
         {
-            if (value.Region.Length > 100)
-            {
-                errors.Add("Region exceeds maximum length of 100 characters.");
-            }
+            errors.Add("Region exceeds maximum length of 100 characters.");
         }
 
         // Validate CreatedAt (must be in the past and reasonable)
-        if (value.CreatedAt > DateTime.UtcNow.AddMinutes(5))
+        var utcNow = DateTime.UtcNow;
+        if (value.CreatedAt > utcNow.AddMinutes(5))
         {
             errors.Add("CreatedAt cannot be in the future.");
         }
@@ -150,7 +148,7 @@ public static class UserContextValidation
         {
             throw new ArgumentException(
                 $"UserContext validation failed:{Environment.NewLine}- {
-                    string.Join($"{Environment.NewLine}- ", errors)}");
+                string.Join($"{Environment.NewLine}- ", errors)}");
         }
     }
 
