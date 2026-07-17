@@ -30,33 +30,26 @@ public static class CacheServiceTestsJsonExtensions
     /// <param name="indented">Whether to format the JSON with indentation for readability.</param>
     /// <returns>A JSON string representation of the instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
-    public static string ToJson(this CacheServiceTests value, bool indented = false)
-    {
-        ArgumentNullException.ThrowIfNull(value);
-
-        var options = indented
+    public static string ToJson(this CacheServiceTests value, bool indented = false) =>
+        JsonSerializer.Serialize(value, indented
             ? new JsonSerializerOptions(_jsonOptions) { WriteIndented = true }
-            : _jsonOptions;
-
-        return JsonSerializer.Serialize(value, options);
-    }
+            : _jsonOptions);
 
     /// <summary>
     /// Deserializes a JSON string to a <see cref="CacheServiceTests"/> instance.
     /// </summary>
     /// <param name="json">The JSON string to deserialize.</param>
     /// <returns>The deserialized instance, or null if the JSON is empty or whitespace.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="json"/> is null.</exception>
+    /// <exception cref="ArgumentException"><paramref name="json"/> is empty or whitespace.</exception>
     /// <exception cref="JsonException">Thrown if the JSON is invalid or cannot be deserialized.</exception>
     public static CacheServiceTests? FromJson(string json)
     {
         ArgumentException.ThrowIfNullOrEmpty(json);
 
-        if (string.IsNullOrWhiteSpace(json))
-        {
-            return null;
-        }
-
-        return JsonSerializer.Deserialize<CacheServiceTests>(json, _jsonOptions);
+        return string.IsNullOrWhiteSpace(json)
+            ? null
+            : JsonSerializer.Deserialize<CacheServiceTests>(json, _jsonOptions);
     }
 
     /// <summary>
@@ -65,11 +58,17 @@ public static class CacheServiceTestsJsonExtensions
     /// <param name="json">The JSON string to deserialize.</param>
     /// <param name="value">Receives the deserialized instance if successful.</param>
     /// <returns>True if deserialization succeeded; otherwise, false.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="json"/> is null.</exception>
+    /// <exception cref="ArgumentException"><paramref name="json"/> is empty or whitespace.</exception>
     public static bool TryFromJson(string json, out CacheServiceTests? value)
     {
         ArgumentException.ThrowIfNullOrEmpty(json);
 
         value = null;
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            return false;
+        }
 
         try
         {
