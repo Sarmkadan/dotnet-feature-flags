@@ -15,6 +15,9 @@ namespace FeatureFlags.Services;
 /// </summary>
 public static class RuleEvaluationServiceJsonExtensions
 {
+    /// <summary>
+    /// Gets the default JSON serialization options for <see cref="RuleEvaluationService"/>.
+    /// </summary>
     private static readonly JsonSerializerOptions _jsonOptions = new(JsonSerializerDefaults.Web)
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -34,11 +37,11 @@ public static class RuleEvaluationServiceJsonExtensions
         ArgumentNullException.ThrowIfNull(value);
 
         var options = indented
-            ? new JsonSerializerOptions(_jsonOptions)
+                ? new JsonSerializerOptions(_jsonOptions)
             {
-                WriteIndented = true,
+                WriteIndented = true
             }
-            : _jsonOptions;
+                : _jsonOptions;
 
         return JsonSerializer.Serialize(value, options);
     }
@@ -48,7 +51,8 @@ public static class RuleEvaluationServiceJsonExtensions
     /// </summary>
     /// <param name="json">The JSON string to deserialize.</param>
     /// <returns>The deserialized service instance, or null if the JSON is empty or whitespace.</returns>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="json"/> is null or empty.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="json"/> is null.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="json"/> is empty or whitespace.</exception>
     /// <exception cref="JsonException">Thrown when the JSON is invalid or cannot be deserialized.</exception>
     public static RuleEvaluationService? FromJson(string json)
     {
@@ -68,7 +72,8 @@ public static class RuleEvaluationServiceJsonExtensions
     /// <param name="json">The JSON string to deserialize.</param>
     /// <param name="value">Receives the deserialized service instance if successful.</param>
     /// <returns>True if deserialization succeeded; otherwise, false.</returns>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="json"/> is null or empty.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="json"/> is null.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="json"/> is empty.</exception>
     public static bool TryFromJson(string json, out RuleEvaluationService? value)
     {
         ArgumentException.ThrowIfNullOrEmpty(json);
