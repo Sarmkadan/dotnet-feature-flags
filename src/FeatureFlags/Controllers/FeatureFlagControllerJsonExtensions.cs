@@ -2,7 +2,7 @@
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
-// =====================================================================
+// ===================================================================
 
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
@@ -22,7 +22,12 @@ public static class FeatureFlagControllerJsonExtensions
     };
 
     /// <summary>
-    /// Serializes the <see cref="FeatureFlagController"/> instance to a JSON string.
+    /// Gets the shared JSON serializer options used for serializing and deserializing <see cref="FeatureFlagController"/> instances.
+    /// </summary>
+    public static JsonSerializerOptions JsonSerializerOptions => _jsonSerializerOptions;
+
+    /// <summary>
+    /// Serializes the <see cref="FeatureFlagController"/> instance to a JSON string using camelCase property naming.
     /// </summary>
     /// <param name="value">The controller instance to serialize.</param>
     /// <param name="indented">Whether to format the JSON with indentation for readability.</param>
