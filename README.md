@@ -1465,6 +1465,69 @@ var (oldState, newState) = auditLog.GetChangeDetails();
 Console.WriteLine($"Changed from {oldState} to {newState}");
 ```
 
+## AuditLogRepositoryExtensions
+
+Provides extension methods for `AuditLogRepository` that add convenient query capabilities and helper methods for common audit log operations. These extensions simplify working with audit trails by offering specialized queries for filtering by action type, user, date range, and feature flag, as well as convenience methods for retrieving the most recent changes and calculating totals.
+
+Example usage:
+
+```csharp
+using FeatureFlags.Models;
+using FeatureFlags.Enums;
+using FeatureFlags.Repository;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+// Setup dependency injection
+var services = new ServiceCollection();
+services.AddLogging(logging => logging.AddConsole());
+services.AddDbContext<FeatureFlagDbContext>(options =>
+    options.UseSqlite("Data Source=featureflags.db"));
+
+// Register repositories
+services.AddScoped<IAuditLogRepository, AuditLogRepository>();
+
+var serviceProvider = services.BuildServiceProvider();
+
+// Create repository instance
+var auditLogRepository = serviceProvider.GetRequiredService<IAuditLogRepository>();
+
+// Example 1: Get the most recent change for a feature flag
+var mostRecentChange = await auditLogRepository.GetMostRecentAsync(1);
+if (mostRecentChange != null)
+{
+    Console.WriteLine($"Most recent change: {mostRecentChange.Action} by {mostRecentChange.ChangedBy} at {mostRecentChange.ChangedAt}");
+}
+
+// Example 2: Get all audit logs for a specific action type (e.g., FeatureFlagUpdated)
+var updateLogs = await auditLogRepository.GetByActionAsync(AuditAction.FeatureFlagUpdated);
+Console.WriteLine($"Found {updateLogs.Count} update operations");
+
+// Example 3: Get all changes made by a specific user within a date range
+var userChanges = await auditLogRepository.GetByUserInRangeAsync(
+    "admin@example.com",
+    DateTime.UtcNow.AddDays(-30),
+    DateTime.UtcNow
+);
+Console.WriteLine($"User made {userChanges.Count} changes in the last 30 days");
+
+// Example 4: Get the total number of audit logs across all feature flags
+var totalCount = await auditLogRepository.GetTotalCountAsync();
+Console.WriteLine($"Total audit logs: {totalCount}");
+
+// Example 5: Get audit logs for multiple feature flags
+var flagIds = new[] { 1, 2, 3 };
+var multiFlagLogs = await auditLogRepository.GetByFeatureFlagIdsAsync(flagIds);
+Console.WriteLine($"Found {multiFlagLogs.Count} logs across {flagIds.Length} feature flags");
+
+// Example 6: Get audit logs with enhanced details for a specific feature flag
+var detailedLogs = await auditLogRepository.GetWithDetailsAsync(1);
+foreach (var log in detailedLogs)
+{
+    Console.WriteLine($"[{log.ChangedAt:yyyy-MM-dd}] {log.Action} by {log.ChangedBy}: {log.Description}");
+}
+```
+
 ## CliArgumentParser
 
 Parses command-line arguments and converts them to structured command objects. Provides help text generation and validation for CLI arguments, supporting all available commands like `evaluate`, `create`, `update`, `list`, `get`, `enable`, `disable`, `audit`, `export`, `import`, and `webhook`.
