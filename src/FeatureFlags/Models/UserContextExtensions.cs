@@ -85,8 +85,8 @@ namespace FeatureFlags.Models
         {
             ArgumentNullException.ThrowIfNull(context);
 
-            // Use UTC to avoid issues with local time zones.
-            return (int)(DateTime.UtcNow - context.CreatedAt.ToUniversalTime()).TotalDays;
+            // CreatedAt is already stored as UTC, no conversion needed
+            return (int)(DateTime.UtcNow - context.CreatedAt).TotalDays;
         }
     }
 }
