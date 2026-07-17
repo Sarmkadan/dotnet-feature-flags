@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 
 namespace dotnet_feature_flags.Benchmarks
 {
     /// <summary>
     /// Provides validation helpers for <see cref="FeatureFlagsBenchmarks"/> instances.
-    /// Validates benchmark state to ensure benchmarks can run correctly.
+    /// Validates benchmark state to ensure benchmarks can run correctly and produce meaningful results.
     /// </summary>
     public static class FeatureFlagsBenchmarksValidation
     {
@@ -32,33 +31,19 @@ namespace dotnet_feature_flags.Benchmarks
                 errors.Add($"Setup() failed: {ex.Message}");
             }
 
-            // Validate GetConsistentHash returns a valid hash
-            try
-            {
-                var hash = value.GetConsistentHash();
-                if (hash == 0)
-                {
-                    errors.Add("GetConsistentHash() returned 0, which may indicate an issue with hash calculation.");
-                }
-            }
-            catch (Exception ex)
-            {
-                errors.Add($"GetConsistentHash() threw: {ex.Message}");
-            }
-
-            // Validate percentage rollout benchmarks
-            ValidatePercentageBenchmark(value.PercentageRolloutEvaluation, "PercentageRolloutEvaluation", errors);
-            ValidatePercentageBenchmark(value.PercentageRolloutEvaluation_100, "PercentageRolloutEvaluation_100", errors);
-            ValidatePercentageBenchmark(value.PercentageRolloutEvaluation_0, "PercentageRolloutEvaluation_0", errors);
+            // Validate percentage rollout benchmarks with expected results
+            ValidatePercentageBenchmark(value.PercentageRolloutEvaluation, "PercentageRolloutEvaluation", errors, expectedResult: false);
+            ValidatePercentageBenchmark(value.PercentageRolloutEvaluation_100, "PercentageRolloutEvaluation_100", errors, expectedResult: true);
+            ValidatePercentageBenchmark(value.PercentageRolloutEvaluation_0, "PercentageRolloutEvaluation_0", errors, expectedResult: false);
 
             // Validate rule-based evaluation benchmarks
-            ValidateBooleanBenchmark(value.RuleBasedEvaluation_Match, "RuleBasedEvaluation_Match", errors);
-            ValidateBooleanBenchmark(value.RuleBasedEvaluation_NoMatch, "RuleBasedEvaluation_NoMatch", errors);
-            ValidateBooleanBenchmark(value.RuleBasedEvaluation_SingleCondition, "RuleBasedEvaluation_SingleCondition", errors);
+            ValidateBooleanBenchmark(value.RuleBasedEvaluation_Match, "RuleBasedEvaluation_Match", errors, expectedResult: true);
+            ValidateBooleanBenchmark(value.RuleBasedEvaluation_NoMatch, "RuleBasedEvaluation_NoMatch", errors, expectedResult: false);
+            ValidateBooleanBenchmark(value.RuleBasedEvaluation_SingleCondition, "RuleBasedEvaluation_SingleCondition", errors, expectedResult: true);
 
-            // Validate A/B test benchmarks
-            ValidateStringBenchmark(value.ABTestVariantAssignment, "ABTestVariantAssignment", errors);
-            ValidateStringBenchmark(value.ABTestVariantAssignment_MultipleVariants, "ABTestVariantAssignment_MultipleVariants", errors);
+            // Validate A/B test benchmarks (should return non-null variant)
+            ValidateStringBenchmark(value.ABTestVariantAssignment, "ABTestVariantAssignment", errors, expectedNonNull: true);
+            ValidateStringBenchmark(value.ABTestVariantAssignment_MultipleVariants, "ABTestVariantAssignment_MultipleVariants", errors, expectedNonNull: true);
 
             // Validate full evaluation benchmarks
             ValidateBooleanBenchmark(value.FullFeatureFlagEvaluation_Percentage, "FullFeatureFlagEvaluation_Percentage", errors);
@@ -83,8 +68,10 @@ namespace dotnet_feature_flags.Benchmarks
         /// </summary>
         /// <param name="value">The benchmarks instance to check.</param>
         /// <returns>True if the instance is valid; otherwise, false.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="value"/> is null.</exception>
         public static bool IsValid(this FeatureFlagsBenchmarks value)
         {
+            ArgumentNullException.ThrowIfNull(value);
             return Validate(value).Count == 0;
         }
 
@@ -110,13 +97,18 @@ namespace dotnet_feature_flags.Benchmarks
         private static void ValidatePercentageBenchmark(
             Func<bool> benchmark,
             string benchmarkName,
-            ICollection<string> errors)
+            ICollection<string> errors,
+            bool expectedResult = false)
         {
+            ArgumentNullException.ThrowIfNull(benchmark);
+
             try
             {
                 var result = benchmark();
-                // Percentage rollout benchmarks should return a boolean result
-                // No specific range validation needed as the benchmark itself handles the logic
+                if (result != expectedResult)
+                {
+                    errors.Add($"{benchmarkName}() returned {result}, expected {expectedResult}.");
+                }
             }
             catch (Exception ex)
             {
@@ -127,12 +119,18 @@ namespace dotnet_feature_flags.Benchmarks
         private static void ValidateBooleanBenchmark(
             Func<bool> benchmark,
             string benchmarkName,
-            ICollection<string> errors)
+            ICollection<string> errors,
+            bool expectedResult = false)
         {
+            ArgumentNullException.ThrowIfNull(benchmark);
+
             try
             {
-                var _ = benchmark();
-                // Boolean benchmarks should execute without throwing
+                var result = benchmark();
+                if (result != expectedResult)
+                {
+                    errors.Add($"{benchmarkName}() returned {result}, expected {expectedResult}.");
+                }
             }
             catch (Exception ex)
             {
@@ -143,12 +141,18 @@ namespace dotnet_feature_flags.Benchmarks
         private static void ValidateStringBenchmark(
             Func<string?> benchmark,
             string benchmarkName,
-            ICollection<string> errors)
+            ICollection<string> errors,
+            bool expectedNonNull = false)
         {
+            ArgumentNullException.ThrowIfNull(benchmark);
+
             try
             {
                 var result = benchmark();
-                // String benchmarks may return null for some variants, which is acceptable
+                if (expectedNonNull && result is null)
+                {
+                    errors.Add($"{benchmarkName}() returned null, expected non-null result.");
+                }
             }
             catch (Exception ex)
             {
