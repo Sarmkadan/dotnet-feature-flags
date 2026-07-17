@@ -59,7 +59,11 @@ public static class ABTestVariantValidation
         }
 
         // Validate Description
-        if (value.Description.Length > 1000)
+        if (string.IsNullOrWhiteSpace(value.Description))
+        {
+            errors.Add("Description is required and cannot be empty or whitespace.");
+        }
+        else if (value.Description.Length > 1000)
         {
             errors.Add("Description must be 1000 characters or less.");
         }
@@ -122,9 +126,10 @@ public static class ABTestVariantValidation
     /// </summary>
     /// <param name="value">The variant to check.</param>
     /// <returns>True if valid; otherwise, false.</returns>
+/// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
     public static bool IsValid(this ABTestVariant? value)
     {
-        return value?.Validate().Count == 0;
+        return value is not null && value.Validate().Count == 0;
     }
 
     /// <summary>
