@@ -14,13 +14,14 @@ public static class ResultExtensions
     /// <param name="result">The result to map.</param>
     /// <param name="selector">The selector to apply to the success value.</param>
     /// <returns>A new <see cref="Result{TOut}"/> that represents the mapped result.</returns>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="selector"/> is null.</exception>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="result"/> or <paramref name="selector"/> is null.</exception>
     public static Result<TOut> Map<T, TOut>(this Result<T> result, Func<T, TOut> selector)
     {
+        ArgumentNullException.ThrowIfNull(result);
         ArgumentNullException.ThrowIfNull(selector);
 
         return result.IsSuccess
-            ? Result<TOut>.Success(selector(result.Data!))
+            ? Result<TOut>.Success(selector(result.Data))
             : Result<TOut>.Failure(result.Error, result.ErrorCode);
     }
 
@@ -31,14 +32,15 @@ public static class ResultExtensions
     /// <param name="result">The result to evaluate.</param>
     /// <param name="action">The action to execute if the result is a success.</param>
     /// <returns>The original <see cref="Result{T}"/>.</returns>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="result"/> or <paramref name="action"/> is null.</exception>
     public static Result<T> OnSuccess<T>(this Result<T> result, Action<T> action)
     {
+        ArgumentNullException.ThrowIfNull(result);
         ArgumentNullException.ThrowIfNull(action);
 
         if (result.IsSuccess)
         {
-            action(result.Data!);
+            action(result.Data);
         }
 
         return result;
@@ -51,9 +53,10 @@ public static class ResultExtensions
     /// <param name="result">The result to evaluate.</param>
     /// <param name="action">The action to execute if the result is a failure.</param>
     /// <returns>The original <see cref="Result{T}"/> or <see cref="Result"/>.</returns>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="result"/> or <paramref name="action"/> is null.</exception>
     public static Result<T> OnFailure<T>(this Result<T> result, Action<string?, int?> action)
     {
+        ArgumentNullException.ThrowIfNull(result);
         ArgumentNullException.ThrowIfNull(action);
 
         if (!result.IsSuccess)
@@ -70,9 +73,10 @@ public static class ResultExtensions
     /// <param name="result">The result to evaluate.</param>
     /// <param name="action">The action to execute if the result is a failure.</param>
     /// <returns>The original <see cref="Result"/>.</returns>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="result"/> or <paramref name="action"/> is null.</exception>
     public static Result OnFailure(this Result result, Action<string?, int?> action)
     {
+        ArgumentNullException.ThrowIfNull(result);
         ArgumentNullException.ThrowIfNull(action);
 
         if (!result.IsSuccess)
