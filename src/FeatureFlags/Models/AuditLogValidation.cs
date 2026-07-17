@@ -12,6 +12,10 @@ namespace FeatureFlags.Models;
 /// Provides validation helpers for <see cref="AuditLog"/> instances to ensure data integrity
 /// before persistence and to validate audit trail completeness for compliance requirements.
 /// </summary>
+/// <remarks>
+/// This class uses extension methods to validate <see cref="AuditLog"/> instances against business rules,
+/// ensuring all required fields are present and values are within acceptable ranges.
+/// </remarks>
 public static class AuditLogValidation
 {
     /// <summary>
@@ -27,25 +31,25 @@ public static class AuditLogValidation
 
         var errors = new List<string>();
 
-        // Validate Id
-        if (value.Id < 0)
+        // Validate Id - must be a positive integer
+        if (value.Id <= 0)
         {
-            errors.Add($"Id must be a non-negative integer, but was {value.Id}.");
+            errors.Add("Id must be a positive integer.");
         }
 
-        // Validate FeatureFlagId
+        // Validate FeatureFlagId - must reference an existing feature flag
         if (value.FeatureFlagId <= 0)
         {
             errors.Add("FeatureFlagId must be a positive integer.");
         }
 
-        // Validate Action
+        // Validate Action - must be a defined AuditAction enum value
         if (!Enum.IsDefined(typeof(AuditAction), value.Action))
         {
             errors.Add($"Action '{value.Action}' is not a valid AuditAction value.");
         }
 
-        // Validate ChangedBy
+        // Validate ChangedBy - must identify who made the change
         if (string.IsNullOrWhiteSpace(value.ChangedBy))
         {
             errors.Add("ChangedBy cannot be null, empty, or whitespace.");
@@ -60,12 +64,12 @@ public static class AuditLogValidation
         {
             errors.Add("ChangedAt cannot be the default DateTime value.");
         }
-        else if (value.ChangedAt > DateTime.UtcNow.AddMinutes(5))
+        else if (value.ChangedAt > DateTime.UtcNow.AddMinutes(1))
         {
-            errors.Add("ChangedAt cannot be in the future.");
+            errors.Add("ChangedAt cannot be more than 1 minute in the future.");
         }
 
-        // Validate OldValue and NewValue based on Action type
+        // Validate OldValue and NewValue based on Action type using pattern matching
         switch (value.Action)
         {
             case AuditAction.Created:
@@ -82,14 +86,9 @@ public static class AuditLogValidation
                 }
                 break;
 
-            case AuditAction.Enabled:
-            case AuditAction.Disabled:
-            case AuditAction.Updated:
-            case AuditAction.RolloutChanged:
-            case AuditAction.RuleAdded:
-            case AuditAction.RuleRemoved:
-            case AuditAction.VariantUpdated:
-            case AuditAction.Evaluated:
+            case AuditAction.Enabled or AuditAction.Disabled or AuditAction.Updated
+            or AuditAction.RolloutChanged or AuditAction.RuleAdded or AuditAction.RuleRemoved
+            or AuditAction.VariantUpdated or AuditAction.Evaluated:
                 // These actions should have both OldValue and NewValue
                 if (string.IsNullOrWhiteSpace(value.OldValue) && string.IsNullOrWhiteSpace(value.NewValue))
                 {
@@ -98,7 +97,7 @@ public static class AuditLogValidation
                 break;
         }
 
-        // Validate Description
+        // Validate Description - provides context about the change
         if (string.IsNullOrWhiteSpace(value.Description))
         {
             errors.Add("Description cannot be null, empty, or whitespace.");
@@ -121,12 +120,9 @@ public static class AuditLogValidation
             }
         }
 
-        if (value.UserAgent is not null)
+        if (value.UserAgent is not null && value.UserAgent.Length > 512)
         {
-            if (value.UserAgent.Length > 512)
-            {
-                errors.Add("UserAgent exceeds maximum length of 512 characters.");
-            }
+            errors.Add("UserAgent exceeds maximum length of 512 characters.");
         }
 
         return errors.AsReadOnly();
@@ -176,9 +172,7 @@ public static class AuditLogValidation
             return false;
         }
 
-        // Simple validation - check for common patterns
-        // IPv4: 1-3 digits, 0-255, separated by dots
-        // IPv6: hex groups separated by colons
-        return ipAddress.Split('.').Length == 4 || ipAddress.Split(':').Length > 2;
+        // Use built-in IPAddress.TryParse for accurate validation
+        return System.Net.IPAddress.TryParse(ipAddress, out _);
     }
 }
