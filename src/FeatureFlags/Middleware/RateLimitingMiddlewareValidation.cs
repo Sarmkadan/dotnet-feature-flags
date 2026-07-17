@@ -45,7 +45,7 @@ public static class RateLimitingMiddlewareValidation
     /// <returns>True if the instance is valid; otherwise, false.</returns>
     public static bool IsValid(this RateLimitOptions? value)
     {
-        return value?.Validate().Count == 0;
+        return value is not null && !value.Validate().Any();
     }
 
     /// <summary>
@@ -56,6 +56,8 @@ public static class RateLimitingMiddlewareValidation
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
     public static void EnsureValid(this RateLimitOptions? value)
     {
+    ArgumentNullException.ThrowIfNull(value);
+
         var problems = value.Validate();
         if (problems.Count > 0)
         {
@@ -77,8 +79,9 @@ public static class RateLimitingMiddlewareValidation
 
         var problems = new List<string>();
 
-        // RateLimitingMiddleware doesn't have public properties to validate directly
-        // The validation is done on the RateLimitOptions that it uses internally
+        // Validate the internal RateLimitOptions
+        var optionsProblems = value.GetRateLimitOptions()?.Validate() ?? new List<string> { "RateLimitOptions cannot be null." };
+        problems.AddRange(optionsProblems);
 
         return problems.AsReadOnly();
     }
@@ -90,7 +93,7 @@ public static class RateLimitingMiddlewareValidation
     /// <returns>True if the instance is valid; otherwise, false.</returns>
     public static bool IsValid(this RateLimitingMiddleware? value)
     {
-        return value?.Validate().Count == 0;
+        return value is not null && !value.Validate().Any();
     }
 
     /// <summary>
@@ -101,7 +104,11 @@ public static class RateLimitingMiddlewareValidation
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
     public static void EnsureValid(this RateLimitingMiddleware? value)
     {
-        var problems = value.Validate();
+    ArgumentNullException.ThrowIfNull(value);
+
+    var problems = value.Validate();
+
+
         if (problems.Count > 0)
         {
             throw new ArgumentException(
