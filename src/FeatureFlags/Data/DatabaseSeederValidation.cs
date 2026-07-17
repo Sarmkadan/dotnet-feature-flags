@@ -103,18 +103,22 @@ public static class DatabaseSeederValidation
     /// </summary>
     /// <param name="value">The database statistics instance to check.</param>
     /// <returns>True if valid; otherwise, false.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if value is null.</exception>
     public static bool IsValid(this DatabaseStatistics? value)
     {
-        return value?.Validate().Count == 0;
+        return value is null || value.Validate().Count == 0;
     }
 
     /// <summary>
     /// Ensures that a <see cref="DatabaseStatistics"/> instance is valid, throwing an exception if not.
     /// </summary>
     /// <param name="value">The database statistics instance to validate.</param>
+    /// <exception cref="ArgumentNullException">Thrown if value is null.</exception>
     /// <exception cref="ArgumentException">Thrown if the instance is not valid.</exception>
     public static void EnsureValid(this DatabaseStatistics? value)
     {
+        ArgumentNullException.ThrowIfNull(value);
+
         var problems = value.Validate();
 
         if (problems.Count > 0)
