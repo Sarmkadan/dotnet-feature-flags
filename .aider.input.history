@@ -10050,3 +10050,223 @@
 +- Tidy up FeatureFlagControllerJsonExtensions
 +- Tidy up FeatureFlagSearchBuilderJsonExtnesions
 +- cleanup in DateTimeExtensionsValidation
+
+# 2026-07-20 08:05:30.427466
++Add flag prerequisite support: a flag can require another flag to be enabled. Read the flag model and the evaluation service (grep 'class FeatureFlag' and the evaluate method in src/FeatureFlags/Services). Add `string? PrerequisiteFlagKey` to the flag model (nullable, default null so persistence keeps working); in evaluation, if set, evaluate the prerequisite for the same user first - if it is off, the dependent flag is off. Guard against self-reference and A->B->A cycles by treating as off and logging. Add unit tests.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props unless the task explicitly says to.
++- Do NOT add NuGet packages unless the task explicitly requires it.
++- The whole solution MUST still compile with dotnet build.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- Explain README in readme
++- document .aider.chat.history in the readme
++- update readme
++- document README in the readme
++- update readme
++- Small refactor - GradualRolloutSchedulerServiceTestsJsonExtensions
++- Cleanup in CacheServiceTestsJsonExtensions
++- refactor: polish ConditionTestsJsonExtensions
++- refactor: dedupe some logic in XmlExporter
++- Tidy up FeatureFlagControllerJsonExtensions
+
+# 2026-07-20 08:05:30.429705
++Add flag prerequisite support: a flag can require another flag to be enabled. Read the flag model and the evaluation service (grep 'class FeatureFlag' and the evaluate method in src/FeatureFlags/Services). Add `string? PrerequisiteFlagKey` to the flag model (nullable, default null so persistence keeps working); in evaluation, if set, evaluate the prerequisite for the same user first - if it is off, the dependent flag is off. Guard against self-reference and A->B->A cycles by treating as off and logging. Add unit tests.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props unless the task explicitly says to.
++- Do NOT add NuGet packages unless the task explicitly requires it.
++- The whole solution MUST still compile with dotnet build.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- Explain README in readme
++- document .aider.chat.history in the readme
++- update readme
++- document README in the readme
++- update readme
++- Small refactor - GradualRolloutSchedulerServiceTestsJsonExtensions
++- Cleanup in CacheServiceTestsJsonExtensions
++- refactor: polish ConditionTestsJsonExtensions
++- refactor: dedupe some logic in XmlExporter
++- Tidy up FeatureFlagControllerJsonExtensions
+
+# 2026-07-20 08:06:39.897862
++Add flag prerequisite support: a flag can require another flag to be enabled. Read the flag model and the evaluation service (grep 'class FeatureFlag' and the evaluate method in src/FeatureFlags/Services). Add `string? PrerequisiteFlagKey` to the flag model (nullable, default null so persistence keeps working); in evaluation, if set, evaluate the prerequisite for the same user first - if it is off, the dependent flag is off. Guard against self-reference and A->B->A cycles by treating as off and logging. Add unit tests.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props unless the task explicitly says to.
++- Do NOT add NuGet packages unless the task explicitly requires it.
++- The whole solution MUST still compile with dotnet build.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- Explain README in readme
++- document .aider.chat.history in the readme
++- update readme
++- document README in the readme
++- update readme
++- Small refactor - GradualRolloutSchedulerServiceTestsJsonExtensions
++- Cleanup in CacheServiceTestsJsonExtensions
++- refactor: polish ConditionTestsJsonExtensions
++- refactor: dedupe some logic in XmlExporter
++- Tidy up FeatureFlagControllerJsonExtensions
+
+# 2026-07-20 08:06:39.898182
++Add flag prerequisite support: a flag can require another flag to be enabled. Read the flag model and the evaluation service (grep 'class FeatureFlag' and the evaluate method in src/FeatureFlags/Services). Add `string? PrerequisiteFlagKey` to the flag model (nullable, default null so persistence keeps working); in evaluation, if set, evaluate the prerequisite for the same user first - if it is off, the dependent flag is off. Guard against self-reference and A->B->A cycles by treating as off and logging. Add unit tests.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props unless the task explicitly says to.
++- Do NOT add NuGet packages unless the task explicitly requires it.
++- The whole solution MUST still compile with dotnet build.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- Explain README in readme
++- document .aider.chat.history in the readme
++- update readme
++- document README in the readme
++- update readme
++- Small refactor - GradualRolloutSchedulerServiceTestsJsonExtensions
++- Cleanup in CacheServiceTestsJsonExtensions
++- refactor: polish ConditionTestsJsonExtensions
++- refactor: dedupe some logic in XmlExporter
++- Tidy up FeatureFlagControllerJsonExtensions
+
+# 2026-07-20 08:06:49.242327
++Add flag prerequisite support: a flag can require another flag to be enabled. Read the flag model and the evaluation service (grep 'class FeatureFlag' and the evaluate method in src/FeatureFlags/Services). Add `string? PrerequisiteFlagKey` to the flag model (nullable, default null so persistence keeps working); in evaluation, if set, evaluate the prerequisite for the same user first - if it is off, the dependent flag is off. Guard against self-reference and A->B->A cycles by treating as off and logging. Add unit tests.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props unless the task explicitly says to.
++- Do NOT add NuGet packages unless the task explicitly requires it.
++- The whole solution MUST still compile with dotnet build.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- Explain README in readme
++- document .aider.chat.history in the readme
++- update readme
++- document README in the readme
++- update readme
++- Small refactor - GradualRolloutSchedulerServiceTestsJsonExtensions
++- Cleanup in CacheServiceTestsJsonExtensions
++- refactor: polish ConditionTestsJsonExtensions
++- refactor: dedupe some logic in XmlExporter
++- Tidy up FeatureFlagControllerJsonExtensions
+
+# 2026-07-20 08:06:49.242390
++Add flag prerequisite support: a flag can require another flag to be enabled. Read the flag model and the evaluation service (grep 'class FeatureFlag' and the evaluate method in src/FeatureFlags/Services). Add `string? PrerequisiteFlagKey` to the flag model (nullable, default null so persistence keeps working); in evaluation, if set, evaluate the prerequisite for the same user first - if it is off, the dependent flag is off. Guard against self-reference and A->B->A cycles by treating as off and logging. Add unit tests.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props unless the task explicitly says to.
++- Do NOT add NuGet packages unless the task explicitly requires it.
++- The whole solution MUST still compile with dotnet build.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- Explain README in readme
++- document .aider.chat.history in the readme
++- update readme
++- document README in the readme
++- update readme
++- Small refactor - GradualRolloutSchedulerServiceTestsJsonExtensions
++- Cleanup in CacheServiceTestsJsonExtensions
++- refactor: polish ConditionTestsJsonExtensions
++- refactor: dedupe some logic in XmlExporter
++- Tidy up FeatureFlagControllerJsonExtensions
+
+# 2026-07-20 08:08:59.218884
++Add flag prerequisite support: a flag can require another flag to be enabled. Read the flag model and the evaluation service (grep 'class FeatureFlag' and the evaluate method in src/FeatureFlags/Services). Add `string? PrerequisiteFlagKey` to the flag model (nullable, default null so persistence keeps working); in evaluation, if set, evaluate the prerequisite for the same user first - if it is off, the dependent flag is off. Guard against self-reference and A->B->A cycles by treating as off and logging. Add unit tests.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props unless the task explicitly says to.
++- Do NOT add NuGet packages unless the task explicitly requires it.
++- The whole solution MUST still compile with dotnet build.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- Explain README in readme
++- document .aider.chat.history in the readme
++- update readme
++- document README in the readme
++- update readme
++- Small refactor - GradualRolloutSchedulerServiceTestsJsonExtensions
++- Cleanup in CacheServiceTestsJsonExtensions
++- refactor: polish ConditionTestsJsonExtensions
++- refactor: dedupe some logic in XmlExporter
++- Tidy up FeatureFlagControllerJsonExtensions
+
+# 2026-07-20 08:08:59.219237
++Add flag prerequisite support: a flag can require another flag to be enabled. Read the flag model and the evaluation service (grep 'class FeatureFlag' and the evaluate method in src/FeatureFlags/Services). Add `string? PrerequisiteFlagKey` to the flag model (nullable, default null so persistence keeps working); in evaluation, if set, evaluate the prerequisite for the same user first - if it is off, the dependent flag is off. Guard against self-reference and A->B->A cycles by treating as off and logging. Add unit tests.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props unless the task explicitly says to.
++- Do NOT add NuGet packages unless the task explicitly requires it.
++- The whole solution MUST still compile with dotnet build.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- Explain README in readme
++- document .aider.chat.history in the readme
++- update readme
++- document README in the readme
++- update readme
++- Small refactor - GradualRolloutSchedulerServiceTestsJsonExtensions
++- Cleanup in CacheServiceTestsJsonExtensions
++- refactor: polish ConditionTestsJsonExtensions
++- refactor: dedupe some logic in XmlExporter
++- Tidy up FeatureFlagControllerJsonExtensions
+
+# 2026-07-20 08:10:04.461615
++Add flag prerequisite support: a flag can require another flag to be enabled. Read the flag model and the evaluation service (grep 'class FeatureFlag' and the evaluate method in src/FeatureFlags/Services). Add `string? PrerequisiteFlagKey` to the flag model (nullable, default null so persistence keeps working); in evaluation, if set, evaluate the prerequisite for the same user first - if it is off, the dependent flag is off. Guard against self-reference and A->B->A cycles by treating as off and logging. Add unit tests.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props unless the task explicitly says to.
++- Do NOT add NuGet packages unless the task explicitly requires it.
++- The whole solution MUST still compile with dotnet build.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- Explain README in readme
++- document .aider.chat.history in the readme
++- update readme
++- document README in the readme
++- update readme
++- Small refactor - GradualRolloutSchedulerServiceTestsJsonExtensions
++- Cleanup in CacheServiceTestsJsonExtensions
++- refactor: polish ConditionTestsJsonExtensions
++- refactor: dedupe some logic in XmlExporter
++- Tidy up FeatureFlagControllerJsonExtensions
+
+# 2026-07-20 08:10:04.461876
++Add flag prerequisite support: a flag can require another flag to be enabled. Read the flag model and the evaluation service (grep 'class FeatureFlag' and the evaluate method in src/FeatureFlags/Services). Add `string? PrerequisiteFlagKey` to the flag model (nullable, default null so persistence keeps working); in evaluation, if set, evaluate the prerequisite for the same user first - if it is off, the dependent flag is off. Guard against self-reference and A->B->A cycles by treating as off and logging. Add unit tests.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props unless the task explicitly says to.
++- Do NOT add NuGet packages unless the task explicitly requires it.
++- The whole solution MUST still compile with dotnet build.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- Explain README in readme
++- document .aider.chat.history in the readme
++- update readme
++- document README in the readme
++- update readme
++- Small refactor - GradualRolloutSchedulerServiceTestsJsonExtensions
++- Cleanup in CacheServiceTestsJsonExtensions
++- refactor: polish ConditionTestsJsonExtensions
++- refactor: dedupe some logic in XmlExporter
++- Tidy up FeatureFlagControllerJsonExtensions
