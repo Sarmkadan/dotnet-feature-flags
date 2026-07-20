@@ -10358,3 +10358,189 @@
 +- update readme
 +- Small refactor - GradualRolloutSchedulerServiceTestsJsonExtensions
 +- Cleanup in CacheServiceTestsJsonExtensions
+
+# 2026-07-20 22:07:40.196836
++Create tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs for SearchQueryBuilder (src/FeatureFlags/Utilities/SearchQueryBuilder.cs). Read it first. Cover: empty query, multiple criteria combine correctly, special characters handling, and builder reuse produces independent queries.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props unless the task explicitly says to.
++- Do NOT add NuGet packages unless the task explicitly requires it.
++- The whole solution MUST still compile with dotnet build.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++
++IMPORTANT: a previous attempt at this exact task FAILED with these compiler errors and was reverted. Do it differently and make sure these do not happen again:
++[after 515s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(25,43): error CS0117: 'RolloutType' does not contain a definition for 'Boolean' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/dotnet-feature-flags.Tests.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(168,42): error CS0117: 'RolloutType' does not contain a definition for 'Boolean' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/dotnet-feature-flags.Tests.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(25,43): error CS0117: 'RolloutT
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(25,43): error CS0117: 'RolloutType' does not contain a definition for 'Boolean' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/dotnet-feature-flags.Tests.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(168,42): error CS0117: 'RolloutType' does not contain a definition for 'Boolean' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/dotnet-feature-flags.Tests.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(25,43): error CS0117: 'RolloutType' does not contain a definition for 'Boolean' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/dotnet-feature-flags.Tests.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(168,42): error CS0117: 'RolloutType' does not contain a definition for 'Boolean' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/dotnet-feature-flags.Tests.csproj]
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- .
++- tweak .aiedr.chat.history
++- test: add pagination helper unit tests
++- .aider.chat.history changes
++- Explain README in readme
++- document .aider.chat.history in the readme
++- update readme
++- document README in the readme
++- update readme
++- Small refactor - GradualRolloutSchedulerServiceTestsJsonExtensions
+
+# 2026-07-20 22:07:40.196905
++Create tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs for SearchQueryBuilder (src/FeatureFlags/Utilities/SearchQueryBuilder.cs). Read it first. Cover: empty query, multiple criteria combine correctly, special characters handling, and builder reuse produces independent queries.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props unless the task explicitly says to.
++- Do NOT add NuGet packages unless the task explicitly requires it.
++- The whole solution MUST still compile with dotnet build.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++
++IMPORTANT: a previous attempt at this exact task FAILED with these compiler errors and was reverted. Do it differently and make sure these do not happen again:
++[after 515s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(25,43): error CS0117: 'RolloutType' does not contain a definition for 'Boolean' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/dotnet-feature-flags.Tests.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(168,42): error CS0117: 'RolloutType' does not contain a definition for 'Boolean' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/dotnet-feature-flags.Tests.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(25,43): error CS0117: 'RolloutT
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(25,43): error CS0117: 'RolloutType' does not contain a definition for 'Boolean' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/dotnet-feature-flags.Tests.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(168,42): error CS0117: 'RolloutType' does not contain a definition for 'Boolean' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/dotnet-feature-flags.Tests.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(25,43): error CS0117: 'RolloutType' does not contain a definition for 'Boolean' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/dotnet-feature-flags.Tests.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(168,42): error CS0117: 'RolloutType' does not contain a definition for 'Boolean' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/dotnet-feature-flags.Tests.csproj]
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- .
++- tweak .aiedr.chat.history
++- test: add pagination helper unit tests
++- .aider.chat.history changes
++- Explain README in readme
++- document .aider.chat.history in the readme
++- update readme
++- document README in the readme
++- update readme
++- Small refactor - GradualRolloutSchedulerServiceTestsJsonExtensions
+
+# 2026-07-20 22:08:53.891461
++Create tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs for SearchQueryBuilder (src/FeatureFlags/Utilities/SearchQueryBuilder.cs). Read it first. Cover: empty query, multiple criteria combine correctly, special characters handling, and builder reuse produces independent queries.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props unless the task explicitly says to.
++- Do NOT add NuGet packages unless the task explicitly requires it.
++- The whole solution MUST still compile with dotnet build.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++
++IMPORTANT: a previous attempt at this exact task FAILED with these compiler errors and was reverted. Do it differently and make sure these do not happen again:
++[after 515s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(25,43): error CS0117: 'RolloutType' does not contain a definition for 'Boolean' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/dotnet-feature-flags.Tests.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(168,42): error CS0117: 'RolloutType' does not contain a definition for 'Boolean' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/dotnet-feature-flags.Tests.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(25,43): error CS0117: 'RolloutT
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(25,43): error CS0117: 'RolloutType' does not contain a definition for 'Boolean' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/dotnet-feature-flags.Tests.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(168,42): error CS0117: 'RolloutType' does not contain a definition for 'Boolean' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/dotnet-feature-flags.Tests.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(25,43): error CS0117: 'RolloutType' does not contain a definition for 'Boolean' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/dotnet-feature-flags.Tests.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(168,42): error CS0117: 'RolloutType' does not contain a definition for 'Boolean' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/dotnet-feature-flags.Tests.csproj]
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- .
++- tweak .aiedr.chat.history
++- test: add pagination helper unit tests
++- .aider.chat.history changes
++- Explain README in readme
++- document .aider.chat.history in the readme
++- update readme
++- document README in the readme
++- update readme
++- Small refactor - GradualRolloutSchedulerServiceTestsJsonExtensions
+
+# 2026-07-20 22:08:53.891548
++Create tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs for SearchQueryBuilder (src/FeatureFlags/Utilities/SearchQueryBuilder.cs). Read it first. Cover: empty query, multiple criteria combine correctly, special characters handling, and builder reuse produces independent queries.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props unless the task explicitly says to.
++- Do NOT add NuGet packages unless the task explicitly requires it.
++- The whole solution MUST still compile with dotnet build.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++
++IMPORTANT: a previous attempt at this exact task FAILED with these compiler errors and was reverted. Do it differently and make sure these do not happen again:
++[after 515s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(25,43): error CS0117: 'RolloutType' does not contain a definition for 'Boolean' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/dotnet-feature-flags.Tests.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(168,42): error CS0117: 'RolloutType' does not contain a definition for 'Boolean' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/dotnet-feature-flags.Tests.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(25,43): error CS0117: 'RolloutT
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(25,43): error CS0117: 'RolloutType' does not contain a definition for 'Boolean' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/dotnet-feature-flags.Tests.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(168,42): error CS0117: 'RolloutType' does not contain a definition for 'Boolean' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/dotnet-feature-flags.Tests.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(25,43): error CS0117: 'RolloutType' does not contain a definition for 'Boolean' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/dotnet-feature-flags.Tests.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(168,42): error CS0117: 'RolloutType' does not contain a definition for 'Boolean' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/dotnet-feature-flags.Tests.csproj]
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- .
++- tweak .aiedr.chat.history
++- test: add pagination helper unit tests
++- .aider.chat.history changes
++- Explain README in readme
++- document .aider.chat.history in the readme
++- update readme
++- document README in the readme
++- update readme
++- Small refactor - GradualRolloutSchedulerServiceTestsJsonExtensions
+
+# 2026-07-20 22:11:07.102762
++Create tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs for SearchQueryBuilder (src/FeatureFlags/Utilities/SearchQueryBuilder.cs). Read it first. Cover: empty query, multiple criteria combine correctly, special characters handling, and builder reuse produces independent queries.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props unless the task explicitly says to.
++- Do NOT add NuGet packages unless the task explicitly requires it.
++- The whole solution MUST still compile with dotnet build.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++
++IMPORTANT: a previous attempt at this exact task FAILED with these compiler errors and was reverted. Do it differently and make sure these do not happen again:
++[after 515s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(25,43): error CS0117: 'RolloutType' does not contain a definition for 'Boolean' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/dotnet-feature-flags.Tests.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(168,42): error CS0117: 'RolloutType' does not contain a definition for 'Boolean' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/dotnet-feature-flags.Tests.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(25,43): error CS0117: 'RolloutT
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(25,43): error CS0117: 'RolloutType' does not contain a definition for 'Boolean' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/dotnet-feature-flags.Tests.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(168,42): error CS0117: 'RolloutType' does not contain a definition for 'Boolean' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/dotnet-feature-flags.Tests.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(25,43): error CS0117: 'RolloutType' does not contain a definition for 'Boolean' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/dotnet-feature-flags.Tests.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(168,42): error CS0117: 'RolloutType' does not contain a definition for 'Boolean' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/dotnet-feature-flags.Tests.csproj]
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- .
++- tweak .aiedr.chat.history
++- test: add pagination helper unit tests
++- .aider.chat.history changes
++- Explain README in readme
++- document .aider.chat.history in the readme
++- update readme
++- document README in the readme
++- update readme
++- Small refactor - GradualRolloutSchedulerServiceTestsJsonExtensions
+
+# 2026-07-20 22:11:07.102842
++Create tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs for SearchQueryBuilder (src/FeatureFlags/Utilities/SearchQueryBuilder.cs). Read it first. Cover: empty query, multiple criteria combine correctly, special characters handling, and builder reuse produces independent queries.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props unless the task explicitly says to.
++- Do NOT add NuGet packages unless the task explicitly requires it.
++- The whole solution MUST still compile with dotnet build.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++
++IMPORTANT: a previous attempt at this exact task FAILED with these compiler errors and was reverted. Do it differently and make sure these do not happen again:
++[after 515s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(25,43): error CS0117: 'RolloutType' does not contain a definition for 'Boolean' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/dotnet-feature-flags.Tests.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(168,42): error CS0117: 'RolloutType' does not contain a definition for 'Boolean' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/dotnet-feature-flags.Tests.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(25,43): error CS0117: 'RolloutT
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(25,43): error CS0117: 'RolloutType' does not contain a definition for 'Boolean' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/dotnet-feature-flags.Tests.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(168,42): error CS0117: 'RolloutType' does not contain a definition for 'Boolean' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/dotnet-feature-flags.Tests.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(25,43): error CS0117: 'RolloutType' does not contain a definition for 'Boolean' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/dotnet-feature-flags.Tests.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/SearchQueryBuilderTests.cs(168,42): error CS0117: 'RolloutType' does not contain a definition for 'Boolean' [/home/redrocket/task-factory/workdir/dotnet-feature-flags/tests/dotnet-feature-flags.Tests/dotnet-feature-flags.Tests.csproj]
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- .
++- tweak .aiedr.chat.history
++- test: add pagination helper unit tests
++- .aider.chat.history changes
++- Explain README in readme
++- document .aider.chat.history in the readme
++- update readme
++- document README in the readme
++- update readme
++- Small refactor - GradualRolloutSchedulerServiceTestsJsonExtensions
