@@ -299,6 +299,14 @@ public class FeatureFlagService : IFeatureFlagService {
         return await _featureFlagRepository.SearchAsync(searchTerm);
     }
 
+    public async Task<IEnumerable<FeatureFlag>> GetStaleFlagsAsync(TimeSpan olderThan)
+    {
+        if (olderThan < TimeSpan.Zero)
+            throw new ArgumentException("Time span must be non-negative", nameof(olderThan));
+
+        return await _featureFlagRepository.GetStaleFlagsAsync(olderThan);
+    }
+
     private async Task<int> GetIdByKeyAsync(string key)
     {
         var flag = await _featureFlagRepository.GetByKeyAsync(key);

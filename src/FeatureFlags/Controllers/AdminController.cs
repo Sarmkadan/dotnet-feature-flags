@@ -246,6 +246,27 @@ public class AdminController : ControllerBase {
             return StatusCode(500, "Failed to retrieve statistics");
         }
     }
+
+    /// <summary>
+    /// Gets feature flags that haven't been modified within the specified time window.
+    /// </summary>
+    [HttpGet("flags/stale")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetStaleFlags([FromQuery] int days = 30, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var olderThan = TimeSpan.FromDays(days);
+            var staleFlags = await _featureFlagService.GetStaleFlagsAsync(olderThan);
+
+            return Ok(new { staleFlags });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting stale flags");
+            return StatusCode(500, "Failed to retrieve stale flags");
+        }
+    }
 }
 
 /// <summary>
