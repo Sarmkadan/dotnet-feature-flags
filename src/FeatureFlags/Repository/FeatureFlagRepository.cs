@@ -141,6 +141,18 @@ public class FeatureFlagRepository : IFeatureFlagRepository {
             .ToListAsync();
     }
 
+    public async Task<IEnumerable<FeatureFlag>> GetStaleFlagsAsync(TimeSpan olderThan)
+    {
+        if (olderThan < TimeSpan.Zero)
+            throw new ArgumentException("Time span must be non-negative", nameof(olderThan));
+
+        var cutoffDate = DateTime.UtcNow - olderThan;
+        return await _context.FeatureFlags
+            .Where(f => f.UpdatedAt < cutoffDate)
+            .OrderBy(f => f.UpdatedAt)
+            .ToListAsync();
+    }
+
     public async Task<FeatureFlag> AddAsync(FeatureFlag entity, CancellationToken cancellationToken = default)
     {
         if (entity is null)

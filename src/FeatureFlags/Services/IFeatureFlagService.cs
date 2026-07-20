@@ -2,7 +2,7 @@
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
-// =============================================================================
+// ====================================================================
 
 using FeatureFlags.Models;
 
@@ -98,5 +98,11 @@ public interface IFeatureFlagService
     /// <param name="searchTerm">The term to search for.</param>
     /// <returns>An enumerable collection of matching feature flags.</returns>
     Task<IEnumerable<FeatureFlag>> SearchFeatureFlagsAsync(string searchTerm);
-}
 
+    /// <summary>
+    /// Gets feature flags that haven't been modified within the specified time window.
+    /// </summary>
+    /// <param name="olderThan">The time span to check for staleness.</param>
+    /// <returns>An enumerable collection of stale feature flags.</returns>
+    Task<IEnumerable<FeatureFlag>> GetStaleFlagsAsync(TimeSpan olderThan);
+}

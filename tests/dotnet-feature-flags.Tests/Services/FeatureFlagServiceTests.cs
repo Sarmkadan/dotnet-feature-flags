@@ -2,7 +2,7 @@
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
-// =============================================================================
+// ====================================================================
 
 using FeatureFlags.Configuration;
 using FeatureFlags.Enums;
@@ -58,8 +58,7 @@ public sealed class FeatureFlagServiceTests
         var userContext = new UserContext { UserId = "user1", Email = "user@test.com" };
 
         // Act & Assert
-        await Assert.ThrowsAsync<ArgumentException>(() =>
-            _service.IsEnabledAsync(string.Empty, userContext));
+        await Assert.ThrowsAsync<ArgumentException>(() => _service.IsEnabledAsync(string.Empty, userContext));
     }
 
     [Fact]
@@ -69,8 +68,7 @@ public sealed class FeatureFlagServiceTests
         var userContext = new UserContext { Email = "user@test.com" };
 
         // Act & Assert
-        await Assert.ThrowsAsync<InvalidOperationException>(() =>
-            _service.IsEnabledAsync("some-flag", userContext));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => _service.IsEnabledAsync("some-flag", userContext));
     }
 
     [Fact]
@@ -164,7 +162,38 @@ public sealed class FeatureFlagServiceTests
             .ReturnsAsync(true);
 
         // Act & Assert
-        await Assert.ThrowsAsync<InvalidOperationException>(() =>
-            _service.CreateFeatureFlagAsync(featureFlag, "admin"));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => _service.CreateFeatureFlagAsync(featureFlag, "admin"));
+    }
+
+    [Fact]
+    public async Task GetStaleFlagsAsync_WithNegativeTimeSpan_ThrowsArgumentException()
+    {
+        // Arrange
+        var negativeTimeSpan = TimeSpan.FromDays(-30);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<ArgumentException>(() => _service.GetStaleFlagsAsync(negativeTimeSpan));
+    }
+
+    [Fact]
+    public async Task GetStaleFlagsAsync_WithValidTimeSpan_ReturnsStaleFlags()
+    {
+        // Arrange
+        var oldDate = DateTime.UtcNow.AddDays(-45);
+        var staleFlag1 = new FeatureFlag { Id = 1, Key = "old-flag-1", DisplayName = "Old Flag 1", UpdatedAt = oldDate.AddDays(-10) };
+        var staleFlag2 = new FeatureFlag { Id = 2, Key = "old-flag-2", DisplayName = "Old Flag 2", UpdatedAt = oldDate.AddDays(-5) };
+
+        var staleFlags = new List<FeatureFlag> { staleFlag1, staleFlag2 };
+
+        _featureFlagRepositoryMock
+            .Setup(r => r.GetStaleFlagsAsync(It.IsAny<TimeSpan>()))
+            .ReturnsAsync(staleFlags);
+
+        // Act
+        var result = await _service.GetStaleFlagsAsync(TimeSpan.FromDays(30));
+
+        // Assert
+        result.Should().BeEquivalentTo(staleFlags);
+        _featureFlagRepositoryMock.Verify(r => r.GetStaleFlagsAsync(TimeSpan.FromDays(30)), Times.Once);
     }
 }

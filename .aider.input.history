@@ -10314,3 +10314,47 @@
 +- Cleanup in CacheServiceTestsJsonExtensions
 +- refactor: polish ConditionTestsJsonExtensions
 +- refactor: dedupe some logic in XmlExporter
+
+# 2026-07-20 10:45:34.584824
++Add a stale-flag report: read the flag repository/service in src/FeatureFlags/Services and AdminController in src/FeatureFlags/Controllers. Add `GetStaleFlags(TimeSpan olderThan)` to the service returning flags not modified (use the timestamp the model actually has - read it first) within the window, and a GET action on AdminController with a `days` query parameter (default 30) returning the existing ApiResponse envelope. Add a unit test for the service method.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props unless the task explicitly says to.
++- Do NOT add NuGet packages unless the task explicitly requires it.
++- The whole solution MUST still compile with dotnet build.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- tweak .aiedr.chat.history
++- test: add pagination helper unit tests
++- .aider.chat.history changes
++- Explain README in readme
++- document .aider.chat.history in the readme
++- update readme
++- document README in the readme
++- update readme
++- Small refactor - GradualRolloutSchedulerServiceTestsJsonExtensions
++- Cleanup in CacheServiceTestsJsonExtensions
+
+# 2026-07-20 10:45:34.584882
++Add a stale-flag report: read the flag repository/service in src/FeatureFlags/Services and AdminController in src/FeatureFlags/Controllers. Add `GetStaleFlags(TimeSpan olderThan)` to the service returning flags not modified (use the timestamp the model actually has - read it first) within the window, and a GET action on AdminController with a `days` query parameter (default 30) returning the existing ApiResponse envelope. Add a unit test for the service method.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props unless the task explicitly says to.
++- Do NOT add NuGet packages unless the task explicitly requires it.
++- The whole solution MUST still compile with dotnet build.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- tweak .aiedr.chat.history
++- test: add pagination helper unit tests
++- .aider.chat.history changes
++- Explain README in readme
++- document .aider.chat.history in the readme
++- update readme
++- document README in the readme
++- update readme
++- Small refactor - GradualRolloutSchedulerServiceTestsJsonExtensions
++- Cleanup in CacheServiceTestsJsonExtensions
