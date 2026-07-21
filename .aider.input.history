@@ -10544,3 +10544,303 @@
 +- document README in the readme
 +- update readme
 +- Small refactor - GradualRolloutSchedulerServiceTestsJsonExtensions
+
+# 2026-07-21 11:36:57.796215
++Create tests/dotnet-feature-flags.Tests/HashingUtilitiesDistributionTests.cs for HashingUtilities (src/FeatureFlags/Utilities/HashingUtilities.cs). Read it first. Cover: same input -> same bucket (determinism), 10k sequential user ids into percentage buckets land within +-5% of uniform for a 50% rollout, different flag keys give independent assignment for the same user, empty input handling.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props unless the task explicitly says to.
++- Do NOT add NuGet packages unless the task explicitly requires it.
++- The whole solution MUST still compile with dotnet build.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++
++EXPLICIT STEPS:
++1. Check which test framework the project uses: look at existing test .csproj for xUnit/NUnit/MSTest PackageReference.
++2. Match that framework exactly. Do NOT use a different one.
++3. Create the test file in the path specified above.
++4. Write 4-8 real test methods - read the source class to understand actual behavior.
++5. Run: dotnet test. ALL tests must pass. If they fail, fix them.
++6. If the test project does not exist or has no test framework reference, STOP - do not create it.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- Update SearchQueryBuilderTests.
++- .
++- tweak .aiedr.chat.history
++- test: add pagination helper unit tests
++- .aider.chat.history changes
++- Explain README in readme
++- document .aider.chat.history in the readme
++- update readme
++- document README in the readme
++- update readme
+
+# 2026-07-21 11:36:57.796558
++Create tests/dotnet-feature-flags.Tests/HashingUtilitiesDistributionTests.cs for HashingUtilities (src/FeatureFlags/Utilities/HashingUtilities.cs). Read it first. Cover: same input -> same bucket (determinism), 10k sequential user ids into percentage buckets land within +-5% of uniform for a 50% rollout, different flag keys give independent assignment for the same user, empty input handling.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props unless the task explicitly says to.
++- Do NOT add NuGet packages unless the task explicitly requires it.
++- The whole solution MUST still compile with dotnet build.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++
++EXPLICIT STEPS:
++1. Check which test framework the project uses: look at existing test .csproj for xUnit/NUnit/MSTest PackageReference.
++2. Match that framework exactly. Do NOT use a different one.
++3. Create the test file in the path specified above.
++4. Write 4-8 real test methods - read the source class to understand actual behavior.
++5. Run: dotnet test. ALL tests must pass. If they fail, fix them.
++6. If the test project does not exist or has no test framework reference, STOP - do not create it.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- Update SearchQueryBuilderTests.
++- .
++- tweak .aiedr.chat.history
++- test: add pagination helper unit tests
++- .aider.chat.history changes
++- Explain README in readme
++- document .aider.chat.history in the readme
++- update readme
++- document README in the readme
++- update readme
+
+# 2026-07-21 11:37:04.025370
++Create tests/dotnet-feature-flags.Tests/HashingUtilitiesDistributionTests.cs for HashingUtilities (src/FeatureFlags/Utilities/HashingUtilities.cs). Read it first. Cover: same input -> same bucket (determinism), 10k sequential user ids into percentage buckets land within +-5% of uniform for a 50% rollout, different flag keys give independent assignment for the same user, empty input handling.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props unless the task explicitly says to.
++- Do NOT add NuGet packages unless the task explicitly requires it.
++- The whole solution MUST still compile with dotnet build.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++
++EXPLICIT STEPS:
++1. Check which test framework the project uses: look at existing test .csproj for xUnit/NUnit/MSTest PackageReference.
++2. Match that framework exactly. Do NOT use a different one.
++3. Create the test file in the path specified above.
++4. Write 4-8 real test methods - read the source class to understand actual behavior.
++5. Run: dotnet test. ALL tests must pass. If they fail, fix them.
++6. If the test project does not exist or has no test framework reference, STOP - do not create it.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- Update SearchQueryBuilderTests.
++- .
++- tweak .aiedr.chat.history
++- test: add pagination helper unit tests
++- .aider.chat.history changes
++- Explain README in readme
++- document .aider.chat.history in the readme
++- update readme
++- document README in the readme
++- update readme
+
+# 2026-07-21 11:37:04.025430
++Create tests/dotnet-feature-flags.Tests/HashingUtilitiesDistributionTests.cs for HashingUtilities (src/FeatureFlags/Utilities/HashingUtilities.cs). Read it first. Cover: same input -> same bucket (determinism), 10k sequential user ids into percentage buckets land within +-5% of uniform for a 50% rollout, different flag keys give independent assignment for the same user, empty input handling.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props unless the task explicitly says to.
++- Do NOT add NuGet packages unless the task explicitly requires it.
++- The whole solution MUST still compile with dotnet build.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++
++EXPLICIT STEPS:
++1. Check which test framework the project uses: look at existing test .csproj for xUnit/NUnit/MSTest PackageReference.
++2. Match that framework exactly. Do NOT use a different one.
++3. Create the test file in the path specified above.
++4. Write 4-8 real test methods - read the source class to understand actual behavior.
++5. Run: dotnet test. ALL tests must pass. If they fail, fix them.
++6. If the test project does not exist or has no test framework reference, STOP - do not create it.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- Update SearchQueryBuilderTests.
++- .
++- tweak .aiedr.chat.history
++- test: add pagination helper unit tests
++- .aider.chat.history changes
++- Explain README in readme
++- document .aider.chat.history in the readme
++- update readme
++- document README in the readme
++- update readme
+
+# 2026-07-21 11:39:14.689818
++Create tests/dotnet-feature-flags.Tests/HashingUtilitiesDistributionTests.cs for HashingUtilities (src/FeatureFlags/Utilities/HashingUtilities.cs). Read it first. Cover: same input -> same bucket (determinism), 10k sequential user ids into percentage buckets land within +-5% of uniform for a 50% rollout, different flag keys give independent assignment for the same user, empty input handling.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props unless the task explicitly says to.
++- Do NOT add NuGet packages unless the task explicitly requires it.
++- The whole solution MUST still compile with dotnet build.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++
++EXPLICIT STEPS:
++1. Check which test framework the project uses: look at existing test .csproj for xUnit/NUnit/MSTest PackageReference.
++2. Match that framework exactly. Do NOT use a different one.
++3. Create the test file in the path specified above.
++4. Write 4-8 real test methods - read the source class to understand actual behavior.
++5. Run: dotnet test. ALL tests must pass. If they fail, fix them.
++6. If the test project does not exist or has no test framework reference, STOP - do not create it.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- Update SearchQueryBuilderTests.
++- .
++- tweak .aiedr.chat.history
++- test: add pagination helper unit tests
++- .aider.chat.history changes
++- Explain README in readme
++- document .aider.chat.history in the readme
++- update readme
++- document README in the readme
++- update readme
+
+# 2026-07-21 11:39:14.690126
++Create tests/dotnet-feature-flags.Tests/HashingUtilitiesDistributionTests.cs for HashingUtilities (src/FeatureFlags/Utilities/HashingUtilities.cs). Read it first. Cover: same input -> same bucket (determinism), 10k sequential user ids into percentage buckets land within +-5% of uniform for a 50% rollout, different flag keys give independent assignment for the same user, empty input handling.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props unless the task explicitly says to.
++- Do NOT add NuGet packages unless the task explicitly requires it.
++- The whole solution MUST still compile with dotnet build.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++
++EXPLICIT STEPS:
++1. Check which test framework the project uses: look at existing test .csproj for xUnit/NUnit/MSTest PackageReference.
++2. Match that framework exactly. Do NOT use a different one.
++3. Create the test file in the path specified above.
++4. Write 4-8 real test methods - read the source class to understand actual behavior.
++5. Run: dotnet test. ALL tests must pass. If they fail, fix them.
++6. If the test project does not exist or has no test framework reference, STOP - do not create it.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- Update SearchQueryBuilderTests.
++- .
++- tweak .aiedr.chat.history
++- test: add pagination helper unit tests
++- .aider.chat.history changes
++- Explain README in readme
++- document .aider.chat.history in the readme
++- update readme
++- document README in the readme
++- update readme
+
+# 2026-07-21 11:39:58.361041
++Create tests/dotnet-feature-flags.Tests/HashingUtilitiesDistributionTests.cs for HashingUtilities (src/FeatureFlags/Utilities/HashingUtilities.cs). Read it first. Cover: same input -> same bucket (determinism), 10k sequential user ids into percentage buckets land within +-5% of uniform for a 50% rollout, different flag keys give independent assignment for the same user, empty input handling.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props unless the task explicitly says to.
++- Do NOT add NuGet packages unless the task explicitly requires it.
++- The whole solution MUST still compile with dotnet build.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++
++EXPLICIT STEPS:
++1. Check which test framework the project uses: look at existing test .csproj for xUnit/NUnit/MSTest PackageReference.
++2. Match that framework exactly. Do NOT use a different one.
++3. Create the test file in the path specified above.
++4. Write 4-8 real test methods - read the source class to understand actual behavior.
++5. Run: dotnet test. ALL tests must pass. If they fail, fix them.
++6. If the test project does not exist or has no test framework reference, STOP - do not create it.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- Update SearchQueryBuilderTests.
++- .
++- tweak .aiedr.chat.history
++- test: add pagination helper unit tests
++- .aider.chat.history changes
++- Explain README in readme
++- document .aider.chat.history in the readme
++- update readme
++- document README in the readme
++- update readme
+
+# 2026-07-21 11:39:58.361271
++Create tests/dotnet-feature-flags.Tests/HashingUtilitiesDistributionTests.cs for HashingUtilities (src/FeatureFlags/Utilities/HashingUtilities.cs). Read it first. Cover: same input -> same bucket (determinism), 10k sequential user ids into percentage buckets land within +-5% of uniform for a 50% rollout, different flag keys give independent assignment for the same user, empty input handling.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props unless the task explicitly says to.
++- Do NOT add NuGet packages unless the task explicitly requires it.
++- The whole solution MUST still compile with dotnet build.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++
++EXPLICIT STEPS:
++1. Check which test framework the project uses: look at existing test .csproj for xUnit/NUnit/MSTest PackageReference.
++2. Match that framework exactly. Do NOT use a different one.
++3. Create the test file in the path specified above.
++4. Write 4-8 real test methods - read the source class to understand actual behavior.
++5. Run: dotnet test. ALL tests must pass. If they fail, fix them.
++6. If the test project does not exist or has no test framework reference, STOP - do not create it.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- Update SearchQueryBuilderTests.
++- .
++- tweak .aiedr.chat.history
++- test: add pagination helper unit tests
++- .aider.chat.history changes
++- Explain README in readme
++- document .aider.chat.history in the readme
++- update readme
++- document README in the readme
++- update readme
+
+# 2026-07-21 11:41:22.854552
++Create tests/dotnet-feature-flags.Tests/HashingUtilitiesDistributionTests.cs for HashingUtilities (src/FeatureFlags/Utilities/HashingUtilities.cs). Read it first. Cover: same input -> same bucket (determinism), 10k sequential user ids into percentage buckets land within +-5% of uniform for a 50% rollout, different flag keys give independent assignment for the same user, empty input handling.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props unless the task explicitly says to.
++- Do NOT add NuGet packages unless the task explicitly requires it.
++- The whole solution MUST still compile with dotnet build.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++
++EXPLICIT STEPS:
++1. Check which test framework the project uses: look at existing test .csproj for xUnit/NUnit/MSTest PackageReference.
++2. Match that framework exactly. Do NOT use a different one.
++3. Create the test file in the path specified above.
++4. Write 4-8 real test methods - read the source class to understand actual behavior.
++5. Run: dotnet test. ALL tests must pass. If they fail, fix them.
++6. If the test project does not exist or has no test framework reference, STOP - do not create it.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- Update SearchQueryBuilderTests.
++- .
++- tweak .aiedr.chat.history
++- test: add pagination helper unit tests
++- .aider.chat.history changes
++- Explain README in readme
++- document .aider.chat.history in the readme
++- update readme
++- document README in the readme
++- update readme
+
+# 2026-07-21 11:41:22.854641
++Create tests/dotnet-feature-flags.Tests/HashingUtilitiesDistributionTests.cs for HashingUtilities (src/FeatureFlags/Utilities/HashingUtilities.cs). Read it first. Cover: same input -> same bucket (determinism), 10k sequential user ids into percentage buckets land within +-5% of uniform for a 50% rollout, different flag keys give independent assignment for the same user, empty input handling.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props unless the task explicitly says to.
++- Do NOT add NuGet packages unless the task explicitly requires it.
++- The whole solution MUST still compile with dotnet build.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++
++EXPLICIT STEPS:
++1. Check which test framework the project uses: look at existing test .csproj for xUnit/NUnit/MSTest PackageReference.
++2. Match that framework exactly. Do NOT use a different one.
++3. Create the test file in the path specified above.
++4. Write 4-8 real test methods - read the source class to understand actual behavior.
++5. Run: dotnet test. ALL tests must pass. If they fail, fix them.
++6. If the test project does not exist or has no test framework reference, STOP - do not create it.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- Update SearchQueryBuilderTests.
++- .
++- tweak .aiedr.chat.history
++- test: add pagination helper unit tests
++- .aider.chat.history changes
++- Explain README in readme
++- document .aider.chat.history in the readme
++- update readme
++- document README in the readme
++- update readme
