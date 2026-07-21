@@ -11062,3 +11062,395 @@
 +- Explain README in readme
 +- document .aider.chat.history in the readme
 +- update readme
+
+# 2026-07-21 22:05:02.994626
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, write unit tests for `FeatureFlagExceptionExtensions` (defined in `src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs`).
++
++Create ONE new file: `src/FeatureFlags.Tests/FeatureFlagExceptionExtensionsTests.cs` with a test class `FeatureFlagExceptionExtensionsTests` using xUnit (or whatever test framework the project already uses - check existing test files).
++
++Write 4-8 test methods covering:
++- Happy path for each major public method
++- Edge cases: null inputs, empty collections, boundary values
++- Error paths: expected exceptions
++
++Public members to test:
++```
++public static bool IsFeatureFlagNotFound
++public static bool IsInvalidFeatureFlag
++public static bool IsRuleEvaluationError
++public static bool IsDataError
++public static string? GetErrorCode
++public static string GetFlattenedMessage
++public static bool HasErrorCode
++```
++
++Read the implementation in `src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs` to understand what each method actually does. Test REAL behavior, not just that methods exist.
++
++HARD RULES:
++- Create ONLY the test file. Do NOT modify any existing files.
++- Do NOT add NuGet packages. Use whatever test framework is already referenced.
++- Tests MUST compile and pass with `dotnet test`.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++EXPLICIT STEPS:
++1. Check which test framework the project uses: look at existing test .csproj for xUnit/NUnit/MSTest PackageReference.
++2. Match that framework exactly. Do NOT use a different one.
++3. Create the test file in the path specified above.
++4. Write 4-8 real test methods - read the source class to understand actual behavior.
++5. Run: dotnet test. ALL tests must pass. If they fail, fix them.
++6. If the test project does not exist or has no test framework reference, STOP - do not create it.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- Update ValidationExceptionJsonExtensionsTests
++- fix: add unit tests for ValidationExceptionJsonExtensions
++- Tweak ConditionOperatorEvaluationTests
++- chore: tweak .aider.chat.history
++- Update SearchQueryBuilderTests.
++- .
++- tweak .aiedr.chat.history
++- test: add pagination helper unit tests
++- .aider.chat.history changes
++- Explain README in readme
+
+# 2026-07-21 22:05:02.995814
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, write unit tests for `FeatureFlagExceptionExtensions` (defined in `src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs`).
++
++Create ONE new file: `src/FeatureFlags.Tests/FeatureFlagExceptionExtensionsTests.cs` with a test class `FeatureFlagExceptionExtensionsTests` using xUnit (or whatever test framework the project already uses - check existing test files).
++
++Write 4-8 test methods covering:
++- Happy path for each major public method
++- Edge cases: null inputs, empty collections, boundary values
++- Error paths: expected exceptions
++
++Public members to test:
++```
++public static bool IsFeatureFlagNotFound
++public static bool IsInvalidFeatureFlag
++public static bool IsRuleEvaluationError
++public static bool IsDataError
++public static string? GetErrorCode
++public static string GetFlattenedMessage
++public static bool HasErrorCode
++```
++
++Read the implementation in `src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs` to understand what each method actually does. Test REAL behavior, not just that methods exist.
++
++HARD RULES:
++- Create ONLY the test file. Do NOT modify any existing files.
++- Do NOT add NuGet packages. Use whatever test framework is already referenced.
++- Tests MUST compile and pass with `dotnet test`.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++EXPLICIT STEPS:
++1. Check which test framework the project uses: look at existing test .csproj for xUnit/NUnit/MSTest PackageReference.
++2. Match that framework exactly. Do NOT use a different one.
++3. Create the test file in the path specified above.
++4. Write 4-8 real test methods - read the source class to understand actual behavior.
++5. Run: dotnet test. ALL tests must pass. If they fail, fix them.
++6. If the test project does not exist or has no test framework reference, STOP - do not create it.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- Update ValidationExceptionJsonExtensionsTests
++- fix: add unit tests for ValidationExceptionJsonExtensions
++- Tweak ConditionOperatorEvaluationTests
++- chore: tweak .aider.chat.history
++- Update SearchQueryBuilderTests.
++- .
++- tweak .aiedr.chat.history
++- test: add pagination helper unit tests
++- .aider.chat.history changes
++- Explain README in readme
+
+# 2026-07-21 22:07:16.802445
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, write unit tests for `FeatureFlagExceptionExtensions` (defined in `src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs`).
++
++Create ONE new file: `src/FeatureFlags.Tests/FeatureFlagExceptionExtensionsTests.cs` with a test class `FeatureFlagExceptionExtensionsTests` using xUnit (or whatever test framework the project already uses - check existing test files).
++
++Write 4-8 test methods covering:
++- Happy path for each major public method
++- Edge cases: null inputs, empty collections, boundary values
++- Error paths: expected exceptions
++
++Public members to test:
++```
++public static bool IsFeatureFlagNotFound
++public static bool IsInvalidFeatureFlag
++public static bool IsRuleEvaluationError
++public static bool IsDataError
++public static string? GetErrorCode
++public static string GetFlattenedMessage
++public static bool HasErrorCode
++```
++
++Read the implementation in `src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs` to understand what each method actually does. Test REAL behavior, not just that methods exist.
++
++HARD RULES:
++- Create ONLY the test file. Do NOT modify any existing files.
++- Do NOT add NuGet packages. Use whatever test framework is already referenced.
++- Tests MUST compile and pass with `dotnet test`.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++EXPLICIT STEPS:
++1. Check which test framework the project uses: look at existing test .csproj for xUnit/NUnit/MSTest PackageReference.
++2. Match that framework exactly. Do NOT use a different one.
++3. Create the test file in the path specified above.
++4. Write 4-8 real test methods - read the source class to understand actual behavior.
++5. Run: dotnet test. ALL tests must pass. If they fail, fix them.
++6. If the test project does not exist or has no test framework reference, STOP - do not create it.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- Update ValidationExceptionJsonExtensionsTests
++- fix: add unit tests for ValidationExceptionJsonExtensions
++- Tweak ConditionOperatorEvaluationTests
++- chore: tweak .aider.chat.history
++- Update SearchQueryBuilderTests.
++- .
++- tweak .aiedr.chat.history
++- test: add pagination helper unit tests
++- .aider.chat.history changes
++- Explain README in readme
+
+# 2026-07-21 22:07:16.802506
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, write unit tests for `FeatureFlagExceptionExtensions` (defined in `src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs`).
++
++Create ONE new file: `src/FeatureFlags.Tests/FeatureFlagExceptionExtensionsTests.cs` with a test class `FeatureFlagExceptionExtensionsTests` using xUnit (or whatever test framework the project already uses - check existing test files).
++
++Write 4-8 test methods covering:
++- Happy path for each major public method
++- Edge cases: null inputs, empty collections, boundary values
++- Error paths: expected exceptions
++
++Public members to test:
++```
++public static bool IsFeatureFlagNotFound
++public static bool IsInvalidFeatureFlag
++public static bool IsRuleEvaluationError
++public static bool IsDataError
++public static string? GetErrorCode
++public static string GetFlattenedMessage
++public static bool HasErrorCode
++```
++
++Read the implementation in `src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs` to understand what each method actually does. Test REAL behavior, not just that methods exist.
++
++HARD RULES:
++- Create ONLY the test file. Do NOT modify any existing files.
++- Do NOT add NuGet packages. Use whatever test framework is already referenced.
++- Tests MUST compile and pass with `dotnet test`.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++EXPLICIT STEPS:
++1. Check which test framework the project uses: look at existing test .csproj for xUnit/NUnit/MSTest PackageReference.
++2. Match that framework exactly. Do NOT use a different one.
++3. Create the test file in the path specified above.
++4. Write 4-8 real test methods - read the source class to understand actual behavior.
++5. Run: dotnet test. ALL tests must pass. If they fail, fix them.
++6. If the test project does not exist or has no test framework reference, STOP - do not create it.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- Update ValidationExceptionJsonExtensionsTests
++- fix: add unit tests for ValidationExceptionJsonExtensions
++- Tweak ConditionOperatorEvaluationTests
++- chore: tweak .aider.chat.history
++- Update SearchQueryBuilderTests.
++- .
++- tweak .aiedr.chat.history
++- test: add pagination helper unit tests
++- .aider.chat.history changes
++- Explain README in readme
+
+# 2026-07-21 22:09:27.541846
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, write unit tests for `FeatureFlagExceptionExtensions` (defined in `src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs`).
++
++Create ONE new file: `src/FeatureFlags.Tests/FeatureFlagExceptionExtensionsTests.cs` with a test class `FeatureFlagExceptionExtensionsTests` using xUnit (or whatever test framework the project already uses - check existing test files).
++
++Write 4-8 test methods covering:
++- Happy path for each major public method
++- Edge cases: null inputs, empty collections, boundary values
++- Error paths: expected exceptions
++
++Public members to test:
++```
++public static bool IsFeatureFlagNotFound
++public static bool IsInvalidFeatureFlag
++public static bool IsRuleEvaluationError
++public static bool IsDataError
++public static string? GetErrorCode
++public static string GetFlattenedMessage
++public static bool HasErrorCode
++```
++
++Read the implementation in `src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs` to understand what each method actually does. Test REAL behavior, not just that methods exist.
++
++HARD RULES:
++- Create ONLY the test file. Do NOT modify any existing files.
++- Do NOT add NuGet packages. Use whatever test framework is already referenced.
++- Tests MUST compile and pass with `dotnet test`.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++EXPLICIT STEPS:
++1. Check which test framework the project uses: look at existing test .csproj for xUnit/NUnit/MSTest PackageReference.
++2. Match that framework exactly. Do NOT use a different one.
++3. Create the test file in the path specified above.
++4. Write 4-8 real test methods - read the source class to understand actual behavior.
++5. Run: dotnet test. ALL tests must pass. If they fail, fix them.
++6. If the test project does not exist or has no test framework reference, STOP - do not create it.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- Update ValidationExceptionJsonExtensionsTests
++- fix: add unit tests for ValidationExceptionJsonExtensions
++- Tweak ConditionOperatorEvaluationTests
++- chore: tweak .aider.chat.history
++- Update SearchQueryBuilderTests.
++- .
++- tweak .aiedr.chat.history
++- test: add pagination helper unit tests
++- .aider.chat.history changes
++- Explain README in readme
+
+# 2026-07-21 22:09:27.541941
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, write unit tests for `FeatureFlagExceptionExtensions` (defined in `src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs`).
++
++Create ONE new file: `src/FeatureFlags.Tests/FeatureFlagExceptionExtensionsTests.cs` with a test class `FeatureFlagExceptionExtensionsTests` using xUnit (or whatever test framework the project already uses - check existing test files).
++
++Write 4-8 test methods covering:
++- Happy path for each major public method
++- Edge cases: null inputs, empty collections, boundary values
++- Error paths: expected exceptions
++
++Public members to test:
++```
++public static bool IsFeatureFlagNotFound
++public static bool IsInvalidFeatureFlag
++public static bool IsRuleEvaluationError
++public static bool IsDataError
++public static string? GetErrorCode
++public static string GetFlattenedMessage
++public static bool HasErrorCode
++```
++
++Read the implementation in `src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs` to understand what each method actually does. Test REAL behavior, not just that methods exist.
++
++HARD RULES:
++- Create ONLY the test file. Do NOT modify any existing files.
++- Do NOT add NuGet packages. Use whatever test framework is already referenced.
++- Tests MUST compile and pass with `dotnet test`.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++EXPLICIT STEPS:
++1. Check which test framework the project uses: look at existing test .csproj for xUnit/NUnit/MSTest PackageReference.
++2. Match that framework exactly. Do NOT use a different one.
++3. Create the test file in the path specified above.
++4. Write 4-8 real test methods - read the source class to understand actual behavior.
++5. Run: dotnet test. ALL tests must pass. If they fail, fix them.
++6. If the test project does not exist or has no test framework reference, STOP - do not create it.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- Update ValidationExceptionJsonExtensionsTests
++- fix: add unit tests for ValidationExceptionJsonExtensions
++- Tweak ConditionOperatorEvaluationTests
++- chore: tweak .aider.chat.history
++- Update SearchQueryBuilderTests.
++- .
++- tweak .aiedr.chat.history
++- test: add pagination helper unit tests
++- .aider.chat.history changes
++- Explain README in readme
+
+# 2026-07-21 22:09:44.975680
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, write unit tests for `FeatureFlagExceptionExtensions` (defined in `src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs`).
++
++Create ONE new file: `src/FeatureFlags.Tests/FeatureFlagExceptionExtensionsTests.cs` with a test class `FeatureFlagExceptionExtensionsTests` using xUnit (or whatever test framework the project already uses - check existing test files).
++
++Write 4-8 test methods covering:
++- Happy path for each major public method
++- Edge cases: null inputs, empty collections, boundary values
++- Error paths: expected exceptions
++
++Public members to test:
++```
++public static bool IsFeatureFlagNotFound
++public static bool IsInvalidFeatureFlag
++public static bool IsRuleEvaluationError
++public static bool IsDataError
++public static string? GetErrorCode
++public static string GetFlattenedMessage
++public static bool HasErrorCode
++```
++
++Read the implementation in `src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs` to understand what each method actually does. Test REAL behavior, not just that methods exist.
++
++HARD RULES:
++- Create ONLY the test file. Do NOT modify any existing files.
++- Do NOT add NuGet packages. Use whatever test framework is already referenced.
++- Tests MUST compile and pass with `dotnet test`.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++EXPLICIT STEPS:
++1. Check which test framework the project uses: look at existing test .csproj for xUnit/NUnit/MSTest PackageReference.
++2. Match that framework exactly. Do NOT use a different one.
++3. Create the test file in the path specified above.
++4. Write 4-8 real test methods - read the source class to understand actual behavior.
++5. Run: dotnet test. ALL tests must pass. If they fail, fix them.
++6. If the test project does not exist or has no test framework reference, STOP - do not create it.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- Update ValidationExceptionJsonExtensionsTests
++- fix: add unit tests for ValidationExceptionJsonExtensions
++- Tweak ConditionOperatorEvaluationTests
++- chore: tweak .aider.chat.history
++- Update SearchQueryBuilderTests.
++- .
++- tweak .aiedr.chat.history
++- test: add pagination helper unit tests
++- .aider.chat.history changes
++- Explain README in readme
+
+# 2026-07-21 22:09:44.975999
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, write unit tests for `FeatureFlagExceptionExtensions` (defined in `src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs`).
++
++Create ONE new file: `src/FeatureFlags.Tests/FeatureFlagExceptionExtensionsTests.cs` with a test class `FeatureFlagExceptionExtensionsTests` using xUnit (or whatever test framework the project already uses - check existing test files).
++
++Write 4-8 test methods covering:
++- Happy path for each major public method
++- Edge cases: null inputs, empty collections, boundary values
++- Error paths: expected exceptions
++
++Public members to test:
++```
++public static bool IsFeatureFlagNotFound
++public static bool IsInvalidFeatureFlag
++public static bool IsRuleEvaluationError
++public static bool IsDataError
++public static string? GetErrorCode
++public static string GetFlattenedMessage
++public static bool HasErrorCode
++```
++
++Read the implementation in `src/FeatureFlags/Exceptions/FeatureFlagExceptionExtensions.cs` to understand what each method actually does. Test REAL behavior, not just that methods exist.
++
++HARD RULES:
++- Create ONLY the test file. Do NOT modify any existing files.
++- Do NOT add NuGet packages. Use whatever test framework is already referenced.
++- Tests MUST compile and pass with `dotnet test`.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++EXPLICIT STEPS:
++1. Check which test framework the project uses: look at existing test .csproj for xUnit/NUnit/MSTest PackageReference.
++2. Match that framework exactly. Do NOT use a different one.
++3. Create the test file in the path specified above.
++4. Write 4-8 real test methods - read the source class to understand actual behavior.
++5. Run: dotnet test. ALL tests must pass. If they fail, fix them.
++6. If the test project does not exist or has no test framework reference, STOP - do not create it.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- Update ValidationExceptionJsonExtensionsTests
++- fix: add unit tests for ValidationExceptionJsonExtensions
++- Tweak ConditionOperatorEvaluationTests
++- chore: tweak .aider.chat.history
++- Update SearchQueryBuilderTests.
++- .
++- tweak .aiedr.chat.history
++- test: add pagination helper unit tests
++- .aider.chat.history changes
++- Explain README in readme
