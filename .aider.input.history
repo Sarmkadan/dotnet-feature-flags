@@ -13228,3 +13228,215 @@
 +- feat: add unit tests for FeatureFlagException
 +- test: add FeatureFlagExceptionTests
 +- Update ConfigurationExceptionTests
+
+# 2026-07-22 21:44:26.703326
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, write unit tests for `Webhook` (defined in `src/FeatureFlags/Integration/Webhook.cs`).
++
++Create ONE new file: `src/FeatureFlags.Tests/WebhookTests.cs` with a test class `WebhookTests` using xUnit (or whatever test framework the project already uses - check existing test files).
++
++Write 4-8 test methods covering:
++- Happy path for each major public method
++- Edge cases: null inputs, empty collections, boundary values
++- Error paths: expected exceptions
++
++Public members to test:
++```
++public int Id
++public string Url
++public string Description
++public bool IsActive
++public WebhookEventType EventTypes
++public string? FeatureFlagKey
++public DateTime CreatedAt
++public DateTime UpdatedAt
++public string CreatedBy
++public int MaxRetries
++```
++
++BEFORE writing any test:
++1. Read the FULL constructor(s) of `Webhook` in `src/FeatureFlags/Integration/Webhook.cs` - not just the method list above. If the constructor requires parameters, every `new Webhook(...)` call must pass valid values for ALL of them. Never assume a parameterless constructor exists.
++2. Open one existing `*Tests.cs` file in `src/FeatureFlags.Tests` and copy its exact namespace style (file-scoped `namespace X;` vs block-scoped `namespace X { }`). Do NOT mix styles within your new file.
++3. Read the implementation in `src/FeatureFlags/Integration/Webhook.cs` to understand what each method actually does. Test REAL behavior, not just that methods exist.
++
++Keep the file under 200 lines - fewer, well-chosen test methods beat many. Before finishing, count your braces mentally or re-read the file top to bottom to confirm every `{` has a matching `}` and the file doesn't end mid-method.
++
++HARD RULES:
++- Create ONLY the test file. Do NOT modify any existing files.
++- Do NOT add NuGet packages. Use whatever test framework is already referenced.
++- Tests MUST compile and pass with `dotnet test`.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++IMPORTANT: a previous attempt at this exact task FAILED with these compiler errors and was reverted. Do it differently and make sure these do not happen again:
++[after 211s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags.Tests/WebhookTests.cs(12,27): error CS0246: The type or namespace name 'Webhook' could not be found (are you missing a using directive or an assembly reference?) [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags.Tests/FeatureFlags.Tests.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags.Tests/WebhookTests.cs(28,27): error CS0246: The type or namespace name 'Webhook' could not be found (are you missing a using directive or an assembly reference?) [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags.Tests/FeatureFlags.Tests.csproj]
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- chore(featureflags.tests): tweak GradualRolloutSchedulerWorkerTests
++- .aider.chat.history changes
++- test: add unit tests for WebhookValidation
++- test: add webhook validation tests
++- chore: FeatureFlagEventTests changes
++- tweak ConfigurationExceptionValidationTests
++- chore(featureflags.tests): tweak ValidationExceptionTests
++- tweak .aider.chat.history
++- feat: add unit tests for FeatureFlagException
++- test: add FeatureFlagExceptionTests
+
+# 2026-07-22 21:44:26.703419
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, write unit tests for `Webhook` (defined in `src/FeatureFlags/Integration/Webhook.cs`).
++
++Create ONE new file: `src/FeatureFlags.Tests/WebhookTests.cs` with a test class `WebhookTests` using xUnit (or whatever test framework the project already uses - check existing test files).
++
++Write 4-8 test methods covering:
++- Happy path for each major public method
++- Edge cases: null inputs, empty collections, boundary values
++- Error paths: expected exceptions
++
++Public members to test:
++```
++public int Id
++public string Url
++public string Description
++public bool IsActive
++public WebhookEventType EventTypes
++public string? FeatureFlagKey
++public DateTime CreatedAt
++public DateTime UpdatedAt
++public string CreatedBy
++public int MaxRetries
++```
++
++BEFORE writing any test:
++1. Read the FULL constructor(s) of `Webhook` in `src/FeatureFlags/Integration/Webhook.cs` - not just the method list above. If the constructor requires parameters, every `new Webhook(...)` call must pass valid values for ALL of them. Never assume a parameterless constructor exists.
++2. Open one existing `*Tests.cs` file in `src/FeatureFlags.Tests` and copy its exact namespace style (file-scoped `namespace X;` vs block-scoped `namespace X { }`). Do NOT mix styles within your new file.
++3. Read the implementation in `src/FeatureFlags/Integration/Webhook.cs` to understand what each method actually does. Test REAL behavior, not just that methods exist.
++
++Keep the file under 200 lines - fewer, well-chosen test methods beat many. Before finishing, count your braces mentally or re-read the file top to bottom to confirm every `{` has a matching `}` and the file doesn't end mid-method.
++
++HARD RULES:
++- Create ONLY the test file. Do NOT modify any existing files.
++- Do NOT add NuGet packages. Use whatever test framework is already referenced.
++- Tests MUST compile and pass with `dotnet test`.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++IMPORTANT: a previous attempt at this exact task FAILED with these compiler errors and was reverted. Do it differently and make sure these do not happen again:
++[after 211s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags.Tests/WebhookTests.cs(12,27): error CS0246: The type or namespace name 'Webhook' could not be found (are you missing a using directive or an assembly reference?) [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags.Tests/FeatureFlags.Tests.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags.Tests/WebhookTests.cs(28,27): error CS0246: The type or namespace name 'Webhook' could not be found (are you missing a using directive or an assembly reference?) [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags.Tests/FeatureFlags.Tests.csproj]
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- chore(featureflags.tests): tweak GradualRolloutSchedulerWorkerTests
++- .aider.chat.history changes
++- test: add unit tests for WebhookValidation
++- test: add webhook validation tests
++- chore: FeatureFlagEventTests changes
++- tweak ConfigurationExceptionValidationTests
++- chore(featureflags.tests): tweak ValidationExceptionTests
++- tweak .aider.chat.history
++- feat: add unit tests for FeatureFlagException
++- test: add FeatureFlagExceptionTests
+
+# 2026-07-22 21:45:56.307908
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, write unit tests for `Webhook` (defined in `src/FeatureFlags/Integration/Webhook.cs`).
++
++Create ONE new file: `src/FeatureFlags.Tests/WebhookTests.cs` with a test class `WebhookTests` using xUnit (or whatever test framework the project already uses - check existing test files).
++
++Write 4-8 test methods covering:
++- Happy path for each major public method
++- Edge cases: null inputs, empty collections, boundary values
++- Error paths: expected exceptions
++
++Public members to test:
++```
++public int Id
++public string Url
++public string Description
++public bool IsActive
++public WebhookEventType EventTypes
++public string? FeatureFlagKey
++public DateTime CreatedAt
++public DateTime UpdatedAt
++public string CreatedBy
++public int MaxRetries
++```
++
++BEFORE writing any test:
++1. Read the FULL constructor(s) of `Webhook` in `src/FeatureFlags/Integration/Webhook.cs` - not just the method list above. If the constructor requires parameters, every `new Webhook(...)` call must pass valid values for ALL of them. Never assume a parameterless constructor exists.
++2. Open one existing `*Tests.cs` file in `src/FeatureFlags.Tests` and copy its exact namespace style (file-scoped `namespace X;` vs block-scoped `namespace X { }`). Do NOT mix styles within your new file.
++3. Read the implementation in `src/FeatureFlags/Integration/Webhook.cs` to understand what each method actually does. Test REAL behavior, not just that methods exist.
++
++Keep the file under 200 lines - fewer, well-chosen test methods beat many. Before finishing, count your braces mentally or re-read the file top to bottom to confirm every `{` has a matching `}` and the file doesn't end mid-method.
++
++HARD RULES:
++- Create ONLY the test file. Do NOT modify any existing files.
++- Do NOT add NuGet packages. Use whatever test framework is already referenced.
++- Tests MUST compile and pass with `dotnet test`.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++IMPORTANT: a previous attempt at this exact task FAILED with these compiler errors and was reverted. Do it differently and make sure these do not happen again:
++[after 211s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags.Tests/WebhookTests.cs(12,27): error CS0246: The type or namespace name 'Webhook' could not be found (are you missing a using directive or an assembly reference?) [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags.Tests/FeatureFlags.Tests.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags.Tests/WebhookTests.cs(28,27): error CS0246: The type or namespace name 'Webhook' could not be found (are you missing a using directive or an assembly reference?) [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags.Tests/FeatureFlags.Tests.csproj]
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- chore(featureflags.tests): tweak GradualRolloutSchedulerWorkerTests
++- .aider.chat.history changes
++- test: add unit tests for WebhookValidation
++- test: add webhook validation tests
++- chore: FeatureFlagEventTests changes
++- tweak ConfigurationExceptionValidationTests
++- chore(featureflags.tests): tweak ValidationExceptionTests
++- tweak .aider.chat.history
++- feat: add unit tests for FeatureFlagException
++- test: add FeatureFlagExceptionTests
+
+# 2026-07-22 21:45:56.307977
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, write unit tests for `Webhook` (defined in `src/FeatureFlags/Integration/Webhook.cs`).
++
++Create ONE new file: `src/FeatureFlags.Tests/WebhookTests.cs` with a test class `WebhookTests` using xUnit (or whatever test framework the project already uses - check existing test files).
++
++Write 4-8 test methods covering:
++- Happy path for each major public method
++- Edge cases: null inputs, empty collections, boundary values
++- Error paths: expected exceptions
++
++Public members to test:
++```
++public int Id
++public string Url
++public string Description
++public bool IsActive
++public WebhookEventType EventTypes
++public string? FeatureFlagKey
++public DateTime CreatedAt
++public DateTime UpdatedAt
++public string CreatedBy
++public int MaxRetries
++```
++
++BEFORE writing any test:
++1. Read the FULL constructor(s) of `Webhook` in `src/FeatureFlags/Integration/Webhook.cs` - not just the method list above. If the constructor requires parameters, every `new Webhook(...)` call must pass valid values for ALL of them. Never assume a parameterless constructor exists.
++2. Open one existing `*Tests.cs` file in `src/FeatureFlags.Tests` and copy its exact namespace style (file-scoped `namespace X;` vs block-scoped `namespace X { }`). Do NOT mix styles within your new file.
++3. Read the implementation in `src/FeatureFlags/Integration/Webhook.cs` to understand what each method actually does. Test REAL behavior, not just that methods exist.
++
++Keep the file under 200 lines - fewer, well-chosen test methods beat many. Before finishing, count your braces mentally or re-read the file top to bottom to confirm every `{` has a matching `}` and the file doesn't end mid-method.
++
++HARD RULES:
++- Create ONLY the test file. Do NOT modify any existing files.
++- Do NOT add NuGet packages. Use whatever test framework is already referenced.
++- Tests MUST compile and pass with `dotnet test`.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++IMPORTANT: a previous attempt at this exact task FAILED with these compiler errors and was reverted. Do it differently and make sure these do not happen again:
++[after 211s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags.Tests/WebhookTests.cs(12,27): error CS0246: The type or namespace name 'Webhook' could not be found (are you missing a using directive or an assembly reference?) [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags.Tests/FeatureFlags.Tests.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags.Tests/WebhookTests.cs(28,27): error CS0246: The type or namespace name 'Webhook' could not be found (are you missing a using directive or an assembly reference?) [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags.Tests/FeatureFlags.Tests.csproj]
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- chore(featureflags.tests): tweak GradualRolloutSchedulerWorkerTests
++- .aider.chat.history changes
++- test: add unit tests for WebhookValidation
++- test: add webhook validation tests
++- chore: FeatureFlagEventTests changes
++- tweak ConfigurationExceptionValidationTests
++- chore(featureflags.tests): tweak ValidationExceptionTests
++- tweak .aider.chat.history
++- feat: add unit tests for FeatureFlagException
++- test: add FeatureFlagExceptionTests
