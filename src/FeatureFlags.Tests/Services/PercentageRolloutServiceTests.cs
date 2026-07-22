@@ -135,6 +135,127 @@ public sealed class PercentageRolloutServiceTests
         Assert.Throws<ArgumentException>(() => _service.IsUserInRollout(userContext, "flag", -1));
     }
 
+    [Fact]
+    public void IsUserInRollout_With0Percent_ReturnsFalseForAllUsers()
+    {
+        // Arrange
+        var flagKey = "test-flag";
+
+        // Act & Assert - 0% rollout must never enable any user
+        for (int i = 0; i < 1000; i++)
+        {
+            var userContext = new UserContext { UserId = $"user{i}", Email = $"user{i}@example.com" };
+            var result = _service.IsUserInRollout(userContext, flagKey, 0);
+            result.Should().BeFalse("0% rollout must never enable any user");
+        }
+    }
+
+    [Fact]
+    public void IsUserInRollout_With100Percent_ReturnsTrueForAllUsers()
+    {
+        // Arrange
+        var flagKey = "test-flag";
+
+        // Act & Assert - 100% rollout must always enable all users
+        for (int i = 0; i < 1000; i++)
+        {
+            var userContext = new UserContext { UserId = $"user{i}", Email = $"user{i}@example.com" };
+            var result = _service.IsUserInRollout(userContext, flagKey, 100);
+            result.Should().BeTrue("100% rollout must always enable all users");
+        }
+    }
+
+    [Fact]
+    public void IsUserInRollout_BoundaryBucketComparison_With1Percent()
+    {
+        // Arrange
+        var flagKey = "boundary-test";
+
+        // Act & Assert - For 1% rollout, only bucket 0 should be enabled
+        // We test that at least one user gets bucket 0 and is enabled
+        bool foundBucket0Enabled = false;
+        for (int i = 0; i < 1000; i++)
+        {
+            var userContext = new UserContext { UserId = $"user{i}", Email = $"user{i}@example.com" };
+            var bucket = _service.GetUserBucket(userContext, flagKey);
+            var isEnabled = _service.IsUserInRollout(userContext, flagKey, 1);
+
+            if (bucket == 0)
+            {
+                isEnabled.Should().BeTrue("Bucket 0 must be enabled for 1% rollout");
+                foundBucket0Enabled = true;
+            }
+        }
+
+        foundBucket0Enabled.Should().BeTrue("At least one user should hash to bucket 0");
+    }
+
+    [Fact]
+    public void IsUserInRollout_BoundaryBucketComparison_With99Percent()
+    {
+        // Arrange
+        var flagKey = "boundary-test";
+
+        // Act & Assert - For 99% rollout, buckets 0-98 should be enabled, bucket 99 should not
+        bool foundBucket99Disabled = false;
+        bool foundBucket98Enabled = false;
+
+        for (int i = 0; i < 1000; i++)
+        {
+            var userContext = new UserContext { UserId = $"user{i}", Email = $"user{i}@example.com" };
+            var bucket = _service.GetUserBucket(userContext, flagKey);
+            var isEnabled = _service.IsUserInRollout(userContext, flagKey, 99);
+
+            if (bucket == 99)
+            {
+                isEnabled.Should().BeFalse("Bucket 99 must NOT be enabled for 99% rollout");
+                foundBucket99Disabled = true;
+            }
+
+            if (bucket == 98)
+            {
+                isEnabled.Should().BeTrue("Bucket 98 must be enabled for 99% rollout");
+                foundBucket98Enabled = true;
+            }
+        }
+
+        foundBucket99Disabled.Should().BeTrue("At least one user should hash to bucket 99");
+        foundBucket98Enabled.Should().BeTrue("At least one user should hash to bucket 98");
+    }
+
+    [Fact]
+    public void IsUserInRollout_BoundaryBucketComparison_With98Percent()
+    {
+        // Arrange
+        var flagKey = "boundary-test";
+
+        // Act & Assert - For 98% rollout, buckets 0-97 should be enabled, bucket 98 should not
+        bool foundBucket98Disabled = false;
+        bool foundBucket97Enabled = false;
+
+        for (int i = 0; i < 1000; i++)
+        {
+            var userContext = new UserContext { UserId = $"user{i}", Email = $"user{i}@example.com" };
+            var bucket = _service.GetUserBucket(userContext, flagKey);
+            var isEnabled = _service.IsUserInRollout(userContext, flagKey, 98);
+
+            if (bucket == 98)
+            {
+                isEnabled.Should().BeFalse("Bucket 98 must NOT be enabled for 98% rollout");
+                foundBucket98Disabled = true;
+            }
+
+            if (bucket == 97)
+            {
+                isEnabled.Should().BeTrue("Bucket 97 must be enabled for 98% rollout");
+                foundBucket97Enabled = true;
+            }
+        }
+
+        foundBucket98Disabled.Should().BeTrue("At least one user should hash to bucket 98");
+        foundBucket97Enabled.Should().BeTrue("At least one user should hash to bucket 97");
+    }
+
     [Theory]
     [InlineData(0)]
     [InlineData(25)]
