@@ -469,8 +469,9 @@ public sealed class FeatureFlagEventTests
     [Fact]
     public async Task EventBus_PublishAsync_SubscriberThrows_DoesNotPropagateException()
     {
-        // Arrange
-        var eventBus = new EventBus(_logger);
+        // Arrange - Use Isolate mode to prevent exception propagation
+        var options = new EventBusOptions { ErrorMode = EventBusErrorMode.Isolate };
+        var eventBus = new EventBus(_logger, options);
         var throwingSubscriber = new ThrowingSubscriber();
         var normalSubscriber = new TestSubscriber();
         eventBus.Subscribe(throwingSubscriber);
@@ -542,6 +543,125 @@ public sealed class FeatureFlagEventTests
         Assert.True(true); // If we get here, no exception was thrown
     }
 
+    [Fact]
+    public async Task EventBus_PublishAsync_IsolateMode_OneFailingSubscriberDoesNotPreventOthersFromReceivingEvent()
+    {
+        // Arrange - Use Isolate mode
+        var options = new EventBusOptions { ErrorMode = EventBusErrorMode.Isolate };
+        var eventBus = new EventBus(_logger, options);
+
+        var failingSubscriber = new ThrowingSubscriber();
+        var subscriber1 = new TestSubscriber();
+        var subscriber2 = new TestSubscriber();
+
+        eventBus.Subscribe(failingSubscriber);
+        eventBus.Subscribe(subscriber1);
+        eventBus.Subscribe(subscriber2);
+
+        var @event = new FeatureFlagEvent
+        {
+            EventType = "FeatureFlagCreated",
+            FeatureFlagId = 1,
+            FeatureFlagKey = "test-flag"
+        };
+
+        // Act - Should not throw even though one subscriber fails
+        await eventBus.PublishAsync(@event);
+
+        // Assert - All subscribers should have been called despite one failing
+        Assert.True(failingSubscriber.WasCalled);
+        Assert.True(subscriber1.WasCalled);
+        Assert.True(subscriber2.WasCalled);
+    }
+
+    [Fact]
+    public async Task EventBus_PublishAsync_FailFastMode_ExceptionPropagates()
+    {
+        // Arrange - Use FailFast mode (default)
+        var eventBus = new EventBus(_logger);
+
+        var failingSubscriber = new ThrowingSubscriber();
+        eventBus.Subscribe(failingSubscriber);
+
+        var @event = new FeatureFlagEvent
+        {
+            EventType = "FeatureFlagCreated",
+            FeatureFlagId = 1,
+            FeatureFlagKey = "test-flag"
+        };
+
+        // Act & Assert - Exception should propagate in FailFast mode
+        await Assert.ThrowsAsync<InvalidOperationException>(() => eventBus.PublishAsync(@event));
+
+        // Assert - The failing subscriber should have been called
+        Assert.True(failingSubscriber.WasCalled);
+    }
+
+    [Fact]
+    public async Task EventBus_PublishAsync_RetryPolicy_TransientFailuresAreRetried()
+    {
+        // Arrange - Use Isolate mode with retry configuration
+        var options = new EventBusOptions
+        {
+            ErrorMode = EventBusErrorMode.Isolate,
+            MaxRetryAttempts = 3,
+            BaseRetryDelayMs = 10
+        };
+
+        // Subscriber that fails twice then succeeds
+        var retryingSubscriber = new TestSubscriberWithRetryLogic();
+        var eventBus = new EventBus(_logger, options);
+        eventBus.Subscribe(retryingSubscriber);
+
+        var @event = new FeatureFlagEvent
+        {
+            EventType = "FeatureFlagCreated",
+            FeatureFlagId = 1,
+            FeatureFlagKey = "test-flag"
+        };
+
+        // Act
+        await eventBus.PublishAsync(@event);
+
+        // Assert - Subscriber should have been called 3 times (2 failures + 1 success)
+        Assert.True(retryingSubscriber.WasCalled);
+        Assert.Equal(3, retryingSubscriber.CallCount);
+    }
+
+    [Fact]
+    public async Task EventBus_PublishAsync_ErrorCallback_InvokedOnFailure()
+    {
+        // Arrange
+        var options = new EventBusOptions { ErrorMode = EventBusErrorMode.Isolate };
+        var eventBus = new EventBus(_logger, options);
+
+        var errorInvoked = false;
+        var errorCallback = new SubscriberErrorCallback((subscriber, @event, exception, attempt) =>
+        {
+            errorInvoked = true;
+        });
+
+        // Temporarily replace the eventBus's error callback
+        var eventBusWithCallback = new EventBus(_logger, options, errorCallback);
+
+        var failingSubscriber = new ThrowingSubscriber();
+        eventBusWithCallback.Subscribe(failingSubscriber);
+
+        var @event = new FeatureFlagEvent
+        {
+            EventType = "FeatureFlagCreated",
+            FeatureFlagId = 1,
+            FeatureFlagKey = "test-flag"
+        };
+
+        // Act
+        await eventBusWithCallback.PublishAsync(@event);
+
+        // Assert - Error callback should have been invoked
+        Assert.True(errorInvoked);
+        Assert.True(failingSubscriber.WasCalled);
+    }
+
     #endregion
 
     #region EventLoggingSubscriber Tests
@@ -609,7 +729,7 @@ public sealed class FeatureFlagEventTests
         public FeatureFlagEvent? LastEvent { get; private set; }
         public string? LastEventType => LastEvent?.EventType;
 
-        public Task HandleEventAsync(FeatureFlagEvent @event)
+        public Task HandleEventAsync(FeatureFlagEvent @event, CancellationToken cancellationToken = default)
         {
             WasCalled = true;
             LastEvent = @event;
@@ -622,10 +742,32 @@ public sealed class FeatureFlagEventTests
         public string[] InterestedEventTypes => new[] { "*" };
         public bool WasCalled { get; private set; }
 
-        public Task HandleEventAsync(FeatureFlagEvent @event)
+        public Task HandleEventAsync(FeatureFlagEvent @event, CancellationToken cancellationToken = default)
         {
             WasCalled = true;
             throw new InvalidOperationException("Test exception");
+        }
+    }
+
+    private sealed class TestSubscriberWithRetryLogic : IEventSubscriber
+    {
+        private int _callCount = 0;
+        public string[] InterestedEventTypes => new[] { "*" };
+        public bool WasCalled { get; private set; }
+        public int CallCount => _callCount;
+
+        public Task HandleEventAsync(FeatureFlagEvent @event, CancellationToken cancellationToken = default)
+        {
+            WasCalled = true;
+            _callCount++;
+
+            // Fail on first two calls, succeed on third
+            if (_callCount <= 2)
+            {
+                throw new InvalidOperationException("Transient failure");
+            }
+
+            return Task.CompletedTask;
         }
     }
 

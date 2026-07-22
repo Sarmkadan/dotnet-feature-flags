@@ -4,6 +4,8 @@
 // CTO & Software Architect
 // =============================================================================
 
+using Microsoft.Extensions.Options;
+
 namespace FeatureFlags.Events;
 
 /// <summary>
@@ -33,8 +35,56 @@ public interface IEventSubscriber
     /// <summary>
     /// Handles the event when it occurs.
     /// </summary>
-    Task HandleEventAsync(FeatureFlagEvent @event);
+    /// <param name="@event">The event to handle</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    Task HandleEventAsync(FeatureFlagEvent @event, CancellationToken cancellationToken = default);
 }
+
+/// <summary>
+/// Error handling mode for event bus dispatch.
+/// </summary>
+public enum EventBusErrorMode
+{
+    /// <summary>
+    /// Fail-fast: propagate exceptions immediately (default behavior for backward compatibility).
+    /// </summary>
+    FailFast,
+
+    /// <summary>
+    /// Isolate errors: catch and log exceptions, allowing other subscribers to continue processing.
+    /// </summary>
+    Isolate
+}
+
+/// <summary>
+/// Configuration options for the event bus.
+/// </summary>
+public sealed class EventBusOptions
+{
+    /// <summary>
+    /// Error handling mode. Defaults to FailFast for backward compatibility.
+    /// </summary>
+    public EventBusErrorMode ErrorMode { get; set; } = EventBusErrorMode.FailFast;
+
+    /// <summary>
+    /// Maximum number of retry attempts for transient failures. Defaults to 3.
+    /// </summary>
+    public int MaxRetryAttempts { get; set; } = 3;
+
+    /// <summary>
+    /// Base delay in milliseconds for exponential backoff. Defaults to 100ms.
+    /// </summary>
+    public int BaseRetryDelayMs { get; set; } = 100;
+}
+
+/// <summary>
+/// Delegate for handling subscriber dispatch errors.
+/// </summary>
+/// <param name="subscriber">The subscriber that failed</param>
+/// <param name="event">The event being processed</param>
+/// <param name="exception">The exception that was thrown</param>
+/// <param name="attempt">The retry attempt number (1-based)</param>
+public delegate void SubscriberErrorCallback(IEventSubscriber subscriber, FeatureFlagEvent @event, Exception exception, int attempt);
 
 /// <summary>
 /// Event bus that manages event publishing and subscriber notifications.
@@ -44,21 +94,26 @@ public interface IEventBus
 {
     void Subscribe(IEventSubscriber subscriber);
     void Unsubscribe(IEventSubscriber subscriber);
-    Task PublishAsync(FeatureFlagEvent @event);
-    Task PublishAsync(string eventType, int featureFlagId, string featureFlagKey, string triggeredBy, Dictionary<string, object?>? metadata = null);
+    Task PublishAsync(FeatureFlagEvent @event, CancellationToken cancellationToken = default);
+    Task PublishAsync(string eventType, int featureFlagId, string featureFlagKey, string triggeredBy, Dictionary<string, object?>? metadata = null, CancellationToken cancellationToken = default);
 }
 
 /// <summary>
 /// Default in-process implementation of event bus.
 /// </summary>
-public sealed class EventBus : IEventBus {
+public sealed class EventBus : IEventBus
+{
     private readonly List<IEventSubscriber> _subscribers = new();
     private readonly ILogger<EventBus> _logger;
     private readonly object _syncLock = new();
+    private readonly EventBusOptions _options;
+    private readonly SubscriberErrorCallback? _errorCallback;
 
-    public EventBus(ILogger<EventBus> logger)
+    public EventBus(ILogger<EventBus> logger, EventBusOptions? options = null, SubscriberErrorCallback? errorCallback = null)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _options = options ?? new EventBusOptions();
+        _errorCallback = errorCallback;
     }
 
     public void Subscribe(IEventSubscriber subscriber)
@@ -112,19 +167,78 @@ public sealed class EventBus : IEventBus {
                 .ToList();
         }
 
-        var tasks = subscribersToNotify.Select(async subscriber =>
+        var tasks = subscribersToNotify.Select(subscriber => DispatchToSubscriberAsync(subscriber, @event, cancellationToken));
+
+        await Task.WhenAll(tasks);
+    }
+
+    private async Task DispatchToSubscriberAsync(IEventSubscriber subscriber, FeatureFlagEvent @event, CancellationToken cancellationToken)
+    {
+        if (_options.ErrorMode == EventBusErrorMode.FailFast)
+        {
+            await subscriber.HandleEventAsync(@event, cancellationToken);
+            return;
+        }
+
+        // Error isolation mode: wrap in try-catch with retry
+        var attempt = 0;
+        Exception? lastException = null;
+
+        while (attempt <= _options.MaxRetryAttempts)
         {
             try
             {
-                await subscriber.HandleEventAsync(@event);
+                await subscriber.HandleEventAsync(@event, cancellationToken);
+                return; // Success - exit retry loop
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                // Don't retry if operation was cancelled
+                throw;
+            }
+            catch (Exception ex) when (attempt < _options.MaxRetryAttempts)
+            {
+                lastException = ex;
+                attempt++;
+
+                var delayMs = _options.BaseRetryDelayMs * (int)Math.Pow(2, attempt - 1);
+                _logger.LogWarning(ex, "Subscriber {SubscriberType} failed (attempt {Attempt}/{MaxAttempts}). Retrying in {DelayMs}ms...",
+                    subscriber.GetType().Name, attempt, _options.MaxRetryAttempts, delayMs);
+
+                try
+                {
+                    await Task.Delay(delayMs, cancellationToken);
+                }
+                catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+                {
+                    // Don't retry if cancelled during delay
+                    throw;
+                }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Event handler error: {SubscriberType}", subscriber.GetType().Name);
+                // Final attempt failed - log and invoke error callback
+                lastException = ex;
+                break;
             }
-        });
+        }
 
-        await Task.WhenAll(tasks);
+        // Log the error
+        _logger.LogError(lastException, "Subscriber {SubscriberType} failed after {Attempt} attempts",
+            subscriber.GetType().Name, attempt);
+
+        // Invoke error callback if provided
+        if (_errorCallback != null)
+        {
+            try
+            {
+                _errorCallback(subscriber, @event, lastException!, attempt);
+            }
+            catch (Exception callbackEx)
+            {
+                _logger.LogError(callbackEx, "Error callback failed for subscriber {SubscriberType}", subscriber.GetType().Name);
+            }
+        }
     }
 
     public async Task PublishAsync(string eventType, int featureFlagId, string featureFlagKey, string triggeredBy, Dictionary<string, object?>? metadata = null, CancellationToken cancellationToken = default)
@@ -138,13 +252,13 @@ public sealed class EventBus : IEventBus {
             Metadata = metadata ?? new()
         };
 
-        await PublishAsync(@event);
+        await PublishAsync(@event, cancellationToken);
     }
 
-    Task IEventBus.PublishAsync(FeatureFlagEvent @event) => PublishAsync(@event);
+    Task IEventBus.PublishAsync(FeatureFlagEvent @event, CancellationToken cancellationToken = default) => PublishAsync(@event, cancellationToken);
 
-    Task IEventBus.PublishAsync(string eventType, int featureFlagId, string featureFlagKey, string triggeredBy, Dictionary<string, object?>? metadata)
-        => PublishAsync(eventType, featureFlagId, featureFlagKey, triggeredBy, metadata);
+    Task IEventBus.PublishAsync(string eventType, int featureFlagId, string featureFlagKey, string triggeredBy, Dictionary<string, object?>? metadata, CancellationToken cancellationToken = default)
+        => PublishAsync(eventType, featureFlagId, featureFlagKey, triggeredBy, metadata, cancellationToken);
 }
 
 /// <summary>
@@ -172,7 +286,7 @@ public sealed class EventLoggingSubscriber : IEventSubscriber {
         await Task.CompletedTask;
     }
 
-    Task IEventSubscriber.HandleEventAsync(FeatureFlagEvent @event) => HandleEventAsync(@event);
+    Task IEventSubscriber.HandleEventAsync(FeatureFlagEvent @event, CancellationToken cancellationToken) => HandleEventAsync(@event, cancellationToken);
 }
 
 /// <summary>
@@ -211,7 +325,7 @@ public sealed class WebhookEventSubscriber : IEventSubscriber {
         await Task.CompletedTask;
     }
 
-    Task IEventSubscriber.HandleEventAsync(FeatureFlagEvent @event) => HandleEventAsync(@event);
+    Task IEventSubscriber.HandleEventAsync(FeatureFlagEvent @event, CancellationToken cancellationToken) => HandleEventAsync(@event, cancellationToken);
 }
 
 /// <summary>
@@ -219,9 +333,55 @@ public sealed class WebhookEventSubscriber : IEventSubscriber {
 /// </summary>
 public static class EventSystemExtensions
 {
+    /// <summary>
+    /// Adds the event system with default configuration.
+    /// </summary>
     public static IServiceCollection AddEventSystem(this IServiceCollection services)
     {
         services.AddSingleton<IEventBus, EventBus>();
+        services.AddSingleton<IEventSubscriber, EventLoggingSubscriber>();
+
+        return services;
+    }
+
+    /// <summary>
+    /// Adds the event system with custom configuration options.
+    /// </summary>
+    /// <param name="services">The service collection</param>
+    /// <param name="configure">Configuration action for EventBusOptions</param>
+    /// <param name="errorCallback">Optional error callback</param>
+    public static IServiceCollection AddEventSystem(this IServiceCollection services, Action<EventBusOptions> configure, SubscriberErrorCallback? errorCallback = null)
+    {
+        if (configure is null)
+        {
+            throw new ArgumentNullException(nameof(configure));
+        }
+
+        services.Configure(configure);
+        services.AddSingleton<IEventBus>(provider =>
+        {
+            var options = provider.GetRequiredService<IOptions<EventBusOptions>>().Value;
+            var logger = provider.GetRequiredService<ILogger<EventBus>>();
+            return new EventBus(logger, options, errorCallback);
+        });
+        services.AddSingleton<IEventSubscriber, EventLoggingSubscriber>();
+
+        return services;
+    }
+
+    /// <summary>
+    /// Adds the event system with custom EventBus instance.
+    /// </summary>
+    /// <param name="services">The service collection</param>
+    /// <param name="eventBus">Custom EventBus instance</param>
+    public static IServiceCollection AddEventSystem(this IServiceCollection services, IEventBus eventBus)
+    {
+        if (eventBus is null)
+        {
+            throw new ArgumentNullException(nameof(eventBus));
+        }
+
+        services.AddSingleton(eventBus);
         services.AddSingleton<IEventSubscriber, EventLoggingSubscriber>();
 
         return services;
