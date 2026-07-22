@@ -12590,3 +12590,363 @@
 +- chore: tweak FeatureFlagExceptionExtensionsTests
 +- Update ValidationExceptionJsonExtensionsTests
 +- fix: add unit tests for ValidationExceptionJsonExtensions
+
+# 2026-07-22 14:00:23.894314
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, write unit tests for `ConfigurationExceptionValidation` (defined in `src/FeatureFlags/Exceptions/ConfigurationExceptionValidation.cs`).
++
++Create ONE new file: `src/FeatureFlags.Tests/ConfigurationExceptionValidationTests.cs` with a test class `ConfigurationExceptionValidationTests` using xUnit (or whatever test framework the project already uses - check existing test files).
++
++Write 4-8 test methods covering:
++- Happy path for each major public method
++- Edge cases: null inputs, empty collections, boundary values
++- Error paths: expected exceptions
++
++Public members to test:
++```
++public static IReadOnlyList<string> Validate
++public static bool IsValid
++public static void EnsureValid
++```
++
++Read the implementation in `src/FeatureFlags/Exceptions/ConfigurationExceptionValidation.cs` to understand what each method actually does. Test REAL behavior, not just that methods exist.
++
++HARD RULES:
++- Create ONLY the test file. Do NOT modify any existing files.
++- Do NOT add NuGet packages. Use whatever test framework is already referenced.
++- Tests MUST compile and pass with `dotnet test`.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++EXPLICIT STEPS:
++1. Check which test framework the project uses: look at existing test .csproj for xUnit/NUnit/MSTest PackageReference.
++2. Match that framework exactly. Do NOT use a different one.
++3. Create the test file in the path specified above.
++4. Write 4-8 real test methods - read the source class to understand actual behavior.
++5. Run: dotnet test. ALL tests must pass. If they fail, fix them.
++6. If the test project does not exist or has no test framework reference, STOP - do not create it.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- chore(featureflags.tests): tweak ValidationExceptionTests
++- tweak .aider.chat.history
++- feat: add unit tests for FeatureFlagException
++- test: add FeatureFlagExceptionTests
++- Update ConfigurationExceptionTests
++- ConfigurationExceptionExtensionsTests changes
++- tweak ValidationExceptionExtensionsTests
++- fix: verify percentage rollout boundary semantics
++- chore: tweak FeatureFlagExceptionExtensionsTests
++- Update ValidationExceptionJsonExtensionsTests
+
+# 2026-07-22 14:00:23.894410
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, write unit tests for `ConfigurationExceptionValidation` (defined in `src/FeatureFlags/Exceptions/ConfigurationExceptionValidation.cs`).
++
++Create ONE new file: `src/FeatureFlags.Tests/ConfigurationExceptionValidationTests.cs` with a test class `ConfigurationExceptionValidationTests` using xUnit (or whatever test framework the project already uses - check existing test files).
++
++Write 4-8 test methods covering:
++- Happy path for each major public method
++- Edge cases: null inputs, empty collections, boundary values
++- Error paths: expected exceptions
++
++Public members to test:
++```
++public static IReadOnlyList<string> Validate
++public static bool IsValid
++public static void EnsureValid
++```
++
++Read the implementation in `src/FeatureFlags/Exceptions/ConfigurationExceptionValidation.cs` to understand what each method actually does. Test REAL behavior, not just that methods exist.
++
++HARD RULES:
++- Create ONLY the test file. Do NOT modify any existing files.
++- Do NOT add NuGet packages. Use whatever test framework is already referenced.
++- Tests MUST compile and pass with `dotnet test`.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++EXPLICIT STEPS:
++1. Check which test framework the project uses: look at existing test .csproj for xUnit/NUnit/MSTest PackageReference.
++2. Match that framework exactly. Do NOT use a different one.
++3. Create the test file in the path specified above.
++4. Write 4-8 real test methods - read the source class to understand actual behavior.
++5. Run: dotnet test. ALL tests must pass. If they fail, fix them.
++6. If the test project does not exist or has no test framework reference, STOP - do not create it.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- chore(featureflags.tests): tweak ValidationExceptionTests
++- tweak .aider.chat.history
++- feat: add unit tests for FeatureFlagException
++- test: add FeatureFlagExceptionTests
++- Update ConfigurationExceptionTests
++- ConfigurationExceptionExtensionsTests changes
++- tweak ValidationExceptionExtensionsTests
++- fix: verify percentage rollout boundary semantics
++- chore: tweak FeatureFlagExceptionExtensionsTests
++- Update ValidationExceptionJsonExtensionsTests
+
+# 2026-07-22 14:02:34.738352
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, write unit tests for `ConfigurationExceptionValidation` (defined in `src/FeatureFlags/Exceptions/ConfigurationExceptionValidation.cs`).
++
++Create ONE new file: `src/FeatureFlags.Tests/ConfigurationExceptionValidationTests.cs` with a test class `ConfigurationExceptionValidationTests` using xUnit (or whatever test framework the project already uses - check existing test files).
++
++Write 4-8 test methods covering:
++- Happy path for each major public method
++- Edge cases: null inputs, empty collections, boundary values
++- Error paths: expected exceptions
++
++Public members to test:
++```
++public static IReadOnlyList<string> Validate
++public static bool IsValid
++public static void EnsureValid
++```
++
++Read the implementation in `src/FeatureFlags/Exceptions/ConfigurationExceptionValidation.cs` to understand what each method actually does. Test REAL behavior, not just that methods exist.
++
++HARD RULES:
++- Create ONLY the test file. Do NOT modify any existing files.
++- Do NOT add NuGet packages. Use whatever test framework is already referenced.
++- Tests MUST compile and pass with `dotnet test`.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++EXPLICIT STEPS:
++1. Check which test framework the project uses: look at existing test .csproj for xUnit/NUnit/MSTest PackageReference.
++2. Match that framework exactly. Do NOT use a different one.
++3. Create the test file in the path specified above.
++4. Write 4-8 real test methods - read the source class to understand actual behavior.
++5. Run: dotnet test. ALL tests must pass. If they fail, fix them.
++6. If the test project does not exist or has no test framework reference, STOP - do not create it.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- chore(featureflags.tests): tweak ValidationExceptionTests
++- tweak .aider.chat.history
++- feat: add unit tests for FeatureFlagException
++- test: add FeatureFlagExceptionTests
++- Update ConfigurationExceptionTests
++- ConfigurationExceptionExtensionsTests changes
++- tweak ValidationExceptionExtensionsTests
++- fix: verify percentage rollout boundary semantics
++- chore: tweak FeatureFlagExceptionExtensionsTests
++- Update ValidationExceptionJsonExtensionsTests
+
+# 2026-07-22 14:02:34.738422
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, write unit tests for `ConfigurationExceptionValidation` (defined in `src/FeatureFlags/Exceptions/ConfigurationExceptionValidation.cs`).
++
++Create ONE new file: `src/FeatureFlags.Tests/ConfigurationExceptionValidationTests.cs` with a test class `ConfigurationExceptionValidationTests` using xUnit (or whatever test framework the project already uses - check existing test files).
++
++Write 4-8 test methods covering:
++- Happy path for each major public method
++- Edge cases: null inputs, empty collections, boundary values
++- Error paths: expected exceptions
++
++Public members to test:
++```
++public static IReadOnlyList<string> Validate
++public static bool IsValid
++public static void EnsureValid
++```
++
++Read the implementation in `src/FeatureFlags/Exceptions/ConfigurationExceptionValidation.cs` to understand what each method actually does. Test REAL behavior, not just that methods exist.
++
++HARD RULES:
++- Create ONLY the test file. Do NOT modify any existing files.
++- Do NOT add NuGet packages. Use whatever test framework is already referenced.
++- Tests MUST compile and pass with `dotnet test`.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++EXPLICIT STEPS:
++1. Check which test framework the project uses: look at existing test .csproj for xUnit/NUnit/MSTest PackageReference.
++2. Match that framework exactly. Do NOT use a different one.
++3. Create the test file in the path specified above.
++4. Write 4-8 real test methods - read the source class to understand actual behavior.
++5. Run: dotnet test. ALL tests must pass. If they fail, fix them.
++6. If the test project does not exist or has no test framework reference, STOP - do not create it.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- chore(featureflags.tests): tweak ValidationExceptionTests
++- tweak .aider.chat.history
++- feat: add unit tests for FeatureFlagException
++- test: add FeatureFlagExceptionTests
++- Update ConfigurationExceptionTests
++- ConfigurationExceptionExtensionsTests changes
++- tweak ValidationExceptionExtensionsTests
++- fix: verify percentage rollout boundary semantics
++- chore: tweak FeatureFlagExceptionExtensionsTests
++- Update ValidationExceptionJsonExtensionsTests
+
+# 2026-07-22 14:04:43.369675
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, write unit tests for `ConfigurationExceptionValidation` (defined in `src/FeatureFlags/Exceptions/ConfigurationExceptionValidation.cs`).
++
++Create ONE new file: `src/FeatureFlags.Tests/ConfigurationExceptionValidationTests.cs` with a test class `ConfigurationExceptionValidationTests` using xUnit (or whatever test framework the project already uses - check existing test files).
++
++Write 4-8 test methods covering:
++- Happy path for each major public method
++- Edge cases: null inputs, empty collections, boundary values
++- Error paths: expected exceptions
++
++Public members to test:
++```
++public static IReadOnlyList<string> Validate
++public static bool IsValid
++public static void EnsureValid
++```
++
++Read the implementation in `src/FeatureFlags/Exceptions/ConfigurationExceptionValidation.cs` to understand what each method actually does. Test REAL behavior, not just that methods exist.
++
++HARD RULES:
++- Create ONLY the test file. Do NOT modify any existing files.
++- Do NOT add NuGet packages. Use whatever test framework is already referenced.
++- Tests MUST compile and pass with `dotnet test`.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++EXPLICIT STEPS:
++1. Check which test framework the project uses: look at existing test .csproj for xUnit/NUnit/MSTest PackageReference.
++2. Match that framework exactly. Do NOT use a different one.
++3. Create the test file in the path specified above.
++4. Write 4-8 real test methods - read the source class to understand actual behavior.
++5. Run: dotnet test. ALL tests must pass. If they fail, fix them.
++6. If the test project does not exist or has no test framework reference, STOP - do not create it.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- chore(featureflags.tests): tweak ValidationExceptionTests
++- tweak .aider.chat.history
++- feat: add unit tests for FeatureFlagException
++- test: add FeatureFlagExceptionTests
++- Update ConfigurationExceptionTests
++- ConfigurationExceptionExtensionsTests changes
++- tweak ValidationExceptionExtensionsTests
++- fix: verify percentage rollout boundary semantics
++- chore: tweak FeatureFlagExceptionExtensionsTests
++- Update ValidationExceptionJsonExtensionsTests
+
+# 2026-07-22 14:04:43.369909
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, write unit tests for `ConfigurationExceptionValidation` (defined in `src/FeatureFlags/Exceptions/ConfigurationExceptionValidation.cs`).
++
++Create ONE new file: `src/FeatureFlags.Tests/ConfigurationExceptionValidationTests.cs` with a test class `ConfigurationExceptionValidationTests` using xUnit (or whatever test framework the project already uses - check existing test files).
++
++Write 4-8 test methods covering:
++- Happy path for each major public method
++- Edge cases: null inputs, empty collections, boundary values
++- Error paths: expected exceptions
++
++Public members to test:
++```
++public static IReadOnlyList<string> Validate
++public static bool IsValid
++public static void EnsureValid
++```
++
++Read the implementation in `src/FeatureFlags/Exceptions/ConfigurationExceptionValidation.cs` to understand what each method actually does. Test REAL behavior, not just that methods exist.
++
++HARD RULES:
++- Create ONLY the test file. Do NOT modify any existing files.
++- Do NOT add NuGet packages. Use whatever test framework is already referenced.
++- Tests MUST compile and pass with `dotnet test`.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++EXPLICIT STEPS:
++1. Check which test framework the project uses: look at existing test .csproj for xUnit/NUnit/MSTest PackageReference.
++2. Match that framework exactly. Do NOT use a different one.
++3. Create the test file in the path specified above.
++4. Write 4-8 real test methods - read the source class to understand actual behavior.
++5. Run: dotnet test. ALL tests must pass. If they fail, fix them.
++6. If the test project does not exist or has no test framework reference, STOP - do not create it.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- chore(featureflags.tests): tweak ValidationExceptionTests
++- tweak .aider.chat.history
++- feat: add unit tests for FeatureFlagException
++- test: add FeatureFlagExceptionTests
++- Update ConfigurationExceptionTests
++- ConfigurationExceptionExtensionsTests changes
++- tweak ValidationExceptionExtensionsTests
++- fix: verify percentage rollout boundary semantics
++- chore: tweak FeatureFlagExceptionExtensionsTests
++- Update ValidationExceptionJsonExtensionsTests
+
+# 2026-07-22 14:04:49.708261
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, write unit tests for `ConfigurationExceptionValidation` (defined in `src/FeatureFlags/Exceptions/ConfigurationExceptionValidation.cs`).
++
++Create ONE new file: `src/FeatureFlags.Tests/ConfigurationExceptionValidationTests.cs` with a test class `ConfigurationExceptionValidationTests` using xUnit (or whatever test framework the project already uses - check existing test files).
++
++Write 4-8 test methods covering:
++- Happy path for each major public method
++- Edge cases: null inputs, empty collections, boundary values
++- Error paths: expected exceptions
++
++Public members to test:
++```
++public static IReadOnlyList<string> Validate
++public static bool IsValid
++public static void EnsureValid
++```
++
++Read the implementation in `src/FeatureFlags/Exceptions/ConfigurationExceptionValidation.cs` to understand what each method actually does. Test REAL behavior, not just that methods exist.
++
++HARD RULES:
++- Create ONLY the test file. Do NOT modify any existing files.
++- Do NOT add NuGet packages. Use whatever test framework is already referenced.
++- Tests MUST compile and pass with `dotnet test`.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++EXPLICIT STEPS:
++1. Check which test framework the project uses: look at existing test .csproj for xUnit/NUnit/MSTest PackageReference.
++2. Match that framework exactly. Do NOT use a different one.
++3. Create the test file in the path specified above.
++4. Write 4-8 real test methods - read the source class to understand actual behavior.
++5. Run: dotnet test. ALL tests must pass. If they fail, fix them.
++6. If the test project does not exist or has no test framework reference, STOP - do not create it.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- chore(featureflags.tests): tweak ValidationExceptionTests
++- tweak .aider.chat.history
++- feat: add unit tests for FeatureFlagException
++- test: add FeatureFlagExceptionTests
++- Update ConfigurationExceptionTests
++- ConfigurationExceptionExtensionsTests changes
++- tweak ValidationExceptionExtensionsTests
++- fix: verify percentage rollout boundary semantics
++- chore: tweak FeatureFlagExceptionExtensionsTests
++- Update ValidationExceptionJsonExtensionsTests
+
+# 2026-07-22 14:04:49.708361
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, write unit tests for `ConfigurationExceptionValidation` (defined in `src/FeatureFlags/Exceptions/ConfigurationExceptionValidation.cs`).
++
++Create ONE new file: `src/FeatureFlags.Tests/ConfigurationExceptionValidationTests.cs` with a test class `ConfigurationExceptionValidationTests` using xUnit (or whatever test framework the project already uses - check existing test files).
++
++Write 4-8 test methods covering:
++- Happy path for each major public method
++- Edge cases: null inputs, empty collections, boundary values
++- Error paths: expected exceptions
++
++Public members to test:
++```
++public static IReadOnlyList<string> Validate
++public static bool IsValid
++public static void EnsureValid
++```
++
++Read the implementation in `src/FeatureFlags/Exceptions/ConfigurationExceptionValidation.cs` to understand what each method actually does. Test REAL behavior, not just that methods exist.
++
++HARD RULES:
++- Create ONLY the test file. Do NOT modify any existing files.
++- Do NOT add NuGet packages. Use whatever test framework is already referenced.
++- Tests MUST compile and pass with `dotnet test`.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++EXPLICIT STEPS:
++1. Check which test framework the project uses: look at existing test .csproj for xUnit/NUnit/MSTest PackageReference.
++2. Match that framework exactly. Do NOT use a different one.
++3. Create the test file in the path specified above.
++4. Write 4-8 real test methods - read the source class to understand actual behavior.
++5. Run: dotnet test. ALL tests must pass. If they fail, fix them.
++6. If the test project does not exist or has no test framework reference, STOP - do not create it.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- chore(featureflags.tests): tweak ValidationExceptionTests
++- tweak .aider.chat.history
++- feat: add unit tests for FeatureFlagException
++- test: add FeatureFlagExceptionTests
++- Update ConfigurationExceptionTests
++- ConfigurationExceptionExtensionsTests changes
++- tweak ValidationExceptionExtensionsTests
++- fix: verify percentage rollout boundary semantics
++- chore: tweak FeatureFlagExceptionExtensionsTests
++- Update ValidationExceptionJsonExtensionsTests
