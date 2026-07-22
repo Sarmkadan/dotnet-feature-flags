@@ -13440,3 +13440,95 @@
 +- tweak .aider.chat.history
 +- feat: add unit tests for FeatureFlagException
 +- test: add FeatureFlagExceptionTests
+
+# 2026-07-22 22:14:18.296659
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, write unit tests for `GradualRolloutSchedulerWorkerExtensions` (defined in `src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorkerExtensions.cs`).
++
++Create ONE new file: `src/FeatureFlags.Tests/GradualRolloutSchedulerWorkerExtensionsTests.cs` with a test class `GradualRolloutSchedulerWorkerExtensionsTests` using xUnit (or whatever test framework the project already uses - check existing test files).
++
++Write 4-8 test methods covering:
++- Happy path for each major public method
++- Edge cases: null inputs, empty collections, boundary values
++- Error paths: expected exceptions
++
++Public members to test:
++```
++public static TimeSpan GetCheckInterval
++public static bool IsEnabled
++public static async Task<int> RunImmediateAsync
++```
++
++BEFORE writing any test:
++1. Read the FULL constructor(s) of `GradualRolloutSchedulerWorkerExtensions` in `src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorkerExtensions.cs` - not just the method list above. If the constructor requires parameters, every `new GradualRolloutSchedulerWorkerExtensions(...)` call must pass valid values for ALL of them. Never assume a parameterless constructor exists.
++2. Open one existing `*Tests.cs` file in `src/FeatureFlags.Tests` and copy its exact namespace style (file-scoped `namespace X;` vs block-scoped `namespace X { }`). Do NOT mix styles within your new file.
++3. Read the implementation in `src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorkerExtensions.cs` to understand what each method actually does. Test REAL behavior, not just that methods exist.
++
++Keep the file under 200 lines - fewer, well-chosen test methods beat many. Before finishing, count your braces mentally or re-read the file top to bottom to confirm every `{` has a matching `}` and the file doesn't end mid-method.
++
++HARD RULES:
++- Create ONLY the test file. Do NOT modify any existing files.
++- Do NOT add NuGet packages. Use whatever test framework is already referenced.
++- Tests MUST compile and pass with `dotnet test`.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++IMPORTANT: a previous attempt at this exact task FAILED with these compiler errors and was reverted. Do it differently and make sure these do not happen again:
++[after 342s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags.Tests/GradualRolloutSchedulerWorkerExtensionsTests.cs(11,26): error CS0246: The type or namespace name 'GradualRolloutSchedulerWorker' could not be found (are you missing a using directive or an assembly reference?) [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags.Tests/FeatureFlags.Tests.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags.Tests/GradualRolloutSchedulerWorkerExtensionsTests.cs(11,60): error CS0246: The type or namespace name 'GradualRolloutSchedulerOptions' could not be found (are you missing a using directive or an assembly reference?) [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags.Tests/FeatureFlags.Tests.csproj]
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- tweak .aider.chat.history
++- (no commit message provided)
++- feat: add comprehensive unit tests for Webhook behavior including validation and triggering logic
++- test: add webhook tests
++- chore(featureflags.tests): tweak GradualRolloutSchedulerWorkerTests
++- .aider.chat.history changes
++- test: add unit tests for WebhookValidation
++- test: add webhook validation tests
++- chore: FeatureFlagEventTests changes
++- tweak ConfigurationExceptionValidationTests
+
+# 2026-07-22 22:14:18.296738
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, write unit tests for `GradualRolloutSchedulerWorkerExtensions` (defined in `src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorkerExtensions.cs`).
++
++Create ONE new file: `src/FeatureFlags.Tests/GradualRolloutSchedulerWorkerExtensionsTests.cs` with a test class `GradualRolloutSchedulerWorkerExtensionsTests` using xUnit (or whatever test framework the project already uses - check existing test files).
++
++Write 4-8 test methods covering:
++- Happy path for each major public method
++- Edge cases: null inputs, empty collections, boundary values
++- Error paths: expected exceptions
++
++Public members to test:
++```
++public static TimeSpan GetCheckInterval
++public static bool IsEnabled
++public static async Task<int> RunImmediateAsync
++```
++
++BEFORE writing any test:
++1. Read the FULL constructor(s) of `GradualRolloutSchedulerWorkerExtensions` in `src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorkerExtensions.cs` - not just the method list above. If the constructor requires parameters, every `new GradualRolloutSchedulerWorkerExtensions(...)` call must pass valid values for ALL of them. Never assume a parameterless constructor exists.
++2. Open one existing `*Tests.cs` file in `src/FeatureFlags.Tests` and copy its exact namespace style (file-scoped `namespace X;` vs block-scoped `namespace X { }`). Do NOT mix styles within your new file.
++3. Read the implementation in `src/FeatureFlags/BackgroundJobs/GradualRolloutSchedulerWorkerExtensions.cs` to understand what each method actually does. Test REAL behavior, not just that methods exist.
++
++Keep the file under 200 lines - fewer, well-chosen test methods beat many. Before finishing, count your braces mentally or re-read the file top to bottom to confirm every `{` has a matching `}` and the file doesn't end mid-method.
++
++HARD RULES:
++- Create ONLY the test file. Do NOT modify any existing files.
++- Do NOT add NuGet packages. Use whatever test framework is already referenced.
++- Tests MUST compile and pass with `dotnet test`.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++IMPORTANT: a previous attempt at this exact task FAILED with these compiler errors and was reverted. Do it differently and make sure these do not happen again:
++[after 342s] [auto-committed] [build-failed-reverted] /home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags.Tests/GradualRolloutSchedulerWorkerExtensionsTests.cs(11,26): error CS0246: The type or namespace name 'GradualRolloutSchedulerWorker' could not be found (are you missing a using directive or an assembly reference?) [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags.Tests/FeatureFlags.Tests.csproj]
++/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags.Tests/GradualRolloutSchedulerWorkerExtensionsTests.cs(11,60): error CS0246: The type or namespace name 'GradualRolloutSchedulerOptions' could not be found (are you missing a using directive or an assembly reference?) [/home/redrocket/task-factory/workdir/dotnet-feature-flags/src/FeatureFlags.Tests/FeatureFlags.Tests.csproj]
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- tweak .aider.chat.history
++- (no commit message provided)
++- feat: add comprehensive unit tests for Webhook behavior including validation and triggering logic
++- test: add webhook tests
++- chore(featureflags.tests): tweak GradualRolloutSchedulerWorkerTests
++- .aider.chat.history changes
++- test: add unit tests for WebhookValidation
++- test: add webhook validation tests
++- chore: FeatureFlagEventTests changes
++- tweak ConfigurationExceptionValidationTests
