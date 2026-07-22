@@ -61,14 +61,9 @@ public class PercentageRolloutService : IPercentageRolloutService {
         if (rolloutPercentage < 0 || rolloutPercentage > 100)
             throw new ArgumentException("Rollout percentage must be between 0 and 100", nameof(rolloutPercentage));
 
-        if (rolloutPercentage == 100)
-            return true;
-
-        if (rolloutPercentage == 0)
-            return false;
-
         var bucket = GetUserBucket(userContext, featureFlagKey);
-        // Hotfix: Fix percentage rollout inconsistency across application restarts
+        // Percentage rollout: buckets 0 to rolloutPercentage-1 are enabled
+        // This ensures strict boundary semantics: 0% enables 0 buckets, 100% enables all 100 buckets
         return bucket < rolloutPercentage;
     }
 
