@@ -12094,3 +12094,99 @@
 +- Update SearchQueryBuilderTests.
 +- .
 +- tweak .aiedr.chat.history
+
+# 2026-07-22 12:27:13.427384
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, write unit tests for `ConfigurationException` (defined in `src/FeatureFlags/Exceptions/ConfigurationException.cs`).
++
++Create ONE new file: `src/FeatureFlags.Tests/ConfigurationExceptionTests.cs` with a test class `ConfigurationExceptionTests` using xUnit (or whatever test framework the project already uses - check existing test files).
++
++Write 4-8 test methods covering:
++- Happy path for each major public method
++- Edge cases: null inputs, empty collections, boundary values
++- Error paths: expected exceptions
++
++Public members to test:
++```
++public ConfigurationException(string message) : base
++public ConfigurationException(string message, Exception innerException) : base
++public DatabaseConfigurationException(string message) : base
++public DatabaseConfigurationException(string message, Exception innerException) : base
++public HttpClientConfigurationException(string message) : base
++public HttpClientConfigurationException(string message, Exception innerException) : base
++```
++
++Read the implementation in `src/FeatureFlags/Exceptions/ConfigurationException.cs` to understand what each method actually does. Test REAL behavior, not just that methods exist.
++
++HARD RULES:
++- Create ONLY the test file. Do NOT modify any existing files.
++- Do NOT add NuGet packages. Use whatever test framework is already referenced.
++- Tests MUST compile and pass with `dotnet test`.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++EXPLICIT STEPS:
++1. Check which test framework the project uses: look at existing test .csproj for xUnit/NUnit/MSTest PackageReference.
++2. Match that framework exactly. Do NOT use a different one.
++3. Create the test file in the path specified above.
++4. Write 4-8 real test methods - read the source class to understand actual behavior.
++5. Run: dotnet test. ALL tests must pass. If they fail, fix them.
++6. If the test project does not exist or has no test framework reference, STOP - do not create it.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- ConfigurationExceptionExtensionsTests changes
++- tweak ValidationExceptionExtensionsTests
++- fix: verify percentage rollout boundary semantics
++- chore: tweak FeatureFlagExceptionExtensionsTests
++- Update ValidationExceptionJsonExtensionsTests
++- fix: add unit tests for ValidationExceptionJsonExtensions
++- Tweak ConditionOperatorEvaluationTests
++- chore: tweak .aider.chat.history
++- Update SearchQueryBuilderTests.
++- .
+
+# 2026-07-22 12:27:13.427458
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, write unit tests for `ConfigurationException` (defined in `src/FeatureFlags/Exceptions/ConfigurationException.cs`).
++
++Create ONE new file: `src/FeatureFlags.Tests/ConfigurationExceptionTests.cs` with a test class `ConfigurationExceptionTests` using xUnit (or whatever test framework the project already uses - check existing test files).
++
++Write 4-8 test methods covering:
++- Happy path for each major public method
++- Edge cases: null inputs, empty collections, boundary values
++- Error paths: expected exceptions
++
++Public members to test:
++```
++public ConfigurationException(string message) : base
++public ConfigurationException(string message, Exception innerException) : base
++public DatabaseConfigurationException(string message) : base
++public DatabaseConfigurationException(string message, Exception innerException) : base
++public HttpClientConfigurationException(string message) : base
++public HttpClientConfigurationException(string message, Exception innerException) : base
++```
++
++Read the implementation in `src/FeatureFlags/Exceptions/ConfigurationException.cs` to understand what each method actually does. Test REAL behavior, not just that methods exist.
++
++HARD RULES:
++- Create ONLY the test file. Do NOT modify any existing files.
++- Do NOT add NuGet packages. Use whatever test framework is already referenced.
++- Tests MUST compile and pass with `dotnet test`.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++EXPLICIT STEPS:
++1. Check which test framework the project uses: look at existing test .csproj for xUnit/NUnit/MSTest PackageReference.
++2. Match that framework exactly. Do NOT use a different one.
++3. Create the test file in the path specified above.
++4. Write 4-8 real test methods - read the source class to understand actual behavior.
++5. Run: dotnet test. ALL tests must pass. If they fail, fix them.
++6. If the test project does not exist or has no test framework reference, STOP - do not create it.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- ConfigurationExceptionExtensionsTests changes
++- tweak ValidationExceptionExtensionsTests
++- fix: verify percentage rollout boundary semantics
++- chore: tweak FeatureFlagExceptionExtensionsTests
++- Update ValidationExceptionJsonExtensionsTests
++- fix: add unit tests for ValidationExceptionJsonExtensions
++- Tweak ConditionOperatorEvaluationTests
++- chore: tweak .aider.chat.history
++- Update SearchQueryBuilderTests.
++- .
