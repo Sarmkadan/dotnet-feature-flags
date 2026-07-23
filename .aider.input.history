@@ -14206,3 +14206,147 @@
 +- feat: Add gradual rollout scheduler worker extensions tests.
 +- tweak .aider.chat.history
 +- (no commit message provided)
+
+# 2026-07-23 14:54:30.776068
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, implement the following improvement.
++
++Title: Introduce async subscriber contract and out-of-band dispatch for the event bus
++
++Likely relevant file/type: src/**/IEventSubscriber.cs
++
++IEventSubscriber/EventBus with an EventLoggingSubscriber suggests synchronous in-process dispatch on the evaluation hot path. Add an async contract (Task HandleAsync(FeatureFlagEvent, CancellationToken)) and move dispatch off the caller thread via a bounded Channel<FeatureFlagEvent> drained by a BackgroundService, with a backpressure policy (drop-oldest vs block) configurable in options. This decouples audit/webhook latency from flag evaluation latency. Preserve IEventBus surface; obsolete the sync path if one exists.
++
++Read the actual current code first - the file/type hint above is a starting pointer from a lightweight analysis, not a guarantee of exact current structure. If the described issue doesn't apply as stated (code already handles it, or the type/file differs), adapt the fix to what you actually find, or pick the closest genuinely useful improvement in the same area. Do not fabricate a problem that doesn't exist.
++
++QUALITY BAR (an automated review rejects the commit if violated):
++- Implement the feature COMPLETELY and for real. If some part cannot be implemented for real, omit it - never fake a result, never hardcode a return value, never write "simplified for demo" / "in a real application".
++- Guard clauses first: ArgumentNullException.ThrowIfNull(x) / ArgumentException.ThrowIfNullOrEmpty(s) at the top of each public method.
++- Modern C#: expression-bodied members where they fit, pattern matching over if-chains, target-typed new.
++- XML doc comments on every new public member, including <exception> tags for every throw.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except what's needed for this task.
++- Do NOT write tests unless explicitly asked. Do NOT add NuGet packages unless explicitly needed and already-available in the BCL is not enough.
++- No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- tweak ResultTests
++- .
++- chore: .aider.chat.history.md
++- Tweak .aider.chat.history
++- .aider.chat.history.md
++- Update AuditLogCleanupWorkerTests
++- .aider.chat.history.md
++- fix: add unit tests for GradualRolloutSchedulerWorkerExtensions
++- feat: Add gradual rollout scheduler worker extensions tests.
++- tweak .aider.chat.history
+
+# 2026-07-23 14:54:30.776177
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, implement the following improvement.
++
++Title: Introduce async subscriber contract and out-of-band dispatch for the event bus
++
++Likely relevant file/type: src/**/IEventSubscriber.cs
++
++IEventSubscriber/EventBus with an EventLoggingSubscriber suggests synchronous in-process dispatch on the evaluation hot path. Add an async contract (Task HandleAsync(FeatureFlagEvent, CancellationToken)) and move dispatch off the caller thread via a bounded Channel<FeatureFlagEvent> drained by a BackgroundService, with a backpressure policy (drop-oldest vs block) configurable in options. This decouples audit/webhook latency from flag evaluation latency. Preserve IEventBus surface; obsolete the sync path if one exists.
++
++Read the actual current code first - the file/type hint above is a starting pointer from a lightweight analysis, not a guarantee of exact current structure. If the described issue doesn't apply as stated (code already handles it, or the type/file differs), adapt the fix to what you actually find, or pick the closest genuinely useful improvement in the same area. Do not fabricate a problem that doesn't exist.
++
++QUALITY BAR (an automated review rejects the commit if violated):
++- Implement the feature COMPLETELY and for real. If some part cannot be implemented for real, omit it - never fake a result, never hardcode a return value, never write "simplified for demo" / "in a real application".
++- Guard clauses first: ArgumentNullException.ThrowIfNull(x) / ArgumentException.ThrowIfNullOrEmpty(s) at the top of each public method.
++- Modern C#: expression-bodied members where they fit, pattern matching over if-chains, target-typed new.
++- XML doc comments on every new public member, including <exception> tags for every throw.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except what's needed for this task.
++- Do NOT write tests unless explicitly asked. Do NOT add NuGet packages unless explicitly needed and already-available in the BCL is not enough.
++- No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- tweak ResultTests
++- .
++- chore: .aider.chat.history.md
++- Tweak .aider.chat.history
++- .aider.chat.history.md
++- Update AuditLogCleanupWorkerTests
++- .aider.chat.history.md
++- fix: add unit tests for GradualRolloutSchedulerWorkerExtensions
++- feat: Add gradual rollout scheduler worker extensions tests.
++- tweak .aider.chat.history
+
+# 2026-07-23 14:56:40.127913
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, implement the following improvement.
++
++Title: Introduce async subscriber contract and out-of-band dispatch for the event bus
++
++Likely relevant file/type: src/**/IEventSubscriber.cs
++
++IEventSubscriber/EventBus with an EventLoggingSubscriber suggests synchronous in-process dispatch on the evaluation hot path. Add an async contract (Task HandleAsync(FeatureFlagEvent, CancellationToken)) and move dispatch off the caller thread via a bounded Channel<FeatureFlagEvent> drained by a BackgroundService, with a backpressure policy (drop-oldest vs block) configurable in options. This decouples audit/webhook latency from flag evaluation latency. Preserve IEventBus surface; obsolete the sync path if one exists.
++
++Read the actual current code first - the file/type hint above is a starting pointer from a lightweight analysis, not a guarantee of exact current structure. If the described issue doesn't apply as stated (code already handles it, or the type/file differs), adapt the fix to what you actually find, or pick the closest genuinely useful improvement in the same area. Do not fabricate a problem that doesn't exist.
++
++QUALITY BAR (an automated review rejects the commit if violated):
++- Implement the feature COMPLETELY and for real. If some part cannot be implemented for real, omit it - never fake a result, never hardcode a return value, never write "simplified for demo" / "in a real application".
++- Guard clauses first: ArgumentNullException.ThrowIfNull(x) / ArgumentException.ThrowIfNullOrEmpty(s) at the top of each public method.
++- Modern C#: expression-bodied members where they fit, pattern matching over if-chains, target-typed new.
++- XML doc comments on every new public member, including <exception> tags for every throw.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except what's needed for this task.
++- Do NOT write tests unless explicitly asked. Do NOT add NuGet packages unless explicitly needed and already-available in the BCL is not enough.
++- No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- tweak ResultTests
++- .
++- chore: .aider.chat.history.md
++- Tweak .aider.chat.history
++- .aider.chat.history.md
++- Update AuditLogCleanupWorkerTests
++- .aider.chat.history.md
++- fix: add unit tests for GradualRolloutSchedulerWorkerExtensions
++- feat: Add gradual rollout scheduler worker extensions tests.
++- tweak .aider.chat.history
+
+# 2026-07-23 14:56:40.127993
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, implement the following improvement.
++
++Title: Introduce async subscriber contract and out-of-band dispatch for the event bus
++
++Likely relevant file/type: src/**/IEventSubscriber.cs
++
++IEventSubscriber/EventBus with an EventLoggingSubscriber suggests synchronous in-process dispatch on the evaluation hot path. Add an async contract (Task HandleAsync(FeatureFlagEvent, CancellationToken)) and move dispatch off the caller thread via a bounded Channel<FeatureFlagEvent> drained by a BackgroundService, with a backpressure policy (drop-oldest vs block) configurable in options. This decouples audit/webhook latency from flag evaluation latency. Preserve IEventBus surface; obsolete the sync path if one exists.
++
++Read the actual current code first - the file/type hint above is a starting pointer from a lightweight analysis, not a guarantee of exact current structure. If the described issue doesn't apply as stated (code already handles it, or the type/file differs), adapt the fix to what you actually find, or pick the closest genuinely useful improvement in the same area. Do not fabricate a problem that doesn't exist.
++
++QUALITY BAR (an automated review rejects the commit if violated):
++- Implement the feature COMPLETELY and for real. If some part cannot be implemented for real, omit it - never fake a result, never hardcode a return value, never write "simplified for demo" / "in a real application".
++- Guard clauses first: ArgumentNullException.ThrowIfNull(x) / ArgumentException.ThrowIfNullOrEmpty(s) at the top of each public method.
++- Modern C#: expression-bodied members where they fit, pattern matching over if-chains, target-typed new.
++- XML doc comments on every new public member, including <exception> tags for every throw.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except what's needed for this task.
++- Do NOT write tests unless explicitly asked. Do NOT add NuGet packages unless explicitly needed and already-available in the BCL is not enough.
++- No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- tweak ResultTests
++- .
++- chore: .aider.chat.history.md
++- Tweak .aider.chat.history
++- .aider.chat.history.md
++- Update AuditLogCleanupWorkerTests
++- .aider.chat.history.md
++- fix: add unit tests for GradualRolloutSchedulerWorkerExtensions
++- feat: Add gradual rollout scheduler worker extensions tests.
++- tweak .aider.chat.history
