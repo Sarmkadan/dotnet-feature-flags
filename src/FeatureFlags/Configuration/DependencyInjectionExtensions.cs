@@ -4,6 +4,7 @@
 // CTO & Software Architect
 // =============================================================================
 
+using FeatureFlags.Caching;
 using FeatureFlags.Repository;
 using FeatureFlags.Services;
 using Microsoft.Extensions.Configuration;
@@ -35,6 +36,10 @@ public static class DependencyInjectionExtensions
         // Register repositories
         services.AddScoped<IFeatureFlagRepository, FeatureFlagRepository>();
         services.AddScoped<IAuditLogRepository, AuditLogRepository>();
+
+        // Register cache service
+        services.AddScoped<ICacheService, InMemoryCacheService>();
+        services.AddScoped<IFeatureFlagCache, FeatureFlagCache>();
 
         // Register services
         services.AddScoped<IFeatureFlagService, FeatureFlagService>();
