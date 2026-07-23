@@ -24,6 +24,7 @@ public class FeatureFlagService : IFeatureFlagService {
     private readonly IRuleEvaluationService _ruleEvaluationService;
     private readonly IPercentageRolloutService _percentageRolloutService;
     private readonly IFlagEvaluationLogService _evaluationLogService;
+    private readonly IFeatureFlagCache? _featureFlagCache;
     private readonly FeatureFlagOptions _options;
     private readonly ILogger<FeatureFlagService> _logger;
 
@@ -34,13 +35,15 @@ public class FeatureFlagService : IFeatureFlagService {
         IPercentageRolloutService percentageRolloutService,
         IFlagEvaluationLogService evaluationLogService,
         IOptions<FeatureFlagOptions> options,
-        ILogger<FeatureFlagService> logger)
+        ILogger<FeatureFlagService> logger,
+        IFeatureFlagCache? featureFlagCache = null)
     {
         _featureFlagRepository = featureFlagRepository;
         _auditLogRepository = auditLogRepository;
         _ruleEvaluationService = ruleEvaluationService;
         _percentageRolloutService = percentageRolloutService;
         _evaluationLogService = evaluationLogService;
+        _featureFlagCache = featureFlagCache;
         _options = options.Value;
         _logger = logger;
     }
@@ -58,7 +61,18 @@ public class FeatureFlagService : IFeatureFlagService {
 
         try
         {
-            var featureFlag = await _featureFlagRepository.GetByKeyAsync(featureFlagKey);
+            FeatureFlag? featureFlag;
+
+            // Use cache if available, otherwise fall back to repository
+            if (_featureFlagCache != null)
+            {
+                featureFlag = await _featureFlagCache.GetFeatureFlagByKeyAsync(featureFlagKey);
+            }
+            else
+            {
+                featureFlag = await _featureFlagRepository.GetByKeyAsync(featureFlagKey);
+            }
+
             if (featureFlag is null)
             {
                 _logger.LogWarning("Feature flag '{Key}' not found", featureFlagKey);
@@ -121,16 +135,50 @@ public class FeatureFlagService : IFeatureFlagService {
         if (string.IsNullOrWhiteSpace(key))
             throw new ArgumentException("Key cannot be empty", nameof(key));
 
+        // Use cache if available, otherwise fall back to repository
+        if (_featureFlagCache != null)
+        {
+            return await _featureFlagCache.GetFeatureFlagByKeyAsync(key);
+        }
+
         return await _featureFlagRepository.GetByKeyAsync(key);
     }
 
     public async Task<IEnumerable<FeatureFlag>> GetAllFeatureFlagsAsync()
     {
+        // Use cache if available, otherwise fall back to repository
+        if (_featureFlagCache != null)
+        {
+            var allFlags = await _featureFlagRepository.GetAllAsync();
+            // Cache all flags
+            foreach (var flag in allFlags)
+            {
+                var ttl = TimeSpan.FromMinutes(_options.CacheDurationMinutes);
+                _featureFlagCache.Invalidate(flag.Key);
+                _featureFlagCache.Invalidate(flag.Id);
+            }
+            return allFlags;
+        }
+
         return await _featureFlagRepository.GetAllAsync();
     }
 
     public async Task<IEnumerable<FeatureFlag>> GetEnabledFeatureFlagsAsync()
     {
+        // Use cache if available, otherwise fall back to repository
+        if (_featureFlagCache != null)
+        {
+            var enabledFlags = await _featureFlagRepository.GetEnabledAsync();
+            // Cache enabled flags
+            foreach (var flag in enabledFlags)
+            {
+                var ttl = TimeSpan.FromMinutes(_options.CacheDurationMinutes);
+                _featureFlagCache.Invalidate(flag.Key);
+                _featureFlagCache.Invalidate(flag.Id);
+            }
+            return enabledFlags;
+        }
+
         return await _featureFlagRepository.GetEnabledAsync();
     }
 
