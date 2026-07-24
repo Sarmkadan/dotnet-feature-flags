@@ -34,18 +34,18 @@ public interface IWebhookService
 public sealed class WebhookService : IWebhookService {
     private readonly IWebhookRepository _webhookRepository;
     private readonly IWebhookDeliveryRepository _deliveryRepository;
-    private readonly HttpApiClient _httpClient;
+    private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<WebhookService> _logger;
 
     public WebhookService(
         IWebhookRepository webhookRepository,
         IWebhookDeliveryRepository deliveryRepository,
-        HttpApiClient httpClient,
+        IHttpClientFactory httpClientFactory,
         ILogger<WebhookService> logger)
     {
         _webhookRepository = webhookRepository ?? throw new ArgumentNullException(nameof(webhookRepository));
         _deliveryRepository = deliveryRepository ?? throw new ArgumentNullException(nameof(deliveryRepository));
-        _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+        _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
@@ -194,10 +194,7 @@ public sealed class WebhookService : IWebhookService {
 
         try
         {
-            using var client = new HttpClient
-            {
-                Timeout = TimeSpan.FromSeconds(30)
-            };
+            using var client = _httpClientFactory.CreateWebhookClient();
 
             if (!string.IsNullOrEmpty(webhook.AuthorizationHeader))
             {
@@ -246,6 +243,20 @@ public sealed class WebhookService : IWebhookService {
             webhook.FailureCount++;
 
             _logger.LogError(ex, "Webhook delivery timeout: {WebhookId} to {Url}", webhook.Id, webhook.Url);
+        }
+        catch (TimeoutException ex)
+        {
+            delivery.MarkFailed("Request timeout", webhook.MaxRetries, webhook.RetryDelaySeconds);
+            webhook.FailureCount++;
+
+            _logger.LogError(ex, "Webhook delivery timeout: {WebhookId} to {Url}", webhook.Id, webhook.Url);
+        }
+        catch (WebhookCircuitOpenException ex)
+        {
+            delivery.MarkFailed(ex.Message, webhook.MaxRetries, webhook.RetryDelaySeconds);
+            webhook.FailureCount++;
+
+            _logger.LogWarning("Webhook delivery skipped, circuit breaker open: {WebhookId} to {Url}", webhook.Id, webhook.Url);
         }
         catch (Exception ex) when (ex is not FeatureFlagException)
         {

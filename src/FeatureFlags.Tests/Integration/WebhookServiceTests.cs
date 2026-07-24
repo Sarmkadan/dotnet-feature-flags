@@ -20,7 +20,7 @@ public sealed class WebhookServiceTests
 {
     private readonly Mock<IWebhookRepository> _webhookRepositoryMock;
     private readonly Mock<IWebhookDeliveryRepository> _deliveryRepositoryMock;
-    private readonly Mock<HttpApiClient> _httpClientMock;
+    private readonly Mock<FeatureFlags.Integration.IHttpClientFactory> _httpClientFactoryMock;
     private readonly Mock<ILogger<WebhookService>> _loggerMock;
     private readonly WebhookService _service;
 
@@ -28,13 +28,14 @@ public sealed class WebhookServiceTests
     {
         _webhookRepositoryMock = new Mock<IWebhookRepository>();
         _deliveryRepositoryMock = new Mock<IWebhookDeliveryRepository>();
-        _httpClientMock = new Mock<HttpApiClient>(new Mock<HttpClient>().Object, new Mock<ILogger<HttpApiClient>>().Object);
+        _httpClientFactoryMock = new Mock<FeatureFlags.Integration.IHttpClientFactory>();
+        _httpClientFactoryMock.Setup(f => f.CreateWebhookClient()).Returns(() => new HttpClient());
         _loggerMock = new Mock<ILogger<WebhookService>>();
 
         _service = new WebhookService(
             _webhookRepositoryMock.Object,
             _deliveryRepositoryMock.Object,
-            _httpClientMock.Object,
+            _httpClientFactoryMock.Object,
             _loggerMock.Object);
     }
 
@@ -284,10 +285,6 @@ public sealed class WebhookServiceTests
             .Setup(r => r.GetActiveAsync())
             .ReturnsAsync(webhooks);
 
-        _httpClientMock
-            .Setup(c => c.PostAsync<object>(It.IsAny<string>(), It.IsAny<object>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((object?)null);
-
         // Act
         await _service.TriggerWebhooksAsync(eventType, flag, "admin");
 
@@ -316,10 +313,6 @@ public sealed class WebhookServiceTests
         _webhookRepositoryMock
             .Setup(r => r.GetByIdAsync(It.IsAny<int>()))
             .ReturnsAsync(new Webhook { Id = 1, Url = "https://example.com/webhook", IsActive = true });
-
-        _httpClientMock
-            .Setup(c => c.PostAsync<object>(It.IsAny<string>(), It.IsAny<object>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((object?)null);
 
         // Act
         await _service.RetryFailedDeliveriesAsync();
