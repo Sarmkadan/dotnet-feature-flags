@@ -105,4 +105,26 @@ public interface IFeatureFlagService
     /// <param name="olderThan">The time span to check for staleness.</param>
     /// <returns>An enumerable collection of stale feature flags.</returns>
     Task<IEnumerable<FeatureFlag>> GetStaleFlagsAsync(TimeSpan olderThan);
+
+    /// <summary>
+    /// Evaluates all active feature flags for a given user context in a single batch.
+    /// </summary>
+    /// <param name="userContext">The context of the user for evaluation.</param>
+    /// <param name="includeVariants">Whether to include variant information for A/B test flags.</param>
+    /// <param name="includeReasons">Whether to include evaluation reasons in the results.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Dictionary mapping flag keys to their evaluation results.</returns>
+    Task<Dictionary<string, BulkEvaluationResult>> EvaluateAllAsync(
+        UserContext userContext,
+        bool includeVariants = false,
+        bool includeReasons = false,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Gets a hash/ETag representing the current feature flag configuration.
+    /// Used for caching and conditional requests.
+    /// </summary>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>ETag string representing the flag configuration.</returns>
+    Task<string> GetFeatureFlagsETagAsync(CancellationToken cancellationToken = default);
 }
