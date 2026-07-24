@@ -2,7 +2,9 @@
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
 // CTO & Software Architect
-// =============================================================================
+// =====================================================================
+
+using FeatureFlags.Utilities;
 
 namespace FeatureFlags.Models;
 
@@ -64,9 +66,24 @@ public sealed class UserContext
     /// <summary>
     /// Generates a stable hash for consistent percentage-based rollout evaluation.
     /// Uses userId as the stable identifier for rollout bucketing.
+    ///
+    /// Algorithm: SHA-256 hash of "{canonicalUserId}:{featureFlagKey}" where canonicalUserId
+    /// is the numeric UserId converted to string if it's numeric, otherwise the raw UserId.
+    /// The first 4 bytes of the hash are converted to a uint and used for bucket calculation.
+    /// This ensures:
+    /// - Same input always produces same output (deterministic across app restarts)
+    /// - Uniform distribution across buckets (cryptographic hash properties)
+    /// - No collisions for different inputs (extremely low probability)
     /// </summary>
+    /// <param name="featureFlagKey">The feature flag key for rollout bucketing</param>
+    /// <returns>Bucket number between 0 and 99 inclusive</returns>
     public int GetConsistentHash(string featureFlagKey)
     {
+        if (string.IsNullOrWhiteSpace(featureFlagKey))
+        {
+            throw new ArgumentException("Feature flag key cannot be null or empty", nameof(featureFlagKey));
+        }
+
         string canonicalUserId = UserId;
         if (long.TryParse(UserId, out long numericUserId))
         {
@@ -75,13 +92,6 @@ public sealed class UserContext
         }
 
         var combined = $"{canonicalUserId}:{featureFlagKey}";
-        // Hotfix: Fix percentage rollout inconsistency across application restarts
-        // Using a consistent hash algorithm instead of string.GetHashCode() which varies between app restarts
-        uint hash = 0;
-        foreach (char c in combined)
-        {
-            hash = (hash << 5) - hash + c;
-        }
-        return (int)(hash % 100);
+        return HashingUtilities.ComputeHashBucket(combined, 100);
     }
 }
