@@ -7,6 +7,7 @@
 using FeatureFlags.Models;
 using FeatureFlags.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json.Serialization;
 
 namespace FeatureFlags.Controllers;
 
@@ -236,6 +237,147 @@ public class FeatureFlagController : ControllerBase {
             return StatusCode(500, "Error retrieving audit logs");
         }
     }
+
+    /// <summary>
+    /// Evaluates all active feature flags for a given user context in a single batch.
+    /// This endpoint is optimized for session initialization where clients need all flag states.
+    /// </summary>
+    /// <param name="request">The bulk evaluation request containing user context.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Dictionary of flag evaluations keyed by flag name.</returns>
+    [HttpPost("evaluate/all")]
+    public async Task<IActionResult> EvaluateAll([FromBody] BulkEvaluationRequest request, CancellationToken cancellationToken = default)
+    {
+        if (request is null)
+            return BadRequest("Request body is required");
+
+        if (request.UserContext is null || !request.UserContext.IsValid())
+            return BadRequest("User context must have userId and email");
+
+        try
+        {
+            var results = await _featureFlagService.EvaluateAllAsync(
+                request.UserContext,
+                request.IncludeVariants,
+                request.IncludeReasons,
+                cancellationToken
+            );
+
+            // Convert service results to controller response format
+            var responseResults = new Dictionary<string, FlagEvaluationResult>();
+            foreach (var kvp in results)
+            {
+                responseResults[kvp.Key] = new FlagEvaluationResult
+                {
+                    Enabled = kvp.Value.Enabled,
+                    Variant = kvp.Value.Variant,
+                    Reason = kvp.Value.Reason,
+                    Percentage = kvp.Value.Percentage
+                };
+            }
+
+            var response = new BulkEvaluationResponse
+            {
+                Results = responseResults,
+                ETag = request.IncludeETag ? await _featureFlagService.GetFeatureFlagsETagAsync(cancellationToken) : null
+            };
+
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error during bulk feature flag evaluation");
+            return StatusCode(500, "Error during bulk feature flag evaluation");
+        }
+    }
+
+    /// <summary>
+    /// Evaluates all active feature flags for a given user context using GET method.
+    /// This endpoint supports ETag caching for efficient session initialization.
+    /// </summary>
+    /// <param name="userId">The user identifier.</param>
+    /// <param name="email">The user email.</param>
+    /// <param name="country">Optional user country.</param>
+    /// <param name="tier">Optional user tier.</param>
+    /// <param name="region">Optional user region.</param>
+    /// <param name="includeVariants">Whether to include variant information.</param>
+    /// <param name="includeReasons">Whether to include evaluation reasons.</param>
+    /// <param name="includeETag">Whether to include ETag for caching.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Dictionary of flag evaluations keyed by flag name.</returns>
+    [HttpGet("evaluate/all")]
+    public async Task<IActionResult> EvaluateAllGet(
+        [FromQuery] string userId,
+        [FromQuery] string email,
+        [FromQuery] string? country = null,
+        [FromQuery] string? tier = null,
+        [FromQuery] string? region = null,
+        [FromQuery] bool includeVariants = false,
+        [FromQuery] bool includeReasons = false,
+        [FromQuery] bool includeETag = false,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(email))
+            return BadRequest("userId and email query parameters are required");
+
+        try
+        {
+            var userContext = new UserContext
+            {
+                UserId = userId,
+                Email = email,
+                Country = country,
+                Tier = tier,
+                Region = region,
+                CustomAttributes = new Dictionary<string, string>()
+            };
+
+            // Check ETag for caching
+            if (includeETag)
+            {
+                var currentETag = await _featureFlagService.GetFeatureFlagsETagAsync(cancellationToken);
+                if (Request.Headers.TryGetValue("If-None-Match", out var ifNoneMatch) && ifNoneMatch == currentETag)
+                {
+                    return StatusCode(304); // Not Modified
+                }
+
+                Response.Headers.Append("ETag", currentETag);
+            }
+
+            var results = await _featureFlagService.EvaluateAllAsync(
+                userContext,
+                includeVariants,
+                includeReasons,
+                cancellationToken
+            );
+
+            // Convert service results to controller response format
+            var responseResults = new Dictionary<string, FlagEvaluationResult>();
+            foreach (var kvp in results)
+            {
+                responseResults[kvp.Key] = new FlagEvaluationResult
+                {
+                    Enabled = kvp.Value.Enabled,
+                    Variant = kvp.Value.Variant,
+                    Reason = kvp.Value.Reason,
+                    Percentage = kvp.Value.Percentage
+                };
+            }
+
+            var response = new BulkEvaluationResponse
+            {
+                Results = responseResults,
+                ETag = includeETag ? await _featureFlagService.GetFeatureFlagsETagAsync(cancellationToken) : null
+            };
+
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error during bulk feature flag evaluation (GET)");
+            return StatusCode(500, "Error during bulk feature flag evaluation");
+        }
+    }
 }
 
 /// <summary>
@@ -250,4 +392,86 @@ public sealed class EvaluationRequest
     public string? Tier { get; set; }
     public string? Region { get; set; }
     public Dictionary<string, string>? CustomAttributes { get; set; }
+}
+
+/// <summary>
+/// Request model for bulk evaluation of all feature flags for a user.
+/// </summary>
+public sealed class BulkEvaluationRequest
+{
+    /// <summary>
+    /// The user context containing user identity and attributes.
+    /// </summary>
+    [JsonRequired]
+    public required UserContext UserContext { get; set; }
+
+    /// <summary>
+    /// Optional flag to include variant information in the response.
+    /// When true, includes variant data for A/B test flags.
+    /// Defaults to false.
+    /// </summary>
+    public bool IncludeVariants { get; set; } = false;
+
+    /// <summary>
+    /// Optional flag to include detailed evaluation reasons in the response.
+    /// When true, includes the reason each flag was enabled/disabled.
+    /// Defaults to false.
+    /// </summary>
+    public bool IncludeReasons { get; set; } = false;
+
+    /// <summary>
+    /// Optional flag to include the feature flag configuration hash in the response.
+    /// When true, includes an ETag for caching purposes.
+    /// Defaults to false.
+    /// </summary>
+    public bool IncludeETag { get; set; } = false;
+}
+
+/// <summary>
+/// Response model for bulk feature flag evaluation.
+/// </summary>
+public sealed class BulkEvaluationResponse
+{
+    /// <summary>
+    /// Dictionary mapping feature flag keys to their evaluation results.
+    /// </summary>
+    [JsonRequired]
+    public required Dictionary<string, FlagEvaluationResult> Results { get; set; }
+
+    /// <summary>
+    /// Optional ETag/hash of the feature flag configuration for caching.
+    /// Only included if IncludeETag was set to true in the request.
+    /// </summary>
+    public string? ETag { get; set; }
+}
+
+/// <summary>
+/// Result of evaluating a single feature flag.
+/// </summary>
+public sealed class FlagEvaluationResult
+{
+    /// <summary>
+    /// Indicates whether the feature flag is enabled for the user.
+    /// </summary>
+    [JsonRequired]
+    public required bool Enabled { get; set; }
+
+    /// <summary>
+    /// The variant key if this is an A/B test flag, otherwise null.
+    /// Only included if IncludeVariants was set to true in the request.
+    /// </summary>
+    public string? Variant { get; set; }
+
+    /// <summary>
+    /// The reason for the evaluation result.
+    /// Only included if IncludeReasons was set to true in the request.
+    /// Examples: "PercentageRollout", "RulesBased", "ABTest", "Full", "FlagDisabled", "FlagNotFound"
+    /// </summary>
+    public string? Reason { get; set; }
+
+    /// <summary>
+    /// The percentage rollout value if applicable (0-100).
+    /// Only included if IncludeReasons was set to true and the flag uses percentage rollout.
+    /// </summary>
+    public int? Percentage { get; set; }
 }

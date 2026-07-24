@@ -6,9 +6,11 @@
 
 using FeatureFlags.Configuration;
 using FeatureFlags.Enums;
+using FeatureFlags.Events;
 using FeatureFlags.Exceptions;
 using FeatureFlags.Models;
 using FeatureFlags.Repository;
+using FeatureFlags.Utilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -25,6 +27,7 @@ public class FeatureFlagService : IFeatureFlagService {
     private readonly IPercentageRolloutService _percentageRolloutService;
     private readonly IFlagEvaluationLogService _evaluationLogService;
     private readonly IFeatureFlagCache? _featureFlagCache;
+    private readonly IEventBus? _eventBus;
     private readonly FeatureFlagOptions _options;
     private readonly ILogger<FeatureFlagService> _logger;
 
@@ -36,7 +39,8 @@ public class FeatureFlagService : IFeatureFlagService {
         IFlagEvaluationLogService evaluationLogService,
         IOptions<FeatureFlagOptions> options,
         ILogger<FeatureFlagService> logger,
-        IFeatureFlagCache? featureFlagCache = null)
+        IFeatureFlagCache? featureFlagCache = null,
+        IEventBus? eventBus = null)
     {
         _featureFlagRepository = featureFlagRepository;
         _auditLogRepository = auditLogRepository;
@@ -44,6 +48,7 @@ public class FeatureFlagService : IFeatureFlagService {
         _percentageRolloutService = percentageRolloutService;
         _evaluationLogService = evaluationLogService;
         _featureFlagCache = featureFlagCache;
+        _eventBus = eventBus;
         _options = options.Value;
         _logger = logger;
     }
@@ -355,6 +360,190 @@ public class FeatureFlagService : IFeatureFlagService {
         return await _featureFlagRepository.GetStaleFlagsAsync(olderThan);
     }
 
+    public async Task<Dictionary<string, BulkEvaluationResult>> EvaluateAllAsync(
+        UserContext userContext,
+        bool includeVariants = false,
+        bool includeReasons = false,
+        CancellationToken cancellationToken = default)
+    {
+        if (userContext is null)
+            throw new ArgumentNullException(nameof(userContext));
+
+        if (!userContext.IsValid())
+            throw new InvalidOperationException("User context is invalid");
+
+        try
+        {
+            // Get all enabled feature flags
+            IEnumerable<FeatureFlag> enabledFlags;
+            if (_featureFlagCache != null)
+            {
+                enabledFlags = await _featureFlagRepository.GetEnabledAsync();
+            }
+            else
+            {
+                enabledFlags = await _featureFlagRepository.GetEnabledAsync();
+            }
+
+            var results = new Dictionary<string, BulkEvaluationResult>();
+            var evaluatedFlags = new List<(string Key, int Id, bool Enabled, string? Variant, string Reason, int? Percentage)>();
+
+            foreach (var flag in enabledFlags)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                try
+                {
+                    bool isEnabled;
+                    string? variant = null;
+                    string reason;
+                    int? percentage = null;
+
+                    switch (flag.RolloutType)
+                    {
+                        case RolloutType.Percentage:
+                            isEnabled = await _percentageRolloutService.EvaluateAsync(flag, userContext);
+                            reason = "PercentageRollout";
+                            percentage = flag.PercentageRollout;
+                            break;
+
+                        case RolloutType.RulesBased:
+                            isEnabled = await _ruleEvaluationService.EvaluateAsync(flag, userContext);
+                            reason = "RulesBased";
+                            break;
+
+                        case RolloutType.ABTest:
+                            isEnabled = await _ruleEvaluationService.EvaluateAsync(flag, userContext);
+                            reason = "ABTest";
+
+                            if (includeVariants && isEnabled)
+                            {
+                                variant = await GetVariantAsync(flag.Key, userContext);
+                            }
+                            break;
+
+                        case RolloutType.Full:
+                            isEnabled = true;
+                            reason = "Full";
+                            break;
+
+                        case RolloutType.None:
+                            isEnabled = false;
+                            reason = "None";
+                            break;
+
+                        default:
+                            isEnabled = false;
+                            reason = "Unknown";
+                            break;
+                    }
+
+                    var result = new BulkEvaluationResult
+                    {
+                        Enabled = isEnabled,
+                        Variant = includeVariants && variant != null ? variant : null,
+                        Reason = includeReasons ? reason : null,
+                        Percentage = includeReasons && percentage.HasValue ? percentage.Value : null
+                    };
+
+                    results[flag.Key] = result;
+                    evaluatedFlags.Add((flag.Key, flag.Id, isEnabled, variant, reason, percentage));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error evaluating feature flag '{Key}' during bulk evaluation", flag.Key);
+                    // Continue with other flags even if one fails
+                    results[flag.Key] = new BulkEvaluationResult
+                    {
+                        Enabled = false,
+                        Reason = includeReasons ? "EvaluationError" : null
+                    };
+                }
+            }
+
+            // Publish single aggregated event instead of individual events
+            await PublishBulkEvaluationEventAsync(userContext.UserId, evaluatedFlags, cancellationToken);
+
+            return results;
+        }
+        catch (Exception ex) when (ex is not FeatureFlagException)
+        {
+            _logger.LogError(ex, "Error during bulk feature flag evaluation");
+            throw new FeatureFlagDataException("Failed to perform bulk feature flag evaluation", ex);
+        }
+    }
+
+    public async Task<string> GetFeatureFlagsETagAsync(CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // Get all feature flags and compute a hash based on their configuration
+            var allFlags = await _featureFlagRepository.GetAllAsync();
+
+            // Create a stable representation of the configuration
+            var configString = string.Join(
+                "|",
+                allFlags
+                    .OrderBy(f => f.Key)
+                    .Select(f => $"{f.Key}:{f.IsEnabled}:{f.RolloutType}:{f.PercentageRollout}:{f.UpdatedAt:O}")
+            );
+
+            return HashingUtilities.ComputeMd5(configString);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error generating feature flags ETag");
+            throw new FeatureFlagDataException("Failed to generate feature flags ETag", ex);
+        }
+    }
+
+    private async Task PublishBulkEvaluationEventAsync(
+        string userId,
+        IReadOnlyList<(string Key, int Id, bool Enabled, string? Variant, string Reason, int? Percentage)> evaluatedFlags,
+        CancellationToken cancellationToken)
+    {
+        if (_eventBus == null)
+        {
+            return;
+        }
+
+        try
+        {
+            // Create aggregated metadata for all evaluated flags
+            var metadata = new Dictionary<string, object?>
+            {
+                { "userId", userId },
+                { "evaluatedAt", DateTime.UtcNow },
+                { "flagCount", evaluatedFlags.Count },
+                { "enabledCount", evaluatedFlags.Count(f => f.Enabled) },
+                { "flags", evaluatedFlags.Select(f => new
+                    {
+                        key = f.Key,
+                        enabled = f.Enabled,
+                        variant = f.Variant,
+                        reason = f.Reason,
+                        percentage = f.Percentage
+                    }).ToList()
+                }
+            };
+
+            // Publish single aggregated event
+            await _eventBus.PublishAsync(
+                "BulkFeatureFlagEvaluation",
+                0, // Feature flag ID 0 for bulk events
+                "AllFlags",
+                userId,
+                metadata,
+                cancellationToken
+            );
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error publishing bulk evaluation event");
+            // Don't throw - event publishing failures shouldn't affect the main response
+        }
+    }
+
     private async Task<int> GetIdByKeyAsync(string key)
     {
         var flag = await _featureFlagRepository.GetByKeyAsync(key);
@@ -420,4 +609,12 @@ public class FeatureFlagService : IFeatureFlagService {
     Task IFeatureFlagService.EnableFeatureFlagAsync(int id, string modifiedBy) => EnableFeatureFlagAsync(id, modifiedBy);
     Task IFeatureFlagService.DisableFeatureFlagAsync(int id, string modifiedBy) => DisableFeatureFlagAsync(id, modifiedBy);
     Task<string?> IFeatureFlagService.GetVariantAsync(string featureFlagKey, UserContext userContext) => GetVariantAsync(featureFlagKey, userContext);
+
+    Task<Dictionary<string, BulkEvaluationResult>> IFeatureFlagService.EvaluateAllAsync(
+        UserContext userContext,
+        bool includeVariants,
+        bool includeReasons,
+        CancellationToken cancellationToken) => EvaluateAllAsync(userContext, includeVariants, includeReasons, cancellationToken);
+
+    Task<string> IFeatureFlagService.GetFeatureFlagsETagAsync(CancellationToken cancellationToken) => GetFeatureFlagsETagAsync(cancellationToken);
 }
