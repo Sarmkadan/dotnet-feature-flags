@@ -14758,3 +14758,171 @@
 +- .
 +- chore: .aider.chat.history.md
 +- Tweak .aider.chat.history
+
+# 2026-07-24 20:00:24.963975
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, write unit tests for `FeatureFlagJsonExtensions` (defined in `src/FeatureFlags/Models/FeatureFlagJsonExtensions.cs`).
++
++Create ONE new file: `src/FeatureFlags.Tests/FeatureFlagJsonExtensionsTests.cs` with a test class `FeatureFlagJsonExtensionsTests` using xUnit (or whatever test framework the project already uses - check existing test files).
++
++Write 4-8 test methods covering:
++- Happy path for each major public method
++- Edge cases: null inputs, empty collections, boundary values
++- Error paths: expected exceptions
++
++Public members to test:
++```
++public static string ToJson
++public static FeatureFlag? FromJson
++public static bool TryFromJson
++```
++
++BEFORE writing any test:
++1. Read the FULL constructor(s) of `FeatureFlagJsonExtensions` in `src/FeatureFlags/Models/FeatureFlagJsonExtensions.cs` - not just the method list above. If the constructor requires parameters, every `new FeatureFlagJsonExtensions(...)` call must pass valid values for ALL of them. Never assume a parameterless constructor exists.
++2. Open one existing `*Tests.cs` file in `src/FeatureFlags.Tests` and copy its exact namespace style (file-scoped `namespace X;` vs block-scoped `namespace X { }`). Do NOT mix styles within your new file.
++3. Read the implementation in `src/FeatureFlags/Models/FeatureFlagJsonExtensions.cs` to understand what each method actually does. Test REAL behavior, not just that methods exist.
++
++Keep the file under 200 lines - fewer, well-chosen test methods beat many. Before finishing, count your braces mentally or re-read the file top to bottom to confirm every `{` has a matching `}` and the file doesn't end mid-method.
++
++HARD RULES:
++- Create ONLY the test file. Do NOT modify any existing files.
++- Do NOT add NuGet packages. Use whatever test framework is already referenced.
++- Tests MUST compile and pass with `dotnet test`.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- Tweak ABTestVariantValidationTests
++- update FeatureFlagController.
++- feat(api): add bulk evaluation endpoint for all flags
++- tweak .aider.chat.history
++- chore(models): IMPLEMENTATION_SUMMARY.md
++- feat(webhooks): add timeout, retry and circuit breaker to webhook delivery client
++- chore: .aider.chat.history.md
++- tweak ResultTests
++- .
++- chore: .aider.chat.history.md
+
+# 2026-07-24 20:00:24.964032
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, write unit tests for `FeatureFlagJsonExtensions` (defined in `src/FeatureFlags/Models/FeatureFlagJsonExtensions.cs`).
++
++Create ONE new file: `src/FeatureFlags.Tests/FeatureFlagJsonExtensionsTests.cs` with a test class `FeatureFlagJsonExtensionsTests` using xUnit (or whatever test framework the project already uses - check existing test files).
++
++Write 4-8 test methods covering:
++- Happy path for each major public method
++- Edge cases: null inputs, empty collections, boundary values
++- Error paths: expected exceptions
++
++Public members to test:
++```
++public static string ToJson
++public static FeatureFlag? FromJson
++public static bool TryFromJson
++```
++
++BEFORE writing any test:
++1. Read the FULL constructor(s) of `FeatureFlagJsonExtensions` in `src/FeatureFlags/Models/FeatureFlagJsonExtensions.cs` - not just the method list above. If the constructor requires parameters, every `new FeatureFlagJsonExtensions(...)` call must pass valid values for ALL of them. Never assume a parameterless constructor exists.
++2. Open one existing `*Tests.cs` file in `src/FeatureFlags.Tests` and copy its exact namespace style (file-scoped `namespace X;` vs block-scoped `namespace X { }`). Do NOT mix styles within your new file.
++3. Read the implementation in `src/FeatureFlags/Models/FeatureFlagJsonExtensions.cs` to understand what each method actually does. Test REAL behavior, not just that methods exist.
++
++Keep the file under 200 lines - fewer, well-chosen test methods beat many. Before finishing, count your braces mentally or re-read the file top to bottom to confirm every `{` has a matching `}` and the file doesn't end mid-method.
++
++HARD RULES:
++- Create ONLY the test file. Do NOT modify any existing files.
++- Do NOT add NuGet packages. Use whatever test framework is already referenced.
++- Tests MUST compile and pass with `dotnet test`.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- Tweak ABTestVariantValidationTests
++- update FeatureFlagController.
++- feat(api): add bulk evaluation endpoint for all flags
++- tweak .aider.chat.history
++- chore(models): IMPLEMENTATION_SUMMARY.md
++- feat(webhooks): add timeout, retry and circuit breaker to webhook delivery client
++- chore: .aider.chat.history.md
++- tweak ResultTests
++- .
++- chore: .aider.chat.history.md
+
+# 2026-07-24 20:02:39.778333
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, write unit tests for `FeatureFlagJsonExtensions` (defined in `src/FeatureFlags/Models/FeatureFlagJsonExtensions.cs`).
++
++Create ONE new file: `src/FeatureFlags.Tests/FeatureFlagJsonExtensionsTests.cs` with a test class `FeatureFlagJsonExtensionsTests` using xUnit (or whatever test framework the project already uses - check existing test files).
++
++Write 4-8 test methods covering:
++- Happy path for each major public method
++- Edge cases: null inputs, empty collections, boundary values
++- Error paths: expected exceptions
++
++Public members to test:
++```
++public static string ToJson
++public static FeatureFlag? FromJson
++public static bool TryFromJson
++```
++
++BEFORE writing any test:
++1. Read the FULL constructor(s) of `FeatureFlagJsonExtensions` in `src/FeatureFlags/Models/FeatureFlagJsonExtensions.cs` - not just the method list above. If the constructor requires parameters, every `new FeatureFlagJsonExtensions(...)` call must pass valid values for ALL of them. Never assume a parameterless constructor exists.
++2. Open one existing `*Tests.cs` file in `src/FeatureFlags.Tests` and copy its exact namespace style (file-scoped `namespace X;` vs block-scoped `namespace X { }`). Do NOT mix styles within your new file.
++3. Read the implementation in `src/FeatureFlags/Models/FeatureFlagJsonExtensions.cs` to understand what each method actually does. Test REAL behavior, not just that methods exist.
++
++Keep the file under 200 lines - fewer, well-chosen test methods beat many. Before finishing, count your braces mentally or re-read the file top to bottom to confirm every `{` has a matching `}` and the file doesn't end mid-method.
++
++HARD RULES:
++- Create ONLY the test file. Do NOT modify any existing files.
++- Do NOT add NuGet packages. Use whatever test framework is already referenced.
++- Tests MUST compile and pass with `dotnet test`.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- Tweak ABTestVariantValidationTests
++- update FeatureFlagController.
++- feat(api): add bulk evaluation endpoint for all flags
++- tweak .aider.chat.history
++- chore(models): IMPLEMENTATION_SUMMARY.md
++- feat(webhooks): add timeout, retry and circuit breaker to webhook delivery client
++- chore: .aider.chat.history.md
++- tweak ResultTests
++- .
++- chore: .aider.chat.history.md
+
+# 2026-07-24 20:02:39.778417
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, write unit tests for `FeatureFlagJsonExtensions` (defined in `src/FeatureFlags/Models/FeatureFlagJsonExtensions.cs`).
++
++Create ONE new file: `src/FeatureFlags.Tests/FeatureFlagJsonExtensionsTests.cs` with a test class `FeatureFlagJsonExtensionsTests` using xUnit (or whatever test framework the project already uses - check existing test files).
++
++Write 4-8 test methods covering:
++- Happy path for each major public method
++- Edge cases: null inputs, empty collections, boundary values
++- Error paths: expected exceptions
++
++Public members to test:
++```
++public static string ToJson
++public static FeatureFlag? FromJson
++public static bool TryFromJson
++```
++
++BEFORE writing any test:
++1. Read the FULL constructor(s) of `FeatureFlagJsonExtensions` in `src/FeatureFlags/Models/FeatureFlagJsonExtensions.cs` - not just the method list above. If the constructor requires parameters, every `new FeatureFlagJsonExtensions(...)` call must pass valid values for ALL of them. Never assume a parameterless constructor exists.
++2. Open one existing `*Tests.cs` file in `src/FeatureFlags.Tests` and copy its exact namespace style (file-scoped `namespace X;` vs block-scoped `namespace X { }`). Do NOT mix styles within your new file.
++3. Read the implementation in `src/FeatureFlags/Models/FeatureFlagJsonExtensions.cs` to understand what each method actually does. Test REAL behavior, not just that methods exist.
++
++Keep the file under 200 lines - fewer, well-chosen test methods beat many. Before finishing, count your braces mentally or re-read the file top to bottom to confirm every `{` has a matching `}` and the file doesn't end mid-method.
++
++HARD RULES:
++- Create ONLY the test file. Do NOT modify any existing files.
++- Do NOT add NuGet packages. Use whatever test framework is already referenced.
++- Tests MUST compile and pass with `dotnet test`.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- Tweak ABTestVariantValidationTests
++- update FeatureFlagController.
++- feat(api): add bulk evaluation endpoint for all flags
++- tweak .aider.chat.history
++- chore(models): IMPLEMENTATION_SUMMARY.md
++- feat(webhooks): add timeout, retry and circuit breaker to webhook delivery client
++- chore: .aider.chat.history.md
++- tweak ResultTests
++- .
++- chore: .aider.chat.history.md
