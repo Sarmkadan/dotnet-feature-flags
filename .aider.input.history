@@ -14926,3 +14926,199 @@
 +- tweak ResultTests
 +- .
 +- chore: .aider.chat.history.md
+
+# 2026-07-24 22:43:23.199406
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, write unit tests for `ABTestVariant` (defined in `src/FeatureFlags/Models/ABTestVariant.cs`).
++
++Create ONE new file: `src/FeatureFlags.Tests/ABTestVariantTests.cs` with a test class `ABTestVariantTests` using xUnit (or whatever test framework the project already uses - check existing test files).
++
++Write 4-8 test methods covering:
++- Happy path for each major public method
++- Edge cases: null inputs, empty collections, boundary values
++- Error paths: expected exceptions
++
++Public members to test:
++```
++public int Id
++public int FeatureFlagId
++public string VariantKey
++public string DisplayName
++public string Description
++public int AllocationPercentage
++public long UserCount
++public long ConversionCount
++public DateTime CreatedAt
++public DateTime UpdatedAt
++```
++
++BEFORE writing any test:
++1. Read the FULL constructor(s) of `ABTestVariant` in `src/FeatureFlags/Models/ABTestVariant.cs` - not just the method list above. If the constructor requires parameters, every `new ABTestVariant(...)` call must pass valid values for ALL of them. Never assume a parameterless constructor exists.
++2. Open one existing `*Tests.cs` file in `src/FeatureFlags.Tests` and copy its exact namespace style (file-scoped `namespace X;` vs block-scoped `namespace X { }`). Do NOT mix styles within your new file.
++3. Read the implementation in `src/FeatureFlags/Models/ABTestVariant.cs` to understand what each method actually does. Test REAL behavior, not just that methods exist.
++
++Keep the file under 200 lines - fewer, well-chosen test methods beat many. Before finishing, count your braces mentally or re-read the file top to bottom to confirm every `{` has a matching `}` and the file doesn't end mid-method.
++
++HARD RULES:
++- Create ONLY the test file. Do NOT modify any existing files.
++- Do NOT add NuGet packages. Use whatever test framework is already referenced.
++- Tests MUST compile and pass with `dotnet test`.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- FeatureFlagJsonExtensionsTests changes
++- Tweak ABTestVariantValidationTests
++- update FeatureFlagController.
++- feat(api): add bulk evaluation endpoint for all flags
++- tweak .aider.chat.history
++- chore(models): IMPLEMENTATION_SUMMARY.md
++- feat(webhooks): add timeout, retry and circuit breaker to webhook delivery client
++- chore: .aider.chat.history.md
++- tweak ResultTests
++- .
+
+# 2026-07-24 22:43:23.199489
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, write unit tests for `ABTestVariant` (defined in `src/FeatureFlags/Models/ABTestVariant.cs`).
++
++Create ONE new file: `src/FeatureFlags.Tests/ABTestVariantTests.cs` with a test class `ABTestVariantTests` using xUnit (or whatever test framework the project already uses - check existing test files).
++
++Write 4-8 test methods covering:
++- Happy path for each major public method
++- Edge cases: null inputs, empty collections, boundary values
++- Error paths: expected exceptions
++
++Public members to test:
++```
++public int Id
++public int FeatureFlagId
++public string VariantKey
++public string DisplayName
++public string Description
++public int AllocationPercentage
++public long UserCount
++public long ConversionCount
++public DateTime CreatedAt
++public DateTime UpdatedAt
++```
++
++BEFORE writing any test:
++1. Read the FULL constructor(s) of `ABTestVariant` in `src/FeatureFlags/Models/ABTestVariant.cs` - not just the method list above. If the constructor requires parameters, every `new ABTestVariant(...)` call must pass valid values for ALL of them. Never assume a parameterless constructor exists.
++2. Open one existing `*Tests.cs` file in `src/FeatureFlags.Tests` and copy its exact namespace style (file-scoped `namespace X;` vs block-scoped `namespace X { }`). Do NOT mix styles within your new file.
++3. Read the implementation in `src/FeatureFlags/Models/ABTestVariant.cs` to understand what each method actually does. Test REAL behavior, not just that methods exist.
++
++Keep the file under 200 lines - fewer, well-chosen test methods beat many. Before finishing, count your braces mentally or re-read the file top to bottom to confirm every `{` has a matching `}` and the file doesn't end mid-method.
++
++HARD RULES:
++- Create ONLY the test file. Do NOT modify any existing files.
++- Do NOT add NuGet packages. Use whatever test framework is already referenced.
++- Tests MUST compile and pass with `dotnet test`.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- FeatureFlagJsonExtensionsTests changes
++- Tweak ABTestVariantValidationTests
++- update FeatureFlagController.
++- feat(api): add bulk evaluation endpoint for all flags
++- tweak .aider.chat.history
++- chore(models): IMPLEMENTATION_SUMMARY.md
++- feat(webhooks): add timeout, retry and circuit breaker to webhook delivery client
++- chore: .aider.chat.history.md
++- tweak ResultTests
++- .
+
+# 2026-07-24 22:43:36.346389
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, write unit tests for `ABTestVariant` (defined in `src/FeatureFlags/Models/ABTestVariant.cs`).
++
++Create ONE new file: `src/FeatureFlags.Tests/ABTestVariantTests.cs` with a test class `ABTestVariantTests` using xUnit (or whatever test framework the project already uses - check existing test files).
++
++Write 4-8 test methods covering:
++- Happy path for each major public method
++- Edge cases: null inputs, empty collections, boundary values
++- Error paths: expected exceptions
++
++Public members to test:
++```
++public int Id
++public int FeatureFlagId
++public string VariantKey
++public string DisplayName
++public string Description
++public int AllocationPercentage
++public long UserCount
++public long ConversionCount
++public DateTime CreatedAt
++public DateTime UpdatedAt
++```
++
++BEFORE writing any test:
++1. Read the FULL constructor(s) of `ABTestVariant` in `src/FeatureFlags/Models/ABTestVariant.cs` - not just the method list above. If the constructor requires parameters, every `new ABTestVariant(...)` call must pass valid values for ALL of them. Never assume a parameterless constructor exists.
++2. Open one existing `*Tests.cs` file in `src/FeatureFlags.Tests` and copy its exact namespace style (file-scoped `namespace X;` vs block-scoped `namespace X { }`). Do NOT mix styles within your new file.
++3. Read the implementation in `src/FeatureFlags/Models/ABTestVariant.cs` to understand what each method actually does. Test REAL behavior, not just that methods exist.
++
++Keep the file under 200 lines - fewer, well-chosen test methods beat many. Before finishing, count your braces mentally or re-read the file top to bottom to confirm every `{` has a matching `}` and the file doesn't end mid-method.
++
++HARD RULES:
++- Create ONLY the test file. Do NOT modify any existing files.
++- Do NOT add NuGet packages. Use whatever test framework is already referenced.
++- Tests MUST compile and pass with `dotnet test`.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- FeatureFlagJsonExtensionsTests changes
++- Tweak ABTestVariantValidationTests
++- update FeatureFlagController.
++- feat(api): add bulk evaluation endpoint for all flags
++- tweak .aider.chat.history
++- chore(models): IMPLEMENTATION_SUMMARY.md
++- feat(webhooks): add timeout, retry and circuit breaker to webhook delivery client
++- chore: .aider.chat.history.md
++- tweak ResultTests
++- .
+
+# 2026-07-24 22:43:36.346452
++In repo /home/redrocket/task-factory/workdir/dotnet-feature-flags, write unit tests for `ABTestVariant` (defined in `src/FeatureFlags/Models/ABTestVariant.cs`).
++
++Create ONE new file: `src/FeatureFlags.Tests/ABTestVariantTests.cs` with a test class `ABTestVariantTests` using xUnit (or whatever test framework the project already uses - check existing test files).
++
++Write 4-8 test methods covering:
++- Happy path for each major public method
++- Edge cases: null inputs, empty collections, boundary values
++- Error paths: expected exceptions
++
++Public members to test:
++```
++public int Id
++public int FeatureFlagId
++public string VariantKey
++public string DisplayName
++public string Description
++public int AllocationPercentage
++public long UserCount
++public long ConversionCount
++public DateTime CreatedAt
++public DateTime UpdatedAt
++```
++
++BEFORE writing any test:
++1. Read the FULL constructor(s) of `ABTestVariant` in `src/FeatureFlags/Models/ABTestVariant.cs` - not just the method list above. If the constructor requires parameters, every `new ABTestVariant(...)` call must pass valid values for ALL of them. Never assume a parameterless constructor exists.
++2. Open one existing `*Tests.cs` file in `src/FeatureFlags.Tests` and copy its exact namespace style (file-scoped `namespace X;` vs block-scoped `namespace X { }`). Do NOT mix styles within your new file.
++3. Read the implementation in `src/FeatureFlags/Models/ABTestVariant.cs` to understand what each method actually does. Test REAL behavior, not just that methods exist.
++
++Keep the file under 200 lines - fewer, well-chosen test methods beat many. Before finishing, count your braces mentally or re-read the file top to bottom to confirm every `{` has a matching `}` and the file doesn't end mid-method.
++
++HARD RULES:
++- Create ONLY the test file. Do NOT modify any existing files.
++- Do NOT add NuGet packages. Use whatever test framework is already referenced.
++- Tests MUST compile and pass with `dotnet test`.
++- Commit message: conventional commits style, lowercase, no AI mentions.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- FeatureFlagJsonExtensionsTests changes
++- Tweak ABTestVariantValidationTests
++- update FeatureFlagController.
++- feat(api): add bulk evaluation endpoint for all flags
++- tweak .aider.chat.history
++- chore(models): IMPLEMENTATION_SUMMARY.md
++- feat(webhooks): add timeout, retry and circuit breaker to webhook delivery client
++- chore: .aider.chat.history.md
++- tweak ResultTests
++- .
