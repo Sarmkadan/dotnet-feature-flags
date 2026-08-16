@@ -4,6 +4,8 @@
 // CTO & Software Architect
 // =============================================================================
 
+using System;
+using System.Collections.Generic;
 using System.Globalization;
 using FeatureFlags.Enums;
 
@@ -13,7 +15,7 @@ namespace FeatureFlags.Models;
 /// Represents a single condition within a rule that evaluates context attributes.
 /// Supports various operators (Equals, Contains, GreaterThan, etc.) for flexible targeting.
 /// </summary>
-public sealed class Condition
+public sealed class Condition : IEquatable<Condition>
 {
     public int Id { get; set; }
 
@@ -31,6 +33,42 @@ public sealed class Condition
 
     // Navigation properties
     public Rule? Rule { get; set; }
+
+    public bool Equals(Condition? other)
+    {
+        if (other is null) return false;
+        if (ReferenceEquals(this, other)) return true;
+
+        return Id == other.Id &&
+               RuleId == other.RuleId &&
+               AttributeName == other.AttributeName &&
+               Operator == other.Operator &&
+               ExpectedValue == other.ExpectedValue &&
+               IsActive == other.IsActive &&
+               CreatedAt == other.CreatedAt &&
+               EqualityComparer<Rule?>.Default.Equals(Rule, other.Rule);
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return Equals(obj as Condition);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Id, RuleId, AttributeName, Operator, ExpectedValue, IsActive, CreatedAt, Rule);
+    }
+
+    public static bool operator ==(Condition? left, Condition? right)
+    {
+        if (left is null) return right is null;
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(Condition? left, Condition? right)
+    {
+        return !(left == right);
+    }
 
     /// <summary>
     /// Evaluates the condition against a provided value from the user context.
