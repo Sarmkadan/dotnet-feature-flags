@@ -24,6 +24,8 @@ public sealed class ApiResponse<T>
     /// </summary>
     public static ApiResponse<T> Ok(T data, string? message = null)
     {
+        ArgumentNullException.ThrowIfNull(data);
+        ArgumentException.ThrowIfNullOrEmpty(message);
         return new ApiResponse<T>
         {
             Success = true,
@@ -38,6 +40,7 @@ public sealed class ApiResponse<T>
     /// </summary>
     public static ApiResponse<T> Fail(string error, T? data = default)
     {
+        ArgumentException.ThrowIfNullOrEmpty(error);
         return new ApiResponse<T>
         {
             Success = false,
