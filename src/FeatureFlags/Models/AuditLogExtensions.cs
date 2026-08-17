@@ -7,6 +7,7 @@
 
 using FeatureFlags.Models;
 using FeatureFlags.Enums;
+using System.Linq;
 
 namespace FeatureFlags.Models;
 
@@ -139,5 +140,42 @@ public static class AuditLogExtensions
             AuditAction.Deleted => "Deleted",
             _ => log.Action.ToString()
         };
+    }
+
+    /// <summary>
+    /// Determines if this audit log entry represents a state mutation (any action except Evaluated).
+    /// </summary>
+    /// <param name="log">The audit log entry to check.</param>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="log"/> is <see langword="null"/>.</exception>
+    /// <returns>True if the action is not Evaluated; false otherwise.</returns>
+    public static bool IsMutation(this AuditLog log)
+    {
+        ArgumentNullException.ThrowIfNull(log);
+        return log.Action != AuditAction.Evaluated;
+    }
+
+    /// <summary>
+    /// Creates a human-readable display string for the audit log entry.
+    /// </summary>
+    /// <param name="log">The audit log entry.</param>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="log"/> is <see langword="null"/>.</exception>
+    /// <returns>Formatted string for display.</returns>
+    public static string ToDisplayString(this AuditLog log)
+    {
+        ArgumentNullException.ThrowIfNull(log);
+        return $"[{log.ChangedAt:yyyy-MM-dd HH:mm:ss}] {log.GetActionDisplayName()} by {log.ChangedBy}: {log.Description}";
+    }
+
+    /// <summary>
+    /// Filters audit log entries that occurred since the specified date.
+    /// </summary>
+    /// <param name="logs">The collection of audit logs.</param>
+    /// <param name="since">The start date (inclusive).</param>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="logs"/> is <see langword="null"/>.</exception>
+    /// <returns>Filtered collection of audit logs.</returns>
+    public static IEnumerable<AuditLog> Since(this IEnumerable<AuditLog> logs, DateTimeOffset since)
+    {
+        ArgumentNullException.ThrowIfNull(logs);
+        return logs.Where(log => log.ChangedAt >= since.UtcDateTime);
     }
 }
