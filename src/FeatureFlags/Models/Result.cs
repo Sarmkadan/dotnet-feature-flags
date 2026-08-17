@@ -38,6 +38,7 @@ public sealed class Result<T>
     /// </summary>
     public static Result<T> Failure(string error, int? errorCode = null)
     {
+        ArgumentException.ThrowIfNullOrEmpty(error);
         return new Result<T>(false, default, error, errorCode);
     }
 
@@ -46,6 +47,7 @@ public sealed class Result<T>
     /// </summary>
     public static Result<T> FromException(Exception ex)
     {
+        ArgumentNullException.ThrowIfNull(ex);
         return new Result<T>(false, default, ex.Message, null);
     }
 
@@ -54,6 +56,7 @@ public sealed class Result<T>
     /// </summary>
     public static async Task<Result<T>> Try(Func<Task<T>> operation)
     {
+        ArgumentNullException.ThrowIfNull(operation);
         try
         {
             var data = await operation();
@@ -103,6 +106,7 @@ public sealed class Result<T>
     /// </summary>
     public Result<T> OnSuccess(Action<T> action)
     {
+        ArgumentNullException.ThrowIfNull(action);
         if (IsSuccess)
         {
             action(Data!);
@@ -191,6 +195,7 @@ public sealed class Result
     /// </summary>
     public static async Task<Result> Try(Func<Task> operation)
     {
+        ArgumentNullException.ThrowIfNull(operation);
         try
         {
             await operation();
