@@ -22,6 +22,8 @@ public class AuditLogService : IAuditLogService {
 
     public AuditLogService(IAuditLogRepository repository, ILogger<AuditLogService> logger)
     {
+        ArgumentNullException.ThrowIfNull(repository);
+        ArgumentNullException.ThrowIfNull(logger);
         _repository = repository;
         _logger = logger;
     }
