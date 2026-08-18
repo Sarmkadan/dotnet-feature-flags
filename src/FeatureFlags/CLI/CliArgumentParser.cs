@@ -1,3 +1,4 @@
+using System;
 #nullable enable
 // =============================================================================
 // Author: Vladyslav Zaiets | https://sarmkadan.com
@@ -57,6 +58,7 @@ For command-specific help: dotnet run -- <command> --help
     /// </summary>
     public static CliCommand Parse(string[] args)
     {
+        ArgumentNullException.ThrowIfNull(args);
         if (args.Length == 0)
         {
             PrintHelp();
@@ -342,6 +344,7 @@ public sealed class CliCommand
     /// </summary>
     public string? GetArgument(string key)
     {
+        ArgumentException.ThrowIfNullOrEmpty(key, paramName: nameof(key));
         return Arguments.TryGetValue(key, out var value) ? value : null;
     }
 
@@ -350,6 +353,7 @@ public sealed class CliCommand
     /// </summary>
     public bool HasArgument(string key)
     {
+        ArgumentException.ThrowIfNullOrEmpty(key, nameof(key));
         return Arguments.ContainsKey(key);
     }
 }
