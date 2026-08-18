@@ -68,8 +68,7 @@ public class AuditLogService : IAuditLogService {
 
     public async Task<IEnumerable<AuditLog>> GetAuditLogsByUserAsync(string changedBy)
     {
-        if (string.IsNullOrWhiteSpace(changedBy))
-            throw new ArgumentException("ChangedBy cannot be empty", nameof(changedBy));
+        ArgumentException.ThrowIfNullOrEmpty(changedBy);
 
         try
         {
