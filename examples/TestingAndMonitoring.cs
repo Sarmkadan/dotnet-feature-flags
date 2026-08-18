@@ -20,7 +20,7 @@ using FeatureFlags.Services;
 // Unit Testing Example
 public sealed class FeatureFlagServiceTestExample
 {
-    public void TestPercentageRollout()
+    public void TestPercentageRollout()\n        {\n            // Arrange\n            var mockRepository = new MockFeatureFlagRepository();\n            var service = new FeatureFlagService(mockRepository, null!);\n\n            // Act\n            var context = new UserContext { UserId = "test-user-001" };\n            // Assert\n            // With consistent hashing, the same user should always get the same result\n            // Test runs multiple times to verify consistency\n            if (context == null)\n            {\n                throw new ArgumentNullException(nameof(context));\n            }\n            var result = await service.IsEnabledAsync("test-flag", context);\n        }
     {
         // Arrange
         var mockRepository = new MockFeatureFlagRepository();
@@ -42,12 +42,12 @@ public sealed class FeatureFlagServiceTestExample
         // Test runs multiple times to verify consistency
     }
 
-    public void TestRuleBasedEvaluation()
+    public void TestRuleBasedEvaluation()\n        {\n            // Test that rules are evaluated correctly\n            if (service == null)\n            {\n                throw new ArgumentNullException(nameof(service));\n            }\n            var context = new UserContext { UserId = "test-user-001" };\n            var result = await service.IsEnabledAsync("test-flag", context);\n        }
     {
         // Test that rules are evaluated correctly
     }
 
-    public void TestABTestVariantAssignment()
+    public void TestABTestVariantAssignment()\n        {\n            // Test that variants are assigned consistently\n            if (service == null)\n            {\n                throw new ArgumentNullException(nameof(service));\n            }\n            var context = new UserContext { UserId = "test-user-001" };\n            var result = await service.IsEnabledAsync("test-flag", context);\n        }
     {
         // Test that variants are assigned consistently
     }
@@ -64,7 +64,7 @@ public sealed class FeatureFlagPerformanceMonitor
         _featureFlagService = featureFlagService;
     }
 
-    public async Task MonitorEvaluationPerformanceAsync(string flagKey, int iterations = 1000)
+    public async Task MonitorEvaluationPerformanceAsync(string flagKey, int iterations = 1000)\n        {\n            if (string.IsNullOrEmpty(flagKey))\n            {\n                throw new ArgumentException("Flag key cannot be null or empty", nameof(flagKey));\n            }\n            Console.WriteLine($"\n=== Performance Monitoring: {flagKey} ===\n");\n            // ... rest of method remains unchanged
     {
         Console.WriteLine($"\n=== Performance Monitoring: {flagKey} ===\n");
 
