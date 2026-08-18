@@ -21,6 +21,8 @@ public static class XmlExporter
     /// </summary>
     public static string ExportFeatureFlags(IEnumerable<FeatureFlag> flags, bool pretty = false)
     {
+        ArgumentNullException.ThrowIfNull(flags);
+
         var root = new XElement("FeatureFlags");
 
         foreach (var flag in flags)
@@ -69,6 +71,8 @@ public static class XmlExporter
     /// </summary>
     public static string ExportAuditLogs(IEnumerable<AuditLog> logs, bool pretty = false)
     {
+        ArgumentNullException.ThrowIfNull(logs);
+
         var root = new XElement("AuditLogs");
 
         foreach (var log in logs)
@@ -110,6 +114,8 @@ public static class XmlExporter
     /// </summary>
     public static string ExportRules(IEnumerable<Rule> rules, bool pretty = false)
     {
+        ArgumentNullException.ThrowIfNull(rules);
+
         var root = new XElement("Rules");
 
         foreach (var rule in rules)
