@@ -22,6 +22,8 @@ public static class DatabaseSeeder
     /// </summary>
     public static async Task SeedSampleDataAsync(FeatureFlagDbContext dbContext)
     {
+        ArgumentNullException.ThrowIfNull(dbContext);
+
         // Avoid duplicate seeding
         if (await dbContext.FeatureFlags.AnyAsync())
         {
@@ -174,6 +176,8 @@ public static class DatabaseSeeder
     /// </summary>
     public static async Task SeedMinimalDataAsync(FeatureFlagDbContext dbContext)
     {
+        ArgumentNullException.ThrowIfNull(dbContext);
+
         if (await dbContext.FeatureFlags.AnyAsync())
         {
             return;
@@ -202,6 +206,8 @@ public static class DatabaseSeeder
     /// </summary>
     public static async Task ClearDatabaseAsync(FeatureFlagDbContext dbContext)
     {
+        ArgumentNullException.ThrowIfNull(dbContext);
+
         // Delete in correct order to respect foreign keys
         dbContext.AuditLogs.RemoveRange(dbContext.AuditLogs);
         dbContext.ABTestVariants.RemoveRange(dbContext.ABTestVariants);
@@ -217,6 +223,8 @@ public static class DatabaseSeeder
     /// </summary>
     public static async Task SeedPerformanceTestDataAsync(FeatureFlagDbContext dbContext, int flagCount = 1000)
     {
+        ArgumentNullException.ThrowIfNull(dbContext);
+
         if (await dbContext.FeatureFlags.CountAsync() > 100)
         {
             return; // Already seeded
@@ -263,6 +271,8 @@ public static class DatabaseSeeder
     /// </summary>
     public static async Task<DatabaseStatistics> GetStatisticsAsync(FeatureFlagDbContext dbContext)
     {
+        ArgumentNullException.ThrowIfNull(dbContext);
+
         return new DatabaseStatistics
         {
             TotalFeatureFlags = await dbContext.FeatureFlags.CountAsync(),
