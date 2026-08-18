@@ -17,7 +17,12 @@ namespace FeatureFlags.Formatters;
 public sealed class FeatureFlagJsonConverter : JsonConverter<FeatureFlag>
 {
     public override FeatureFlag Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
+        {
+            if (typeToConvert == null)
+                throw new ArgumentNullException(nameof(typeToConvert));
+            if (options == null)
+                throw new ArgumentNullException(nameof(options));
+
         var flag = new FeatureFlag();
 
         while (reader.Read())
@@ -86,7 +91,14 @@ public sealed class FeatureFlagJsonConverter : JsonConverter<FeatureFlag>
     }
 
     public override void Write(Utf8JsonWriter writer, FeatureFlag value, JsonSerializerOptions options)
-    {
+        {
+            if (writer == null)
+                throw new ArgumentNullException(nameof(writer));
+            if (value == null)
+                throw new ArgumentNullException(nameof(value));
+            if (options == null)
+                throw new ArgumentNullException(nameof(options));
+
         if (value is null)
         {
             writer.WriteNullValue();
