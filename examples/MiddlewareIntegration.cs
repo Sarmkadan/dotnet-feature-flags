@@ -25,12 +25,15 @@ public sealed class FeatureFlagMiddleware
 
     public FeatureFlagMiddleware(RequestDelegate next, IFeatureFlagService featureFlagService)
     {
+        ArgumentNullException.ThrowIfNull(next);
+        ArgumentNullException.ThrowIfNull(featureFlagService);
         _next = next;
         _featureFlagService = featureFlagService;
     }
 
     public async Task InvokeAsync(HttpContext context)
     {
+        ArgumentNullException.ThrowIfNull(context);
         // Add user context to HttpContext for use in handlers
         var userContext = ExtractUserContext(context);
         context.Items["UserContext"] = userContext;
