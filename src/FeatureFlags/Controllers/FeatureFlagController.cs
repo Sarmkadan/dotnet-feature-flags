@@ -38,6 +38,8 @@ public class FeatureFlagController : ControllerBase {
     [HttpPost("evaluate")]
     public async Task<IActionResult> EvaluateFeatureFlag([FromBody] EvaluationRequest request, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         if (request is null || string.IsNullOrEmpty(request.FeatureFlagKey))
             return BadRequest("Feature flag key is required");
 
@@ -72,6 +74,8 @@ public class FeatureFlagController : ControllerBase {
     [HttpPost("variant")]
     public async Task<IActionResult> GetVariant([FromBody] EvaluationRequest request, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         if (request is null || string.IsNullOrEmpty(request.FeatureFlagKey))
             return BadRequest("Feature flag key is required");
 
@@ -124,6 +128,8 @@ public class FeatureFlagController : ControllerBase {
     [HttpGet("{key}")]
     public async Task<IActionResult> GetByKey(string key, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrEmpty(key);
+
         if (string.IsNullOrEmpty(key))
             return BadRequest("Key is required");
 
@@ -148,6 +154,8 @@ public class FeatureFlagController : ControllerBase {
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] FeatureFlag featureFlag, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(featureFlag);
+
         if (featureFlag is null || !featureFlag.IsValid())
             return BadRequest("Invalid feature flag configuration");
 
@@ -169,6 +177,8 @@ public class FeatureFlagController : ControllerBase {
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, [FromBody] FeatureFlag featureFlag, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(featureFlag);
+
         if (featureFlag is null || featureFlag.Id != id)
             return BadRequest("Invalid feature flag");
 
@@ -248,6 +258,8 @@ public class FeatureFlagController : ControllerBase {
     [HttpPost("evaluate/all")]
     public async Task<IActionResult> EvaluateAll([FromBody] BulkEvaluationRequest request, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         if (request is null)
             return BadRequest("Request body is required");
 
@@ -317,6 +329,9 @@ public class FeatureFlagController : ControllerBase {
         [FromQuery] bool includeETag = false,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrEmpty(userId);
+        ArgumentException.ThrowIfNullOrEmpty(email);
+
         if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(email))
             return BadRequest("userId and email query parameters are required");
 
