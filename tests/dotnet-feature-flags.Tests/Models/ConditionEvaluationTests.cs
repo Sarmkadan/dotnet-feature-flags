@@ -100,6 +100,8 @@ public sealed class ConditionEvaluationTests
     public void Evaluate_WithStringOperators_ReturnsExpectedResult(
         string contextValue, string expectedValue, ConditionOperator op, bool expected)
     {
+        ArgumentException.ThrowIfNullOrEmpty(contextValue);
+        ArgumentException.ThrowIfNullOrEmpty(expectedValue);
         // Arrange
         var condition = new Condition
         {
