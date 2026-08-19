@@ -1,0 +1,9 @@
+chore: add structured logging to RuleEvaluationService
+
+Added structured logging calls to key methods in RuleEvaluationService:
+- LogInformation at entry/exit of EvaluateAsync
+- LogInformation for rule evaluation outcomes
+- LogWarning for inactive rules/conditions
+- LogError in exception handlers
+
+All logs use structured logging syntax with parameter placeholders.
