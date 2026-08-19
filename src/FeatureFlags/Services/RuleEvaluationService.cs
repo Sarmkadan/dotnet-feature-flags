@@ -33,14 +33,21 @@ public class RuleEvaluationService : IRuleEvaluationService {
         if (userContext is null)
             throw new ArgumentNullException(nameof(userContext));
 
+        _logger.LogInformation("Starting evaluation for feature flag {FeatureFlagId}", featureFlag.Id);
         try
         {
             var flagWithRules = await _repository.GetWithRulesAsync(featureFlag.Id);
             if (flagWithRules is null)
+            {
+                _logger.LogInformation("Evaluation finished for feature flag {FeatureFlagId}: flag not found", featureFlag.Id);
                 throw new FeatureFlagNotFoundException(featureFlag.Key);
+            }
 
             if (!flagWithRules.Rules.Any())
+            {
+                _logger.LogInformation("Evaluation finished for feature flag {FeatureFlagId}: no rules", featureFlag.Id);
                 return false;
+            }
 
             var applicableRules = flagWithRules.Rules
                 .Where(r => r.IsActive)
@@ -48,14 +55,21 @@ public class RuleEvaluationService : IRuleEvaluationService {
                 .ToList();
 
             if (!applicableRules.Any())
+            {
+                _logger.LogInformation("Evaluation finished for feature flag {FeatureFlagId}: no applicable rules", featureFlag.Id);
                 return false;
+            }
 
             foreach (var rule in applicableRules)
             {
                 if (await EvaluateRuleAsync(rule, userContext))
+                {
+                    _logger.LogInformation("Evaluation finished for feature flag {FeatureFlagId}: rule {RuleId} matched", featureFlag.Id, rule.Id);
                     return true;
+                }
             }
 
+            _logger.LogInformation("Evaluation finished for feature flag {FeatureFlagId}: no matching rules", featureFlag.Id);
             return false;
         }
         catch (Exception ex)
@@ -73,18 +87,29 @@ public class RuleEvaluationService : IRuleEvaluationService {
         if (userContext is null)
             throw new ArgumentNullException(nameof(userContext));
 
+        _logger.LogInformation("Starting rule evaluation for {RuleId}", rule.Id);
         if (!rule.IsActive)
+        {
+            _logger.LogWarning("Rule {RuleId} is inactive", rule.Id);
             return false;
+        }
 
         if (!rule.Conditions.Any())
+        {
+            _logger.LogWarning("Rule {RuleId} has no conditions", rule.Id);
             return false;
+        }
 
         var activeConditions = rule.Conditions.Where(c => c.IsActive).ToList();
         if (!activeConditions.Any())
+        {
+            _logger.LogWarning("Rule {RuleId} has no active conditions", rule.Id);
             return false;
+        }
 
         var results = activeConditions.Select(c => EvaluateCondition(c, userContext)).ToList();
 
+        _logger.LogInformation("Completed rule evaluation for {RuleId}: {Result}", rule.Id, results.All(r => r));
         return rule.ConditionLogic.Equals("AND", StringComparison.OrdinalIgnoreCase)
             ? results.All(r => r)
             : results.Any(r => r);
