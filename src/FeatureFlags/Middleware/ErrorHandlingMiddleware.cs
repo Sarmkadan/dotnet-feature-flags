@@ -28,14 +28,22 @@ public sealed class ErrorHandlingMiddleware
 
     public async Task InvokeAsync(HttpContext context, CancellationToken cancellationToken = default)
     {
+        _logger.LogInformation("InvokeAsync started for request {RequestPath} {RequestMethod}",
+            context.Request.Path, context.Request.Method);
+
         try
         {
             await _next(context);
         }
         catch (Exception exception)
         {
+            _logger.LogError(exception, "Unhandled exception caught in InvokeAsync for request {RequestPath} {RequestMethod}",
+                context.Request.Path, context.Request.Method);
             await HandleExceptionAsync(context, exception);
         }
+
+        _logger.LogInformation("InvokeAsync completed for request {RequestPath} {RequestMethod}",
+            context.Request.Path, context.Request.Method);
     }
 
     private static Task HandleExceptionAsync(HttpContext context, Exception exception)
@@ -72,6 +80,9 @@ public sealed class ErrorHandlingMiddleware
             response.StatusCode = (int)HttpStatusCode.InternalServerError;
             response.Message = "An unexpected error occurred";
             response.ErrorCode = "InternalServerError";
+
+            Log.Warning("Unhandled exception fell back to generic InternalServerError response for exception type {ExceptionType}",
+                exception.GetType().Name);
         }
 
         Log.Error(exception, "Unhandled exception: {ErrorCode} - {Message}",
