@@ -34,6 +34,7 @@ public sealed class FlagEvaluationLogServiceTests
         // Arrange
         var flag = new FeatureFlag { Id = 1, Key = "test-flag", IsEnabled = true };
         var userContext = new UserContext { UserId = "user1", Email = "user@test.com" };
+        _loggerMock.Object.LogInformation("LogEvaluation_WithValidFlag_RecordsLog called with {FlagKey} and {UserId}", flag.Key, userContext.UserId);
 
         // Act
         _service.LogEvaluation(flag, userContext, true);
@@ -53,6 +54,7 @@ public sealed class FlagEvaluationLogServiceTests
         var flag = new FeatureFlag { Id = 1, Key = "test-flag", IsEnabled = true };
         var user1 = new UserContext { UserId = "user1", Email = "user1@test.com" };
         var user2 = new UserContext { UserId = "user2", Email = "user2@test.com" };
+        _loggerMock.Object.LogInformation("LogEvaluation_MultipleCalls_RecordsAllEvaluations started with {FlagKey}", flag.Key);
 
         // Act
         _service.LogEvaluation(flag, user1, true);
@@ -71,14 +73,16 @@ public sealed class FlagEvaluationLogServiceTests
     {
         // Arrange
         var userContext = new UserContext { UserId = "user1", Email = "user@test.com" };
+        _loggerMock.Object.LogInformation("LogEvaluation_WithNullFlag_HandlesGracefully called with null flag");
 
         // Act - Should not throw
         try
         {
             _service.LogEvaluation(null!, userContext, true);
         }
-        catch (ArgumentNullException)
+        catch (ArgumentNullException ex)
         {
+            _loggerMock.Object.LogError(ex, "Failed to evaluate null flag for {UserId}", userContext.UserId);
             // Expected behavior if implementation validates inputs
         }
     }
@@ -88,14 +92,16 @@ public sealed class FlagEvaluationLogServiceTests
     {
         // Arrange
         var flag = new FeatureFlag { Id = 1, Key = "test-flag", IsEnabled = true };
+        _loggerMock.Object.LogInformation("LogEvaluation_WithNullUserContext_HandlesGracefully started with {FlagKey}", flag.Key);
 
         // Act - Should not throw
         try
         {
             _service.LogEvaluation(flag, null!, true);
         }
-        catch (ArgumentNullException)
+        catch (ArgumentNullException ex)
         {
+            _loggerMock.Object.LogError(ex, "Failed to evaluate flag for null user context {FlagKey}", flag.Key);
             // Expected behavior if implementation validates inputs
         }
     }
@@ -106,6 +112,7 @@ public sealed class FlagEvaluationLogServiceTests
         // Arrange
         var freshLoggerMock = new Mock<ILogger<FlagEvaluationLogService>>();
         var freshService = new FlagEvaluationLogService(freshLoggerMock.Object);
+        freshLoggerMock.Object.LogInformation("GetEvaluationLogs_WithNoLogs_ReturnsEmptyList started");
 
         // Act
         var logs = freshService.GetEvaluationLogs();
@@ -120,11 +127,13 @@ public sealed class FlagEvaluationLogServiceTests
         // Arrange
         var flag = new FeatureFlag { Id = 1, Key = "test-flag", IsEnabled = true };
         var userContext = new UserContext { UserId = "user1", Email = "user@test.com" };
+        _loggerMock.Object.LogInformation("GetEvaluationLogs_ReturnsCopy_NotOriginalList started");
         _service.LogEvaluation(flag, userContext, true);
 
         // Act
         var logs1 = _service.GetEvaluationLogs();
         var logs2 = _service.GetEvaluationLogs();
+        _loggerMock.Object.LogInformation("GetEvaluationLogs_ReturnsCopy_NotOriginalList ended");
 
         // Assert
         logs1.Should().HaveCount(1);
@@ -139,12 +148,14 @@ public sealed class FlagEvaluationLogServiceTests
         // Arrange
         var flag = new FeatureFlag { Id = 1, Key = "test-flag", IsEnabled = true };
         var userContext = new UserContext { UserId = "user1", Email = "user@test.com" };
+        _loggerMock.Object.LogInformation("ClearLogs_RemovesAllEvaluations started");
         _service.LogEvaluation(flag, userContext, true);
         _service.LogEvaluation(flag, userContext, false);
 
         // Act
         _service.ClearLogs();
         var logs = _service.GetEvaluationLogs();
+        _loggerMock.Object.LogInformation("ClearLogs_RemovesAllEvaluations ended with {LogCount}", logs.Count);
 
         // Assert
         logs.Should().BeEmpty();
@@ -157,6 +168,7 @@ public sealed class FlagEvaluationLogServiceTests
         var flag = new FeatureFlag { Id = 1, Key = "test-flag", IsEnabled = true };
         var userContext = new UserContext { UserId = "user1", Email = "user@test.com" };
         var beforeLog = DateTime.UtcNow;
+        _loggerMock.Object.LogInformation("LogEvaluation_RecordsTimestamp started with {FlagKey}", flag.Key);
 
         // Act
         _service.LogEvaluation(flag, userContext, true);
@@ -176,6 +188,7 @@ public sealed class FlagEvaluationLogServiceTests
         var flag1 = new FeatureFlag { Id = 1, Key = "flag-1", IsEnabled = true };
         var flag2 = new FeatureFlag { Id = 2, Key = "flag-2", IsEnabled = true };
         var user = new UserContext { UserId = "user1", Email = "user@test.com" };
+        _loggerMock.Object.LogInformation("GetEvaluationLogsForFlag_FiltersByFlagKey started");
 
         _service.LogEvaluation(flag1, user, true);
         _service.LogEvaluation(flag2, user, false);
@@ -183,6 +196,7 @@ public sealed class FlagEvaluationLogServiceTests
 
         // Act
         var flag1Logs = _service.GetEvaluationLogsForFlag("flag-1");
+        _loggerMock.Object.LogInformation("GetEvaluationLogsForFlag_FiltersByFlagKey ended with {LogCount}", flag1Logs.Count);
 
         // Assert
         flag1Logs.Should().HaveCount(2);
@@ -196,6 +210,7 @@ public sealed class FlagEvaluationLogServiceTests
         var flag = new FeatureFlag { Id = 1, Key = "test-flag", IsEnabled = true };
         var user1 = new UserContext { UserId = "user1", Email = "user1@test.com" };
         var user2 = new UserContext { UserId = "user2", Email = "user2@test.com" };
+        _loggerMock.Object.LogInformation("GetEvaluationLogStats_ReturnsAccurateMetrics started");
 
         _service.LogEvaluation(flag, user1, true);
         _service.LogEvaluation(flag, user2, true);
@@ -203,6 +218,7 @@ public sealed class FlagEvaluationLogServiceTests
 
         // Act
         var logs = _service.GetEvaluationLogs();
+        _loggerMock.Object.LogInformation("GetEvaluationLogStats_ReturnsAccurateMetrics ended with {LogCount}", logs.Count);
 
         // Assert
         logs.Should().HaveCount(3);
@@ -217,6 +233,7 @@ public sealed class FlagEvaluationLogServiceTests
         var flag = new FeatureFlag { Id = 1, Key = "test-flag", IsEnabled = true };
         var user1 = new UserContext { UserId = "user1", Email = "user1@test.com" };
         var user2 = new UserContext { UserId = "user2", Email = "user2@test.com" };
+        _loggerMock.Object.LogInformation("GetEvaluationLogsForUser_FiltersByUserId started");
 
         _service.LogEvaluation(flag, user1, true);
         _service.LogEvaluation(flag, user2, false);
@@ -224,6 +241,7 @@ public sealed class FlagEvaluationLogServiceTests
 
         // Act
         var user1Logs = _service.GetEvaluationLogsForUser("user1");
+        _loggerMock.Object.LogInformation("GetEvaluationLogsForUser_FiltersByUserId ended with {LogCount}", user1Logs.Count);
 
         // Assert
         user1Logs.Should().HaveCount(2);
