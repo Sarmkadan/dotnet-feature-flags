@@ -44,17 +44,21 @@ public sealed class GradualRolloutSchedulerServiceTests
     [Fact]
     public async Task GetScheduleStatusAsync_WithNegativeId_ThrowsArgumentException()
     {
+        _loggerMock.Object.LogInformation("GetScheduleStatusAsync_WithNegativeId_ThrowsArgumentException called with {Id}", 0);
         // Act & Assert
         await Assert.ThrowsAsync<ArgumentException>(() => _service.GetScheduleStatusAsync(0));
         await Assert.ThrowsAsync<ArgumentException>(() => _service.GetScheduleStatusAsync(-1));
+        _loggerMock.Object.LogError(new ArgumentException("Invalid id"), "Failed to get schedule status for id {Id}", -1);
     }
 
     [Fact]
     public async Task AdvanceRolloutAsync_WithInvalidId_ThrowsArgumentException()
     {
+        _loggerMock.Object.LogInformation("AdvanceRolloutAsync_WithInvalidId_ThrowsArgumentException called with {Id}, {AdvancedBy}", 0, "admin");
         // Act & Assert
         await Assert.ThrowsAsync<ArgumentException>(() => _service.AdvanceRolloutAsync(0, "admin"));
         await Assert.ThrowsAsync<ArgumentException>(() => _service.AdvanceRolloutAsync(-1, "admin"));
+        _loggerMock.Object.LogError(new ArgumentException("Invalid id"), "Failed to advance rollout for id {Id}", -1);
     }
 
     [Fact]
@@ -68,6 +72,7 @@ public sealed class GradualRolloutSchedulerServiceTests
     [Fact]
     public async Task ProcessScheduledRolloutsAsync_WithNoStrategies_ReturnsZero()
     {
+        _loggerMock.Object.LogInformation("ProcessScheduledRolloutsAsync_WithNoStrategies_ReturnsZero called");
         // Arrange
         var strategyDbSet = CreateMockDbSet<RolloutStrategy>(new List<RolloutStrategy>());
         _contextMock.Setup(c => c.RolloutStrategies).Returns(strategyDbSet);
@@ -77,6 +82,7 @@ public sealed class GradualRolloutSchedulerServiceTests
 
         // Assert
         result.Should().Be(0);
+        _loggerMock.Object.LogInformation("ProcessScheduledRolloutsAsync_WithNoStrategies_ReturnsZero completed with result {Result}", result);
     }
 
     [Fact]
