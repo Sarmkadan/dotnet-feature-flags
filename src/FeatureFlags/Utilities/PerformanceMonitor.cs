@@ -23,6 +23,7 @@ public sealed class PerformanceMonitor : IDisposable {
     {
         _operationName = operationName ?? throw new ArgumentNullException(nameof(operationName));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _logger.LogInformation("Starting {OperationName}", operationName);
         _warningThresholdMs = warningThresholdMs;
         _stopwatch = Stopwatch.StartNew();
     }
@@ -35,6 +36,7 @@ public sealed class PerformanceMonitor : IDisposable {
         {
             _stopwatch.Stop();
             LogResult();
+            _logger.LogInformation("Stopping {OperationName}", _operationName);
         }
     }
 
@@ -44,6 +46,7 @@ public sealed class PerformanceMonitor : IDisposable {
         {
             _stopwatch.Stop();
             LogResult();
+            _logger.LogInformation("Stopping {OperationName}", _operationName);
             _disposed = true;
         }
     }
