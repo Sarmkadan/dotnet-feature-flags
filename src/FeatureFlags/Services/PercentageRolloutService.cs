@@ -62,10 +62,14 @@ public class PercentageRolloutService : IPercentageRolloutService {
         if (rolloutPercentage < 0 || rolloutPercentage > 100)
             throw new ArgumentException("Rollout percentage must be between 0 and 100", nameof(rolloutPercentage));
 
+        _logger.LogInformation("IsUserInRollout called with UserId: {UserId}, FeatureFlagKey: {FeatureFlagKey}, RolloutPercentage: {RolloutPercentage}",
+            userContext.UserId, featureFlagKey, rolloutPercentage);
         var bucket = GetUserBucket(userContext, featureFlagKey);
         // Percentage rollout: buckets 0 to rolloutPercentage-1 are enabled
         // This ensures strict boundary semantics: 0% enables 0 buckets, 100% enables all 100 buckets
-        return bucket < rolloutPercentage;
+        var result = bucket < rolloutPercentage;
+        _logger.LogInformation("IsUserInRollout returning {Result}", result);
+        return result;
     }
 
     public int GetUserBucket(UserContext userContext, string featureFlagKey)

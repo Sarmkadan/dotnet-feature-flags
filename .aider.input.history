@@ -17526,3 +17526,77 @@
 +- refactor(controller): add argument null guards to FeatureFlagController
 +- chore: apply workspace updates
 +- refactor(database): add argument null guards to DatabaseSeeder
+
+# 2026-08-20 15:35:10.250474
++In repo /home/personal/task-factory/workdir/dotnet-feature-flags, add structured logging to `PercentageRolloutServiceTests` in `src/FeatureFlags.Tests/Services/PercentageRolloutServiceTests.cs`.
++
++The class has an ILogger field but barely uses it. Add meaningful structured log calls:
++- `LogInformation` at the start/end of key public methods (with relevant parameters as structured args)
++- `LogWarning` for fallback/retry/degraded paths
++- `LogError` in catch blocks (with the exception)
++- Use structured logging syntax: `_logger.LogInformation("Processing {ItemId}", itemId)` (NOT string interpolation)
++
++Do NOT change any behavior, control flow, or signatures. Only ADD log statements.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++EXPLICIT STEPS:
++1. Open the file. Find the ILogger field (usually _logger). If NO ILogger field exists, STOP.
++2. Check if the class is static. If yes, STOP - static classes do not have instance loggers.
++3. Add LogInformation at entry of key public methods: _logger.LogInformation("MethodName called with {Param}", param);
++4. Add LogError in catch blocks: _logger.LogError(ex, "Failed to ...");
++5. Use structured logging {Placeholder} syntax, NOT string interpolation.
++6. Run: dotnet build. Commit.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: add argument null guards to XmlExporter
+
+# 2026-08-20 15:35:10.250996
++In repo /home/personal/task-factory/workdir/dotnet-feature-flags, add structured logging to `PercentageRolloutServiceTests` in `src/FeatureFlags.Tests/Services/PercentageRolloutServiceTests.cs`.
++
++The class has an ILogger field but barely uses it. Add meaningful structured log calls:
++- `LogInformation` at the start/end of key public methods (with relevant parameters as structured args)
++- `LogWarning` for fallback/retry/degraded paths
++- `LogError` in catch blocks (with the exception)
++- Use structured logging syntax: `_logger.LogInformation("Processing {ItemId}", itemId)` (NOT string interpolation)
++
++Do NOT change any behavior, control flow, or signatures. Only ADD log statements.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++EXPLICIT STEPS:
++1. Open the file. Find the ILogger field (usually _logger). If NO ILogger field exists, STOP.
++2. Check if the class is static. If yes, STOP - static classes do not have instance loggers.
++3. Add LogInformation at entry of key public methods: _logger.LogInformation("MethodName called with {Param}", param);
++4. Add LogError in catch blocks: _logger.LogError(ex, "Failed to ...");
++5. Use structured logging {Placeholder} syntax, NOT string interpolation.
++6. Run: dotnet build. Commit.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: apply workspace updates
++- chore: add argument null guards to XmlExporter
