@@ -34,6 +34,7 @@ public class PercentageRolloutService : IPercentageRolloutService {
         if (featureFlag.PercentageRollout is null)
             throw new InvalidFeatureFlagException("Feature flag does not have a percentage rollout configured");
 
+        _logger.LogInformation("Starting EvaluateAsync for feature flag {FeatureFlagKey}", featureFlag.Key);
         try
         {
             var isEnabled = IsUserInRollout(userContext, featureFlag.Key, featureFlag.PercentageRollout.Value);
