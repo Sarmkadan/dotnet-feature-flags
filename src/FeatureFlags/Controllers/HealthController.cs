@@ -40,6 +40,7 @@ public class HealthController : ControllerBase {
     [ProducesResponseType(typeof(HealthResponse), StatusCodes.Status200OK)]
     public IActionResult GetLiveness()
     {
+        _logger.LogInformation("GetLiveness called");
         return Ok(new HealthResponse
         {
             Status = "healthy",
@@ -57,6 +58,7 @@ public class HealthController : ControllerBase {
     [ProducesResponseType(typeof(HealthResponse), StatusCodes.Status503ServiceUnavailable)]
     public async Task<IActionResult> GetReadiness(CancellationToken cancellationToken = default)
     {
+        _logger.LogInformation("GetReadiness called with {CancellationToken}", cancellationToken);
         var healthResponse = new HealthResponse
         {
             Status = "checking",
@@ -76,7 +78,7 @@ public class HealthController : ControllerBase {
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "Database health check failed");
+            _logger.LogError(ex, "Database health check failed");
             dependencies["database"] = false;
             allHealthy = false;
         }
@@ -89,7 +91,7 @@ public class HealthController : ControllerBase {
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "Feature flag service health check failed");
+            _logger.LogError(ex, "Feature flag service health check failed");
             dependencies["feature-flag-service"] = false;
             allHealthy = false;
         }
