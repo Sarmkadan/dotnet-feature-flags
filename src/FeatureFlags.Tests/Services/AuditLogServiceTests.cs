@@ -35,6 +35,7 @@ public sealed class AuditLogServiceTests
     [Fact]
     public async Task GetAuditLogsAsync_WithValidId_ReturnsLogs()
     {
+        _loggerMock.Object.LogInformation("GetAuditLogsAsync_WithValidId_ReturnsLogs called with {FeatureFlagId}", 1);
         // Arrange
         var featureFlagId = 1;
         var logs = new List<AuditLog>
@@ -51,11 +52,13 @@ public sealed class AuditLogServiceTests
         result.Should().HaveCount(2);
         result.Should().AllSatisfy(log => log.FeatureFlagId.Should().Be(featureFlagId));
         _repositoryMock.Verify(r => r.GetByFeatureFlagIdAsync(featureFlagId), Times.Once);
+        _loggerMock.Object.LogInformation("GetAuditLogsAsync_WithValidId_ReturnsLogs completed");
     }
 
     [Fact]
     public async Task GetAuditLogsAsync_WithInvalidId_ThrowsArgumentException()
     {
+        _loggerMock.Object.LogInformation("GetAuditLogsAsync_WithInvalidId_ThrowsArgumentException called");
         // Act & Assert
         await Assert.ThrowsAsync<ArgumentException>(() => _service.GetAuditLogsAsync(0));
         await Assert.ThrowsAsync<ArgumentException>(() => _service.GetAuditLogsAsync(-1));
@@ -64,6 +67,7 @@ public sealed class AuditLogServiceTests
     [Fact]
     public async Task GetAuditLogsAsync_WhenRepositoryThrows_ThrowsFeatureFlagDataException()
     {
+        _loggerMock.Object.LogInformation("GetAuditLogsAsync_WhenRepositoryThrows_ThrowsFeatureFlagDataException called with {FeatureFlagId}", 1);
         // Arrange
         _repositoryMock
             .Setup(r => r.GetByFeatureFlagIdAsync(It.IsAny<int>()))
@@ -71,11 +75,13 @@ public sealed class AuditLogServiceTests
 
         // Act & Assert
         await Assert.ThrowsAsync<FeatureFlagDataException>(() => _service.GetAuditLogsAsync(1));
+        _loggerMock.Object.LogError(new InvalidOperationException("Database error"), "Failed to retrieve audit logs for feature flag {Id}", 1);
     }
 
     [Fact]
     public async Task GetAuditLogsPagedAsync_WithValidParameters_ReturnsPaginatedLogs()
     {
+        _loggerMock.Object.LogInformation("GetAuditLogsPagedAsync_WithValidParameters_ReturnsPaginatedLogs called with {FeatureFlagId}, {PageNumber}, {PageSize}", 1, 1, 10);
         // Arrange
         var featureFlagId = 1;
         var pageNumber = 1;
@@ -94,6 +100,7 @@ public sealed class AuditLogServiceTests
         // Assert
         result.Should().HaveCount(1);
         _repositoryMock.Verify(r => r.GetByFeatureFlagIdPagedAsync(featureFlagId, pageNumber, pageSize), Times.Once);
+        _loggerMock.Object.LogInformation("GetAuditLogsPagedAsync_WithValidParameters_ReturnsPaginatedLogs completed");
     }
 
     [Fact]
@@ -116,6 +123,7 @@ public sealed class AuditLogServiceTests
     [Fact]
     public async Task GetAuditLogsByUserAsync_WithValidUser_ReturnsUserLogs()
     {
+        _loggerMock.Object.LogInformation("GetAuditLogsByUserAsync_WithValidUser_ReturnsUserLogs called with {User}", "admin");
         // Arrange
         var changedBy = "admin";
         var logs = new List<AuditLog>
@@ -144,6 +152,7 @@ public sealed class AuditLogServiceTests
     [Fact]
     public async Task GetRecentAuditLogsAsync_WithValidCount_ReturnsRecentLogs()
     {
+        _loggerMock.Object.LogInformation("GetRecentAuditLogsAsync_WithValidCount_ReturnsRecentLogs called with {Count}", 5);
         // Arrange
         var count = 5;
         var now = DateTime.UtcNow;
@@ -174,6 +183,7 @@ public sealed class AuditLogServiceTests
     [Fact]
     public async Task GetRecentAuditLogsAsync_WhenRepositoryThrows_ThrowsFeatureFlagDataException()
     {
+        _loggerMock.Object.LogInformation("GetRecentAuditLogsAsync_WhenRepositoryThrows_ThrowsFeatureFlagDataException called with {Count}", 5);
         // Arrange
         _repositoryMock
             .Setup(r => r.GetAllAsync())
@@ -181,5 +191,6 @@ public sealed class AuditLogServiceTests
 
         // Act & Assert
         await Assert.ThrowsAsync<FeatureFlagDataException>(() => _service.GetRecentAuditLogsAsync(5));
+        _loggerMock.Object.LogError(new InvalidOperationException("Database error"), "Failed to retrieve recent audit logs");
     }
 }
