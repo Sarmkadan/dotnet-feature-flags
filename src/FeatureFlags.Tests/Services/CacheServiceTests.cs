@@ -27,6 +27,7 @@ public sealed class CacheServiceTests
     [Fact]
     public void Set_And_Get_ReturnsValue()
     {
+        _logger.LogInformation("Starting Set_And_Get_ReturnsValue test");
         // Arrange
         var cache = new InMemoryCacheService(_logger);
         var key = "test_key";
@@ -39,6 +40,7 @@ public sealed class CacheServiceTests
         // Assert
         Assert.NotNull(result);
         Assert.Equal(value, result);
+        _logger.LogInformation("Completed Set_And_Get_ReturnsValue test with result: {Result}", result);
     }
 
     [Fact]
