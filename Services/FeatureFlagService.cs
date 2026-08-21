@@ -1,0 +1,1 @@
+_logger.LogInformation("Processing {ItemId}", itemId);
