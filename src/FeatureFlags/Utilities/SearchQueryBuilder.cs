@@ -4,6 +4,7 @@
 // CTO & Software Architect
 // =============================================================================
 
+using System;
 using FeatureFlags.Enums;
 using FeatureFlags.Models;
 
@@ -109,6 +110,7 @@ public sealed class FeatureFlagSearchBuilder
     /// </summary>
     public FeatureFlagSearchBuilder SortBy(string fieldName, bool descending = false)
     {
+        ArgumentException.ThrowIfNullOrEmpty(fieldName);
         _sortBy = fieldName;
         _sortDescending = descending;
         return this;
@@ -119,6 +121,7 @@ public sealed class FeatureFlagSearchBuilder
     /// </summary>
     public IQueryable<FeatureFlag> Build(IQueryable<FeatureFlag> source)
     {
+        ArgumentNullException.ThrowIfNull(source);
         // Apply filters
         if (!string.IsNullOrEmpty(_keyFilter))
         {
@@ -177,6 +180,7 @@ public sealed class FeatureFlagSearchBuilder
     /// </summary>
     public List<FeatureFlag> Execute(IEnumerable<FeatureFlag> source)
     {
+        ArgumentNullException.ThrowIfNull(source);
         var query = source.AsQueryable();
         return Build(query).ToList();
     }
