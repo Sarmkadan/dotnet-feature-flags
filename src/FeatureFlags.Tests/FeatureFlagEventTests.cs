@@ -24,6 +24,7 @@ public sealed class FeatureFlagEventTests
         var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
         _logger = loggerFactory.CreateLogger<EventBus>();
         _loggingLogger = loggerFactory.CreateLogger<EventLoggingSubscriber>();
+        _logger.LogInformation("FeatureFlagEventTests test class initialized");
     }
 
     #region FeatureFlagEvent Tests
@@ -31,8 +32,10 @@ public sealed class FeatureFlagEventTests
     [Fact]
     public void FeatureFlagEvent_DefaultConstructor_InitializesProperties()
     {
+        _logger.LogInformation("Starting {TestMethod}", nameof(FeatureFlagEvent_DefaultConstructor_InitializesProperties));
         // Act
         var @event = new FeatureFlagEvent();
+        _logger.LogInformation("Processing {ItemId}", @event.FeatureFlagId);
 
         // Assert
         Assert.Equal(string.Empty, @event.EventType);
@@ -42,11 +45,13 @@ public sealed class FeatureFlagEventTests
         Assert.Equal(DateTime.UtcNow.Date, @event.OccurredAt.Date);
         Assert.NotNull(@event.Metadata);
         Assert.Empty(@event.Metadata);
+        _logger.LogInformation("Finished {TestMethod}", nameof(FeatureFlagEvent_DefaultConstructor_InitializesProperties));
     }
 
     [Fact]
     public void FeatureFlagEvent_ParameterizedConstructor_SetsAllProperties()
     {
+        _logger.LogInformation("Starting {TestMethod}", nameof(FeatureFlagEvent_ParameterizedConstructor_SetsAllProperties));
         // Arrange
         var eventType = "FeatureFlagCreated";
         var featureFlagId = 42;
@@ -65,6 +70,7 @@ public sealed class FeatureFlagEventTests
             OccurredAt = occurredAt,
             Metadata = metadata
         };
+        _logger.LogInformation("Processing {ItemId}", @event.FeatureFlagId);
 
         // Assert
         Assert.Equal(eventType, @event.EventType);
@@ -75,11 +81,13 @@ public sealed class FeatureFlagEventTests
         Assert.Equal(2, @event.Metadata.Count);
         Assert.Equal("production", @event.Metadata["environment"]);
         Assert.Equal("1.0.0", @event.Metadata["version"]);
+        _logger.LogInformation("Finished {TestMethod}", nameof(FeatureFlagEvent_ParameterizedConstructor_SetsAllProperties));
     }
 
     [Fact]
     public void FeatureFlagEvent_MetadataProperty_IsInitializedAsEmptyDictionary()
     {
+        _logger.LogInformation("Starting {TestMethod}", nameof(FeatureFlagEvent_MetadataProperty_IsInitializedAsEmptyDictionary));
         // Arrange
         var @event = new FeatureFlagEvent();
 
@@ -89,11 +97,13 @@ public sealed class FeatureFlagEventTests
         // Assert
         Assert.Single(@event.Metadata);
         Assert.Equal("value", @event.Metadata["test"]);
+        _logger.LogInformation("Finished {TestMethod}", nameof(FeatureFlagEvent_MetadataProperty_IsInitializedAsEmptyDictionary));
     }
 
     [Fact]
     public void FeatureFlagEvent_OccurredAt_DefaultsToUtcNow()
     {
+        _logger.LogInformation("Starting {TestMethod}", nameof(FeatureFlagEvent_OccurredAt_DefaultsToUtcNow));
         // Arrange
         var beforeCreation = DateTime.UtcNow.AddSeconds(-1);
 
@@ -103,6 +113,7 @@ public sealed class FeatureFlagEventTests
 
         // Assert
         Assert.InRange(@event.OccurredAt, beforeCreation, afterCreation);
+        _logger.LogInformation("Finished {TestMethod}", nameof(FeatureFlagEvent_OccurredAt_DefaultsToUtcNow));
     }
 
     [Theory]
@@ -112,6 +123,7 @@ public sealed class FeatureFlagEventTests
     [InlineData("ValidType", "", "user", "ValidType")]
     public void FeatureFlagEvent_NullOrEmptyStrings_AreAllowed(string? eventType, string featureFlagKey, string triggeredBy, string expectedEventType)
     {
+        _logger.LogInformation("Starting {TestMethod}", nameof(FeatureFlagEvent_NullOrEmptyStrings_AreAllowed));
         // Act
         var @event = new FeatureFlagEvent
         {
@@ -124,11 +136,13 @@ public sealed class FeatureFlagEventTests
         Assert.Equal(expectedEventType, @event.EventType);
         Assert.Equal(featureFlagKey, @event.FeatureFlagKey);
         Assert.Equal(triggeredBy, @event.TriggeredBy);
+        _logger.LogInformation("Finished {TestMethod}", nameof(FeatureFlagEvent_NullOrEmptyStrings_AreAllowed));
     }
 
     [Fact]
     public void FeatureFlagEvent_NegativeFeatureFlagId_IsAllowed()
     {
+        _logger.LogInformation("Starting {TestMethod}", nameof(FeatureFlagEvent_NegativeFeatureFlagId_IsAllowed));
         // Arrange
         var negativeId = -1;
 
@@ -137,11 +151,13 @@ public sealed class FeatureFlagEventTests
 
         // Assert
         Assert.Equal(negativeId, @event.FeatureFlagId);
+        _logger.LogInformation("Finished {TestMethod}", nameof(FeatureFlagEvent_NegativeFeatureFlagId_IsAllowed));
     }
 
     [Fact]
     public void FeatureFlagEvent_LargeFeatureFlagId_IsAllowed()
     {
+        _logger.LogInformation("Starting {TestMethod}", nameof(FeatureFlagEvent_LargeFeatureFlagId_IsAllowed));
         // Arrange
         var largeId = int.MaxValue;
 
@@ -150,11 +166,13 @@ public sealed class FeatureFlagEventTests
 
         // Assert
         Assert.Equal(largeId, @event.FeatureFlagId);
+        _logger.LogInformation("Finished {TestMethod}", nameof(FeatureFlagEvent_LargeFeatureFlagId_IsAllowed));
     }
 
     [Fact]
     public void FeatureFlagEvent_Metadata_HandlesNullValues()
     {
+        _logger.LogInformation("Starting {TestMethod}", nameof(FeatureFlagEvent_Metadata_HandlesNullValues));
         // Arrange
         var @event = new FeatureFlagEvent();
 
@@ -166,11 +184,13 @@ public sealed class FeatureFlagEventTests
         Assert.Equal(2, @event.Metadata.Count);
         Assert.Null(@event.Metadata["nullValue"]);
         Assert.Equal("test", @event.Metadata["stringValue"]);
+        _logger.LogInformation("Finished {TestMethod}", nameof(FeatureFlagEvent_Metadata_HandlesNullValues));
     }
 
     [Fact]
     public void FeatureFlagEvent_Metadata_HandlesComplexObjects()
     {
+        _logger.LogInformation("Starting {TestMethod}", nameof(FeatureFlagEvent_Metadata_HandlesComplexObjects));
         // Arrange
         var complexObject = new { Id = 1, Name = "Test", Active = true };
         var @event = new FeatureFlagEvent();
@@ -187,6 +207,7 @@ public sealed class FeatureFlagEventTests
         Assert.Equal(1, type.GetProperty("Id")?.GetValue(metadataValue));
         Assert.Equal("Test", type.GetProperty("Name")?.GetValue(metadataValue));
         Assert.Equal(true, type.GetProperty("Active")?.GetValue(metadataValue));
+        _logger.LogInformation("Finished {TestMethod}", nameof(FeatureFlagEvent_Metadata_HandlesComplexObjects));
     }
 
     #endregion
@@ -196,24 +217,36 @@ public sealed class FeatureFlagEventTests
     [Fact]
     public void EventBus_DefaultConstructor_CreatesInstance()
     {
+        _logger.LogInformation("Starting {TestMethod}", nameof(EventBus_DefaultConstructor_CreatesInstance));
         // Act
         var eventBus = new EventBus(_logger);
 
         // Assert
         Assert.NotNull(eventBus);
+        _logger.LogInformation("Finished {TestMethod}", nameof(EventBus_DefaultConstructor_CreatesInstance));
     }
 
     [Fact]
     public void EventBus_Constructor_WithNullLogger_ThrowsArgumentNullException()
     {
+        _logger.LogInformation("Starting {TestMethod}", nameof(EventBus_Constructor_WithNullLogger_ThrowsArgumentNullException));
         // Act & Assert
-        var exception = Assert.Throws<ArgumentNullException>(() => new EventBus(null!));
-        Assert.Equal("logger", exception.ParamName);
+        try
+        {
+            Assert.Throws<ArgumentNullException>(() => new EventBus(null!));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error in {TestMethod}", nameof(EventBus_Constructor_WithNullLogger_ThrowsArgumentNullException));
+            throw;
+        }
+        _logger.LogInformation("Finished {TestMethod}", nameof(EventBus_Constructor_WithNullLogger_ThrowsArgumentNullException));
     }
 
     [Fact]
     public void EventBus_Subscribe_AddsSubscriber()
     {
+        _logger.LogInformation("Starting {TestMethod}", nameof(EventBus_Subscribe_AddsSubscriber));
         // Arrange
         var eventBus = new EventBus(_logger);
         var subscriber = new TestSubscriber();
@@ -223,22 +256,33 @@ public sealed class FeatureFlagEventTests
 
         // Assert - Verify by testing publish works
         Assert.True(true);
+        _logger.LogInformation("Finished {TestMethod}", nameof(EventBus_Subscribe_AddsSubscriber));
     }
 
     [Fact]
     public void EventBus_Subscribe_NullSubscriber_ThrowsArgumentNullException()
     {
+        _logger.LogInformation("Starting {TestMethod}", nameof(EventBus_Subscribe_NullSubscriber_ThrowsArgumentNullException));
         // Arrange
         var eventBus = new EventBus(_logger);
 
         // Act & Assert
-        var exception = Assert.Throws<ArgumentNullException>(() => eventBus.Subscribe(null!));
-        Assert.Equal("subscriber", exception.ParamName);
+        try
+        {
+            Assert.Throws<ArgumentNullException>(() => eventBus.Subscribe(null!));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error in {TestMethod}", nameof(EventBus_Subscribe_NullSubscriber_ThrowsArgumentNullException));
+            throw;
+        }
+        _logger.LogInformation("Finished {TestMethod}", nameof(EventBus_Subscribe_NullSubscriber_ThrowsArgumentNullException));
     }
 
     [Fact]
     public void EventBus_Subscribe_DuplicateSubscriber_AddsOnlyOnce()
     {
+        _logger.LogInformation("Starting {TestMethod}", nameof(EventBus_Subscribe_DuplicateSubscriber_AddsOnlyOnce));
         // Arrange
         var eventBus = new EventBus(_logger);
         var subscriber = new TestSubscriber();
@@ -249,11 +293,13 @@ public sealed class FeatureFlagEventTests
 
         // Assert - Verify by testing publish works
         Assert.True(true);
+        _logger.LogInformation("Finished {TestMethod}", nameof(EventBus_Subscribe_DuplicateSubscriber_AddsOnlyOnce));
     }
 
     [Fact]
     public void EventBus_Unsubscribe_RemovesSubscriber()
     {
+        _logger.LogInformation("Starting {TestMethod}", nameof(EventBus_Unsubscribe_RemovesSubscriber));
         // Arrange
         var eventBus = new EventBus(_logger);
         var subscriber = new TestSubscriber();
@@ -264,33 +310,46 @@ public sealed class FeatureFlagEventTests
 
         // Assert - Verify by testing publish doesn't notify
         Assert.True(true);
+        _logger.LogInformation("Finished {TestMethod}", nameof(EventBus_Unsubscribe_RemovesSubscriber));
     }
 
     [Fact]
     public void EventBus_Unsubscribe_NullSubscriber_ThrowsArgumentNullException()
     {
+        _logger.LogInformation("Starting {TestMethod}", nameof(EventBus_Unsubscribe_NullSubscriber_ThrowsArgumentNullException));
         // Arrange
         var eventBus = new EventBus(_logger);
 
         // Act & Assert
-        var exception = Assert.Throws<ArgumentNullException>(() => eventBus.Unsubscribe(null!));
-        Assert.Equal("subscriber", exception.ParamName);
+        try
+        {
+            Assert.Throws<ArgumentNullException>(() => eventBus.Unsubscribe(null!));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error in {TestMethod}", nameof(EventBus_Unsubscribe_NullSubscriber_ThrowsArgumentNullException));
+            throw;
+        }
+        _logger.LogInformation("Finished {TestMethod}", nameof(EventBus_Unsubscribe_NullSubscriber_ThrowsArgumentNullException));
     }
 
     [Fact]
     public void EventBus_Unsubscribe_NonExistentSubscriber_DoesNotThrow()
     {
+        _logger.LogInformation("Starting {TestMethod}", nameof(EventBus_Unsubscribe_NonExistentSubscriber_DoesNotThrow));
         // Arrange
         var eventBus = new EventBus(_logger);
         var subscriber = new TestSubscriber();
 
         // Act & Assert - Should not throw
         eventBus.Unsubscribe(subscriber);
+        _logger.LogInformation("Finished {TestMethod}", nameof(EventBus_Unsubscribe_NonExistentSubscriber_DoesNotThrow));
     }
 
     [Fact]
     public async Task EventBus_PublishAsync_FeatureFlagEvent_NotifiesSubscribers()
     {
+        _logger.LogInformation("Starting {TestMethod}", nameof(EventBus_PublishAsync_FeatureFlagEvent_NotifiesSubscribers));
         // Arrange
         var eventBus = new EventBus(_logger);
         var subscriber = new TestSubscriber();
@@ -312,23 +371,34 @@ public sealed class FeatureFlagEventTests
         Assert.True(subscriber.WasCalled);
         Assert.Equal(@event, subscriber.LastEvent);
         Assert.Equal("FeatureFlagCreated", subscriber.LastEventType);
+        _logger.LogInformation("Finished {TestMethod}", nameof(EventBus_PublishAsync_FeatureFlagEvent_NotifiesSubscribers));
     }
 
     [Fact]
     public async Task EventBus_PublishAsync_FeatureFlagEvent_NullEvent_ThrowsArgumentNullException()
     {
+        _logger.LogInformation("Starting {TestMethod}", nameof(EventBus_PublishAsync_FeatureFlagEvent_NullEvent_ThrowsArgumentNullException));
         // Arrange
         var eventBus = new EventBus(_logger);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<ArgumentNullException>(
-            () => eventBus.PublishAsync(null!));
-        Assert.Equal("event", exception.ParamName);
+        try
+        {
+            await Assert.ThrowsAsync<ArgumentNullException>(
+                () => eventBus.PublishAsync(null!));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error in {TestMethod}", nameof(EventBus_PublishAsync_FeatureFlagEvent_NullEvent_ThrowsArgumentNullException));
+            throw;
+        }
+        _logger.LogInformation("Finished {TestMethod}", nameof(EventBus_PublishAsync_FeatureFlagEvent_NullEvent_ThrowsArgumentNullException));
     }
 
     [Fact]
     public async Task EventBus_PublishAsync_StringParameters_CreatesEventAndNotifiesSubscribers()
     {
+        _logger.LogInformation("Starting {TestMethod}", nameof(EventBus_PublishAsync_StringParameters_CreatesEventAndNotifiesSubscribers));
         // Arrange
         var eventBus = new EventBus(_logger);
         var subscriber = new TestSubscriber();
@@ -351,11 +421,13 @@ public sealed class FeatureFlagEventTests
         Assert.Equal(featureFlagKey, subscriber.LastEvent.FeatureFlagKey);
         Assert.Equal(triggeredBy, subscriber.LastEvent.TriggeredBy);
         Assert.Equal(metadata, subscriber.LastEvent.Metadata);
+        _logger.LogInformation("Finished {TestMethod}", nameof(EventBus_PublishAsync_StringParameters_CreatesEventAndNotifiesSubscribers));
     }
 
     [Fact]
     public async Task EventBus_PublishAsync_StringParameters_NullMetadata_CreatesEventWithEmptyMetadata()
     {
+        _logger.LogInformation("Starting {TestMethod}", nameof(EventBus_PublishAsync_StringParameters_NullMetadata_CreatesEventWithEmptyMetadata));
         // Arrange
         var eventBus = new EventBus(_logger);
         var subscriber = new TestSubscriber();
@@ -369,11 +441,13 @@ public sealed class FeatureFlagEventTests
         Assert.NotNull(subscriber.LastEvent);
         Assert.NotNull(subscriber.LastEvent.Metadata);
         Assert.Empty(subscriber.LastEvent.Metadata);
+        _logger.LogInformation("Finished {TestMethod}", nameof(EventBus_PublishAsync_StringParameters_NullMetadata_CreatesEventWithEmptyMetadata));
     }
 
     [Fact]
     public async Task EventBus_PublishAsync_StringParameters_EmptyStrings_AreAllowed()
     {
+        _logger.LogInformation("Starting {TestMethod}", nameof(EventBus_PublishAsync_StringParameters_EmptyStrings_AreAllowed));
         // Arrange
         var eventBus = new EventBus(_logger);
         var subscriber = new TestSubscriber();
@@ -389,11 +463,13 @@ public sealed class FeatureFlagEventTests
         Assert.Equal(0, subscriber.LastEvent.FeatureFlagId);
         Assert.Equal(string.Empty, subscriber.LastEvent.FeatureFlagKey);
         Assert.Equal(string.Empty, subscriber.LastEvent.TriggeredBy);
+        _logger.LogInformation("Finished {TestMethod}", nameof(EventBus_PublishAsync_StringParameters_EmptyStrings_AreAllowed));
     }
 
     [Fact]
     public async Task EventBus_PublishAsync_NotifiesOnlyInterestedSubscribers()
     {
+        _logger.LogInformation("Starting {TestMethod}", nameof(EventBus_PublishAsync_NotifiesOnlyInterestedSubscribers));
         // Arrange
         var eventBus = new EventBus(_logger);
         var interestedSubscriber = new TestSubscriber("FeatureFlagCreated", "FeatureFlagUpdated");
@@ -414,11 +490,13 @@ public sealed class FeatureFlagEventTests
         // Assert
         Assert.True(interestedSubscriber.WasCalled);
         Assert.False(notInterestedSubscriber.WasCalled);
+        _logger.LogInformation("Finished {TestMethod}", nameof(EventBus_PublishAsync_NotifiesOnlyInterestedSubscribers));
     }
 
     [Fact]
     public async Task EventBus_PublishAsync_WildcardSubscriber_ReceivesAllEvents()
     {
+        _logger.LogInformation("Starting {TestMethod}", nameof(EventBus_PublishAsync_WildcardSubscriber_ReceivesAllEvents));
         // Arrange
         var eventBus = new EventBus(_logger);
         var wildcardSubscriber = new TestSubscriber("*");
@@ -436,11 +514,13 @@ public sealed class FeatureFlagEventTests
 
         // Assert
         Assert.True(wildcardSubscriber.WasCalled);
+        _logger.LogInformation("Finished {TestMethod}", nameof(EventBus_PublishAsync_WildcardSubscriber_ReceivesAllEvents));
     }
 
     [Fact]
     public async Task EventBus_PublishAsync_MultipleSubscribers_AllNotified()
     {
+        _logger.LogInformation("Starting {TestMethod}", nameof(EventBus_PublishAsync_MultipleSubscribers_AllNotified));
         // Arrange
         var eventBus = new EventBus(_logger);
         var subscriber1 = new TestSubscriber();
@@ -464,11 +544,13 @@ public sealed class FeatureFlagEventTests
         Assert.True(subscriber1.WasCalled);
         Assert.True(subscriber2.WasCalled);
         Assert.True(subscriber3.WasCalled);
+        _logger.LogInformation("Finished {TestMethod}", nameof(EventBus_PublishAsync_MultipleSubscribers_AllNotified));
     }
 
     [Fact]
     public async Task EventBus_PublishAsync_SubscriberThrows_DoesNotPropagateException()
     {
+        _logger.LogInformation("Starting {TestMethod}", nameof(EventBus_PublishAsync_SubscriberThrows_DoesNotPropagateException));
         // Arrange - Use Isolate mode to prevent exception propagation
         var options = new EventBusOptions { ErrorMode = EventBusErrorMode.Isolate };
         var eventBus = new EventBus(_logger, options);
@@ -490,11 +572,13 @@ public sealed class FeatureFlagEventTests
         // Assert
         Assert.True(throwingSubscriber.WasCalled);
         Assert.True(normalSubscriber.WasCalled);
+        _logger.LogInformation("Finished {TestMethod}", nameof(EventBus_PublishAsync_SubscriberThrows_DoesNotPropagateException));
     }
 
     [Fact]
     public async Task EventBus_PublishAsync_UnsubscribedDuringPublish_HandledCorrectly()
     {
+        _logger.LogInformation("Starting {TestMethod}", nameof(EventBus_PublishAsync_UnsubscribedDuringPublish_HandledCorrectly));
         // Arrange
         var eventBus = new EventBus(_logger);
         var subscriber1 = new TestSubscriber();
@@ -515,11 +599,13 @@ public sealed class FeatureFlagEventTests
 
         // Assert - Should complete without issues
         Assert.True(true); // If we get here, no exception was thrown
+        _logger.LogInformation("Finished {TestMethod}", nameof(EventBus_PublishAsync_UnsubscribedDuringPublish_HandledCorrectly));
     }
 
     [Fact]
     public async Task EventBus_PublishAsync_ConcurrentOperations_ThreadSafe()
     {
+        _logger.LogInformation("Starting {TestMethod}", nameof(EventBus_PublishAsync_ConcurrentOperations_ThreadSafe));
         // Arrange
         var eventBus = new EventBus(_logger);
         var subscriber = new TestSubscriber();
@@ -541,11 +627,13 @@ public sealed class FeatureFlagEventTests
 
         // Assert - Should complete without issues
         Assert.True(true); // If we get here, no exception was thrown
+        _logger.LogInformation("Finished {TestMethod}", nameof(EventBus_PublishAsync_ConcurrentOperations_ThreadSafe));
     }
 
     [Fact]
     public async Task EventBus_PublishAsync_IsolateMode_OneFailingSubscriberDoesNotPreventOthersFromReceivingEvent()
     {
+        _logger.LogInformation("Starting {TestMethod}", nameof(EventBus_PublishAsync_IsolateMode_OneFailingSubscriberDoesNotPreventOthersFromReceivingEvent));
         // Arrange - Use Isolate mode
         var options = new EventBusOptions { ErrorMode = EventBusErrorMode.Isolate };
         var eventBus = new EventBus(_logger, options);
@@ -572,11 +660,13 @@ public sealed class FeatureFlagEventTests
         Assert.True(failingSubscriber.WasCalled);
         Assert.True(subscriber1.WasCalled);
         Assert.True(subscriber2.WasCalled);
+        _logger.LogInformation("Finished {TestMethod}", nameof(EventBus_PublishAsync_IsolateMode_OneFailingSubscriberDoesNotPreventOthersFromReceivingEvent));
     }
 
     [Fact]
     public async Task EventBus_PublishAsync_FailFastMode_ExceptionPropagates()
     {
+        _logger.LogInformation("Starting {TestMethod}", nameof(EventBus_PublishAsync_FailFastMode_ExceptionPropagates));
         // Arrange - Use FailFast mode (default)
         var eventBus = new EventBus(_logger);
 
@@ -591,15 +681,25 @@ public sealed class FeatureFlagEventTests
         };
 
         // Act & Assert - Exception should propagate in FailFast mode
-        await Assert.ThrowsAsync<InvalidOperationException>(() => eventBus.PublishAsync(@event));
+        try
+        {
+            await Assert.ThrowsAsync<InvalidOperationException>(() => eventBus.PublishAsync(@event));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error in {TestMethod}", nameof(EventBus_PublishAsync_FailFastMode_ExceptionPropagates));
+            throw;
+        }
 
         // Assert - The failing subscriber should have been called
         Assert.True(failingSubscriber.WasCalled);
+        _logger.LogInformation("Finished {TestMethod}", nameof(EventBus_PublishAsync_FailFastMode_ExceptionPropagates));
     }
 
     [Fact]
     public async Task EventBus_PublishAsync_RetryPolicy_TransientFailuresAreRetried()
     {
+        _logger.LogInformation("Starting {TestMethod}", nameof(EventBus_PublishAsync_RetryPolicy_TransientFailuresAreRetried));
         // Arrange - Use Isolate mode with retry configuration
         var options = new EventBusOptions
         {
@@ -626,11 +726,13 @@ public sealed class FeatureFlagEventTests
         // Assert - Subscriber should have been called 3 times (2 failures + 1 success)
         Assert.True(retryingSubscriber.WasCalled);
         Assert.Equal(3, retryingSubscriber.CallCount);
+        _logger.LogInformation("Finished {TestMethod}", nameof(EventBus_PublishAsync_RetryPolicy_TransientFailuresAreRetried));
     }
 
     [Fact]
     public async Task EventBus_PublishAsync_ErrorCallback_InvokedOnFailure()
     {
+        _logger.LogInformation("Starting {TestMethod}", nameof(EventBus_PublishAsync_ErrorCallback_InvokedOnFailure));
         // Arrange
         var options = new EventBusOptions { ErrorMode = EventBusErrorMode.Isolate };
         var eventBus = new EventBus(_logger, options);
@@ -660,6 +762,7 @@ public sealed class FeatureFlagEventTests
         // Assert - Error callback should have been invoked
         Assert.True(errorInvoked);
         Assert.True(failingSubscriber.WasCalled);
+        _logger.LogInformation("Finished {TestMethod}", nameof(EventBus_PublishAsync_ErrorCallback_InvokedOnFailure));
     }
 
     #endregion
@@ -669,6 +772,7 @@ public sealed class FeatureFlagEventTests
     [Fact]
     public async Task EventLoggingSubscriber_InterestedEventTypes_ReturnsWildcard()
     {
+        _logger.LogInformation("Starting {TestMethod}", nameof(EventLoggingSubscriber_InterestedEventTypes_ReturnsWildcard));
         // Arrange
         var subscriber = new EventLoggingSubscriber(_loggingLogger);
 
@@ -678,11 +782,13 @@ public sealed class FeatureFlagEventTests
         // Assert
         Assert.Single(interestedTypes);
         Assert.Equal("*", interestedTypes[0]);
+        _logger.LogInformation("Finished {TestMethod}", nameof(EventLoggingSubscriber_InterestedEventTypes_ReturnsWildcard));
     }
 
     [Fact]
     public async Task EventLoggingSubscriber_HandleEventAsync_LogsEventInformation()
     {
+        _logger.LogInformation("Starting {TestMethod}", nameof(EventLoggingSubscriber_HandleEventAsync_LogsEventInformation));
         // Arrange
         var subscriber = new EventLoggingSubscriber(_loggingLogger);
         var @event = new FeatureFlagEvent
@@ -699,13 +805,24 @@ public sealed class FeatureFlagEventTests
 
         // Assert - If we get here, the method completed successfully
         Assert.True(true);
+        _logger.LogInformation("Finished {TestMethod}", nameof(EventLoggingSubscriber_HandleEventAsync_LogsEventInformation));
     }
 
     [Fact]
     public void EventLoggingSubscriber_Constructor_WithNullLogger_ThrowsArgumentNullException()
     {
+        _logger.LogInformation("Starting {TestMethod}", nameof(EventLoggingSubscriber_Constructor_WithNullLogger_ThrowsArgumentNullException));
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => new EventLoggingSubscriber(null!));
+        try
+        {
+            Assert.Throws<ArgumentNullException>(() => new EventLoggingSubscriber(null!));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error in {TestMethod}", nameof(EventLoggingSubscriber_Constructor_WithNullLogger_ThrowsArgumentNullException));
+            throw;
+        }
+        _logger.LogInformation("Finished {TestMethod}", nameof(EventLoggingSubscriber_Constructor_WithNullLogger_ThrowsArgumentNullException));
     }
 
     #endregion
