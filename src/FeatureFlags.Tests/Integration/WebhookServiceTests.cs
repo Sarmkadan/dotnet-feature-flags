@@ -22,6 +22,7 @@ public sealed class WebhookServiceTests
     private readonly Mock<IWebhookDeliveryRepository> _deliveryRepositoryMock;
     private readonly Mock<FeatureFlags.Integration.IHttpClientFactory> _httpClientFactoryMock;
     private readonly Mock<ILogger<WebhookService>> _loggerMock;
+    private readonly ILogger<WebhookServiceTests> _logger;
     private readonly WebhookService _service;
 
     public WebhookServiceTests()
@@ -31,6 +32,9 @@ public sealed class WebhookServiceTests
         _httpClientFactoryMock = new Mock<FeatureFlags.Integration.IHttpClientFactory>();
         _httpClientFactoryMock.Setup(f => f.CreateWebhookClient()).Returns(() => new HttpClient());
         _loggerMock = new Mock<ILogger<WebhookService>>();
+
+        var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
+        _logger = loggerFactory.CreateLogger<WebhookServiceTests>();
 
         _service = new WebhookService(
             _webhookRepositoryMock.Object,
@@ -42,6 +46,7 @@ public sealed class WebhookServiceTests
     [Fact]
     public async Task RegisterWebhookAsync_WithValidUrl_CreatesWebhook()
     {
+        _logger.LogInformation("Starting RegisterWebhookAsync_WithValidUrl_CreatesWebhook test");
         // Arrange
         var url = "https://example.com/webhook";
         var description = "Test Webhook";
@@ -72,6 +77,8 @@ public sealed class WebhookServiceTests
         result.Url.Should().Be(url);
         result.Description.Should().Be(description);
         result.EventTypes.Should().Be(eventTypes);
+
+        _logger.LogInformation("Completed RegisterWebhookAsync_WithValidUrl_CreatesWebhook test with result: {Result}", result?.Id);
     }
 
     [Fact]
