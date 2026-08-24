@@ -110,4 +110,6 @@ public sealed class Condition : IEquatable<Condition>
 
         return Enum.IsDefined(typeof(ConditionOperator), Operator);
     }
+
+    public override string ToString() => $"Condition {{ Id = {Id}, RuleId = {RuleId}, AttributeName = {AttributeName}, Operator = {Operator}, ExpectedValue = {ExpectedValue}, IsActive = {IsActive} }}";
 }
