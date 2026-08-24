@@ -77,6 +77,8 @@ public sealed class Webhook
         return true;
     }
 
+    public override string ToString() => $"Webhook {{ Id = {Id}, Url = {Url}, Description = {Description}, IsActive = {IsActive}, EventTypes = {EventTypes}, FeatureFlagKey = {FeatureFlagKey} }}";
+
     /// <summary>
     /// Checks if webhook should be triggered for specified event type.
     /// </summary>
