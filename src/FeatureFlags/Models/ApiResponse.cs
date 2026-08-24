@@ -100,6 +100,8 @@ public sealed class ApiResponse
             Timestamp = DateTime.UtcNow
         };
     }
+
+    public override string ToString() => $"ApiResponse {{ Success = {Success}, Message = {Message}, Error = {Error}, Metadata = {Metadata}, Timestamp = {Timestamp} }}";
 }
 
 /// <summary>
