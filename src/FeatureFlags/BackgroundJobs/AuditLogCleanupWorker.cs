@@ -40,6 +40,8 @@ public sealed class AuditLogCleanupWorker : BackgroundService
     /// </summary>
     public int RetentionDays => _options.RetentionDays;
 
+    public override string ToString() => $"AuditLogCleanupWorker {{ RetentionDays = {RetentionDays}, CleanupIntervalHours = {_options.CleanupIntervalHours}, Enabled = {_options.Enabled}, CleanupIntervalSeconds = {CleanupIntervalSeconds} }}";
+
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _logger.LogInformation("Audit log cleanup worker started (runs every {Hours} hours)", _options.CleanupIntervalHours);
