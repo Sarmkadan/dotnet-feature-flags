@@ -20,6 +20,8 @@ public sealed class FeatureFlagEvent
     public string TriggeredBy { get; set; } = string.Empty;
     public DateTime OccurredAt { get; set; } = DateTime.UtcNow;
     public Dictionary<string, object?> Metadata { get; set; } = new();
+
+    public override string ToString() => $"FeatureFlagEvent {{ EventType = {EventType}, FeatureFlagId = {FeatureFlagId}, FeatureFlagKey = {FeatureFlagKey}, TriggeredBy = {TriggeredBy}, OccurredAt = {OccurredAt}, Metadata = {Metadata} }}";
 }
 
 /// <summary>
