@@ -33,6 +33,8 @@ public sealed class GradualRolloutSchedulerWorker : BackgroundService
         _checkInterval = TimeSpan.FromMinutes(_options.CheckIntervalMinutes);
     }
 
+    public override string ToString() => $"GradualRolloutSchedulerWorker {{ CheckIntervalMinutes = {_options.CheckIntervalMinutes}, Enabled = {_options.Enabled} }}";
+
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         if (!_options.Enabled)
