@@ -99,4 +99,6 @@ public sealed class ABTestVariant
             _ => "Very High"
         };
     }
+
+    public override string ToString() => $"ABTestVariant {{ Id = {Id}, FeatureFlagId = {FeatureFlagId}, VariantKey = {VariantKey}, DisplayName = {DisplayName}, Description = {Description}, AllocationPercentage = {AllocationPercentage} }}";
 }
