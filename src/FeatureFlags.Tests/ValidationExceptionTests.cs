@@ -5,8 +5,14 @@ using Xunit;
 
 namespace FeatureFlags.Tests
 {
+    /// <summary>
+    /// Contains unit tests for the ValidationException and WebhookValidationException classes.
+    /// </summary>
     public class ValidationExceptionTests
     {
+        /// <summary>
+        /// Verifies that constructing a ValidationException with a message sets the Message and ErrorCode properties correctly.
+        /// </summary>
         [Fact]
         public void ValidationException_MessageConstructor_SetsMessageAndErrorCode()
         {
@@ -21,6 +27,9 @@ namespace FeatureFlags.Tests
             Assert.Equal("VALIDATION_ERROR", ex.ErrorCode);
         }
 
+        /// <summary>
+        /// Verifies that constructing a ValidationException with a message and error dictionary sets Message, ErrorCode, and Errors properties correctly.
+        /// </summary>
         [Fact]
         public void ValidationException_MessageAndErrorsConstructor_SetsMessageErrorCodeAndErrors()
         {
@@ -44,6 +53,9 @@ namespace FeatureFlags.Tests
             Assert.Equal("Error message 2", ex.Errors["field2"]);
         }
 
+        /// <summary>
+        /// Verifies that constructing a ValidationException with a message and null errors results in the Errors property being null.
+        /// </summary>
         [Fact]
         public void ValidationException_MessageAndErrorsConstructor_WithNullErrors_SetsErrorsToNull()
         {
@@ -60,6 +72,9 @@ namespace FeatureFlags.Tests
             Assert.Null(ex.Errors);
         }
 
+        /// <summary>
+        /// Verifies that constructing a ValidationException with a message and an empty error dictionary initializes Errors to an empty dictionary.
+        /// </summary>
         [Fact]
         public void ValidationException_MessageAndErrorsConstructor_WithEmptyDictionary_InitializesEmptyDictionary()
         {
@@ -77,6 +92,9 @@ namespace FeatureFlags.Tests
             Assert.Empty(ex.Errors);
         }
 
+        /// <summary>
+        /// Verifies that constructing a ValidationException with a message and inner exception sets Message, ErrorCode, and InnerException properties correctly.
+        /// </summary>
         [Fact]
         public void ValidationException_MessageAndInnerExceptionConstructor_SetsMessageErrorCodeAndInnerException()
         {
@@ -93,6 +111,9 @@ namespace FeatureFlags.Tests
             Assert.Same(innerException, ex.InnerException);
         }
 
+        /// <summary>
+        /// Verifies that the Errors property of ValidationException returns a new dictionary instance each time it is accessed.
+        /// </summary>
         [Fact]
         public void ValidationException_ErrorsProperty_IsReadOnlyDictionary()
         {
@@ -108,6 +129,9 @@ namespace FeatureFlags.Tests
             Assert.Equal(originalCount, ex.Errors.Count);
         }
 
+        /// <summary>
+        /// Verifies that constructing a WebhookValidationException with a message sets the Message and ErrorCode properties correctly and that it is assignable from ValidationException.
+        /// </summary>
         [Fact]
         public void WebhookValidationException_MessageConstructor_SetsMessageAndErrorCode()
         {
@@ -123,6 +147,9 @@ namespace FeatureFlags.Tests
             Assert.IsAssignableFrom<ValidationException>(ex);
         }
 
+        /// <summary>
+        /// Verifies that constructing a WebhookValidationException with a message and error dictionary sets Message, ErrorCode, and Errors properties correctly.
+        /// </summary>
         [Fact]
         public void WebhookValidationException_MessageAndErrorsConstructor_SetsMessageErrorCodeAndErrors()
         {
@@ -144,6 +171,9 @@ namespace FeatureFlags.Tests
             Assert.Equal(2, ex.Errors.Count);
         }
 
+        /// <summary>
+        /// Verifies the inheritance hierarchy of ValidationException and WebhookValidationException classes.
+        /// </summary>
         [Fact]
         public void ValidationException_InheritanceHierarchy_IsCorrect()
         {
@@ -159,6 +189,9 @@ namespace FeatureFlags.Tests
             Assert.IsAssignableFrom<FeatureFlagException>(webhookEx);
         }
 
+        /// <summary>
+        /// Verifies that constructing a ValidationException with a null message results in a non-null Message property (as per base Exception behavior) and correct ErrorCode.
+        /// </summary>
         [Fact]
         public void ValidationException_WithNullMessage_SetsMessageToNull()
         {
@@ -170,6 +203,9 @@ namespace FeatureFlags.Tests
             Assert.Equal("VALIDATION_ERROR", ex.ErrorCode);
         }
 
+        /// <summary>
+        /// Verifies that constructing a WebhookValidationException with a null message results in a non-null Message property and correct ErrorCode.
+        /// </summary>
         [Fact]
         public void WebhookValidationException_WithNullMessage_SetsMessageToNull()
         {
@@ -181,6 +217,9 @@ namespace FeatureFlags.Tests
             Assert.Equal("VALIDATION_ERROR", ex.ErrorCode);
         }
 
+        /// <summary>
+        /// Verifies that the Errors property of ValidationException shares the same reference as the provided dictionary, allowing modifications to the original dictionary to affect the exception's Errors property.
+        /// </summary>
         [Fact]
         public void ValidationException_ErrorsProperty_SharesReference()
         {
