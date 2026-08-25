@@ -70,4 +70,9 @@ public sealed class Rule
     {
         return Priority;
     }
+
+    public override string ToString()
+    {
+        return $"Rule {{ Id = {Id}, FeatureFlagId = {FeatureFlagId}, Name = {Name}, Description = {Description}, Priority = {Priority}, IsActive = {IsActive} }}";
+    }
 }
