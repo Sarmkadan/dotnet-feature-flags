@@ -304,4 +304,6 @@ public sealed class DatabaseStatistics
     public int PercentageRolloutCount { get; set; }
     public int RulesBasedCount { get; set; }
     public int ABTestCount { get; set; }
+
+    public override string ToString() => $"DatabaseStatistics {{ TotalFeatureFlags = {TotalFeatureFlags}, EnabledFlags = {EnabledFlags}, DisabledFlags = {DisabledFlags}, TotalRules = {TotalRules}, TotalConditions = {TotalConditions}, TotalVariants = {TotalVariants} }}";
 }
