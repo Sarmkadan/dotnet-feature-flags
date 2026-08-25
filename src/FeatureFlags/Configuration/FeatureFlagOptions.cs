@@ -78,4 +78,6 @@ public sealed class FeatureFlagOptions
             && DefaultRolloutPercentage >= 0
             && DefaultRolloutPercentage <= 100;
     }
+
+    public override string ToString() => $"FeatureFlagOptions {{ EnableCache = {EnableCache}, CacheDurationMinutes = {CacheDurationMinutes}, AuditLogRetentionDays = {AuditLogRetentionDays}, EnableAuditLogging = {EnableAuditLogging}, MaxRulesPerFlag = {MaxRulesPerFlag}, MaxConditionsPerRule = {MaxConditionsPerRule} }}";
 }
