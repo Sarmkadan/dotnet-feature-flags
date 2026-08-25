@@ -4,8 +4,14 @@ using Xunit;
 
 namespace FeatureFlags.Tests
 {
+    /// <summary>
+    /// Test class for FeatureFlagException and its derived exception types.
+    /// </summary>
     public class FeatureFlagExceptionTests
     {
+        /// <summary>
+        /// Verifies that constructing a FeatureFlagException with only a message sets the Message property correctly and leaves ErrorCode as null.
+        /// </summary>
         [Fact]
         public void FeatureFlagException_MessageConstructor_SetsMessageAndErrorCodeNull()
         {
@@ -20,6 +26,9 @@ namespace FeatureFlags.Tests
             Assert.Null(ex.ErrorCode);
         }
 
+        /// <summary>
+        /// Verifies that constructing a FeatureFlagException with both message and error code sets both properties correctly.
+        /// </summary>
         [Fact]
         public void FeatureFlagException_MessageAndErrorCodeConstructor_SetsBothProperties()
         {
@@ -35,6 +44,9 @@ namespace FeatureFlags.Tests
             Assert.Equal(errorCode, ex.ErrorCode);
         }
 
+        /// <summary>
+        /// Verifies that FeatureFlagNotFoundException creates the correct default message and error code for a given flag key.
+        /// </summary>
         [Fact]
         public void FeatureFlagNotFoundException_CreatesCorrectMessageAndErrorCode()
         {
@@ -49,6 +61,9 @@ namespace FeatureFlags.Tests
             Assert.Equal("FF_NOT_FOUND", ex.ErrorCode);
         }
 
+        /// <summary>
+        /// Verifies that InvalidFeatureFlagException creates the correct message and error code for invalid configuration.
+        /// </summary>
         [Fact]
         public void InvalidFeatureFlagException_CreatesCorrectMessageAndErrorCode()
         {
@@ -63,6 +78,9 @@ namespace FeatureFlags.Tests
             Assert.Equal("FF_INVALID_CONFIG", ex.ErrorCode);
         }
 
+        /// <summary>
+        /// Verifies that RuleEvaluationException sets the inner exception and error code when constructed with an inner exception.
+        /// </summary>
         [Fact]
         public void RuleEvaluationException_WithInnerException_SetsInnerAndErrorCode()
         {
@@ -79,6 +97,9 @@ namespace FeatureFlags.Tests
             Assert.Same(inner, ex.InnerException);
         }
 
+        /// <summary>
+        /// Verifies that FeatureFlagDataException sets the inner exception and error code when constructed with an inner exception.
+        /// </summary>
         [Fact]
         public void FeatureFlagDataException_WithInnerException_SetsInnerAndErrorCode()
         {
@@ -95,6 +116,9 @@ namespace FeatureFlags.Tests
             Assert.Same(inner, ex.InnerException);
         }
 
+        /// <summary>
+        /// Verifies that the ErrorCode property of a FeatureFlagException can be modified after construction.
+        /// </summary>
         [Fact]
         public void FeatureFlagException_ErrorCodeCanBeModifiedAfterConstruction()
         {
@@ -108,6 +132,9 @@ namespace FeatureFlags.Tests
             Assert.Equal("MODIFIED_CODE", ex.ErrorCode);
         }
 
+        /// <summary>
+        /// Verifies that all derived exception types (FeatureFlagNotFoundException, InvalidFeatureFlagException, RuleEvaluationException, FeatureFlagDataException) are assignable to FeatureFlagException.
+        /// </summary>
         [Fact]
         public void DerivedExceptions_AreAssignableToFeatureFlagException()
         {
