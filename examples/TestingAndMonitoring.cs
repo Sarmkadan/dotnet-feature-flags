@@ -20,6 +20,15 @@ using FeatureFlags.Services;
 // Unit Testing Example
 public sealed class FeatureFlagServiceTestExample
 {
+    public string FlagKey { get; set; } = "";
+    public DateTime Timestamp { get; set; }
+    public double AverageMs { get; set; }
+    public long MaxMs { get; set; }
+    public double P95Ms { get; set; }
+    public double ThroughputPerSecond { get; set; }
+
+    public override string ToString() => $"FeatureFlagServiceTestExample {{ FlagKey = {FlagKey}, Timestamp = {Timestamp}, AverageMs = {AverageMs}, MaxMs = {MaxMs}, P95Ms = {P95Ms}, ThroughputPerSecond = {ThroughputPerSecond} }}";
+
     public void TestPercentageRollout()\n        {\n            // Arrange\n            var mockRepository = new MockFeatureFlagRepository();\n            var service = new FeatureFlagService(mockRepository, null!);\n\n            // Act\n            var context = new UserContext { UserId = "test-user-001" };\n            // Assert\n            // With consistent hashing, the same user should always get the same result\n            // Test runs multiple times to verify consistency\n            if (context == null)\n            {\n                throw new ArgumentNullException(nameof(context));\n            }\n            var result = await service.IsEnabledAsync("test-flag", context);\n        }
     {
         // Arrange
