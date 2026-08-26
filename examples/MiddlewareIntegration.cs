@@ -31,6 +31,11 @@ public sealed class FeatureFlagMiddleware
         _featureFlagService = featureFlagService;
     }
 
+    public override string ToString()
+    {
+        return $"FeatureFlagMiddleware {{ _next = {_next}, _featureFlagService = {_featureFlagService} }}";
+    }
+
     public async Task InvokeAsync(HttpContext context)
     {
         ArgumentNullException.ThrowIfNull(context);
@@ -298,6 +303,11 @@ public sealed class Product
     public decimal BasePrice { get; set; } = 99.99m;
     public decimal Price { get; set; }
     public string[] Recommendations { get; set; } = Array.Empty<string>();
+
+    public override string ToString()
+    {
+        return $"Product {{ Id = {Id}, Name = {Name}, BasePrice = {BasePrice}, Price = {Price}, Recommendations = {Recommendations} }}";
+    }
 }
 
 // Extension method for easy middleware registration
