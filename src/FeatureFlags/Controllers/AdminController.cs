@@ -279,4 +279,9 @@ public sealed class RegisterWebhookRequest
     public Integration.WebhookEventType? EventTypes { get; set; }
     public string? FeatureFlagKey { get; set; }
     public string? Secret { get; set; }
+
+    public override string ToString()
+    {
+        return $"RegisterWebhookRequest {{ Url = {Url}, Description = {Description}, FeatureFlagKey = {FeatureFlagKey}, Secret = {Secret} }}";
+    }
 }
