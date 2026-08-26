@@ -19,9 +19,6 @@ public sealed class PerformanceMonitor : IDisposable {
     private readonly long _warningThresholdMs;
     private bool _disposed;
 
-    public override string ToString() => $"PerformanceMonitor {{ OperationName = {_operationName} }}";
-}
-
     public PerformanceMonitor(string operationName, ILogger<PerformanceMonitor> logger, long warningThresholdMs = 1000)
     {
         _operationName = operationName ?? throw new ArgumentNullException(nameof(operationName));
@@ -96,6 +93,8 @@ public sealed class PerformanceMonitor : IDisposable {
         using var monitor = new PerformanceMonitor(operationName, logger, warningThresholdMs);
         await operation();
     }
+
+    public override string ToString() => $"PerformanceMonitor {{ OperationName = {_operationName}, ElapsedMilliseconds = {ElapsedMilliseconds} }}";
 }
 
 /// <summary>
