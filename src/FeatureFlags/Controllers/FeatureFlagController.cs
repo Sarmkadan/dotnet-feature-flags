@@ -32,6 +32,15 @@ public class FeatureFlagController : ControllerBase {
         _logger = logger;
     }
 
+    public string FeatureFlagKey { get; set; } = string.Empty;
+    public string UserId { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public string? Country { get; set; }
+    public string? Tier { get; set; }
+    public string? Region { get; set; }
+
+    public override string ToString() => $"FeatureFlagController {{ FeatureFlagKey = {FeatureFlagKey}, UserId = {UserId}, Email = {Email}, Country = {Country}, Tier = {Tier}, Region = {Region} }}";
+
     /// <summary>
     /// Checks if a feature flag is enabled for the given user context.
     /// </summary>
