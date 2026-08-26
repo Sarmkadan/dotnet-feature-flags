@@ -33,6 +33,10 @@ public class HealthController : ControllerBase {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
+    public override string ToString() => $"HealthController {{ Status = healthy, Timestamp = {DateTime.UtcNow}, Version = 2.0.0, Uptime = {GetUptime()}, Dependencies = {{database = true, feature-flag-service = true}} }}";
+
+    public override string ToString() => $"HealthController {{ Status = healthy, Timestamp = {DateTime.UtcNow}, Version = 2.0.0, Uptime = {GetUptime()}, Dependencies = {{database = true, feature-flag-service = true}} }}";
+
     /// <summary>
     /// Basic liveness check - returns 200 if the application is running.
     /// </summary>
@@ -114,7 +118,8 @@ public class HealthController : ControllerBase {
         var uptime = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
         return string.Create(System.Globalization.CultureInfo.InvariantCulture, $"{uptime.TotalSeconds:F0}s");
     }
-}
+
+    }
 
 public sealed class HealthResponse
 {
