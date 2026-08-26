@@ -356,4 +356,12 @@ public sealed class CliCommand
         ArgumentException.ThrowIfNullOrEmpty(key, nameof(key));
         return Arguments.ContainsKey(key);
     }
+
+    public override string ToString()
+    {
+        var argsString = Arguments.Count > 0
+            ? "{" + string.Join(", ", Arguments.Select(kv => $"{kv.Key}={kv.Value}")) + "}"
+            : "{}";
+        return $"CliCommand {{ Command = {Command}, Arguments = {argsString}, ShowHelp = {ShowHelp} }}";
+    }
 }
