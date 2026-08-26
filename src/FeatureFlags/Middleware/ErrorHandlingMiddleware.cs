@@ -100,5 +100,7 @@ public sealed class ErrorHandlingMiddleware
         public string Message { get; set; } = string.Empty;
         public string ErrorCode { get; set; } = string.Empty;
         public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+
+        public override string ToString() => $"ErrorResponse {{ StatusCode = {StatusCode}, Message = {Message}, ErrorCode = {ErrorCode}, Timestamp = {Timestamp} }}";
     }
 }
