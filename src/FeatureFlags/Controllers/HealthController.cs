@@ -35,8 +35,6 @@ public class HealthController : ControllerBase {
 
     public override string ToString() => $"HealthController {{ Status = healthy, Timestamp = {DateTime.UtcNow}, Version = 2.0.0, Uptime = {GetUptime()}, Dependencies = {{database = true, feature-flag-service = true}} }}";
 
-    public override string ToString() => $"HealthController {{ Status = healthy, Timestamp = {DateTime.UtcNow}, Version = 2.0.0, Uptime = {GetUptime()}, Dependencies = {{database = true, feature-flag-service = true}} }}";
-
     /// <summary>
     /// Basic liveness check - returns 200 if the application is running.
     /// </summary>
