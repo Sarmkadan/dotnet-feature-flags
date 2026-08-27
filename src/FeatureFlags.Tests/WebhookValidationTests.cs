@@ -5,6 +5,9 @@ using Xunit;
 
 namespace FeatureFlags.Tests
 {
+    /// <summary>
+    /// Test class for validating Webhook objects.
+    /// </summary>
     public class WebhookValidationTests
     {
         private static Webhook CreateValidWebhook()
@@ -26,6 +29,9 @@ namespace FeatureFlags.Tests
             };
         }
 
+        /// <summary>
+        /// Tests that a valid webhook returns an empty list of problems when Validate() is called.
+        /// </summary>
         [Fact]
         public void Validate_HappyPath_ReturnsEmptyList()
         {
@@ -39,6 +45,9 @@ namespace FeatureFlags.Tests
             Assert.Empty(problems);
         }
 
+        /// <summary>
+        /// Tests that a valid webhook returns true when IsValid() is called.
+        /// </summary>
         [Fact]
         public void IsValid_HappyPath_ReturnsTrue()
         {
@@ -52,6 +61,9 @@ namespace FeatureFlags.Tests
             Assert.True(isValid);
         }
 
+        /// <summary>
+        /// Tests that a valid webhook does not throw when EnsureValid() is called.
+        /// </summary>
         [Fact]
         public void EnsureValid_HappyPath_DoesNotThrow()
         {
@@ -63,6 +75,9 @@ namespace FeatureFlags.Tests
             Assert.Null(exception);
         }
 
+        /// <summary>
+        /// Tests that calling Validate() on a null webhook throws an ArgumentNullException.
+        /// </summary>
         [Fact]
         public void Validate_Null_ThrowsArgumentNullException()
         {
@@ -73,6 +88,9 @@ namespace FeatureFlags.Tests
             Assert.Throws<ArgumentNullException>(() => webhook!.Validate());
         }
 
+        /// <summary>
+        /// Tests that calling IsValid() on a null webhook throws an ArgumentNullException.
+        /// </summary>
         [Fact]
         public void IsValid_Null_ThrowsArgumentNullException()
         {
@@ -83,6 +101,9 @@ namespace FeatureFlags.Tests
             Assert.Throws<ArgumentNullException>(() => webhook!.IsValid());
         }
 
+        /// <summary>
+        /// Tests that calling EnsureValid() on an invalid webhook (with empty URL) throws an ArgumentException.
+        /// </summary>
         [Fact]
         public void EnsureValid_Invalid_ThrowsArgumentException()
         {
@@ -97,6 +118,9 @@ namespace FeatureFlags.Tests
             Assert.Contains("Url cannot be null or whitespace.", ex.Message);
         }
 
+        /// <summary>
+        /// Tests that calling IsValid() on an invalid webhook (with negative MaxRetries) returns false.
+        /// </summary>
         [Fact]
         public void IsValid_Invalid_ReturnsFalse()
         {
@@ -111,6 +135,9 @@ namespace FeatureFlags.Tests
             Assert.False(isValid);
         }
 
+        /// <summary>
+        /// Tests that Validate() returns a problem when UpdatedAt is earlier than CreatedAt.
+        /// </summary>
         [Fact]
         public void Validate_UpdatedAtEarlierThanCreatedAt_ReturnsProblem()
         {
@@ -125,6 +152,9 @@ namespace FeatureFlags.Tests
             Assert.Contains("UpdatedAt cannot be earlier than CreatedAt.", problems);
         }
 
+        /// <summary>
+        /// Tests that Validate() returns a problem when MaxRetries is negative.
+        /// </summary>
         [Fact]
         public void Validate_NegativeMaxRetries_ReturnsProblem()
         {
