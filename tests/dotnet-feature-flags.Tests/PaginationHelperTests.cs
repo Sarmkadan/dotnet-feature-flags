@@ -5,6 +5,9 @@ using Xunit;
 
 namespace FeatureFlags.Tests
 {
+    /// <summary>
+    /// Test class for the PaginationHelper.GetItemRange method.
+    /// </summary>
     public class PaginationHelperTests
     {
         private static (int start, int end, int total) ParseRange(string range)
@@ -23,6 +26,9 @@ namespace FeatureFlags.Tests
             );
         }
 
+        /// <summary>
+        /// Tests that GetItemRange returns the correct range for a normal page (not first or last).
+        /// </summary>
         [Fact]
         public void GetItemRange_NormalPage_ReturnsCorrectRange()
         {
@@ -41,6 +47,9 @@ namespace FeatureFlags.Tests
             Assert.Equal(totalCount, total);
         }
 
+        /// <summary>
+        /// Tests that GetItemRange returns the correct range for the last page when the total count is not a multiple of page size.
+        /// </summary>
         [Fact]
         public void GetItemRange_LastPartialPage_ReturnsCorrectRange()
         {
@@ -59,6 +68,9 @@ namespace FeatureFlags.Tests
             Assert.Equal(totalCount, total);
         }
 
+        /// <summary>
+        /// Tests that GetItemRange returns a range where start is greater than end when the page number is beyond the last page.
+        /// </summary>
         [Fact]
         public void GetItemRange_PageBeyondRange_ReturnsRangeWithStartGreaterThanEnd()
         {
@@ -77,6 +89,9 @@ namespace FeatureFlags.Tests
             Assert.Equal(totalCount, total);
         }
 
+        /// <summary>
+        /// Tests that GetItemRange throws an ArgumentException when pageSize is zero.
+        /// </summary>
         [Fact]
         public void GetItemRange_PageSizeZero_ThrowsArgumentException()
         {
@@ -90,6 +105,9 @@ namespace FeatureFlags.Tests
                 PaginationHelper.GetItemRange(pageNumber, pageSize, totalCount));
         }
 
+        /// <summary>
+        /// Tests that GetItemRange throws an ArgumentException when pageSize is negative.
+        /// </summary>
         [Fact]
         public void GetItemRange_PageSizeNegative_ThrowsArgumentException()
         {
@@ -103,6 +121,9 @@ namespace FeatureFlags.Tests
                 PaginationHelper.GetItemRange(pageNumber, pageSize, totalCount));
         }
 
+        /// <summary>
+        /// Tests that GetItemRange calculates the correct range and total count for given parameters.
+        /// </summary>
         [Fact]
         public void GetItemRange_TotalCountMath_CalculatesCorrectly()
         {
