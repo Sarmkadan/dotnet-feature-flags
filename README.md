@@ -1653,6 +1653,48 @@ catch (ArgumentException ex)
 }
 ```
 
+## ValidationExceptionTests
+
+Unit tests for the `ValidationException` and `WebhookValidationException` classes that verify constructor behavior, error code setting, error dictionary handling, and inheritance hierarchy. The `ValidationExceptionTests` class tests all public constructors and properties of these exception classes.
+
+Example usage:
+```csharp
+using FeatureFlags.Exceptions;
+using System.Collections.Generic;
+
+// Test basic message constructor
+var ex1 = new ValidationException("Validation failed");
+Console.WriteLine($"Message: {ex1.Message}"); // "Validation failed"
+Console.WriteLine($"ErrorCode: {ex1.ErrorCode}"); // "VALIDATION_ERROR"
+
+// Test constructor with errors dictionary
+var errors = new Dictionary<string, string>
+{
+    { "email", "Invalid email format" },
+    { "password", "Too short" }
+};
+var ex2 = new ValidationException("Validation failed", errors);
+Console.WriteLine($"Error count: {ex2.Errors.Count}"); // 2
+Console.WriteLine($"Same reference: {object.ReferenceEquals(errors, ex2.Errors)}"); // True
+
+// Test constructor with null errors
+var ex3 = new ValidationException("Validation failed", null);
+Console.WriteLine($"Errors is null: {ex3.Errors == null}"); // True
+
+// Test constructor with empty errors dictionary
+var ex4 = new ValidationException("Validation failed", new Dictionary<string, string>());
+Console.WriteLine($"Errors is empty: {ex4.Errors.Count == 0}"); // True
+
+// Test constructor with inner exception
+var inner = new InvalidOperationException("Inner error");
+var ex5 = new ValidationException("Validation failed", inner);
+Console.WriteLine($"Inner exception type: {ex5.InnerException.GetType().Name}"); // "InvalidOperationException"
+
+// Test WebhookValidationException
+var webhookEx = new WebhookValidationException("Webhook validation failed");
+Console.WriteLine($"Is ValidationException: {webhookEx is ValidationException}"); // True
+Console.WriteLine($"ErrorCode: {webhookEx.ErrorCode}"); // "VALIDATION_ERROR"
+```
 ## ABTestVariant
 
 Represents a variant in an A/B test for a feature flag. Tracks allocation percentage and metrics for statistical analysis. Use ABTestVariant to implement feature flag variants with controlled rollout and conversion tracking.
