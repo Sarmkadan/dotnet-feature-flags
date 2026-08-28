@@ -18724,3 +18724,79 @@
 +- chore: apply workspace updates
 +- feat: add ToString override to FeatureFlagMiddleware
 +- feat: add ToString override to FeatureFlagServiceTestExample
+
+# 2026-08-28 18:33:58.410713
++In repo /home/personal/task-factory/workdir/dotnet-feature-flags, extend README.md with a documentation section for the type `ValidationExceptionTests` (defined in `src/FeatureFlags.Tests/ValidationExceptionTests.cs`).
++
++Add a "## ValidationExceptionTests" section: 2-3 sentences on what it does and a realistic, compiling C# usage example based on its REAL public members:
++```
++public void ValidationException_MessageConstructor_SetsMessageAndErrorCode
++public void ValidationException_MessageAndErrorsConstructor_SetsMessageErrorCodeAndErrors
++public void ValidationException_MessageAndErrorsConstructor_WithNullErrors_SetsErrorsToNull
++public void ValidationException_MessageAndErrorsConstructor_WithEmptyDictionary_InitializesEmptyDictionary
++public void ValidationException_MessageAndInnerExceptionConstructor_SetsMessageErrorCodeAndInnerException
++public void ValidationException_ErrorsProperty_IsReadOnlyDictionary
++public void WebhookValidationException_MessageConstructor_SetsMessageAndErrorCode
++public void WebhookValidationException_MessageAndErrorsConstructor_SetsMessageErrorCodeAndErrors
++public void ValidationException_InheritanceHierarchy_IsCorrect
++public void ValidationException_WithNullMessage_SetsMessageToNull
++public void WebhookValidationException_WithNullMessage_SetsMessageToNull
++public void ValidationException_ErrorsProperty_SharesReference
++```
++Only edit README.md. Do not invent members that are not listed.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- chore: apply workspace updates
++- docs: add WebhookValidationTests documentation section
++- chore: apply workspace updates
++- chore: apply workspace updates
++- docs: add FeatureFlagExceptionTests documentation section
++- docs: add PaginationHelperTests documentation section
++- docs: add SearchQueryBuilderTests documentation section
++- docs: add XML documentation comments to WebhookValidationTests.cs
++- docs: add XML documentation comments to PaginationHelperTests.cs
++- chore: apply workspace updates
+
+# 2026-08-28 18:33:58.410824
++In repo /home/personal/task-factory/workdir/dotnet-feature-flags, extend README.md with a documentation section for the type `ValidationExceptionTests` (defined in `src/FeatureFlags.Tests/ValidationExceptionTests.cs`).
++
++Add a "## ValidationExceptionTests" section: 2-3 sentences on what it does and a realistic, compiling C# usage example based on its REAL public members:
++```
++public void ValidationException_MessageConstructor_SetsMessageAndErrorCode
++public void ValidationException_MessageAndErrorsConstructor_SetsMessageErrorCodeAndErrors
++public void ValidationException_MessageAndErrorsConstructor_WithNullErrors_SetsErrorsToNull
++public void ValidationException_MessageAndErrorsConstructor_WithEmptyDictionary_InitializesEmptyDictionary
++public void ValidationException_MessageAndInnerExceptionConstructor_SetsMessageErrorCodeAndInnerException
++public void ValidationException_ErrorsProperty_IsReadOnlyDictionary
++public void WebhookValidationException_MessageConstructor_SetsMessageAndErrorCode
++public void WebhookValidationException_MessageAndErrorsConstructor_SetsMessageErrorCodeAndErrors
++public void ValidationException_InheritanceHierarchy_IsCorrect
++public void ValidationException_WithNullMessage_SetsMessageToNull
++public void WebhookValidationException_WithNullMessage_SetsMessageToNull
++public void ValidationException_ErrorsProperty_SharesReference
++```
++Only edit README.md. Do not invent members that are not listed.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- chore: apply workspace updates
++- docs: add WebhookValidationTests documentation section
++- chore: apply workspace updates
++- chore: apply workspace updates
++- docs: add FeatureFlagExceptionTests documentation section
++- docs: add PaginationHelperTests documentation section
++- docs: add SearchQueryBuilderTests documentation section
++- docs: add XML documentation comments to WebhookValidationTests.cs
++- docs: add XML documentation comments to PaginationHelperTests.cs
++- chore: apply workspace updates
