@@ -4223,3 +4223,49 @@ Console.WriteLine(modifiableEx.ErrorCode); // "MODIFIED_ERROR"
 FeatureFlagException baseEx = new FeatureFlagNotFoundException("test_flag");
 // baseEx can now be used as a FeatureFlagException
 ```
+
+## ConditionOperatorEvaluationTests
+
+Unit tests for the `Condition` class that verify all comparison operators (Equals, NotEquals, Contains, StartsWith, EndsWith, GreaterThan, LessThan, In) work correctly with various data types, handle case sensitivity, null values, and edge cases. The test class ensures operators behave as expected when evaluating user context values against expected values.
+
+Example usage:
+```csharp
+using FeatureFlags.Models;
+using FeatureFlags.Enums;
+
+// Test Equals operator (case-insensitive)
+var countryCondition = new Condition
+{
+    AttributeName = "country",
+    Operator = ConditionOperator.Equals,
+    ExpectedValue = "US"
+};
+bool isUsMatch = countryCondition.Evaluate("us"); // Returns true
+
+// Test Contains operator
+var emailCondition = new Condition
+{
+    AttributeName = "email",
+    Operator = ConditionOperator.Contains,
+    ExpectedValue = "@example.com"
+};
+bool hasCorpEmail = emailCondition.Evaluate("user@example.com"); // Returns true
+
+// Test StartsWith operator (case-insensitive)
+var pathCondition = new Condition
+{
+    AttributeName = "path",
+    Operator = ConditionOperator.StartsWith,
+    ExpectedValue = "/API/V1"
+};
+bool apiPathMatch = pathCondition.Evaluate("/api/v1/users"); // Returns true
+
+// Test GreaterThan operator with numeric strings
+var ageCondition = new Condition
+{
+    AttributeName = "age",
+    Operator = ConditionOperator.GreaterThan,
+    ExpectedValue = "25"
+};
+bool isAdult = ageCondition.Evaluate("30"); // Returns true
+```
