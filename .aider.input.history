@@ -18800,3 +18800,95 @@
 +- docs: add XML documentation comments to WebhookValidationTests.cs
 +- docs: add XML documentation comments to PaginationHelperTests.cs
 +- chore: apply workspace updates
+
+# 2026-08-28 20:58:45.845446
++In repo /home/personal/task-factory/workdir/dotnet-feature-flags, extend README.md with a documentation section for the type `ConditionOperatorEvaluationTests` (defined in `tests/dotnet-feature-flags.Tests/ConditionOperatorEvaluationTests.cs`).
++
++Add a "## ConditionOperatorEvaluationTests" section: 2-3 sentences on what it does and a realistic, compiling C# usage example based on its REAL public members:
++```
++public void Evaluate_EqualsOperator_ExactMatch
++public void Evaluate_EqualsOperator_CaseInsensitive
++public void Evaluate_EqualsOperator_NoMatch
++public void Evaluate_EqualsOperator_NullContextValue
++public void Evaluate_NotEqualsOperator_Match
++public void Evaluate_NotEqualsOperator_NoMatch
++public void Evaluate_NotEqualsOperator_CaseInsensitive
++public void Evaluate_NotEqualsOperator_NullContextValue
++public void Evaluate_ContainsOperator_Match
++public void Evaluate_ContainsOperator_CaseInsensitive
++public void Evaluate_ContainsOperator_NoMatch
++public void Evaluate_ContainsOperator_NullContextValue
++public void Evaluate_StartsWithOperator_Match
++public void Evaluate_StartsWithOperator_CaseInsensitive
++public void Evaluate_StartsWithOperator_NoMatch
++public void Evaluate_StartsWithOperator_NullContextValue
++public void Evaluate_EndsWithOperator_Match
++public void Evaluate_EndsWithOperator_NoMatch
++public void Evaluate_EndsWithOperator_NullContextValue
++public void Evaluate_GreaterThanOperator_NumericStrings
++```
++Only edit README.md. Do not invent members that are not listed.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- chore: apply workspace updates
++- docs: add ValidationExceptionTests documentation section
++- chore: apply workspace updates
++- docs: add WebhookValidationTests documentation section
++- chore: apply workspace updates
++- chore: apply workspace updates
++- docs: add FeatureFlagExceptionTests documentation section
++- docs: add PaginationHelperTests documentation section
++- docs: add SearchQueryBuilderTests documentation section
++- docs: add XML documentation comments to WebhookValidationTests.cs
+
+# 2026-08-28 20:58:45.846105
++In repo /home/personal/task-factory/workdir/dotnet-feature-flags, extend README.md with a documentation section for the type `ConditionOperatorEvaluationTests` (defined in `tests/dotnet-feature-flags.Tests/ConditionOperatorEvaluationTests.cs`).
++
++Add a "## ConditionOperatorEvaluationTests" section: 2-3 sentences on what it does and a realistic, compiling C# usage example based on its REAL public members:
++```
++public void Evaluate_EqualsOperator_ExactMatch
++public void Evaluate_EqualsOperator_CaseInsensitive
++public void Evaluate_EqualsOperator_NoMatch
++public void Evaluate_EqualsOperator_NullContextValue
++public void Evaluate_NotEqualsOperator_Match
++public void Evaluate_NotEqualsOperator_NoMatch
++public void Evaluate_NotEqualsOperator_CaseInsensitive
++public void Evaluate_NotEqualsOperator_NullContextValue
++public void Evaluate_ContainsOperator_Match
++public void Evaluate_ContainsOperator_CaseInsensitive
++public void Evaluate_ContainsOperator_NoMatch
++public void Evaluate_ContainsOperator_NullContextValue
++public void Evaluate_StartsWithOperator_Match
++public void Evaluate_StartsWithOperator_CaseInsensitive
++public void Evaluate_StartsWithOperator_NoMatch
++public void Evaluate_StartsWithOperator_NullContextValue
++public void Evaluate_EndsWithOperator_Match
++public void Evaluate_EndsWithOperator_NoMatch
++public void Evaluate_EndsWithOperator_NullContextValue
++public void Evaluate_GreaterThanOperator_NumericStrings
++```
++Only edit README.md. Do not invent members that are not listed.
++
++HARD RULES (build check runs after you; violating any fails the task):
++- Do NOT touch .csproj/.sln/.slnx/Directory.Build.props or any other existing file except the one named above.
++- Do NOT write tests. Do NOT add NuGet packages. No mention of AI/assistant in code or commits.
++- The whole solution MUST still compile with `dotnet build`.
++- Commit message: conventional commits style.
++
++Recent commits in this repo (other automated tasks - avoid undoing or conflicting with this work, e.g. don't remove inheritance from a class another commit just derived from, don't re-add something already added):
++- chore: apply workspace updates
++- docs: add ValidationExceptionTests documentation section
++- chore: apply workspace updates
++- docs: add WebhookValidationTests documentation section
++- chore: apply workspace updates
++- chore: apply workspace updates
++- docs: add FeatureFlagExceptionTests documentation section
++- docs: add PaginationHelperTests documentation section
++- docs: add SearchQueryBuilderTests documentation section
++- docs: add XML documentation comments to WebhookValidationTests.cs
