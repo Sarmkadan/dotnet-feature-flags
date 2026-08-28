@@ -1580,6 +1580,32 @@ if (updateErrors.Count == 0)
 
 A generic result wrapper class that represents the outcome of an operation. The `Result<T>` class provides a consistent way to return success/failure with data or error messages, making it ideal for error handling in feature flag operations and other business logic.
 
+## SearchQueryBuilderTests
+
+Unit tests for the `FeatureFlagSearchBuilder` class that verify query construction, filtering, sorting, and pagination functionality for feature flag searches. The `SearchQueryBuilderTests` class tests all public methods of the `FeatureFlagSearchBuilder` including key/name filtering, status/rollout type filtering, date range filtering, pagination, and sorting capabilities.
+
+Example usage:
+```csharp
+using FeatureFlags.Models;
+using FeatureFlags.Enums;
+using FeatureFlags.Utilities;
+
+// Create a search builder and apply filters
+var builder = new FeatureFlagSearchBuilder()
+    .WithKeyContaining("feature")        // Filters flags with "feature" in key
+    .WithEnabledStatus(true)             // Only enabled flags
+    .WithRolloutType(RolloutType.Percentage) // Percentage rollout flags
+    .SortBy("Key")                       // Sort by key ascending
+    .WithPage(1, 10);                    // First page, 10 items per page
+
+// Execute the search against a collection of feature flags
+var results = builder.Execute(featureFlags.AsQueryable());
+
+// Get a debug summary of applied filters
+string summary = builder.GetSummary();
+// Example: "Key contains 'feature', IsEnabled = True, RolloutType = Percentage, Sort: Key ASC, Paging: Skip 0, Take 10"
+```
+
 ## ABTestVariant
 
 Represents a variant in an A/B test for a feature flag. Tracks allocation percentage and metrics for statistical analysis. Use ABTestVariant to implement feature flag variants with controlled rollout and conversion tracking.
