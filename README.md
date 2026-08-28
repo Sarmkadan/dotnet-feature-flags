@@ -1606,6 +1606,53 @@ string summary = builder.GetSummary();
 // Example: "Key contains 'feature', IsEnabled = True, RolloutType = Percentage, Sort: Key ASC, Paging: Skip 0, Take 10"
 ```
 
+## WebhookValidationTests
+
+Unit tests for the `Webhook` validation methods that verify input validation, business rule validation, and error handling. The `WebhookValidationTests` class tests all public validation methods of the `Webhook` class including null checking, URL validation, date validation, and retry count validation.
+
+Example usage:
+```csharp
+using FeatureFlags.Integration;
+
+// Create a webhook for validation
+var webhook = new Webhook
+{
+    Url = "https://example.com/webhook",
+    Description = "Test webhook",
+    CreatedBy = "tester",
+    MaxRetries = 3,
+    RetryDelaySeconds = 5,
+    CreatedAt = DateTime.UtcNow,
+    UpdatedAt = DateTime.UtcNow,
+    LastTriggeredAt = null,
+    FeatureFlagKey = "feature-123",
+    AuthorizationHeader = "Bearer token",
+    Secret = "super-secret"
+};
+
+// Validate the webhook configuration
+IReadOnlyList<string> problems = webhook.Validate();
+if (problems.Count == 0)
+{
+    Console.WriteLine("Webhook configuration is valid");
+}
+
+// Check if webhook is valid
+bool isValid = webhook.IsValid();
+Console.WriteLine($"Webhook is valid: {isValid}");
+
+// Ensure webhook is valid (throws exception if invalid)
+try
+{
+    webhook.EnsureValid();
+    Console.WriteLine("Webhook validation passed");
+}
+catch (ArgumentException ex)
+{
+    Console.WriteLine($"Webhook validation failed: {ex.Message}");
+}
+```
+
 ## ABTestVariant
 
 Represents a variant in an A/B test for a feature flag. Tracks allocation percentage and metrics for statistical analysis. Use ABTestVariant to implement feature flag variants with controlled rollout and conversion tracking.
