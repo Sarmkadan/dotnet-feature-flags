@@ -4038,3 +4038,34 @@ var flagEvaluationLogs = evaluationLogService.GetEvaluationLogsForFlag("beta_fea
 // Clear all logs when needed (e.g., for testing or cleanup)
 evaluationLogService.ClearLogs();
 ```
+
+## PaginationHelperTests
+
+Unit tests for the `PaginationHelper.GetItemRange` method that verify correct behavior for normal pages, last partial pages, pages beyond range, and validation of page size.
+
+Example usage:
+```csharp
+using FeatureFlags.Utilities;
+
+// Normal page: page 2, size 10, total 35 -> "11-20 of 35"
+string normal = PaginationHelper.GetItemRange(2, 10, 35);
+Console.WriteLine(normal); // Output: 11-20 of 35
+
+// Last partial page: page 4, size 10, total 35 -> "31-35 of 35"
+string last = PaginationHelper.GetItemRange(4, 10, 35);
+Console.WriteLine(last); // Output: 31-35 of 35
+
+// Page beyond range: page 5, size 10, total 35 -> "41-35 of 35" (start > end)
+string beyond = PaginationHelper.GetItemRange(5, 10, 35);
+Console.WriteLine(beyond); // Output: 41-35 of 35
+
+// Page size zero throws ArgumentException
+try
+{
+    PaginationHelper.GetItemRange(1, 0, 35);
+}
+catch (ArgumentException)
+{
+    Console.WriteLine("Page size zero throws ArgumentException as expected.");
+}
+```
