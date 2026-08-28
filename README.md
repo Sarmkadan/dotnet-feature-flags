@@ -4069,3 +4069,68 @@ catch (ArgumentException)
     Console.WriteLine("Page size zero throws ArgumentException as expected.");
 }
 ```
+
+## FeatureFlagExceptionTests
+
+Unit tests for the `FeatureFlagException` and its derived exception types that verify correct message and error code assignment, inner exception handling, and assignability to the base exception type.
+
+Example usage:
+```csharp
+using FeatureFlags.Exceptions;
+
+// Example 1: Creating a basic feature flag exception
+var basicEx = new FeatureFlagException("Something went wrong");
+Console.WriteLine(basicEx.Message); // "Something went wrong"
+Console.WriteLine(basicEx.ErrorCode); // null
+
+// Example 2: Creating a feature flag exception with an error code
+var codedEx = new FeatureFlagException("Invalid operation", "FEATURE_FLAG_ERROR");
+Console.WriteLine(codedEx.ErrorCode); // "FEATURE_FLAG_ERROR"
+
+// Example 3: Using a derived exception for a not found flag
+var notFoundEx = new FeatureFlagNotFoundException("new_ui");
+Console.WriteLine(notFoundEx.Message); // "Feature flag 'new_ui' not found."
+Console.WriteLine(notFoundEx.ErrorCode); // "FF_NOT_FOUND"
+
+// Example 4: Using an invalid feature flag exception
+var invalidEx = new InvalidFeatureFlagException("Percentage rollout must be between 0 and 100");
+Console.WriteLine(invalidEx.Message); // "Percentage rollout must be between 0 and 100"
+Console.WriteLine(invalidEx.ErrorCode); // "FF_INVALID_CONFIG"
+
+// Example 5: Rule evaluation exception with inner exception
+try
+{
+    // Some rule evaluation logic that throws
+    throw new InvalidOperationException("Invalid condition");
+}
+catch (Exception innerEx)
+{
+    var ruleEx = new RuleEvaluationException("Failed to evaluate rule", innerEx);
+    Console.WriteLine(ruleEx.Message); // "Failed to evaluate rule"
+    Console.WriteLine(ruleEx.ErrorCode); // "RULE_EVAL_ERROR"
+    Console.WriteLine(ruleEx.InnerException.Message); // "Invalid condition"
+}
+
+// Example 6: Feature flag data exception with inner exception
+try
+{
+    // Some data access logic that throws
+    throw new TimeoutException("Database timeout");
+}
+catch (Exception innerEx)
+{
+    var dataEx = new FeatureFlagDataException("Unable to retrieve feature flag data", innerEx);
+    Console.WriteLine(dataEx.Message); // "Unable to retrieve feature flag data"
+    Console.WriteLine(dataEx.ErrorCode); // "DATA_ERROR"
+    Console.WriteLine(dataEx.InnerException.Message); // "Database timeout"
+}
+
+// Example 7: Modifying the error code after construction
+var modifiableEx = new FeatureFlagException("Initial error");
+modifiableEx.ErrorCode = "MODIFIED_ERROR";
+Console.WriteLine(modifiableEx.ErrorCode); // "MODIFIED_ERROR"
+
+// Example 8: Assigning derived exceptions to base type
+FeatureFlagException baseEx = new FeatureFlagNotFoundException("test_flag");
+// baseEx can now be used as a FeatureFlagException
+```
