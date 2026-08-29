@@ -31,18 +31,25 @@ public sealed class FeatureFlagCache : IFeatureFlagCache, IEventSubscriber, IDis
     /// Cache key prefix to avoid collisions with other cached items.
     /// </summary>
     private const string CacheKeyPrefix = "ff:flag:";
+    private const string EventFlagCreated = "FeatureFlagCreated";
+    private const string EventFlagUpdated = "FeatureFlagUpdated";
+    private const string EventFlagDeleted = "FeatureFlagDeleted";
+    private const string EventFlagEnabled = "FeatureFlagEnabled";
+    private const string EventFlagDisabled = "FeatureFlagDisabled";
+
+    private static readonly string[] InterestedEventTypesArray =
+    {
+        EventFlagCreated,
+        EventFlagUpdated,
+        EventFlagDeleted,
+        EventFlagEnabled,
+        EventFlagDisabled
+    };
 
     /// <summary>
     /// Gets the types of events this subscriber is interested in.
     /// </summary>
-    public string[] InterestedEventTypes => new[]
-    {
-        "FeatureFlagCreated",
-        "FeatureFlagUpdated",
-        "FeatureFlagDeleted",
-        "FeatureFlagEnabled",
-        "FeatureFlagDisabled"
-    };
+    public string[] InterestedEventTypes => InterestedEventTypesArray;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FeatureFlagCache"/> class.
@@ -187,11 +194,11 @@ public sealed class FeatureFlagCache : IFeatureFlagCache, IEventSubscriber, IDis
         // Invalidate cache based on event type
         switch (@event.EventType)
         {
-            case "FeatureFlagCreated":
-            case "FeatureFlagUpdated":
-            case "FeatureFlagDeleted":
-            case "FeatureFlagEnabled":
-            case "FeatureFlagDisabled":
+            case EventFlagCreated:
+            case EventFlagUpdated:
+            case EventFlagDeleted:
+            case EventFlagEnabled:
+            case EventFlagDisabled:
                 Invalidate(@event.FeatureFlagKey);
                 Invalidate(@event.FeatureFlagId);
                 break;
