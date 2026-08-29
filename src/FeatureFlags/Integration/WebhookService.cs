@@ -4,6 +4,7 @@
 // CTO & Software Architect
 // =============================================================================
 
+using System.Diagnostics;
 using System.Net;
 using System.Text.Json;
 using FeatureFlags.Exceptions;
@@ -159,7 +160,7 @@ public sealed class WebhookService : IWebhookService {
 
         foreach (var webhook in webhooks)
         {
-            _ = Task.Run(async () => await SendWebhookAsync(webhook, payloadJson));
+            _ = Task.Run(async () => await SendWebhookAsync(webhook, payloadJson, eventType: eventType.ToString()));
         }
     }
 
@@ -177,7 +178,7 @@ public sealed class WebhookService : IWebhookService {
         }
     }
 
-    private async Task SendWebhookAsync(Webhook webhook, string payload, WebhookDelivery? existingDelivery = null)
+    private async Task SendWebhookAsync(Webhook webhook, string payload, WebhookDelivery? existingDelivery = null, string? eventType = null)
     {
         if (webhook is null)
             throw new ArgumentNullException(nameof(webhook));
@@ -191,6 +192,13 @@ public sealed class WebhookService : IWebhookService {
             Payload = payload,
             TriggeredAt = DateTime.UtcNow
         };
+        var attemptNumber = delivery.RetryCount + 1;
+        var stopwatch = Stopwatch.StartNew();
+        using var scope = _logger.BeginScope(new Dictionary<string, object?>
+        {
+            ["WebhookId"] = webhook.Id,
+            ["EventType"] = eventType ?? GetEventType(payload)
+        });
 
         try
         {
@@ -218,7 +226,10 @@ public sealed class WebhookService : IWebhookService {
                 webhook.SuccessCount++;
                 webhook.LastTriggeredAt = DateTime.UtcNow;
 
-                _logger.LogInformation("Webhook delivered successfully: {WebhookId} to {Url}", webhook.Id, webhook.Url);
+                stopwatch.Stop();
+                _logger.LogDebug(
+                    "Webhook delivery succeeded for {WebhookId} to {Url} with status {StatusCode} in {ElapsedMs} ms on attempt {AttemptNumber}",
+                    webhook.Id, webhook.Url, (int)response.StatusCode, stopwatch.ElapsedMilliseconds, attemptNumber);
             }
             else
             {
@@ -226,7 +237,10 @@ public sealed class WebhookService : IWebhookService {
                 delivery.MarkFailed(errorMsg, webhook.MaxRetries, webhook.RetryDelaySeconds);
                 webhook.FailureCount++;
 
-                _logger.LogWarning("Webhook delivery failed: {WebhookId} to {Url} - {Error}", webhook.Id, webhook.Url, errorMsg);
+                stopwatch.Stop();
+                LogFailedAttempt(
+                    new HttpRequestException(errorMsg, null, response.StatusCode), webhook, delivery,
+                    (int)response.StatusCode, stopwatch.ElapsedMilliseconds, attemptNumber);
             }
         }
         catch (HttpRequestException ex)
@@ -235,35 +249,40 @@ public sealed class WebhookService : IWebhookService {
             delivery.MarkFailed(errorMsg, webhook.MaxRetries, webhook.RetryDelaySeconds);
             webhook.FailureCount++;
 
-            _logger.LogError(ex, "Webhook HTTP request failed: {WebhookId} to {Url} - {Error}", webhook.Id, webhook.Url, errorMsg);
+            stopwatch.Stop();
+            LogFailedAttempt(ex, webhook, delivery, (int?)ex.StatusCode, stopwatch.ElapsedMilliseconds, attemptNumber);
         }
         catch (TaskCanceledException ex) when (ex.InnerException is TimeoutException)
         {
             delivery.MarkFailed("Request timeout", webhook.MaxRetries, webhook.RetryDelaySeconds);
             webhook.FailureCount++;
 
-            _logger.LogError(ex, "Webhook delivery timeout: {WebhookId} to {Url}", webhook.Id, webhook.Url);
+            stopwatch.Stop();
+            LogFailedAttempt(ex, webhook, delivery, null, stopwatch.ElapsedMilliseconds, attemptNumber);
         }
         catch (TimeoutException ex)
         {
             delivery.MarkFailed("Request timeout", webhook.MaxRetries, webhook.RetryDelaySeconds);
             webhook.FailureCount++;
 
-            _logger.LogError(ex, "Webhook delivery timeout: {WebhookId} to {Url}", webhook.Id, webhook.Url);
+            stopwatch.Stop();
+            LogFailedAttempt(ex, webhook, delivery, null, stopwatch.ElapsedMilliseconds, attemptNumber);
         }
         catch (WebhookCircuitOpenException ex)
         {
             delivery.MarkFailed(ex.Message, webhook.MaxRetries, webhook.RetryDelaySeconds);
             webhook.FailureCount++;
 
-            _logger.LogWarning("Webhook delivery skipped, circuit breaker open: {WebhookId} to {Url}", webhook.Id, webhook.Url);
+            stopwatch.Stop();
+            LogFailedAttempt(ex, webhook, delivery, null, stopwatch.ElapsedMilliseconds, attemptNumber);
         }
         catch (Exception ex) when (ex is not FeatureFlagException)
         {
             delivery.MarkFailed(ex.Message, webhook.MaxRetries, webhook.RetryDelaySeconds);
             webhook.FailureCount++;
 
-            _logger.LogError(ex, "Webhook delivery error: {WebhookId} to {Url}", webhook.Id, webhook.Url);
+            stopwatch.Stop();
+            LogFailedAttempt(ex, webhook, delivery, null, stopwatch.ElapsedMilliseconds, attemptNumber);
         }
 
         try
@@ -275,6 +294,35 @@ public sealed class WebhookService : IWebhookService {
         {
             _logger.LogError(ex, "Failed to save webhook delivery record for webhook {WebhookId}", webhook.Id);
             throw new FeatureFlagDataException("Failed to save webhook delivery record", ex);
+        }
+    }
+
+    private void LogFailedAttempt(Exception exception, Webhook webhook, WebhookDelivery delivery, int? statusCode, long elapsedMs, int attemptNumber)
+    {
+        const string message = "Webhook delivery failed for {WebhookId} to {Url} with status {StatusCode} in {ElapsedMs} ms on attempt {AttemptNumber}";
+
+        if (delivery.NextRetryAt.HasValue)
+        {
+            _logger.LogWarning(exception, message, webhook.Id, webhook.Url, statusCode, elapsedMs, attemptNumber);
+        }
+        else
+        {
+            _logger.LogError(exception, message, webhook.Id, webhook.Url, statusCode, elapsedMs, attemptNumber);
+        }
+    }
+
+    private static string GetEventType(string payload)
+    {
+        try
+        {
+            using var document = JsonDocument.Parse(payload);
+            return document.RootElement.TryGetProperty(nameof(WebhookPayload.EventType), out var eventType)
+                ? eventType.GetString() ?? "Unknown"
+                : "Unknown";
+        }
+        catch (JsonException)
+        {
+            return "Unknown";
         }
     }
 }
