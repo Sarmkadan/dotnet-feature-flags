@@ -23,7 +23,12 @@ public class PercentageRolloutService : IPercentageRolloutService {
         _logger = logger;
     }
 
-    public async Task<bool> EvaluateAsync(FeatureFlag featureFlag, UserContext userContext, CancellationToken cancellationToken = default)
+    public Task<bool> EvaluateAsync(FeatureFlag featureFlag, UserContext userContext, CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(Evaluate(featureFlag, userContext));
+    }
+
+    private bool Evaluate(FeatureFlag featureFlag, UserContext userContext)
     {
         if (featureFlag is null)
             throw new ArgumentNullException(nameof(featureFlag));
@@ -34,7 +39,7 @@ public class PercentageRolloutService : IPercentageRolloutService {
         if (featureFlag.PercentageRollout is null)
             throw new InvalidFeatureFlagException("Feature flag does not have a percentage rollout configured");
 
-        _logger.LogInformation("Starting EvaluateAsync for feature flag {FeatureFlagKey}", featureFlag.Key);
+        _logger.LogDebug("Starting EvaluateAsync for feature flag {FeatureFlagKey}", featureFlag.Key);
         try
         {
             var isEnabled = IsUserInRollout(userContext, featureFlag.Key, featureFlag.PercentageRollout.Value);
@@ -42,7 +47,7 @@ public class PercentageRolloutService : IPercentageRolloutService {
             _logger.LogDebug("Feature flag '{Key}' percentage evaluation for user {UserId}: {Result}",
                 featureFlag.Key, userContext.UserId, isEnabled);
 
-            return await Task.FromResult(isEnabled);
+            return isEnabled;
         }
         catch (Exception ex) when (ex is not FeatureFlagException)
         {
@@ -62,13 +67,13 @@ public class PercentageRolloutService : IPercentageRolloutService {
         if (rolloutPercentage < 0 || rolloutPercentage > 100)
             throw new ArgumentException("Rollout percentage must be between 0 and 100", nameof(rolloutPercentage));
 
-        _logger.LogInformation("IsUserInRollout called with UserId: {UserId}, FeatureFlagKey: {FeatureFlagKey}, RolloutPercentage: {RolloutPercentage}",
+        _logger.LogDebug("IsUserInRollout called with UserId: {UserId}, FeatureFlagKey: {FeatureFlagKey}, RolloutPercentage: {RolloutPercentage}",
             userContext.UserId, featureFlagKey, rolloutPercentage);
         var bucket = GetUserBucket(userContext, featureFlagKey);
         // Percentage rollout: buckets 0 to rolloutPercentage-1 are enabled
         // This ensures strict boundary semantics: 0% enables 0 buckets, 100% enables all 100 buckets
         var result = bucket < rolloutPercentage;
-        _logger.LogInformation("IsUserInRollout returning {Result}", result);
+        _logger.LogDebug("IsUserInRollout returning {Result}", result);
         return result;
     }
 
