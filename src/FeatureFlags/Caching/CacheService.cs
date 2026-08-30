@@ -37,8 +37,14 @@ public sealed class InMemoryCacheService : ICacheService, IDisposable {
 
     public InMemoryCacheService(ILogger<InMemoryCacheService> logger, TimeSpan? defaultTtl = null)
     {
+        ArgumentNullException.ThrowIfNull(logger);
+        if (defaultTtl <= TimeSpan.Zero)
+        {
+            throw new ArgumentOutOfRangeException(nameof(defaultTtl), "Default TTL must be greater than zero.");
+        }
+
         _cache = new ConcurrentDictionary<string, CacheEntry>();
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _logger = logger;
         _defaultTtl = defaultTtl ?? TimeSpan.FromMinutes(5);
         _cleanupCts = new CancellationTokenSource();
 
@@ -48,9 +54,9 @@ public sealed class InMemoryCacheService : ICacheService, IDisposable {
 
     public T? Get<T>(string key)
     {
-        if (string.IsNullOrEmpty(key))
+        if (string.IsNullOrWhiteSpace(key))
         {
-            return default;
+            throw new ArgumentException("Cache key cannot be null or whitespace.", nameof(key));
         }
 
         if (_cache.TryGetValue(key, out var entry))
@@ -70,6 +76,11 @@ public sealed class InMemoryCacheService : ICacheService, IDisposable {
 
     public async Task<T?> GetAsync<T>(string key)
     {
+        if (string.IsNullOrWhiteSpace(key))
+        {
+            throw new ArgumentException("Cache key cannot be null or whitespace.", nameof(key));
+        }
+
         // Simulate async operation
         await Task.Yield();
         return Get<T>(key);
@@ -77,9 +88,15 @@ public sealed class InMemoryCacheService : ICacheService, IDisposable {
 
     public void Set<T>(string key, T value, TimeSpan? ttl = null)
     {
-        if (string.IsNullOrEmpty(key))
+        if (string.IsNullOrWhiteSpace(key))
         {
-            return;
+            throw new ArgumentException("Cache key cannot be null or whitespace.", nameof(key));
+        }
+
+        ArgumentNullException.ThrowIfNull(value);
+        if (ttl <= TimeSpan.Zero)
+        {
+            throw new ArgumentOutOfRangeException(nameof(ttl), "TTL must be greater than zero.");
         }
 
         var actualTtl = ttl ?? _defaultTtl;
@@ -96,12 +113,28 @@ public sealed class InMemoryCacheService : ICacheService, IDisposable {
 
     public async Task SetAsync<T>(string key, T value, TimeSpan? ttl = null)
     {
+        if (string.IsNullOrWhiteSpace(key))
+        {
+            throw new ArgumentException("Cache key cannot be null or whitespace.", nameof(key));
+        }
+
+        ArgumentNullException.ThrowIfNull(value);
+        if (ttl <= TimeSpan.Zero)
+        {
+            throw new ArgumentOutOfRangeException(nameof(ttl), "TTL must be greater than zero.");
+        }
+
         await Task.Yield();
         Set(key, value, ttl);
     }
 
     public void Remove(string key)
     {
+        if (string.IsNullOrWhiteSpace(key))
+        {
+            throw new ArgumentException("Cache key cannot be null or whitespace.", nameof(key));
+        }
+
         if (_cache.TryRemove(key, out _))
         {
             _logger.LogDebug("Cache REMOVE: {Key}", key);
@@ -110,6 +143,11 @@ public sealed class InMemoryCacheService : ICacheService, IDisposable {
 
     public async Task RemoveAsync(string key, CancellationToken cancellationToken = default)
     {
+        if (string.IsNullOrWhiteSpace(key))
+        {
+            throw new ArgumentException("Cache key cannot be null or whitespace.", nameof(key));
+        }
+
         await Task.Yield();
         Remove(key);
     }
@@ -197,16 +235,23 @@ public sealed class DistributedCacheService : ICacheService {
 
     public DistributedCacheService(IDistributedCache distributedCache, ILogger<DistributedCacheService> logger, TimeSpan? defaultTtl = null)
     {
-        _distributedCache = distributedCache ?? throw new ArgumentNullException(nameof(distributedCache));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        ArgumentNullException.ThrowIfNull(distributedCache);
+        ArgumentNullException.ThrowIfNull(logger);
+        if (defaultTtl <= TimeSpan.Zero)
+        {
+            throw new ArgumentOutOfRangeException(nameof(defaultTtl), "Default TTL must be greater than zero.");
+        }
+
+        _distributedCache = distributedCache;
+        _logger = logger;
         _defaultTtl = defaultTtl ?? TimeSpan.FromMinutes(5);
     }
 
     public T? Get<T>(string key)
     {
-        if (string.IsNullOrEmpty(key))
+        if (string.IsNullOrWhiteSpace(key))
         {
-            return default;
+            throw new ArgumentException("Cache key cannot be null or whitespace.", nameof(key));
         }
 
         var data = _distributedCache.Get(key);
@@ -229,9 +274,9 @@ public sealed class DistributedCacheService : ICacheService {
 
     public async Task<T?> GetAsync<T>(string key)
     {
-        if (string.IsNullOrEmpty(key))
+        if (string.IsNullOrWhiteSpace(key))
         {
-            return default;
+            throw new ArgumentException("Cache key cannot be null or whitespace.", nameof(key));
         }
 
         var data = await _distributedCache.GetAsync(key);
@@ -254,9 +299,15 @@ public sealed class DistributedCacheService : ICacheService {
 
     public void Set<T>(string key, T value, TimeSpan? ttl = null)
     {
-        if (string.IsNullOrEmpty(key) || value is null)
+        if (string.IsNullOrWhiteSpace(key))
         {
-            return;
+            throw new ArgumentException("Cache key cannot be null or whitespace.", nameof(key));
+        }
+
+        ArgumentNullException.ThrowIfNull(value);
+        if (ttl <= TimeSpan.Zero)
+        {
+            throw new ArgumentOutOfRangeException(nameof(ttl), "TTL must be greater than zero.");
         }
 
         try
@@ -281,9 +332,15 @@ public sealed class DistributedCacheService : ICacheService {
 
     public async Task SetAsync<T>(string key, T value, TimeSpan? ttl = null)
     {
-        if (string.IsNullOrEmpty(key) || value is null)
+        if (string.IsNullOrWhiteSpace(key))
         {
-            return;
+            throw new ArgumentException("Cache key cannot be null or whitespace.", nameof(key));
+        }
+
+        ArgumentNullException.ThrowIfNull(value);
+        if (ttl <= TimeSpan.Zero)
+        {
+            throw new ArgumentOutOfRangeException(nameof(ttl), "TTL must be greater than zero.");
         }
 
         try
@@ -308,9 +365,9 @@ public sealed class DistributedCacheService : ICacheService {
 
     public void Remove(string key)
     {
-        if (string.IsNullOrEmpty(key))
+        if (string.IsNullOrWhiteSpace(key))
         {
-            return;
+            throw new ArgumentException("Cache key cannot be null or whitespace.", nameof(key));
         }
 
         _distributedCache.Remove(key);
@@ -319,9 +376,9 @@ public sealed class DistributedCacheService : ICacheService {
 
     public async Task RemoveAsync(string key, CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrEmpty(key))
+        if (string.IsNullOrWhiteSpace(key))
         {
-            return;
+            throw new ArgumentException("Cache key cannot be null or whitespace.", nameof(key));
         }
 
         await _distributedCache.RemoveAsync(key);
