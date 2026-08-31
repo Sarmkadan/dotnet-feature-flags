@@ -9,7 +9,6 @@ using FeatureFlags.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
-using System.Text.Json;
 
 namespace FeatureFlags.Controllers;
 
@@ -69,39 +68,46 @@ public class HealthController : ControllerBase {
             Uptime = GetUptime()
         };
 
-        var dependencies = new Dictionary<string, bool>();
-        var allHealthy = true;
+        var dependencies = new Dictionary<string, DependencyHealth>();
+        var failingDependencies = new List<string>();
 
         // Check database connectivity
+        var stopwatch = Stopwatch.StartNew();
         try
         {
-            await _dbContext.Database.CanConnectAsync();
-            dependencies["database"] = true;
+            var canConnect = await _dbContext.Database.CanConnectAsync(cancellationToken);
+            dependencies["database"] = new DependencyHealth(canConnect, stopwatch.ElapsedMilliseconds);
+            if (!canConnect)
+            {
+                failingDependencies.Add("database");
+            }
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Database health check failed");
-            dependencies["database"] = false;
-            allHealthy = false;
+            dependencies["database"] = new DependencyHealth(false, stopwatch.ElapsedMilliseconds);
+            failingDependencies.Add("database");
         }
 
         // Check feature flag service
+        stopwatch.Restart();
         try
         {
-            var flags = await _featureFlagService.GetAllFeatureFlagsAsync();
-            dependencies["feature-flag-service"] = flags is not null;
+            await _featureFlagService.GetFeatureFlagsETagAsync(cancellationToken);
+            dependencies["feature-flag-service"] = new DependencyHealth(true, stopwatch.ElapsedMilliseconds);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Feature flag service health check failed");
-            dependencies["feature-flag-service"] = false;
-            allHealthy = false;
+            dependencies["feature-flag-service"] = new DependencyHealth(false, stopwatch.ElapsedMilliseconds);
+            failingDependencies.Add("feature-flag-service");
         }
 
         healthResponse.Dependencies = dependencies;
-        healthResponse.Status = allHealthy ? "healthy" : "unhealthy";
+        healthResponse.FailingDependencies = failingDependencies;
+        healthResponse.Status = failingDependencies.Count == 0 ? "healthy" : "unhealthy";
 
-        if (allHealthy)
+        if (failingDependencies.Count == 0)
         {
             return Ok(healthResponse);
         }
@@ -125,5 +131,8 @@ public sealed class HealthResponse
     public DateTime Timestamp { get; set; }
     public string Version { get; set; } = string.Empty;
     public string Uptime { get; set; } = string.Empty;
-    public Dictionary<string, bool>? Dependencies { get; set; }
+    public Dictionary<string, DependencyHealth>? Dependencies { get; set; }
+    public IReadOnlyList<string>? FailingDependencies { get; set; }
 }
+
+public sealed record DependencyHealth(bool IsHealthy, long LatencyMilliseconds);
