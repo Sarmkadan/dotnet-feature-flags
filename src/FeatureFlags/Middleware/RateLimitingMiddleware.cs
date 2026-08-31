@@ -13,28 +13,33 @@ namespace FeatureFlags.Middleware;
 /// Rate limiting middleware that restricts the number of requests per IP address within a time window.
 /// Uses a sliding window approach to prevent API abuse and ensure fair resource usage across clients.
 /// </summary>
-public sealed class RateLimitingMiddleware
+public sealed class RateLimitingMiddleware : IDisposable
 {
     private readonly RequestDelegate _next;
     private readonly RateLimitOptions _options;
     private readonly ConcurrentDictionary<string, RequestHistory> _requestHistory;
+    private readonly CancellationTokenSource _cleanupCancellationTokenSource;
+    private readonly Task _cleanupTask;
+    private int _disposed;
 
     public RateLimitingMiddleware(RequestDelegate next, RateLimitOptions options)
     {
         _next = next ?? throw new ArgumentNullException(nameof(next));
         _options = options ?? throw new ArgumentNullException(nameof(options));
         _requestHistory = new ConcurrentDictionary<string, RequestHistory>();
+        _cleanupCancellationTokenSource = new CancellationTokenSource();
 
         // Cleanup old entries periodically
-        _ = Task.Run(async () => await CleanupExpiredEntriesAsync());
+        _cleanupTask = Task.Run(() => CleanupExpiredEntriesAsync(_cleanupCancellationTokenSource.Token));
     }
 
     public async Task InvokeAsync(HttpContext context, CancellationToken cancellationToken = default)
     {
         var clientId = GetClientIdentifier(context);
 
-        // Check rate limit
-        if (!IsRequestAllowed(clientId))
+        // Check and record the request atomically for this client
+        var rateLimitResult = TryRecordRequest(clientId);
+        if (!rateLimitResult.IsAllowed)
         {
             context.Response.StatusCode = (int)HttpStatusCode.TooManyRequests;
             context.Response.Headers["Retry-After"] = _options.WindowSeconds.ToString(System.Globalization.CultureInfo.InvariantCulture);
@@ -50,85 +55,43 @@ public sealed class RateLimitingMiddleware
             return;
         }
 
-        RecordRequest(clientId);
-
         // Add rate limit headers to response
-        var remaining = GetRemainingRequests(clientId);
-        context.Response.Headers["X-RateLimit-Limit"] = _options.MaxRequests.ToString(System.Globalization.CultureInfo.InvariantCulture);
-        context.Response.Headers["X-RateLimit-Remaining"] = remaining.ToString(System.Globalization.CultureInfo.InvariantCulture);
-        context.Response.Headers["X-RateLimit-Reset"] = GetResetTime(clientId).ToString(System.Globalization.CultureInfo.InvariantCulture);
+        context.Response.OnStarting(() =>
+        {
+            context.Response.Headers["X-RateLimit-Limit"] = _options.MaxRequests.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            context.Response.Headers["X-RateLimit-Remaining"] = rateLimitResult.RemainingRequests.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            context.Response.Headers["X-RateLimit-Reset"] = rateLimitResult.ResetTime.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            return Task.CompletedTask;
+        });
 
         await _next(context);
     }
 
-    private bool IsRequestAllowed(string clientId)
+    private RateLimitResult TryRecordRequest(string clientId)
     {
-        if (!_requestHistory.TryGetValue(clientId, out var history))
-        {
-            return true;
-        }
-
-        // Remove expired requests outside the window
-        var cutoffTime = DateTime.UtcNow.AddSeconds(-_options.WindowSeconds);
+        var history = _requestHistory.GetOrAdd(clientId, _ => new RequestHistory());
         lock (history.SyncRoot)
         {
+            var now = DateTime.UtcNow;
+            var cutoffTime = now.AddSeconds(-_options.WindowSeconds);
             while (history.Timestamps.Count > 0 && history.Timestamps.Peek() <= cutoffTime)
             {
                 history.Timestamps.Dequeue();
             }
 
-            return history.Timestamps.Count < _options.MaxRequests;
-        }
-    }
-
-    private void RecordRequest(string clientId)
-    {
-        var history = _requestHistory.GetOrAdd(clientId, _ => new RequestHistory());
-        lock (history.SyncRoot)
-        {
-            history.Timestamps.Enqueue(DateTime.UtcNow);
-            history.LastAccessTime = DateTime.UtcNow;
-        }
-    }
-
-    private int GetRemainingRequests(string clientId)
-    {
-        if (!_requestHistory.TryGetValue(clientId, out var history))
-        {
-            return _options.MaxRequests;
-        }
-
-        var cutoffTime = DateTime.UtcNow.AddSeconds(-_options.WindowSeconds);
-        int validRequests;
-        lock (history.SyncRoot)
-        {
-            validRequests = history.Timestamps.Count(t => t > cutoffTime);
-        }
-
-        return Math.Max(0, _options.MaxRequests - validRequests);
-    }
-
-    private long GetResetTime(string clientId)
-    {
-        if (!_requestHistory.TryGetValue(clientId, out var history) || history.Timestamps.Count == 0)
-        {
-            return 0;
-        }
-
-        DateTime oldestRequest;
-        lock (history.SyncRoot)
-        {
-            if (history.Timestamps.Count == 0)
+            if (history.Timestamps.Count >= _options.MaxRequests)
             {
-                return 0;
+                return new RateLimitResult(false, 0, 0);
             }
 
-            oldestRequest = history.Timestamps.Peek();
+            history.Timestamps.Enqueue(now);
+            history.LastAccessTime = now;
+
+            var remainingRequests = Math.Max(0, _options.MaxRequests - history.Timestamps.Count);
+            var resetTime = history.Timestamps.Peek().AddSeconds(_options.WindowSeconds);
+            var resetSeconds = (long)Math.Max(0, (resetTime - DateTime.UtcNow).TotalSeconds);
+            return new RateLimitResult(true, remainingRequests, resetSeconds);
         }
-
-        var resetTime = oldestRequest.AddSeconds(_options.WindowSeconds);
-
-        return (long)Math.Max(0, (resetTime - DateTime.UtcNow).TotalSeconds);
     }
 
     /// <summary>
@@ -153,31 +116,60 @@ public sealed class RateLimitingMiddleware
         return $"ip:{ip}";
     }
 
-    private async Task CleanupExpiredEntriesAsync()
+    public void Dispose()
     {
-        while (true)
+        if (Interlocked.Exchange(ref _disposed, 1) != 0)
+        {
+            return;
+        }
+
+        _cleanupCancellationTokenSource.Cancel();
+        try
+        {
+            _cleanupTask.GetAwaiter().GetResult();
+        }
+        catch (OperationCanceledException)
+        {
+            // Cancellation is expected during disposal.
+        }
+        finally
+        {
+            _cleanupCancellationTokenSource.Dispose();
+        }
+    }
+
+    private async Task CleanupExpiredEntriesAsync(CancellationToken cancellationToken)
+    {
+        while (!cancellationToken.IsCancellationRequested)
         {
             try
             {
-                await Task.Delay(TimeSpan.FromMinutes(5));
+                await Task.Delay(TimeSpan.FromMinutes(5), cancellationToken);
 
                 var cutoffTime = DateTime.UtcNow.AddMinutes(-10);
-                var expiredKeys = _requestHistory
-                    .Where(kvp => kvp.Value.LastAccessTime < cutoffTime)
-                    .Select(kvp => kvp.Key)
-                    .ToList();
-
-                foreach (var key in expiredKeys)
+                foreach (var entry in _requestHistory)
                 {
-                    _requestHistory.TryRemove(key, out _);
+                    lock (entry.Value.SyncRoot)
+                    {
+                        if (entry.Value.LastAccessTime < cutoffTime)
+                        {
+                            _requestHistory.TryRemove(entry);
+                        }
+                    }
                 }
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                break;
             }
             catch
             {
-                // Ignore cleanup errors
+                // A cleanup failure should not prevent future cleanup attempts.
             }
         }
     }
+
+    private readonly record struct RateLimitResult(bool IsAllowed, int RemainingRequests, long ResetTime);
 
     private sealed class RequestHistory
     {
