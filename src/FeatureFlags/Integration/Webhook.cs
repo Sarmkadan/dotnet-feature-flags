@@ -136,6 +136,10 @@ public sealed class WebhookPayload
     /// </summary>
     public static WebhookPayload FromFeatureFlagEvent(string eventType, Models.FeatureFlag flag, string changedBy, Dictionary<string, object?>? data = null)
     {
+        ArgumentNullException.ThrowIfNull(eventType);
+        ArgumentNullException.ThrowIfNull(flag);
+        ArgumentNullException.ThrowIfNull(changedBy);
+
         return new WebhookPayload
         {
             EventType = eventType,
@@ -179,6 +183,8 @@ public sealed class WebhookDelivery
     /// </summary>
     public void MarkFailed(string errorMessage, int maxRetries, int retryDelaySeconds)
     {
+        ArgumentNullException.ThrowIfNull(errorMessage);
+
         IsSuccess = false;
         ErrorMessage = errorMessage;
         RetryCount++;
