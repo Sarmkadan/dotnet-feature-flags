@@ -14,27 +14,60 @@ namespace FeatureFlags.Models;
 /// </summary>
 public sealed class AuditLog
 {
+    /// <summary>
+    /// Gets or sets the unique identifier of the audit log entry.
+    /// </summary>
     public int Id { get; set; }
 
+    /// <summary>
+    /// Gets or sets the identifier of the feature flag that was changed.
+    /// </summary>
     public int FeatureFlagId { get; set; }
 
+    /// <summary>
+    /// Gets or sets the type of action performed on the feature flag.
+    /// </summary>
     public AuditAction Action { get; set; }
 
+    /// <summary>
+    /// Gets or sets the identifier or name of the user who made the change.
+    /// </summary>
     public string ChangedBy { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Gets or sets the UTC timestamp when the change was made.
+    /// </summary>
     public DateTime ChangedAt { get; set; } = DateTime.UtcNow;
 
+    /// <summary>
+    /// Gets or sets the value of the feature flag before the change.
+    /// </summary>
     public string OldValue { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Gets or sets the value of the feature flag after the change.
+    /// </summary>
     public string NewValue { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Gets or sets a human-readable description of the change.
+    /// </summary>
     public string Description { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Gets or sets the IP address from which the change was made.
+    /// </summary>
     public string? IpAddress { get; set; }
 
+    /// <summary>
+    /// Gets or sets the user agent of the client that made the change.
+    /// </summary>
     public string? UserAgent { get; set; }
 
     // Navigation properties
+    /// <summary>
+    /// Gets or sets the feature flag associated with this audit log entry.
+    /// </summary>
     public FeatureFlag? FeatureFlag { get; set; }
 
     /// <summary>
