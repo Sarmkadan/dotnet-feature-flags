@@ -18,6 +18,7 @@ public class FeatureFlagException : Exception {
     /// <param name="message">The error message that explains the reason for the exception.</param>
     public FeatureFlagException(string message) : base(message)
     {
+        ArgumentNullException.ThrowIfNull(message);
     }
 
     /// <summary>
@@ -27,6 +28,8 @@ public class FeatureFlagException : Exception {
     /// <param name="errorCode">The error code associated with the exception.</param>
     public FeatureFlagException(string message, string errorCode) : base(message)
     {
+        ArgumentNullException.ThrowIfNull(message);
+        ArgumentNullException.ThrowIfNull(errorCode);
         ErrorCode = errorCode;
     }
 
@@ -38,6 +41,7 @@ public class FeatureFlagException : Exception {
     public FeatureFlagException(string message, Exception innerException)
         : base(message, innerException)
     {
+        ArgumentNullException.ThrowIfNull(message);
     }
 
     /// <summary>
@@ -49,6 +53,8 @@ public class FeatureFlagException : Exception {
     public FeatureFlagException(string message, string errorCode, Exception innerException)
         : base(message, innerException)
     {
+        ArgumentNullException.ThrowIfNull(message);
+        ArgumentNullException.ThrowIfNull(errorCode);
         ErrorCode = errorCode;
     }
 }
