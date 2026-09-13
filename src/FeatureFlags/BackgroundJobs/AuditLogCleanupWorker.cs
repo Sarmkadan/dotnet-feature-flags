@@ -24,9 +24,12 @@ public sealed class AuditLogCleanupWorker : BackgroundService
         ILogger<AuditLogCleanupWorker> logger,
         AuditLogCleanupOptions options)
     {
-        _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _options = options ?? new AuditLogCleanupOptions();
+        ArgumentNullException.ThrowIfNull(serviceProvider);
+        ArgumentNullException.ThrowIfNull(logger);
+        ArgumentNullException.ThrowIfNull(options);
+        _serviceProvider = serviceProvider;
+        _logger = logger;
+        _options = options;
         _checkInterval = TimeSpan.FromHours(_options.CleanupIntervalHours);
     }
 
