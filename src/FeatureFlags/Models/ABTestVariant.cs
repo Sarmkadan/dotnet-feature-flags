@@ -22,20 +22,50 @@ public sealed class ABTestVariant
     /// </summary>
     public int FeatureFlagId { get; set; }
 
+    private string _variantKey = string.Empty;
+
     /// <summary>
     /// Gets or sets the unique key used to identify this variant (e.g., "control", "treatment").
     /// </summary>
-    public string VariantKey { get; set; } = string.Empty;
+    public string VariantKey
+    {
+        get => _variantKey;
+        set
+        {
+            ArgumentNullException.ThrowIfNull(value);
+            _variantKey = value;
+        }
+    }
+
+    private string _displayName = string.Empty;
 
     /// <summary>
     /// Gets or sets the display name for this variant.
     /// </summary>
-    public string DisplayName { get; set; } = string.Empty;
+    public string DisplayName
+    {
+        get => _displayName;
+        set
+        {
+            ArgumentNullException.ThrowIfNull(value);
+            _displayName = value;
+        }
+    }
+
+    private string _description = string.Empty;
 
     /// <summary>
     /// Gets or sets the detailed description of this variant.
     /// </summary>
-    public string Description { get; set; } = string.Empty;
+    public string Description
+    {
+        get => _description;
+        set
+        {
+            ArgumentNullException.ThrowIfNull(value);
+            _description = value;
+        }
+    }
 
     /// <summary>
     /// Gets or sets the percentage of traffic allocated to this variant (0-100).
@@ -68,10 +98,20 @@ public sealed class ABTestVariant
     public bool IsControl { get; set; }
 
     // Navigation properties
+    private FeatureFlag? _featureFlag;
+
     /// <summary>
     /// Gets or sets the feature flag associated with this variant.
     /// </summary>
-    public FeatureFlag? FeatureFlag { get; set; }
+    public FeatureFlag? FeatureFlag
+    {
+        get => _featureFlag;
+        set
+        {
+            ArgumentNullException.ThrowIfNull(value);
+            _featureFlag = value;
+        }
+    }
 
     /// <summary>
     /// Calculates the conversion rate for this variant.
