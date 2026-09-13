@@ -26,10 +26,7 @@ public sealed class WebhookRepository : IWebhookRepository {
 
     public async Task<Webhook> CreateAsync(Webhook webhook, CancellationToken cancellationToken = default)
     {
-        if (webhook is null)
-        {
-            throw new ArgumentNullException(nameof(webhook));
-        }
+        ArgumentNullException.ThrowIfNull(webhook);
 
         webhook.CreatedAt = DateTime.UtcNow;
         webhook.UpdatedAt = DateTime.UtcNow;
@@ -80,10 +77,7 @@ public sealed class WebhookRepository : IWebhookRepository {
 
     public async Task<bool> UpdateAsync(Webhook webhook, CancellationToken cancellationToken = default)
     {
-        if (webhook is null)
-        {
-            throw new ArgumentNullException(nameof(webhook));
-        }
+        ArgumentNullException.ThrowIfNull(webhook);
 
         var existing = await _context.Webhooks.FindAsync(webhook.Id);
         if (existing is null)
@@ -152,10 +146,7 @@ public sealed class WebhookDeliveryRepository : IWebhookDeliveryRepository {
 
     public async Task<WebhookDelivery> CreateAsync(WebhookDelivery delivery, CancellationToken cancellationToken = default)
     {
-        if (delivery is null)
-        {
-            throw new ArgumentNullException(nameof(delivery));
-        }
+        ArgumentNullException.ThrowIfNull(delivery);
 
         _context.WebhookDeliveries.Add(delivery);
         await _context.SaveChangesAsync();
@@ -216,10 +207,7 @@ public sealed class WebhookDeliveryRepository : IWebhookDeliveryRepository {
 
     public async Task<bool> UpdateAsync(WebhookDelivery delivery, CancellationToken cancellationToken = default)
     {
-        if (delivery is null)
-        {
-            throw new ArgumentNullException(nameof(delivery));
-        }
+        ArgumentNullException.ThrowIfNull(delivery);
 
         var existing = await _context.WebhookDeliveries.FindAsync(delivery.Id);
         if (existing is null)
