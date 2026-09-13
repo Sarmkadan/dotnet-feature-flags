@@ -97,5 +97,5 @@ public sealed class FeatureFlag
         return $"Key:{Key}|IsEnabled:{IsEnabled}|RolloutType:{RolloutType}|Percentage:{PercentageRollout}|VariantCount:{Variants?.Count}";
     }
 
-    public override string ToString() => $"FeatureFlag {{ Id = {Id}, Key = {Key}, DisplayName = {DisplayName}, Description = {Description}, IsEnabled = {IsEnabled}, RolloutType = {RolloutType} }}";
+    public override string ToString() => $"FeatureFlag {{ Key = {Key}, IsEnabled = {IsEnabled} }}";
 }
