@@ -12,29 +12,65 @@ namespace FeatureFlags.Models;
 /// </summary>
 public sealed class ABTestVariant
 {
+    /// <summary>
+    /// Gets or sets the unique identifier for the variant.
+    /// </summary>
     public int Id { get; set; }
 
+    /// <summary>
+    /// Gets or sets the identifier of the feature flag this variant belongs to.
+    /// </summary>
     public int FeatureFlagId { get; set; }
 
+    /// <summary>
+    /// Gets or sets the unique key used to identify this variant (e.g., "control", "treatment").
+    /// </summary>
     public string VariantKey { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Gets or sets the display name for this variant.
+    /// </summary>
     public string DisplayName { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Gets or sets the detailed description of this variant.
+    /// </summary>
     public string Description { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Gets or sets the percentage of traffic allocated to this variant (0-100).
+    /// </summary>
     public int AllocationPercentage { get; set; }
 
+    /// <summary>
+    /// Gets or sets the count of users assigned to this variant.
+    /// </summary>
     public long UserCount { get; set; }
 
+    /// <summary>
+    /// Gets or sets the count of conversions recorded for this variant.
+    /// </summary>
     public long ConversionCount { get; set; }
 
+    /// <summary>
+    /// Gets or sets the date and time when this variant was created.
+    /// </summary>
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+    /// <summary>
+    /// Gets or sets the date and time when this variant was last updated.
+    /// </summary>
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
+    /// <summary>
+    /// Gets or sets a value indicating whether this variant is the control group.
+    /// </summary>
     public bool IsControl { get; set; }
 
     // Navigation properties
+    /// <summary>
+    /// Gets or sets the feature flag associated with this variant.
+    /// </summary>
     public FeatureFlag? FeatureFlag { get; set; }
 
     /// <summary>
