@@ -15,6 +15,10 @@ namespace FeatureFlags.Utilities;
 /// </summary>
 public static class HashingUtilities
 {
+    private const int DefaultBucketSize = 100;
+    private const uint FnvPrime = 16777619;
+    private const uint FnvOffsetBasis = 2166136261;
+
     /// <summary>
     /// Computes SHA-256 hash of input string and returns as hex-encoded lowercase string.
     /// Used for consistent hashing in rollout bucketing and data integrity verification.
@@ -44,7 +48,7 @@ public static class HashingUtilities
     /// Converts SHA-256 hash to a numeric value (0-99) for percentage rollout bucketing.
     /// Ensures same input always produces same output for consistent user experiences.
     /// </summary>
-    public static int ComputeHashBucket(string input, int bucketSize = 100)
+    public static int ComputeHashBucket(string input, int bucketSize = DefaultBucketSize)
     {
         if (string.IsNullOrEmpty(input))
         {
@@ -84,15 +88,12 @@ public static class HashingUtilities
     {
         ArgumentException.ThrowIfNullOrEmpty(input);
 
-        const uint fnvPrime = 16777619;
-        const uint offsetBasis = 2166136261;
-
-        uint hash = offsetBasis;
+        uint hash = FnvOffsetBasis;
 
         foreach (var byteValue in Encoding.UTF8.GetBytes(input))
         {
             hash ^= byteValue;
-            hash *= fnvPrime;
+            hash *= FnvPrime;
         }
 
         return hash;
