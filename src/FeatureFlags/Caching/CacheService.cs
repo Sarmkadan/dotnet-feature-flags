@@ -30,6 +30,18 @@ public interface ICacheService
 /// Suitable for single-server deployments. For distributed scenarios, use DistributedCacheService.
 /// </summary>
 public sealed class InMemoryCacheService : ICacheService, IDisposable {
+    private const string DefaultTtlValidationMessage = "Default TTL must be greater than zero.";
+    private const string CacheKeyValidationMessage = "Cache key cannot be null or whitespace.";
+    private const string TtlValidationMessage = "TTL must be greater than zero.";
+    private const string CacheSetLogMessage = "Cache SET: {Key} (TTL: {Ttl}ms)";
+    private const string CacheRemoveLogMessage = "Cache REMOVE: {Key}";
+    private const string CacheClearedLogMessage = "Cache cleared ({Count} entries removed)";
+    private const string CacheCleanupLogMessage = "Cache cleanup: removed {Count} expired entries";
+    private const string CacheCleanupStoppingLogMessage = "Cache cleanup task stopping due to cancellation";
+    private const string CacheCleanupErrorLogMessage = "Cache cleanup error";
+    private const int DefaultTtlMinutes = 5;
+    private const int CleanupIntervalMinutes = 1;
+
     private readonly ConcurrentDictionary<string, CacheEntry> _cache;
     private readonly ILogger<InMemoryCacheService> _logger;
     private readonly TimeSpan _defaultTtl;
@@ -40,12 +52,12 @@ public sealed class InMemoryCacheService : ICacheService, IDisposable {
         ArgumentNullException.ThrowIfNull(logger);
         if (defaultTtl <= TimeSpan.Zero)
         {
-            throw new ArgumentOutOfRangeException(nameof(defaultTtl), "Default TTL must be greater than zero.");
+            throw new ArgumentOutOfRangeException(nameof(defaultTtl), DefaultTtlValidationMessage);
         }
 
         _cache = new ConcurrentDictionary<string, CacheEntry>();
         _logger = logger;
-        _defaultTtl = defaultTtl ?? TimeSpan.FromMinutes(5);
+        _defaultTtl = defaultTtl ?? TimeSpan.FromMinutes(DefaultTtlMinutes);
         _cleanupCts = new CancellationTokenSource();
 
         // Start cleanup task with cancellation support
@@ -56,7 +68,7 @@ public sealed class InMemoryCacheService : ICacheService, IDisposable {
     {
         if (string.IsNullOrWhiteSpace(key))
         {
-            throw new ArgumentException("Cache key cannot be null or whitespace.", nameof(key));
+            throw new ArgumentException(CacheKeyValidationMessage, nameof(key));
         }
 
         if (_cache.TryGetValue(key, out var entry))
@@ -78,7 +90,7 @@ public sealed class InMemoryCacheService : ICacheService, IDisposable {
     {
         if (string.IsNullOrWhiteSpace(key))
         {
-            throw new ArgumentException("Cache key cannot be null or whitespace.", nameof(key));
+            throw new ArgumentException(CacheKeyValidationMessage, nameof(key));
         }
 
         // Simulate async operation
@@ -90,13 +102,13 @@ public sealed class InMemoryCacheService : ICacheService, IDisposable {
     {
         if (string.IsNullOrWhiteSpace(key))
         {
-            throw new ArgumentException("Cache key cannot be null or whitespace.", nameof(key));
+            throw new ArgumentException(CacheKeyValidationMessage, nameof(key));
         }
 
         ArgumentNullException.ThrowIfNull(value);
         if (ttl <= TimeSpan.Zero)
         {
-            throw new ArgumentOutOfRangeException(nameof(ttl), "TTL must be greater than zero.");
+            throw new ArgumentOutOfRangeException(nameof(ttl), TtlValidationMessage);
         }
 
         var actualTtl = ttl ?? _defaultTtl;
@@ -108,20 +120,20 @@ public sealed class InMemoryCacheService : ICacheService, IDisposable {
         };
 
         _cache.AddOrUpdate(key, entry, (_, _) => entry);
-        _logger.LogDebug("Cache SET: {Key} (TTL: {Ttl}ms)", key, actualTtl.TotalMilliseconds);
+        _logger.LogDebug(CacheSetLogMessage, key, actualTtl.TotalMilliseconds);
     }
 
     public async Task SetAsync<T>(string key, T value, TimeSpan? ttl = null)
     {
         if (string.IsNullOrWhiteSpace(key))
         {
-            throw new ArgumentException("Cache key cannot be null or whitespace.", nameof(key));
+            throw new ArgumentException(CacheKeyValidationMessage, nameof(key));
         }
 
         ArgumentNullException.ThrowIfNull(value);
         if (ttl <= TimeSpan.Zero)
         {
-            throw new ArgumentOutOfRangeException(nameof(ttl), "TTL must be greater than zero.");
+            throw new ArgumentOutOfRangeException(nameof(ttl), TtlValidationMessage);
         }
 
         await Task.Yield();
@@ -132,12 +144,12 @@ public sealed class InMemoryCacheService : ICacheService, IDisposable {
     {
         if (string.IsNullOrWhiteSpace(key))
         {
-            throw new ArgumentException("Cache key cannot be null or whitespace.", nameof(key));
+            throw new ArgumentException(CacheKeyValidationMessage, nameof(key));
         }
 
         if (_cache.TryRemove(key, out _))
         {
-            _logger.LogDebug("Cache REMOVE: {Key}", key);
+            _logger.LogDebug(CacheRemoveLogMessage, key);
         }
     }
 
@@ -145,7 +157,7 @@ public sealed class InMemoryCacheService : ICacheService, IDisposable {
     {
         if (string.IsNullOrWhiteSpace(key))
         {
-            throw new ArgumentException("Cache key cannot be null or whitespace.", nameof(key));
+            throw new ArgumentException(CacheKeyValidationMessage, nameof(key));
         }
 
         await Task.Yield();
@@ -156,7 +168,7 @@ public sealed class InMemoryCacheService : ICacheService, IDisposable {
     {
         var count = _cache.Count;
         _cache.Clear();
-        _logger.LogInformation("Cache cleared ({Count} entries removed)", count);
+        _logger.LogInformation(CacheClearedLogMessage, count);
     }
 
     public async Task ClearAsync(CancellationToken cancellationToken = default)
@@ -174,7 +186,7 @@ public sealed class InMemoryCacheService : ICacheService, IDisposable {
         {
             try
             {
-                await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+                await Task.Delay(TimeSpan.FromMinutes(CleanupIntervalMinutes), stoppingToken);
 
                 var expiredKeys = _cache
                     .Where(kvp => kvp.Value.ExpiresAt.HasValue && kvp.Value.ExpiresAt < DateTime.UtcNow)
@@ -192,17 +204,17 @@ public sealed class InMemoryCacheService : ICacheService, IDisposable {
 
                 if (removedCount > 0)
                 {
-                    _logger.LogDebug("Cache cleanup: removed {Count} expired entries", removedCount);
+                    _logger.LogDebug(CacheCleanupLogMessage, removedCount);
                 }
             }
             catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
             {
-                _logger.LogInformation("Cache cleanup task stopping due to cancellation");
+                _logger.LogInformation(CacheCleanupStoppingLogMessage);
                 break;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Cache cleanup error");
+                _logger.LogError(ex, CacheCleanupErrorLogMessage);
             }
         }
     }
@@ -229,6 +241,16 @@ public sealed class InMemoryCacheService : ICacheService, IDisposable {
 /// Typically backed by Redis or similar distributed cache.
 /// </summary>
 public sealed class DistributedCacheService : ICacheService {
+    private const string DefaultTtlValidationMessage = "Default TTL must be greater than zero.";
+    private const string CacheKeyValidationMessage = "Cache key cannot be null or whitespace.";
+    private const string TtlValidationMessage = "TTL must be greater than zero.";
+    private const string CacheDeserializationErrorLogMessage = "Cache deserialization error for key: {Key}";
+    private const string CacheSetLogMessage = "Distributed cache SET: {Key} (TTL: {Ttl}ms)";
+    private const string CacheSetErrorLogMessage = "Distributed cache set error for key: {Key}";
+    private const string CacheRemoveLogMessage = "Distributed cache REMOVE: {Key}";
+    private const string CacheClearWarningLogMessage = "Distributed cache clear requested (full clear may not be supported by all providers)";
+    private const int DefaultTtlMinutes = 5;
+
     private readonly IDistributedCache _distributedCache;
     private readonly ILogger<DistributedCacheService> _logger;
     private readonly TimeSpan _defaultTtl;
@@ -239,19 +261,19 @@ public sealed class DistributedCacheService : ICacheService {
         ArgumentNullException.ThrowIfNull(logger);
         if (defaultTtl <= TimeSpan.Zero)
         {
-            throw new ArgumentOutOfRangeException(nameof(defaultTtl), "Default TTL must be greater than zero.");
+            throw new ArgumentOutOfRangeException(nameof(defaultTtl), DefaultTtlValidationMessage);
         }
 
         _distributedCache = distributedCache;
         _logger = logger;
-        _defaultTtl = defaultTtl ?? TimeSpan.FromMinutes(5);
+        _defaultTtl = defaultTtl ?? TimeSpan.FromMinutes(DefaultTtlMinutes);
     }
 
     public T? Get<T>(string key)
     {
         if (string.IsNullOrWhiteSpace(key))
         {
-            throw new ArgumentException("Cache key cannot be null or whitespace.", nameof(key));
+            throw new ArgumentException(CacheKeyValidationMessage, nameof(key));
         }
 
         var data = _distributedCache.Get(key);
@@ -267,7 +289,7 @@ public sealed class DistributedCacheService : ICacheService {
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Cache deserialization error for key: {Key}", key);
+            _logger.LogError(ex, CacheDeserializationErrorLogMessage, key);
             return default;
         }
     }
@@ -276,7 +298,7 @@ public sealed class DistributedCacheService : ICacheService {
     {
         if (string.IsNullOrWhiteSpace(key))
         {
-            throw new ArgumentException("Cache key cannot be null or whitespace.", nameof(key));
+            throw new ArgumentException(CacheKeyValidationMessage, nameof(key));
         }
 
         var data = await _distributedCache.GetAsync(key);
@@ -292,7 +314,7 @@ public sealed class DistributedCacheService : ICacheService {
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Cache deserialization error for key: {Key}", key);
+            _logger.LogError(ex, CacheDeserializationErrorLogMessage, key);
             return default;
         }
     }
@@ -301,13 +323,13 @@ public sealed class DistributedCacheService : ICacheService {
     {
         if (string.IsNullOrWhiteSpace(key))
         {
-            throw new ArgumentException("Cache key cannot be null or whitespace.", nameof(key));
+            throw new ArgumentException(CacheKeyValidationMessage, nameof(key));
         }
 
         ArgumentNullException.ThrowIfNull(value);
         if (ttl <= TimeSpan.Zero)
         {
-            throw new ArgumentOutOfRangeException(nameof(ttl), "TTL must be greater than zero.");
+            throw new ArgumentOutOfRangeException(nameof(ttl), TtlValidationMessage);
         }
 
         try
@@ -322,11 +344,11 @@ public sealed class DistributedCacheService : ICacheService {
             };
 
             _distributedCache.Set(key, data, options);
-            _logger.LogDebug("Distributed cache SET: {Key} (TTL: {Ttl}ms)", key, actualTtl.TotalMilliseconds);
+            _logger.LogDebug(CacheSetLogMessage, key, actualTtl.TotalMilliseconds);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Distributed cache set error for key: {Key}", key);
+            _logger.LogError(ex, CacheSetErrorLogMessage, key);
         }
     }
 
@@ -334,13 +356,13 @@ public sealed class DistributedCacheService : ICacheService {
     {
         if (string.IsNullOrWhiteSpace(key))
         {
-            throw new ArgumentException("Cache key cannot be null or whitespace.", nameof(key));
+            throw new ArgumentException(CacheKeyValidationMessage, nameof(key));
         }
 
         ArgumentNullException.ThrowIfNull(value);
         if (ttl <= TimeSpan.Zero)
         {
-            throw new ArgumentOutOfRangeException(nameof(ttl), "TTL must be greater than zero.");
+            throw new ArgumentOutOfRangeException(nameof(ttl), TtlValidationMessage);
         }
 
         try
@@ -355,11 +377,11 @@ public sealed class DistributedCacheService : ICacheService {
             };
 
             await _distributedCache.SetAsync(key, data, options);
-            _logger.LogDebug("Distributed cache SET: {Key} (TTL: {Ttl}ms)", key, actualTtl.TotalMilliseconds);
+            _logger.LogDebug(CacheSetLogMessage, key, actualTtl.TotalMilliseconds);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Distributed cache set error for key: {Key}", key);
+            _logger.LogError(ex, CacheSetErrorLogMessage, key);
         }
     }
 
@@ -367,27 +389,27 @@ public sealed class DistributedCacheService : ICacheService {
     {
         if (string.IsNullOrWhiteSpace(key))
         {
-            throw new ArgumentException("Cache key cannot be null or whitespace.", nameof(key));
+            throw new ArgumentException(CacheKeyValidationMessage, nameof(key));
         }
 
         _distributedCache.Remove(key);
-        _logger.LogDebug("Distributed cache REMOVE: {Key}", key);
+        _logger.LogDebug(CacheRemoveLogMessage, key);
     }
 
     public async Task RemoveAsync(string key, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(key))
         {
-            throw new ArgumentException("Cache key cannot be null or whitespace.", nameof(key));
+            throw new ArgumentException(CacheKeyValidationMessage, nameof(key));
         }
 
         await _distributedCache.RemoveAsync(key);
-        _logger.LogDebug("Distributed cache REMOVE: {Key}", key);
+        _logger.LogDebug(CacheRemoveLogMessage, key);
     }
 
     public void Clear()
     {
-        _logger.LogWarning("Distributed cache clear requested (full clear may not be supported by all providers)");
+        _logger.LogWarning(CacheClearWarningLogMessage);
     }
 
     public async Task ClearAsync(CancellationToken cancellationToken = default)
