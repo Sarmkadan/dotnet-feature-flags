@@ -15,6 +15,9 @@ namespace FeatureFlags.Middleware;
 /// </summary>
 public sealed class RateLimitingMiddleware : IDisposable
 {
+    private const int CleanupIntervalMinutes = 5;
+    private const int ExpiredEntryAgeMinutes = 10;
+
     private readonly RequestDelegate _next;
     private readonly RateLimitOptions _options;
     private readonly ConcurrentDictionary<string, RequestHistory> _requestHistory;
@@ -144,9 +147,9 @@ public sealed class RateLimitingMiddleware : IDisposable
         {
             try
             {
-                await Task.Delay(TimeSpan.FromMinutes(5), cancellationToken);
+                await Task.Delay(TimeSpan.FromMinutes(CleanupIntervalMinutes), cancellationToken);
 
-                var cutoffTime = DateTime.UtcNow.AddMinutes(-10);
+                var cutoffTime = DateTime.UtcNow.AddMinutes(-ExpiredEntryAgeMinutes);
                 foreach (var entry in _requestHistory)
                 {
                     lock (entry.Value.SyncRoot)
@@ -184,6 +187,9 @@ public sealed class RateLimitingMiddleware : IDisposable
 /// </summary>
 public sealed class RateLimitOptions
 {
-    public int MaxRequests { get; set; } = 100;
-    public int WindowSeconds { get; set; } = 60;
+    private const int DefaultMaxRequests = 100;
+    private const int DefaultWindowSeconds = 60;
+
+    public int MaxRequests { get; set; } = DefaultMaxRequests;
+    public int WindowSeconds { get; set; } = DefaultWindowSeconds;
 }
