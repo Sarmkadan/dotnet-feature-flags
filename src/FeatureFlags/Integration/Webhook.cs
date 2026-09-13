@@ -12,14 +12,29 @@ namespace FeatureFlags.Integration;
 /// </summary>
 public sealed class Webhook
 {
+    /// <summary>
+    /// Gets or sets the unique identifier of the webhook.
+    /// </summary>
     public int Id { get; set; }
 
+    /// <summary>
+    /// Gets or sets the endpoint URL that receives webhook events.
+    /// </summary>
     public string Url { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Gets or sets a human-readable description of the webhook.
+    /// </summary>
     public string Description { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the webhook is active and can be triggered.
+    /// </summary>
     public bool IsActive { get; set; } = true;
 
+    /// <summary>
+    /// Gets or sets the event types that trigger this webhook.
+    /// </summary>
     public WebhookEventType EventTypes { get; set; } = WebhookEventType.All;
 
     /// <summary>
@@ -28,18 +43,36 @@ public sealed class Webhook
     /// </summary>
     public string? FeatureFlagKey { get; set; }
 
+    /// <summary>
+    /// Gets or sets the date and time when the webhook was created.
+    /// </summary>
     public DateTime CreatedAt { get; set; }
 
+    /// <summary>
+    /// Gets or sets the date and time when the webhook was last updated.
+    /// </summary>
     public DateTime UpdatedAt { get; set; }
 
+    /// <summary>
+    /// Gets or sets the identifier of the user who created the webhook.
+    /// </summary>
     public string CreatedBy { get; set; } = string.Empty;
 
     // Retry policy
+    /// <summary>
+    /// Gets or sets the maximum number of delivery attempts before giving up.
+    /// </summary>
     public int MaxRetries { get; set; } = 3;
 
+    /// <summary>
+    /// Gets or sets the base delay in seconds between retry attempts.
+    /// </summary>
     public int RetryDelaySeconds { get; set; } = 60;
 
     // Authentication
+    /// <summary>
+    /// Gets or sets the optional authorization header value sent with webhook requests.
+    /// </summary>
     public string? AuthorizationHeader { get; set; }
 
     /// <summary>
@@ -48,10 +81,19 @@ public sealed class Webhook
     public string? Secret { get; set; }
 
     // Tracking
+    /// <summary>
+    /// Gets or sets the number of successful webhook deliveries.
+    /// </summary>
     public int SuccessCount { get; set; }
 
+    /// <summary>
+    /// Gets or sets the number of failed webhook deliveries.
+    /// </summary>
     public int FailureCount { get; set; }
 
+    /// <summary>
+    /// Gets or sets the date and time when the webhook was last triggered.
+    /// </summary>
     public DateTime? LastTriggeredAt { get; set; }
 
     /// <summary>
@@ -77,6 +119,9 @@ public sealed class Webhook
         return true;
     }
 
+    /// <summary>
+    /// Returns a string representation of the webhook.
+    /// </summary>
     public override string ToString() => $"Webhook {{ Id = {Id}, Url = {Url}, Description = {Description}, IsActive = {IsActive}, EventTypes = {EventTypes}, FeatureFlagKey = {FeatureFlagKey} }}";
 
     /// <summary>
