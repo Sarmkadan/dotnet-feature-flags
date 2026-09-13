@@ -5,6 +5,7 @@
 // CTO & Software Architect
 // =============================================================================
 
+using FeatureFlags.Constants;
 using FeatureFlags.Exceptions;
 using FeatureFlags.Models;
 using Microsoft.Extensions.Logging;
@@ -64,7 +65,8 @@ public class PercentageRolloutService : IPercentageRolloutService {
         if (string.IsNullOrWhiteSpace(featureFlagKey))
             throw new ArgumentException("Feature flag key cannot be empty", nameof(featureFlagKey));
 
-        if (rolloutPercentage < 0 || rolloutPercentage > 100)
+        if (rolloutPercentage < FeatureFlagConstants.MinPercentage ||
+            rolloutPercentage > FeatureFlagConstants.MaxPercentage)
             throw new ArgumentException("Rollout percentage must be between 0 and 100", nameof(rolloutPercentage));
 
         _logger.LogDebug("IsUserInRollout called with UserId: {UserId}, FeatureFlagKey: {FeatureFlagKey}, RolloutPercentage: {RolloutPercentage}",
