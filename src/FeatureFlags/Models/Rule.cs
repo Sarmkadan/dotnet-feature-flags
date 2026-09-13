@@ -12,27 +12,60 @@ namespace FeatureFlags.Models;
 /// </summary>
 public sealed class Rule
 {
+    /// <summary>
+    /// Gets or sets the unique identifier of the rule.
+    /// </summary>
     public int Id { get; set; }
 
+    /// <summary>
+    /// Gets or sets the identifier of the feature flag this rule belongs to.
+    /// </summary>
     public int FeatureFlagId { get; set; }
 
+    /// <summary>
+    /// Gets or sets the name of the rule.
+    /// </summary>
     public string Name { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Gets or sets a description of the rule.
+    /// </summary>
     public string Description { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Gets or sets the priority of the rule; rules with higher priority are evaluated first.
+    /// </summary>
     public int Priority { get; set; }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the rule is currently active.
+    /// </summary>
     public bool IsActive { get; set; } = true;
 
+    /// <summary>
+    /// Gets or sets the logic used to combine conditions; either "AND" or "OR".
+    /// </summary>
     public string ConditionLogic { get; set; } = "AND"; // AND or OR
 
+    /// <summary>
+    /// Gets or sets the date and time when the rule was created.
+    /// </summary>
     public DateTime CreatedAt { get; set; }
 
+    /// <summary>
+    /// Gets or sets the date and time when the rule was last updated.
+    /// </summary>
     public DateTime UpdatedAt { get; set; }
 
     // Navigation properties
+    /// <summary>
+    /// Gets or sets the feature flag this rule belongs to.
+    /// </summary>
     public FeatureFlag? FeatureFlag { get; set; }
 
+    /// <summary>
+    /// Gets or sets the collection of conditions that make up this rule.
+    /// </summary>
     public ICollection<Condition> Conditions { get; set; } = new List<Condition>();
 
     /// <summary>
