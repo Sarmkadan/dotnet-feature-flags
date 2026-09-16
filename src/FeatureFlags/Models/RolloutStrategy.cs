@@ -14,29 +14,65 @@ namespace FeatureFlags.Models;
 /// </summary>
 public sealed class RolloutStrategy
 {
+    /// <summary>
+    /// Gets or sets the unique identifier of the rollout strategy.
+    /// </summary>
     public int Id { get; set; }
 
+    /// <summary>
+    /// Gets or sets the identifier of the feature flag this strategy applies to.
+    /// </summary>
     public int FeatureFlagId { get; set; }
 
+    /// <summary>
+    /// Gets or sets the type of rollout strategy (percentage, rule-based, or A/B test).
+    /// </summary>
     public RolloutType Type { get; set; }
 
+    /// <summary>
+    /// Gets or sets the starting percentage of users included in the rollout.
+    /// </summary>
     public int? StartPercentage { get; set; }
 
+    /// <summary>
+    /// Gets or sets the ending percentage of users included in the rollout.
+    /// </summary>
     public int? EndPercentage { get; set; }
 
+    /// <summary>
+    /// Gets or sets the date when the rollout begins.
+    /// </summary>
     public DateTime? StartDate { get; set; }
 
+    /// <summary>
+    /// Gets or sets the date when the rollout ends.
+    /// </summary>
     public DateTime? EndDate { get; set; }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the rollout increases gradually over time.
+    /// </summary>
     public bool IsGradual { get; set; }
 
+    /// <summary>
+    /// Gets or sets the daily percentage increment used for gradual rollouts.
+    /// </summary>
     public int? DailyIncrement { get; set; }
 
+    /// <summary>
+    /// Gets or sets the date and time when the rollout strategy was created.
+    /// </summary>
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+    /// <summary>
+    /// Gets or sets the date and time when the rollout strategy was last updated.
+    /// </summary>
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
     // Navigation properties
+    /// <summary>
+    /// Gets or sets the feature flag associated with this rollout strategy.
+    /// </summary>
     public FeatureFlag? FeatureFlag { get; set; }
 
     /// <summary>
