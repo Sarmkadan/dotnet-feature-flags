@@ -26,11 +26,24 @@ public class FeatureFlagRepository : IFeatureFlagRepository {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
+    /// <summary>
+    /// Retrieves a feature flag by its unique identifier.
+    /// </summary>
+    /// <param name="id">The unique identifier of the feature flag.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>The matching feature flag, or <c>null</c> if not found.</returns>
     public async Task<FeatureFlag?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
         return await _context.FeatureFlags.FirstOrDefaultAsync(f => f.Id == id);
     }
 
+    /// <summary>
+    /// Retrieves a feature flag by its unique key.
+    /// </summary>
+    /// <param name="key">The unique key of the feature flag.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>The matching feature flag, or <c>null</c> if not found.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="key"/> is null or whitespace.</exception>
     public async Task<FeatureFlag?> GetByKeyAsync(string key, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(key))
@@ -39,16 +52,30 @@ public class FeatureFlagRepository : IFeatureFlagRepository {
         return await _context.FeatureFlags.FirstOrDefaultAsync(f => f.Key == key);
     }
 
+    /// <summary>
+    /// Retrieves all feature flags.
+    /// </summary>
+    /// <returns>A collection of all feature flags.</returns>
     public async Task<IEnumerable<FeatureFlag>> GetAllAsync()
     {
         return await _context.FeatureFlags.ToListAsync();
     }
 
+    /// <summary>
+    /// Retrieves all enabled feature flags.
+    /// </summary>
+    /// <returns>A collection of enabled feature flags.</returns>
     public async Task<IEnumerable<FeatureFlag>> GetEnabledAsync()
     {
         return await _context.FeatureFlags.Where(f => f.IsEnabled).ToListAsync();
     }
 
+    /// <summary>
+    /// Retrieves feature flags created by a specific user.
+    /// </summary>
+    /// <param name="createdBy">The creator identifier to filter by.</param>
+    /// <returns>A collection of feature flags created by the specified user, ordered by creation date descending.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="createdBy"/> is null or whitespace.</exception>
     public async Task<IEnumerable<FeatureFlag>> GetByCreatorAsync(string createdBy)
     {
         if (string.IsNullOrWhiteSpace(createdBy))
@@ -60,6 +87,11 @@ public class FeatureFlagRepository : IFeatureFlagRepository {
             .ToListAsync();
     }
 
+    /// <summary>
+    /// Retrieves feature flags modified since the specified date and time.
+    /// </summary>
+    /// <param name="dateTime">The cutoff date and time.</param>
+    /// <returns>A collection of feature flags updated at or after the cutoff, ordered by update date descending.</returns>
     public async Task<IEnumerable<FeatureFlag>> GetModifiedSinceAsync(DateTime dateTime)
     {
         return await _context.FeatureFlags
@@ -68,11 +100,23 @@ public class FeatureFlagRepository : IFeatureFlagRepository {
             .ToListAsync();
     }
 
+    /// <summary>
+    /// Retrieves the total number of feature flags.
+    /// </summary>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>The total count of feature flags.</returns>
     public async Task<int> GetTotalCountAsync(CancellationToken cancellationToken = default)
     {
         return await _context.FeatureFlags.CountAsync();
     }
 
+    /// <summary>
+    /// Retrieves a page of feature flags ordered by creation date descending.
+    /// </summary>
+    /// <param name="pageNumber">The one-based page number.</param>
+    /// <param name="pageSize">The number of items per page.</param>
+    /// <returns>A collection of feature flags for the requested page.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="pageNumber"/> or <paramref name="pageSize"/> is less than 1.</exception>
     public async Task<IEnumerable<FeatureFlag>> GetPagedAsync(int pageNumber, int pageSize)
     {
         if (pageNumber < 1)
@@ -87,6 +131,11 @@ public class FeatureFlagRepository : IFeatureFlagRepository {
             .ToListAsync();
     }
 
+    /// <summary>
+    /// Searches feature flags by key, display name, or description.
+    /// </summary>
+    /// <param name="searchTerm">The search term. If null or whitespace, all feature flags are returned.</param>
+    /// <returns>A collection of feature flags matching the search term.</returns>
     public async Task<IEnumerable<FeatureFlag>> SearchAsync(string searchTerm)
     {
         if (string.IsNullOrWhiteSpace(searchTerm))
@@ -100,6 +149,12 @@ public class FeatureFlagRepository : IFeatureFlagRepository {
             .ToListAsync();
     }
 
+    /// <summary>
+    /// Retrieves a feature flag including its rules and their conditions.
+    /// </summary>
+    /// <param name="featureFlagId">The unique identifier of the feature flag.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>The feature flag with rules and conditions eagerly loaded, or <c>null</c> if not found.</returns>
     public async Task<FeatureFlag?> GetWithRulesAsync(int featureFlagId, CancellationToken cancellationToken = default)
     {
         return await _context.FeatureFlags
@@ -108,6 +163,12 @@ public class FeatureFlagRepository : IFeatureFlagRepository {
             .FirstOrDefaultAsync(f => f.Id == featureFlagId);
     }
 
+    /// <summary>
+    /// Retrieves a feature flag including its variants.
+    /// </summary>
+    /// <param name="featureFlagId">The unique identifier of the feature flag.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>The feature flag with variants eagerly loaded, or <c>null</c> if not found.</returns>
     public async Task<FeatureFlag?> GetWithVariantsAsync(int featureFlagId, CancellationToken cancellationToken = default)
     {
         return await _context.FeatureFlags
@@ -115,6 +176,12 @@ public class FeatureFlagRepository : IFeatureFlagRepository {
             .FirstOrDefaultAsync(f => f.Id == featureFlagId);
     }
 
+    /// <summary>
+    /// Retrieves a feature flag including its audit logs.
+    /// </summary>
+    /// <param name="featureFlagId">The unique identifier of the feature flag.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>The feature flag with audit logs eagerly loaded, or <c>null</c> if not found.</returns>
     public async Task<FeatureFlag?> GetWithAuditLogsAsync(int featureFlagId, CancellationToken cancellationToken = default)
     {
         return await _context.FeatureFlags
@@ -122,6 +189,12 @@ public class FeatureFlagRepository : IFeatureFlagRepository {
             .FirstOrDefaultAsync(f => f.Id == featureFlagId);
     }
 
+    /// <summary>
+    /// Determines whether a feature flag with the specified key exists.
+    /// </summary>
+    /// <param name="key">The key to check for.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns><c>true</c> if a feature flag with the key exists; otherwise, <c>false</c>.</returns>
     public async Task<bool> KeyExistsAsync(string key, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(key))
@@ -130,6 +203,12 @@ public class FeatureFlagRepository : IFeatureFlagRepository {
         return await _context.FeatureFlags.AnyAsync(f => f.Key == key);
     }
 
+    /// <summary>
+    /// Retrieves the most recently modified feature flags.
+    /// </summary>
+    /// <param name="count">The maximum number of feature flags to return.</param>
+    /// <returns>A collection of the most recently modified feature flags.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="count"/> is less than 1.</exception>
     public async Task<IEnumerable<FeatureFlag>> GetRecentlyModifiedAsync(int count)
     {
         if (count < 1)
@@ -141,6 +220,12 @@ public class FeatureFlagRepository : IFeatureFlagRepository {
             .ToListAsync();
     }
 
+    /// <summary>
+    /// Retrieves feature flags that have not been updated within the specified time span.
+    /// </summary>
+    /// <param name="olderThan">The minimum age of a feature flag to be considered stale.</param>
+    /// <returns>A collection of stale feature flags ordered by update date ascending.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="olderThan"/> is negative.</exception>
     public async Task<IEnumerable<FeatureFlag>> GetStaleFlagsAsync(TimeSpan olderThan)
     {
         if (olderThan < TimeSpan.Zero)
@@ -153,6 +238,15 @@ public class FeatureFlagRepository : IFeatureFlagRepository {
             .ToListAsync();
     }
 
+    /// <summary>
+    /// Adds a new feature flag to the repository.
+    /// </summary>
+    /// <param name="entity">The feature flag to add.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>The added feature flag.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="entity"/> is null.</exception>
+    /// <exception cref="InvalidFeatureFlagException">Thrown when the feature flag configuration is invalid.</exception>
+    /// <exception cref="FeatureFlagDataException">Thrown when a database error occurs.</exception>
     public async Task<FeatureFlag> AddAsync(FeatureFlag entity, CancellationToken cancellationToken = default)
     {
         if (entity is null)
@@ -179,6 +273,15 @@ public class FeatureFlagRepository : IFeatureFlagRepository {
         }
     }
 
+    /// <summary>
+    /// Updates an existing feature flag in the repository.
+    /// </summary>
+    /// <param name="entity">The feature flag to update.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="entity"/> is null.</exception>
+    /// <exception cref="InvalidFeatureFlagException">Thrown when the feature flag configuration is invalid.</exception>
+    /// <exception cref="FeatureFlagNotFoundException">Thrown when the feature flag does not exist.</exception>
+    /// <exception cref="FeatureFlagDataException">Thrown when a database error occurs.</exception>
     public async Task UpdateAsync(FeatureFlag entity, CancellationToken cancellationToken = default)
     {
         if (entity is null)
@@ -208,6 +311,13 @@ public class FeatureFlagRepository : IFeatureFlagRepository {
         }
     }
 
+    /// <summary>
+    /// Deletes a feature flag by its unique identifier.
+    /// </summary>
+    /// <param name="id">The unique identifier of the feature flag to delete.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <exception cref="FeatureFlagNotFoundException">Thrown when the feature flag does not exist.</exception>
+    /// <exception cref="FeatureFlagDataException">Thrown when a database error occurs.</exception>
     public async Task DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
         try
@@ -231,11 +341,21 @@ public class FeatureFlagRepository : IFeatureFlagRepository {
         }
     }
 
+    /// <summary>
+    /// Determines whether a feature flag with the specified identifier exists.
+    /// </summary>
+    /// <param name="id">The unique identifier to check for.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns><c>true</c> if a feature flag with the identifier exists; otherwise, <c>false</c>.</returns>
     public async Task<bool> ExistsAsync(int id, CancellationToken cancellationToken = default)
     {
         return await _context.FeatureFlags.AnyAsync(f => f.Id == id);
     }
 
+    /// <summary>
+    /// Persists all pending changes to the underlying database.
+    /// </summary>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
     public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         await _context.SaveChangesAsync();
