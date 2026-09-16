@@ -19,12 +19,25 @@ public class RuleEvaluationService : IRuleEvaluationService {
     private readonly IFeatureFlagRepository _repository;
     private readonly ILogger<RuleEvaluationService> _logger;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RuleEvaluationService"/> class.
+    /// </summary>
+    /// <param name="repository">The feature flag repository.</param>
+    /// <param name="logger">The logger.</param>
     public RuleEvaluationService(IFeatureFlagRepository repository, ILogger<RuleEvaluationService> logger)
     {
         _repository = repository;
         _logger = logger;
     }
 
+    /// <summary>
+    /// Evaluates the targeting rules for the given feature flag against the user context.
+    /// Returns <c>true</c> if any applicable rule matches, otherwise <c>false</c>.
+    /// </summary>
+    /// <param name="featureFlag">The feature flag to evaluate.</param>
+    /// <param name="userContext">The user context to evaluate against.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns><c>true</c> if the feature flag is enabled for the user; otherwise, <c>false</c>.</returns>
     public async Task<bool> EvaluateAsync(FeatureFlag featureFlag, UserContext userContext, CancellationToken cancellationToken = default)
     {
         if (featureFlag is null)
@@ -79,6 +92,13 @@ public class RuleEvaluationService : IRuleEvaluationService {
         }
     }
 
+    /// <summary>
+    /// Evaluates a single rule against the user context using its configured condition logic.
+    /// </summary>
+    /// <param name="rule">The rule to evaluate.</param>
+    /// <param name="userContext">The user context to evaluate against.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns><c>true</c> if the rule matches the user context; otherwise, <c>false</c>.</returns>
     public async Task<bool> EvaluateRuleAsync(Rule rule, UserContext userContext, CancellationToken cancellationToken = default)
     {
         if (rule is null)
@@ -115,6 +135,12 @@ public class RuleEvaluationService : IRuleEvaluationService {
             : results.Any(r => r);
     }
 
+    /// <summary>
+    /// Evaluates a single condition against the user context.
+    /// </summary>
+    /// <param name="condition">The condition to evaluate.</param>
+    /// <param name="userContext">The user context to evaluate against.</param>
+    /// <returns><c>true</c> if the condition matches the user context; otherwise, <c>false</c>.</returns>
     public bool EvaluateCondition(Condition condition, UserContext userContext)
     {
         if (condition is null)
@@ -138,6 +164,12 @@ public class RuleEvaluationService : IRuleEvaluationService {
         }
     }
 
+    /// <summary>
+    /// Gets the active rules of the feature flag that match the user context.
+    /// </summary>
+    /// <param name="featureFlag">The feature flag whose rules are evaluated.</param>
+    /// <param name="userContext">The user context to evaluate against.</param>
+    /// <returns>The collection of applicable rules.</returns>
     public async Task<IEnumerable<Rule>> GetApplicableRulesAsync(FeatureFlag featureFlag, UserContext userContext)
     {
         if (featureFlag is null)
