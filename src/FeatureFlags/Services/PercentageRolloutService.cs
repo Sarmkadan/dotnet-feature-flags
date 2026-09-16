@@ -19,11 +19,22 @@ namespace FeatureFlags.Services;
 public class PercentageRolloutService : IPercentageRolloutService {
     private readonly ILogger<PercentageRolloutService> _logger;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PercentageRolloutService"/> class.
+    /// </summary>
+    /// <param name="logger">The logger used to record diagnostic information.</param>
     public PercentageRolloutService(ILogger<PercentageRolloutService> logger)
     {
         _logger = logger;
     }
 
+    /// <summary>
+    /// Evaluates whether the given feature flag is enabled for the specified user context.
+    /// </summary>
+    /// <param name="featureFlag">The feature flag to evaluate.</param>
+    /// <param name="userContext">The user context to evaluate against.</param>
+    /// <param name="cancellationToken">A token to observe while waiting for the operation to complete.</param>
+    /// <returns>A task that resolves to <c>true</c> if the feature flag is enabled for the user; otherwise, <c>false</c>.</returns>
     public Task<bool> EvaluateAsync(FeatureFlag featureFlag, UserContext userContext, CancellationToken cancellationToken = default)
     {
         return Task.FromResult(Evaluate(featureFlag, userContext));
@@ -57,6 +68,13 @@ public class PercentageRolloutService : IPercentageRolloutService {
         }
     }
 
+    /// <summary>
+    /// Determines whether the specified user falls within the rollout percentage for the given feature flag.
+    /// </summary>
+    /// <param name="userContext">The user context to evaluate.</param>
+    /// <param name="featureFlagKey">The key of the feature flag being evaluated.</param>
+    /// <param name="rolloutPercentage">The percentage of users to include in the rollout (0 to 100).</param>
+    /// <returns><c>true</c> if the user is within the rollout; otherwise, <c>false</c>.</returns>
     public bool IsUserInRollout(UserContext userContext, string featureFlagKey, int rolloutPercentage)
     {
         if (userContext is null)
@@ -79,6 +97,12 @@ public class PercentageRolloutService : IPercentageRolloutService {
         return result;
     }
 
+    /// <summary>
+    /// Computes the consistent hash bucket for the given user and feature flag key.
+    /// </summary>
+    /// <param name="userContext">The user context to bucket.</param>
+    /// <param name="featureFlagKey">The key of the feature flag being evaluated.</param>
+    /// <returns>An integer bucket in the range 0 to 99 used to determine rollout membership.</returns>
     public int GetUserBucket(UserContext userContext, string featureFlagKey)
     {
         if (userContext is null)
