@@ -33,7 +33,10 @@ public class GradualRolloutSchedulerService : IGradualRolloutSchedulerService {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Processes all active gradual rollout strategies, advancing their percentage allocations
+    /// according to their configured schedules. Returns the number of feature flags updated.
+    /// </summary>
     public async Task<int> ProcessScheduledRolloutsAsync(CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Processing scheduled gradual rollouts");
@@ -68,7 +71,11 @@ public class GradualRolloutSchedulerService : IGradualRolloutSchedulerService {
         return updatedCount;
     }
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Gets the current rollout schedule status for the specified feature flag, including the
+    /// current and target percentages, daily increment, schedule dates, and estimated days remaining.
+    /// Returns null if no gradual rollout strategy exists for the flag.
+    /// </summary>
     public async Task<RolloutScheduleStatus?> GetScheduleStatusAsync(int featureFlagId, CancellationToken cancellationToken = default)
     {
         if (featureFlagId <= 0)
@@ -106,7 +113,11 @@ public class GradualRolloutSchedulerService : IGradualRolloutSchedulerService {
         };
     }
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Manually advances the gradual rollout for the specified feature flag by applying its
+    /// current computed percentage. Returns true if the rollout was advanced, or false if no
+    /// strategy was found or the percentage was unchanged.
+    /// </summary>
     public async Task<bool> AdvanceRolloutAsync(int featureFlagId, string advancedBy, CancellationToken cancellationToken = default)
     {
         if (featureFlagId <= 0)
