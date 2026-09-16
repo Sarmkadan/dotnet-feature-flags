@@ -20,12 +20,23 @@ public sealed class RequestLoggingMiddleware
     private readonly RequestDelegate _next;
     private readonly ILogger<RequestLoggingMiddleware> _logger;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RequestLoggingMiddleware"/> class.
+    /// </summary>
+    /// <param name="next">The next middleware delegate in the request pipeline.</param>
+    /// <param name="logger">The logger used to record request and response details.</param>
     public RequestLoggingMiddleware(RequestDelegate next, ILogger<RequestLoggingMiddleware> logger)
     {
         _next = next ?? throw new ArgumentNullException(nameof(next));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
+    /// <summary>
+    /// Invokes the middleware to log the incoming request and the resulting response.
+    /// </summary>
+    /// <param name="context">The HTTP context for the current request.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task InvokeAsync(HttpContext context, CancellationToken cancellationToken = default)
     {
         var stopwatch = Stopwatch.StartNew();
