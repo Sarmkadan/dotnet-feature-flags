@@ -25,6 +25,11 @@ public sealed class RateLimitingMiddleware : IDisposable
     private readonly Task _cleanupTask;
     private int _disposed;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RateLimitingMiddleware"/> class.
+    /// </summary>
+    /// <param name="next">The next middleware in the request pipeline.</param>
+    /// <param name="options">The rate limiting options.</param>
     public RateLimitingMiddleware(RequestDelegate next, RateLimitOptions options)
     {
         _next = next ?? throw new ArgumentNullException(nameof(next));
@@ -36,6 +41,11 @@ public sealed class RateLimitingMiddleware : IDisposable
         _cleanupTask = Task.Run(() => CleanupExpiredEntriesAsync(_cleanupCancellationTokenSource.Token));
     }
 
+    /// <summary>
+    /// Invokes the rate limiting logic for the current request.
+    /// </summary>
+    /// <param name="context">The current HTTP context.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     public async Task InvokeAsync(HttpContext context, CancellationToken cancellationToken = default)
     {
         var clientId = GetClientIdentifier(context);
@@ -119,6 +129,9 @@ public sealed class RateLimitingMiddleware : IDisposable
         return $"ip:{ip}";
     }
 
+    /// <summary>
+    /// Releases the resources used by the middleware, cancelling the background cleanup task.
+    /// </summary>
     public void Dispose()
     {
         if (Interlocked.Exchange(ref _disposed, 1) != 0)
