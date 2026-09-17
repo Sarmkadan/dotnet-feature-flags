@@ -38,6 +38,9 @@ public sealed class WebhookService : IWebhookService {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<WebhookService> _logger;
 
+    // Converts zero-based retry count to one-based attempt number for logging/display
+    private const int FirstAttemptNumber = 1;
+
     public WebhookService(
         IWebhookRepository webhookRepository,
         IWebhookDeliveryRepository deliveryRepository,
@@ -250,7 +253,7 @@ public sealed class WebhookService : IWebhookService {
             Payload = payload,
             TriggeredAt = DateTime.UtcNow
         };
-        var attemptNumber = delivery.RetryCount + 1;
+        var attemptNumber = delivery.RetryCount + FirstAttemptNumber;
         var stopwatch = Stopwatch.StartNew();
         using var scope = _logger.BeginScope(new Dictionary<string, object?>
         {
