@@ -67,8 +67,7 @@ public class FeatureFlagService : IFeatureFlagService {
         if (string.IsNullOrWhiteSpace(featureFlagKey))
             throw new ArgumentException("Feature flag key cannot be empty", nameof(featureFlagKey));
 
-        if (userContext is null)
-            throw new ArgumentNullException(nameof(userContext));
+        ArgumentNullException.ThrowIfNull(userContext);
 
         if (!userContext.IsValid())
             throw new InvalidOperationException("User context is invalid");
@@ -464,8 +463,7 @@ public class FeatureFlagService : IFeatureFlagService {
         bool includeReasons = false,
         CancellationToken cancellationToken = default)
     {
-        if (userContext is null)
-            throw new ArgumentNullException(nameof(userContext));
+        ArgumentNullException.ThrowIfNull(userContext);
 
         if (!userContext.IsValid())
             throw new InvalidOperationException("User context is invalid");
