@@ -3655,6 +3655,58 @@ bool canConvert = ConversionUtilities.CanConvertTo<int>("123");
 Console.WriteLine($"Can convert: {canConvert}"); // true
 ```
 
+## Repository Layer
+
+The repository layer provides data access abstraction for feature flags and audit logs. It implements the repository pattern to encapsulate data access logic and provide a clean interface for the service layer.
+
+### IFeatureFlagRepository
+
+Defines the contract for feature flag data access operations. Extends the generic `IRepository<FeatureFlag>` interface with feature flag-specific queries.
+
+Key methods:
+- `GetByKeyAsync(string key)` - Retrieves a feature flag by its unique key
+- `GetEnabledAsync()` - Gets all enabled feature flags
+- `GetByCreatorAsync(string createdBy)` - Gets flags created by a specific user
+- `GetModifiedSinceAsync(DateTime dateTime)` - Gets flags modified since a specific date
+- `GetTotalCountAsync()` - Gets the total count of feature flags
+- `GetPagedAsync(int pageNumber, int pageSize)` - Gets a paginated collection
+- `SearchAsync(string searchTerm)` - Searches for feature flags
+- `GetWithRulesAsync(int featureFlagId)` - Gets a flag with its rules
+- `GetWithVariantsAsync(int featureFlagId)` - Gets a flag with its A/B test variants
+- `GetWithAuditLogsAsync(int featureFlagId)` - Gets a flag with its audit logs
+- `KeyExistsAsync(string key)` - Checks if a flag key exists
+- `GetRecentlyModifiedAsync(int count)` - Gets recently modified flags
+- `GetStaleFlagsAsync(TimeSpan olderThan)` - Gets stale flags
+
+Implementation: `FeatureFlagRepository` in `src/FeatureFlags/Repository/FeatureFlagRepository.cs`
+
+### IAuditLogRepository
+
+Defines the contract for audit log data access operations. Extends the generic `IRepository<AuditLog>` interface with queries for retrieving audit trails and change history.
+
+Key methods:
+- `GetByFeatureFlagIdAsync(int featureFlagId)` - Retrieves audit log entries associated with the specified feature flag
+- `GetByChangedByAsync(string changedBy)` - Retrieves all audit log entries created by the specified user
+- `GetSinceAsync(DateTime dateTime)` - Retrieves all audit log entries created on or after the specified date and time
+- `GetPagedAsync(int pageNumber, int pageSize)` - Retrieves a page of audit log entries
+- `GetByFeatureFlagIdPagedAsync(int featureFlagId, int pageNumber, int pageSize)` - Retrieves a page of audit log entries for the specified feature flag
+- `GetCountByFeatureFlagIdAsync(int featureFlagId)` - Retrieves the total number of audit log entries for the specified feature flag
+- `GetLastChangeAsync(int featureFlagId)` - Retrieves the most recent change for the specified feature flag
+- `GetChangesInRangeAsync(DateTime startDate, DateTime endDate)` - Retrieves all audit log entries within the specified date range
+- `GetByActionAsync(string action)` - Retrieves all audit log entries matching the specified action
+- `CleanupOldLogsAsync(int retentionDays)` - Removes audit log entries older than the specified retention period
+
+Implementation: `AuditLogRepository` in `src/FeatureFlags/Repository/AuditLogRepository.cs`
+
+### Extension Methods
+
+Additional repository functionality is provided through extension methods:
+- `AuditLogRepositoryExtensions` - Adds convenient query capabilities and helper methods for common audit log operations
+- `FeatureFlagRepositoryExtensions` - Adds helper methods for feature flag operations
+- `WebhookRepositoryExtensions` - Adds extension methods for webhook repository
+
+These extensions simplify working with audit trails by offering specialized queries for filtering by action type, user, date range, and feature flag, as well as convenience methods for retrieving the most recent changes and calculating totals.
+
 ## PaginationHelper
 
 Helper class for pagination calculations and metadata generation. Provides utilities for offset/limit calculations, page information, and in-memory pagination of collections. Ideal for implementing consistent pagination across API endpoints.
