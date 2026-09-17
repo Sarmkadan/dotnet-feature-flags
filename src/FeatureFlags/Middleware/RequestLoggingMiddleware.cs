@@ -27,8 +27,11 @@ public sealed class RequestLoggingMiddleware
     /// <param name="logger">The logger used to record request and response details.</param>
     public RequestLoggingMiddleware(RequestDelegate next, ILogger<RequestLoggingMiddleware> logger)
     {
-        _next = next ?? throw new ArgumentNullException(nameof(next));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        ArgumentNullException.ThrowIfNull(next);
+        ArgumentNullException.ThrowIfNull(logger);
+
+        _next = next;
+        _logger = logger;
     }
 
     /// <summary>
