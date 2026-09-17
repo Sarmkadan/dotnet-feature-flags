@@ -22,6 +22,12 @@ public sealed class GradualRolloutSchedulerWorker : BackgroundService
     private readonly GradualRolloutSchedulerOptions _options;
     private readonly TimeSpan _checkInterval;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="GradualRolloutSchedulerWorker"/> class.
+    /// </summary>
+    /// <param name="serviceProvider">The service provider used to resolve scoped services.</param>
+    /// <param name="logger">The logger used to record worker activity.</param>
+    /// <param name="options">The scheduler options controlling interval and enabled state.</param>
     public GradualRolloutSchedulerWorker(
         IServiceProvider serviceProvider,
         ILogger<GradualRolloutSchedulerWorker> logger,
@@ -35,6 +41,9 @@ public sealed class GradualRolloutSchedulerWorker : BackgroundService
         _checkInterval = TimeSpan.FromMinutes(_options.CheckIntervalMinutes);
     }
 
+    /// <summary>
+    /// Returns a string representation of the worker's current configuration.
+    /// </summary>
     public override string ToString() => $"GradualRolloutSchedulerWorker {{ CheckIntervalMinutes = {_options.CheckIntervalMinutes}, Enabled = {_options.Enabled} }}";
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
