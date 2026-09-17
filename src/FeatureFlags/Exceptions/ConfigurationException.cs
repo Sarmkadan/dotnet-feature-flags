@@ -18,6 +18,7 @@ public class ConfigurationException : FeatureFlagException
     /// <param name="message">The message that describes the error.</param>
     public ConfigurationException(string message) : base(message, "CONFIG_ERROR")
     {
+        ArgumentNullException.ThrowIfNull(message);
     }
 
     /// <summary>
@@ -27,6 +28,8 @@ public class ConfigurationException : FeatureFlagException
     /// <param name="innerException">The exception that is the cause of the current exception.</param>
     public ConfigurationException(string message, Exception innerException) : base(message, "CONFIG_ERROR", innerException)
     {
+        ArgumentNullException.ThrowIfNull(message);
+        ArgumentNullException.ThrowIfNull(innerException);
     }
 }
 
@@ -37,10 +40,13 @@ public class DatabaseConfigurationException : ConfigurationException
 {
     public DatabaseConfigurationException(string message) : base(message)
     {
+        ArgumentNullException.ThrowIfNull(message);
     }
 
     public DatabaseConfigurationException(string message, Exception innerException) : base(message, innerException)
     {
+        ArgumentNullException.ThrowIfNull(message);
+        ArgumentNullException.ThrowIfNull(innerException);
     }
 }
 
@@ -51,9 +57,12 @@ public class HttpClientConfigurationException : ConfigurationException
 {
     public HttpClientConfigurationException(string message) : base(message)
     {
+        ArgumentNullException.ThrowIfNull(message);
     }
 
     public HttpClientConfigurationException(string message, Exception innerException) : base(message, innerException)
     {
+        ArgumentNullException.ThrowIfNull(message);
+        ArgumentNullException.ThrowIfNull(innerException);
     }
 }
