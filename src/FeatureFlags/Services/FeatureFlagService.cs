@@ -53,6 +53,13 @@ public class FeatureFlagService : IFeatureFlagService {
         _logger = logger;
     }
 
+    /// <summary>
+    /// Determines whether the specified feature flag is enabled for the given user context.
+    /// </summary>
+    /// <param name="featureFlagKey">The key of the feature flag to evaluate.</param>
+    /// <param name="userContext">The user context used for evaluation.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns><c>true</c> if the feature flag is enabled for the user; otherwise, <c>false</c>.</returns>
     public async Task<bool> IsEnabledAsync(string featureFlagKey, UserContext userContext, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(featureFlagKey))
@@ -127,6 +134,12 @@ public class FeatureFlagService : IFeatureFlagService {
         }
     }
 
+    /// <summary>
+    /// Gets a feature flag by its unique identifier.
+    /// </summary>
+    /// <param name="id">The unique identifier of the feature flag.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>The feature flag if found; otherwise, <c>null</c>.</returns>
     public async Task<FeatureFlag?> GetFeatureFlagAsync(int id, CancellationToken cancellationToken = default)
     {
         if (id <= 0)
@@ -135,6 +148,12 @@ public class FeatureFlagService : IFeatureFlagService {
         return await _featureFlagRepository.GetByIdAsync(id);
     }
 
+    /// <summary>
+    /// Gets a feature flag by its key.
+    /// </summary>
+    /// <param name="key">The key of the feature flag.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>The feature flag if found; otherwise, <c>null</c>.</returns>
     public async Task<FeatureFlag?> GetFeatureFlagByKeyAsync(string key, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(key))
@@ -149,6 +168,10 @@ public class FeatureFlagService : IFeatureFlagService {
         return await _featureFlagRepository.GetByKeyAsync(key);
     }
 
+    /// <summary>
+    /// Gets all feature flags.
+    /// </summary>
+    /// <returns>A collection of all feature flags.</returns>
     public async Task<IEnumerable<FeatureFlag>> GetAllFeatureFlagsAsync()
     {
         // Use cache if available, otherwise fall back to repository
@@ -168,6 +191,10 @@ public class FeatureFlagService : IFeatureFlagService {
         return await _featureFlagRepository.GetAllAsync();
     }
 
+    /// <summary>
+    /// Gets all enabled feature flags.
+    /// </summary>
+    /// <returns>A collection of enabled feature flags.</returns>
     public async Task<IEnumerable<FeatureFlag>> GetEnabledFeatureFlagsAsync()
     {
         // Use cache if available, otherwise fall back to repository
@@ -187,6 +214,13 @@ public class FeatureFlagService : IFeatureFlagService {
         return await _featureFlagRepository.GetEnabledAsync();
     }
 
+    /// <summary>
+    /// Creates a new feature flag.
+    /// </summary>
+    /// <param name="featureFlag">The feature flag to create.</param>
+    /// <param name="createdBy">The identifier of the user creating the feature flag.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>The created feature flag.</returns>
     public async Task<FeatureFlag> CreateFeatureFlagAsync(FeatureFlag featureFlag, string createdBy, CancellationToken cancellationToken = default)
     {
         if (featureFlag is null)
@@ -211,6 +245,12 @@ public class FeatureFlagService : IFeatureFlagService {
         return created;
     }
 
+    /// <summary>
+    /// Updates an existing feature flag.
+    /// </summary>
+    /// <param name="featureFlag">The feature flag with updated values.</param>
+    /// <param name="updatedBy">The identifier of the user updating the feature flag.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
     public async Task UpdateFeatureFlagAsync(FeatureFlag featureFlag, string updatedBy, CancellationToken cancellationToken = default)
     {
         if (featureFlag is null)
@@ -234,6 +274,12 @@ public class FeatureFlagService : IFeatureFlagService {
         _logger.LogInformation("Feature flag '{Key}' updated by {User}", featureFlag.Key, updatedBy);
     }
 
+    /// <summary>
+    /// Deletes a feature flag by its unique identifier.
+    /// </summary>
+    /// <param name="id">The unique identifier of the feature flag to delete.</param>
+    /// <param name="deletedBy">The identifier of the user deleting the feature flag.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
     public async Task DeleteFeatureFlagAsync(int id, string deletedBy, CancellationToken cancellationToken = default)
     {
         if (id <= 0)
@@ -254,6 +300,12 @@ public class FeatureFlagService : IFeatureFlagService {
         _logger.LogInformation("Feature flag with id {Id} deleted by {User}", id, deletedBy);
     }
 
+    /// <summary>
+    /// Enables a feature flag by its unique identifier.
+    /// </summary>
+    /// <param name="id">The unique identifier of the feature flag to enable.</param>
+    /// <param name="modifiedBy">The identifier of the user enabling the feature flag.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
     public async Task EnableFeatureFlagAsync(int id, string modifiedBy, CancellationToken cancellationToken = default)
     {
         if (id <= 0)
@@ -276,6 +328,12 @@ public class FeatureFlagService : IFeatureFlagService {
         _logger.LogInformation("Feature flag '{Key}' enabled by {User}", featureFlag.Key, modifiedBy);
     }
 
+    /// <summary>
+    /// Disables a feature flag by its unique identifier.
+    /// </summary>
+    /// <param name="id">The unique identifier of the feature flag to disable.</param>
+    /// <param name="modifiedBy">The identifier of the user disabling the feature flag.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
     public async Task DisableFeatureFlagAsync(int id, string modifiedBy, CancellationToken cancellationToken = default)
     {
         if (id <= 0)
@@ -298,6 +356,13 @@ public class FeatureFlagService : IFeatureFlagService {
         _logger.LogInformation("Feature flag '{Key}' disabled by {User}", featureFlag.Key, modifiedBy);
     }
 
+    /// <summary>
+    /// Gets the variant assigned to the user for the specified feature flag.
+    /// </summary>
+    /// <param name="featureFlagKey">The key of the feature flag.</param>
+    /// <param name="userContext">The user context used for variant assignment.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>The selected variant key, or <c>null</c> if no variant is available.</returns>
     public async Task<string?> GetVariantAsync(string featureFlagKey, UserContext userContext, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(featureFlagKey))
@@ -344,6 +409,11 @@ public class FeatureFlagService : IFeatureFlagService {
 
     }
 
+    /// <summary>
+    /// Searches feature flags by the given search term.
+    /// </summary>
+    /// <param name="searchTerm">The term to search for.</param>
+    /// <returns>A collection of matching feature flags.</returns>
     public async Task<IEnumerable<FeatureFlag>> SearchFeatureFlagsAsync(string searchTerm)
     {
         if (string.IsNullOrWhiteSpace(searchTerm))
@@ -352,6 +422,11 @@ public class FeatureFlagService : IFeatureFlagService {
         return await _featureFlagRepository.SearchAsync(searchTerm);
     }
 
+    /// <summary>
+    /// Gets feature flags that have not been updated within the specified time span.
+    /// </summary>
+    /// <param name="olderThan">The time span used to determine staleness.</param>
+    /// <returns>A collection of stale feature flags.</returns>
     public async Task<IEnumerable<FeatureFlag>> GetStaleFlagsAsync(TimeSpan olderThan)
     {
         if (olderThan < TimeSpan.Zero)
@@ -360,6 +435,14 @@ public class FeatureFlagService : IFeatureFlagService {
         return await _featureFlagRepository.GetStaleFlagsAsync(olderThan);
     }
 
+    /// <summary>
+    /// Evaluates all enabled feature flags for the given user context.
+    /// </summary>
+    /// <param name="userContext">The user context used for evaluation.</param>
+    /// <param name="includeVariants">Whether to include variant assignments in the results.</param>
+    /// <param name="includeReasons">Whether to include evaluation reasons in the results.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A dictionary mapping feature flag keys to their bulk evaluation results.</returns>
     public async Task<Dictionary<string, BulkEvaluationResult>> EvaluateAllAsync(
         UserContext userContext,
         bool includeVariants = false,
@@ -473,6 +556,11 @@ public class FeatureFlagService : IFeatureFlagService {
         }
     }
 
+    /// <summary>
+    /// Computes an ETag representing the current feature flag configuration.
+    /// </summary>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A hash string representing the feature flag configuration.</returns>
     public async Task<string> GetFeatureFlagsETagAsync(CancellationToken cancellationToken = default)
     {
         try
