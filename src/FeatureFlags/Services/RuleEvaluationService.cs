@@ -26,6 +26,9 @@ public class RuleEvaluationService : IRuleEvaluationService {
     /// <param name="logger">The logger.</param>
     public RuleEvaluationService(IFeatureFlagRepository repository, ILogger<RuleEvaluationService> logger)
     {
+        ArgumentNullException.ThrowIfNull(repository);
+        ArgumentNullException.ThrowIfNull(logger);
+
         _repository = repository;
         _logger = logger;
     }
@@ -40,11 +43,8 @@ public class RuleEvaluationService : IRuleEvaluationService {
     /// <returns><c>true</c> if the feature flag is enabled for the user; otherwise, <c>false</c>.</returns>
     public async Task<bool> EvaluateAsync(FeatureFlag featureFlag, UserContext userContext, CancellationToken cancellationToken = default)
     {
-        if (featureFlag is null)
-            throw new ArgumentNullException(nameof(featureFlag));
-
-        if (userContext is null)
-            throw new ArgumentNullException(nameof(userContext));
+        ArgumentNullException.ThrowIfNull(featureFlag);
+        ArgumentNullException.ThrowIfNull(userContext);
 
         _logger.LogInformation("Starting evaluation for feature flag {FeatureFlagId}", featureFlag.Id);
         try
@@ -101,11 +101,8 @@ public class RuleEvaluationService : IRuleEvaluationService {
     /// <returns><c>true</c> if the rule matches the user context; otherwise, <c>false</c>.</returns>
     public async Task<bool> EvaluateRuleAsync(Rule rule, UserContext userContext, CancellationToken cancellationToken = default)
     {
-        if (rule is null)
-            throw new ArgumentNullException(nameof(rule));
-
-        if (userContext is null)
-            throw new ArgumentNullException(nameof(userContext));
+        ArgumentNullException.ThrowIfNull(rule);
+        ArgumentNullException.ThrowIfNull(userContext);
 
         _logger.LogInformation("Starting rule evaluation for {RuleId}", rule.Id);
         if (!rule.IsActive)
@@ -143,11 +140,8 @@ public class RuleEvaluationService : IRuleEvaluationService {
     /// <returns><c>true</c> if the condition matches the user context; otherwise, <c>false</c>.</returns>
     public bool EvaluateCondition(Condition condition, UserContext userContext)
     {
-        if (condition is null)
-            throw new ArgumentNullException(nameof(condition));
-
-        if (userContext is null)
-            throw new ArgumentNullException(nameof(userContext));
+        ArgumentNullException.ThrowIfNull(condition);
+        ArgumentNullException.ThrowIfNull(userContext);
 
         if (!condition.IsActive)
             return false;
@@ -172,11 +166,8 @@ public class RuleEvaluationService : IRuleEvaluationService {
     /// <returns>The collection of applicable rules.</returns>
     public async Task<IEnumerable<Rule>> GetApplicableRulesAsync(FeatureFlag featureFlag, UserContext userContext)
     {
-        if (featureFlag is null)
-            throw new ArgumentNullException(nameof(featureFlag));
-
-        if (userContext is null)
-            throw new ArgumentNullException(nameof(userContext));
+        ArgumentNullException.ThrowIfNull(featureFlag);
+        ArgumentNullException.ThrowIfNull(userContext);
 
         var flagWithRules = await _repository.GetWithRulesAsync(featureFlag.Id);
         if (flagWithRules is null)
