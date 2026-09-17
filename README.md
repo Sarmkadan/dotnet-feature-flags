@@ -50,6 +50,98 @@ using FeatureFlags.BackgroundJobs;
 builder.Services.AddGradualRolloutScheduler(builder.Configuration);
 ```
 
+## Event System
+
+The event system in `src/FeatureFlags/Events/EventSystem.cs` provides a publish-subscribe mechanism for feature flag events, allowing different parts of the application to react to changes in feature flags.
+
+### Core Components
+
+- **FeatureFlagEvent**: Represents an event that occurred in the system (e.g., feature flag created, updated, deleted, enabled, disabled)
+- **IEventSubscriber**: Interface for objects that want to subscribe to and handle feature flag events
+- **IEventBus**: Manages event publishing and subscriber notifications (pub-sub pattern)
+- **EventBus**: Default in-process implementation of the event bus with error handling and retry capabilities
+- **EventLoggingSubscriber**: Built-in subscriber that logs all feature flag events for audit trail
+- **WebhookEventSubscriber**: Built-in subscriber that triggers webhooks when feature flag events occur
+
+### Event Types
+
+The system supports various event types including:
+- `FeatureFlagCreated`
+- `FeatureFlagUpdated` 
+- `FeatureFlagDeleted`
+- `FeatureFlagEnabled`
+- `FeatureFlagDisabled`
+- Custom event types can be defined as needed
+
+### Error Handling
+
+The event bus supports two error handling modes:
+- **FailFast** (default): Propagate exceptions immediately
+- **Isolate**: Catch and log exceptions, allowing other subscribers to continue processing
+
+### Usage Example
+
+Register the event system with dependency injection:
+```csharp
+using FeatureFlags.Events;
+
+// Add event system with default configuration
+builder.Services.AddEventSystem();
+
+// Add event system with custom configuration
+builder.Services.AddEventSystem(options =>
+{
+    options.ErrorMode = EventBusErrorMode.Isolate;
+    options.MaxRetryAttempts = 5;
+    options.BaseRetryDelayMs = 200;
+});
+
+// Create custom subscribers
+public class CustomAnalyticsSubscriber : IEventSubscriber
+{
+    public string[] InterestedEventTypes => new[] { "FeatureFlagEnabled", "FeatureFlagDisabled" };
+    
+    public Task HandleEventAsync(FeatureFlagEvent @event, CancellationToken cancellationToken = default)
+    {
+        // Handle the event (e.g., send to analytics service)
+        return Task.CompletedTask;
+    }
+}
+
+// Register custom subscriber
+builder.Services.AddSingleton<IEventSubscriber, CustomAnalyticsSubscriber>();
+```
+
+Publishing events:
+```csharp
+using FeatureFlags.Events;
+
+// Inject IEventBus into your service
+public class FeatureFlagService : IFeatureFlagService
+{
+    private readonly IEventBus _eventBus;
+    
+    public FeatureFlagService(IEventBus eventBus)
+    {
+        _eventBus = eventBus;
+    }
+    
+    public async Task EnableFeatureFlagAsync(int id, string changedBy)
+    {
+        // ... enable logic ...
+        
+        // Publish event
+        await _eventBus.PublishAsync(
+            "FeatureFlagEnabled",
+            id,
+            featureFlag.Key,
+            changedBy,
+            new Dictionary<string, object?> { { "PreviousValue", false }, { "NewValue", true } }
+        );
+    }
+}
+```
+
 ## FeatureFlag
 
 Represents the core feature flag entity, containing configuration, rollout strategy, and targeting rules. Use FeatureFlag to define feature status, manage gradual rollouts, or configure A/B testing variants for controlled feature releases.
