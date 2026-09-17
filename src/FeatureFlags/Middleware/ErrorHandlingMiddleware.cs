@@ -19,9 +19,17 @@ public sealed class ErrorHandlingMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly ILogger<ErrorHandlingMiddleware> _logger;
+
+    // Status code constants
     private const int BadRequestStatusCode = (int)HttpStatusCode.BadRequest;
+    private const int NotFoundStatusCode = (int)HttpStatusCode.NotFound;
+    private const int InternalServerErrorStatusCode = (int)HttpStatusCode.InternalServerError;
+
+    // Message constants
     private const string ResourceNotFoundMessage = "Resource not found";
     private const string UnexpectedErrorMessage = "An unexpected error occurred";
+
+    // Error code constants
     private const string NotFoundErrorCode = "NotFound";
     private const string ValidationErrorCode = "ValidationError";
     private const string InternalServerErrorCode = "InternalServerError";
@@ -68,8 +76,8 @@ public sealed class ErrorHandlingMiddleware
         }
         else if (exception is KeyNotFoundException)
         {
-            context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-            response.StatusCode = (int)HttpStatusCode.NotFound;
+            context.Response.StatusCode = NotFoundStatusCode;
+            response.StatusCode = NotFoundStatusCode;
             response.Message = ResourceNotFoundMessage;
             response.ErrorCode = NotFoundErrorCode;
         }
@@ -82,8 +90,8 @@ public sealed class ErrorHandlingMiddleware
         }
         else
         {
-            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            context.Response.StatusCode = InternalServerErrorStatusCode;
+            response.StatusCode = InternalServerErrorStatusCode;
             response.Message = UnexpectedErrorMessage;
             response.ErrorCode = InternalServerErrorCode;
 
