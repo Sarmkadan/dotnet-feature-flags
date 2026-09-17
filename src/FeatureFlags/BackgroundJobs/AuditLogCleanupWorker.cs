@@ -14,6 +14,8 @@ namespace FeatureFlags.BackgroundJobs;
 /// </summary>
 public sealed class AuditLogCleanupWorker : BackgroundService
 {
+    private const int SecondsPerHour = 3600;
+
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<AuditLogCleanupWorker> _logger;
     private readonly AuditLogCleanupOptions _options;
@@ -42,7 +44,7 @@ public sealed class AuditLogCleanupWorker : BackgroundService
     /// <summary>
     /// Gets the cleanup interval in seconds.
     /// </summary>
-    public int CleanupIntervalSeconds => _options.CleanupIntervalHours * 3600;
+    public int CleanupIntervalSeconds => _options.CleanupIntervalHours * SecondsPerHour;
 
     /// <summary>
     /// Gets the retention period in days.
