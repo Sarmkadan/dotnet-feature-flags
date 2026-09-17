@@ -37,6 +37,9 @@ public class PercentageRolloutService : IPercentageRolloutService {
     /// <returns>A task that resolves to <c>true</c> if the feature flag is enabled for the user; otherwise, <c>false</c>.</returns>
     public Task<bool> EvaluateAsync(FeatureFlag featureFlag, UserContext userContext, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(featureFlag);
+        ArgumentNullException.ThrowIfNull(userContext);
+
         return Task.FromResult(Evaluate(featureFlag, userContext));
     }
 
@@ -77,8 +80,7 @@ public class PercentageRolloutService : IPercentageRolloutService {
     /// <returns><c>true</c> if the user is within the rollout; otherwise, <c>false</c>.</returns>
     public bool IsUserInRollout(UserContext userContext, string featureFlagKey, int rolloutPercentage)
     {
-        if (userContext is null)
-            throw new ArgumentNullException(nameof(userContext));
+        ArgumentNullException.ThrowIfNull(userContext);
 
         if (string.IsNullOrWhiteSpace(featureFlagKey))
             throw new ArgumentException("Feature flag key cannot be empty", nameof(featureFlagKey));
@@ -105,8 +107,7 @@ public class PercentageRolloutService : IPercentageRolloutService {
     /// <returns>An integer bucket in the range 0 to 99 used to determine rollout membership.</returns>
     public int GetUserBucket(UserContext userContext, string featureFlagKey)
     {
-        if (userContext is null)
-            throw new ArgumentNullException(nameof(userContext));
+        ArgumentNullException.ThrowIfNull(userContext);
 
         if (string.IsNullOrWhiteSpace(featureFlagKey))
             throw new ArgumentException("Feature flag key cannot be empty", nameof(featureFlagKey));
