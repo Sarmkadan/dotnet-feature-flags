@@ -29,4 +29,10 @@ public sealed class FlagEvaluationLog
     /// (e.g. "FlagDisabled", "PercentageRollout", "RulesBased", "Full", "FlagNotFound").
     /// </summary>
     public string Reason { get; init; } = string.Empty;
+
+    /// <summary>
+    /// Returns a compact summary of the evaluation result and flag key.
+    /// </summary>
+    public override string ToString() =>
+        $"Flag '{FlagName}' evaluated to {Result} for user '{UserId}' (reason: {Reason})";
 }
