@@ -19,6 +19,12 @@ public sealed class AuditLogCleanupWorker : BackgroundService
     private readonly AuditLogCleanupOptions _options;
     private readonly TimeSpan _checkInterval;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AuditLogCleanupWorker"/> class.
+    /// </summary>
+    /// <param name="serviceProvider">The service provider used to resolve scoped services.</param>
+    /// <param name="logger">The logger used to record worker activity.</param>
+    /// <param name="options">The cleanup configuration options.</param>
     public AuditLogCleanupWorker(
         IServiceProvider serviceProvider,
         ILogger<AuditLogCleanupWorker> logger,
@@ -43,6 +49,10 @@ public sealed class AuditLogCleanupWorker : BackgroundService
     /// </summary>
     public int RetentionDays => _options.RetentionDays;
 
+    /// <summary>
+    /// Returns a string representation of the worker's current configuration.
+    /// </summary>
+    /// <returns>A string describing the worker's retention and cleanup settings.</returns>
     public override string ToString() => $"AuditLogCleanupWorker {{ RetentionDays = {RetentionDays}, CleanupIntervalHours = {_options.CleanupIntervalHours}, Enabled = {_options.Enabled}, CleanupIntervalSeconds = {CleanupIntervalSeconds} }}";
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
