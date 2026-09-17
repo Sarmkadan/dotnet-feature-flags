@@ -62,6 +62,8 @@ public class FeatureFlagService : IFeatureFlagService {
     /// <returns><c>true</c> if the feature flag is enabled for the user; otherwise, <c>false</c>.</returns>
     public async Task<bool> IsEnabledAsync(string featureFlagKey, UserContext userContext, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(featureFlagKey);
+
         if (string.IsNullOrWhiteSpace(featureFlagKey))
             throw new ArgumentException("Feature flag key cannot be empty", nameof(featureFlagKey));
 
@@ -156,6 +158,8 @@ public class FeatureFlagService : IFeatureFlagService {
     /// <returns>The feature flag if found; otherwise, <c>null</c>.</returns>
     public async Task<FeatureFlag?> GetFeatureFlagByKeyAsync(string key, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(key);
+
         if (string.IsNullOrWhiteSpace(key))
             throw new ArgumentException("Key cannot be empty", nameof(key));
 
@@ -223,8 +227,8 @@ public class FeatureFlagService : IFeatureFlagService {
     /// <returns>The created feature flag.</returns>
     public async Task<FeatureFlag> CreateFeatureFlagAsync(FeatureFlag featureFlag, string createdBy, CancellationToken cancellationToken = default)
     {
-        if (featureFlag is null)
-            throw new ArgumentNullException(nameof(featureFlag));
+        ArgumentNullException.ThrowIfNull(featureFlag);
+        ArgumentNullException.ThrowIfNull(createdBy);
 
         if (string.IsNullOrWhiteSpace(createdBy))
             throw new ArgumentException("CreatedBy cannot be empty", nameof(createdBy));
@@ -253,8 +257,8 @@ public class FeatureFlagService : IFeatureFlagService {
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     public async Task UpdateFeatureFlagAsync(FeatureFlag featureFlag, string updatedBy, CancellationToken cancellationToken = default)
     {
-        if (featureFlag is null)
-            throw new ArgumentNullException(nameof(featureFlag));
+        ArgumentNullException.ThrowIfNull(featureFlag);
+        ArgumentNullException.ThrowIfNull(updatedBy);
 
         if (string.IsNullOrWhiteSpace(updatedBy))
             throw new ArgumentException("UpdatedBy cannot be empty", nameof(updatedBy));
@@ -282,6 +286,8 @@ public class FeatureFlagService : IFeatureFlagService {
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     public async Task DeleteFeatureFlagAsync(int id, string deletedBy, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(deletedBy);
+
         if (id <= 0)
             throw new ArgumentException("Id must be > 0", nameof(id));
 
@@ -308,6 +314,8 @@ public class FeatureFlagService : IFeatureFlagService {
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     public async Task EnableFeatureFlagAsync(int id, string modifiedBy, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(modifiedBy);
+
         if (id <= 0)
             throw new ArgumentException("Id must be > 0", nameof(id));
 
@@ -336,6 +344,8 @@ public class FeatureFlagService : IFeatureFlagService {
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     public async Task DisableFeatureFlagAsync(int id, string modifiedBy, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(modifiedBy);
+
         if (id <= 0)
             throw new ArgumentException("Id must be > 0", nameof(id));
 
@@ -365,10 +375,13 @@ public class FeatureFlagService : IFeatureFlagService {
     /// <returns>The selected variant key, or <c>null</c> if no variant is available.</returns>
     public async Task<string?> GetVariantAsync(string featureFlagKey, UserContext userContext, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(featureFlagKey);
+        ArgumentNullException.ThrowIfNull(userContext);
+
         if (string.IsNullOrWhiteSpace(featureFlagKey))
             throw new ArgumentException("Feature flag key cannot be empty", nameof(featureFlagKey));
 
-        if (userContext is null || !userContext.IsValid())
+        if (!userContext.IsValid())
             throw new InvalidOperationException("User context is invalid");
 
         var featureFlag = await _featureFlagRepository.GetWithVariantsAsync(await GetIdByKeyAsync(featureFlagKey));
@@ -416,6 +429,8 @@ public class FeatureFlagService : IFeatureFlagService {
     /// <returns>A collection of matching feature flags.</returns>
     public async Task<IEnumerable<FeatureFlag>> SearchFeatureFlagsAsync(string searchTerm)
     {
+        ArgumentNullException.ThrowIfNull(searchTerm);
+
         if (string.IsNullOrWhiteSpace(searchTerm))
             return await GetAllFeatureFlagsAsync();
 
