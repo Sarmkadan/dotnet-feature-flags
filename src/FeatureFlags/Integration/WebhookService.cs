@@ -50,6 +50,17 @@ public sealed class WebhookService : IWebhookService {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
+    /// <summary>
+    /// Registers a new webhook with the provided configuration.
+    /// </summary>
+    /// <param name="url">The destination URL for the webhook delivery.</param>
+    /// <param name="description">A human-readable description of the webhook.</param>
+    /// <param name="eventTypes">The event types that should trigger this webhook.</param>
+    /// <param name="featureFlagKey">The optional feature flag key the webhook is scoped to.</param>
+    /// <param name="secret">The optional secret used to sign webhook payloads.</param>
+    /// <param name="createdBy">The identifier of the user creating the webhook.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>The newly created webhook.</returns>
     public async Task<Webhook> RegisterWebhookAsync(string url, string description, WebhookEventType eventTypes, string? featureFlagKey, string? secret, string createdBy, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(url))
@@ -92,22 +103,48 @@ public sealed class WebhookService : IWebhookService {
         }
     }
 
+    /// <summary>
+    /// Retrieves a webhook by its identifier.
+    /// </summary>
+    /// <param name="webhookId">The identifier of the webhook.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>The webhook if found; otherwise, <c>null</c>.</returns>
     public async Task<Webhook?> GetWebhookAsync(int webhookId, CancellationToken cancellationToken = default)
     {
         return await _webhookRepository.GetByIdAsync(webhookId);
     }
 
+    /// <summary>
+    /// Retrieves all active webhooks.
+    /// </summary>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A list of all active webhooks.</returns>
     public Task<List<Webhook>> GetAllActiveWebhooksAsync(CancellationToken cancellationToken = default)
     {
         return _webhookRepository.GetActiveAsync();
     }
 
+    /// <summary>
+    /// Retrieves the active webhooks that should trigger for the given event type and feature flag key.
+    /// </summary>
+    /// <param name="eventType">The event type to filter webhooks by.</param>
+    /// <param name="featureFlagKey">The optional feature flag key to filter webhooks by.</param>
+    /// <returns>A list of matching active webhooks.</returns>
     public async Task<List<Webhook>> GetActiveWebhooksAsync(WebhookEventType eventType, string? featureFlagKey = null)
     {
         var webhooks = await _webhookRepository.GetActiveAsync();
         return webhooks.Where(w => w.ShouldTrigger(eventType) && (string.IsNullOrEmpty(w.FeatureFlagKey) || w.FeatureFlagKey == featureFlagKey)).ToList();
     }
 
+    /// <summary>
+    /// Updates the configurable properties of an existing webhook.
+    /// </summary>
+    /// <param name="webhookId">The identifier of the webhook to update.</param>
+    /// <param name="url">The optional new destination URL.</param>
+    /// <param name="description">The optional new description.</param>
+    /// <param name="eventTypes">The optional new event types.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns><c>true</c> if the webhook was updated; otherwise, <c>false</c>.</returns>
     public async Task<bool> UpdateWebhookAsync(int webhookId, string? url, string? description, WebhookEventType? eventTypes, CancellationToken cancellationToken = default)
     {
         var webhook = await _webhookRepository.GetByIdAsync(webhookId);
@@ -141,11 +178,25 @@ public sealed class WebhookService : IWebhookService {
         return await _webhookRepository.UpdateAsync(webhook);
     }
 
+    /// <summary>
+    /// Deletes a webhook by its identifier.
+    /// </summary>
+    /// <param name="webhookId">The identifier of the webhook to delete.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns><c>true</c> if the webhook was deleted; otherwise, <c>false</c>.</returns>
     public async Task<bool> DeleteWebhookAsync(int webhookId, CancellationToken cancellationToken = default)
     {
         return await _webhookRepository.DeleteAsync(webhookId);
     }
 
+    /// <summary>
+    /// Triggers delivery of an event to all matching active webhooks.
+    /// </summary>
+    /// <param name="eventType">The event type that occurred.</param>
+    /// <param name="flag">The feature flag associated with the event.</param>
+    /// <param name="changedBy">The identifier of the user who triggered the change.</param>
+    /// <param name="data">Optional additional data to include in the payload.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
     public async Task TriggerWebhooksAsync(WebhookEventType eventType, FeatureFlag flag, string changedBy, Dictionary<string, object?>? data = null, CancellationToken cancellationToken = default)
     {
         var webhooks = await GetActiveWebhooksAsync(eventType, flag.Key);
@@ -164,6 +215,10 @@ public sealed class WebhookService : IWebhookService {
         }
     }
 
+    /// <summary>
+    /// Retries delivery of all webhook deliveries that are pending a retry.
+    /// </summary>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
     public async Task RetryFailedDeliveriesAsync(CancellationToken cancellationToken = default)
     {
         var failedDeliveries = await _deliveryRepository.GetPendingRetriesAsync();
