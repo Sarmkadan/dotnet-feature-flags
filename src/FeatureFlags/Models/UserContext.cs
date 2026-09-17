@@ -99,4 +99,13 @@ public sealed class UserContext
         var combined = $"{canonicalUserId}:{featureFlagKey}";
         return HashingUtilities.ComputeHashBucket(combined, 100);
     }
+
+    /// <summary>
+    /// Returns a string representation of the UserContext for debugging and logging.
+    /// </summary>
+    /// <returns>A string summarizing the user id and key attributes.</returns>
+    public override string ToString()
+    {
+        return $"UserContext: UserId={UserId}, Email={Email}, Country={Country ?? "null"}, Tier={Tier ?? "null"}, Region={Region ?? "null"}, CustomAttributes.Count={CustomAttributes.Count}";
+    }
 }
