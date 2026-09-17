@@ -199,6 +199,9 @@ public sealed class WebhookService : IWebhookService {
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     public async Task TriggerWebhooksAsync(WebhookEventType eventType, FeatureFlag flag, string changedBy, Dictionary<string, object?>? data = null, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(flag);
+        ArgumentNullException.ThrowIfNull(changedBy);
+
         var webhooks = await GetActiveWebhooksAsync(eventType, flag.Key);
 
         if (!webhooks.Any())
