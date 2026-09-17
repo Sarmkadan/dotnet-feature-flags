@@ -113,5 +113,5 @@ public sealed class AuditLog
         return (OldValue, NewValue);
     }
 
-    public override string ToString() => $"AuditLog {{ Id = {Id}, FeatureFlagId = {FeatureFlagId}, Action = {Action}, ChangedBy = {ChangedBy}, ChangedAt = {ChangedAt}, OldValue = {OldValue} }}";
+    public override string ToString() => $"AuditLog {{ FeatureFlagId = {FeatureFlagId}, Action = {Action}, ChangedAt = {ChangedAt:yyyy-MM-dd HH:mm:ss} }}";
 }
