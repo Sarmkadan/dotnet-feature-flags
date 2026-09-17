@@ -96,9 +96,14 @@ public sealed class GradualRolloutSchedulerWorker : BackgroundService
 public sealed class GradualRolloutSchedulerOptions
 {
     /// <summary>
+    /// Default interval in minutes between consecutive rollout advancement checks.
+    /// </summary>
+    public const int DefaultCheckIntervalMinutes = 60;
+
+    /// <summary>
     /// Interval in minutes between consecutive rollout advancement checks. Defaults to 60 minutes.
     /// </summary>
-    public int CheckIntervalMinutes { get; set; } = 60;
+    public int CheckIntervalMinutes { get; set; } = DefaultCheckIntervalMinutes;
 
     /// <summary>
     /// Enables or disables the background scheduling worker entirely.
