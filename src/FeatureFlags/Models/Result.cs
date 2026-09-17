@@ -148,6 +148,16 @@ public sealed class Result<T>
     {
         return IsSuccess ? Data! : defaultValue;
     }
+
+    /// <summary>
+    /// Returns a string summarizing the success/failure status and message.
+    /// </summary>
+    public override string ToString()
+    {
+        return IsSuccess
+            ? $"Success: {Data}"
+            : $"Failure: {Error}";
+    }
 }
 
 /// <summary>
