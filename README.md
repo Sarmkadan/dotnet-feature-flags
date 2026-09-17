@@ -2317,6 +2317,22 @@ await middleware.InvokeAsync(httpContext);
 Console.WriteLine($"Status Code: {httpContext.Response.StatusCode}");
 ```
 
+## Middleware Pipeline
+
+The feature flag application uses several middleware components in the ASP.NET Core pipeline to handle cross-cutting concerns like authentication, logging, error handling, and rate limiting. The middleware components are executed in the following order:
+
+1. **RequestLoggingMiddleware** - Logs all incoming HTTP requests and responses including request/response bodies and execution time for observability and debugging.
+
+2. **ErrorHandlingMiddleware** - Global exception handler that catches all unhandled exceptions and returns standardized error responses with appropriate HTTP status codes.
+
+3. **AuthenticationMiddleware** - Validates API keys from request headers (X-API-Key) or query parameters (api_key) and sets up user principals for authorized requests.
+
+4. **RateLimitingMiddleware** - Implements sliding window rate limiting based on client identifiers (user ID or IP address) to prevent API abuse.
+
+5. **FeatureFlagMiddleware** - Evaluates feature flags for route-based toggling, enabling/disabling specific endpoints based on feature configuration.
+
+Each middleware component serves a specific purpose and can be configured independently through their respective options classes.
+
 ## ErrorHandlingMiddleware
 
 Global exception handler middleware that catches all unhandled exceptions during HTTP request processing and returns standardized error responses. The middleware logs exceptions at appropriate levels (Error for unexpected exceptions, Warning for validation errors, etc.) and ensures consistent error response format across the API. It handles specific exception types like `FeatureFlagException`, `KeyNotFoundException`, and `ArgumentException` with appropriate HTTP status codes.
