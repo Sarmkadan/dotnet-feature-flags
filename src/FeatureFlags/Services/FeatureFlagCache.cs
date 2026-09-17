@@ -95,6 +95,8 @@ public sealed class FeatureFlagCache : IFeatureFlagCache, IEventSubscriber, IDis
     /// <returns>The feature flag if found, otherwise null.</returns>
     public async Task<FeatureFlag?> GetFeatureFlagByKeyAsync(string key)
     {
+        ArgumentNullException.ThrowIfNull(key);
+
         if (string.IsNullOrWhiteSpace(key))
         {
             throw new ArgumentException("Feature flag key cannot be empty", nameof(key));
@@ -155,6 +157,8 @@ public sealed class FeatureFlagCache : IFeatureFlagCache, IEventSubscriber, IDis
     /// <param name="flagKey">The key of the feature flag to invalidate.</param>
     public void Invalidate(string flagKey)
     {
+        ArgumentNullException.ThrowIfNull(flagKey);
+
         if (string.IsNullOrWhiteSpace(flagKey))
         {
             return;
