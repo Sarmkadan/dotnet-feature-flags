@@ -76,10 +76,10 @@ public sealed class RolloutStrategy
     public FeatureFlag? FeatureFlag { get; set; }
 
     /// <summary>
-    /// Returns a concise, informative representation of the rollout strategy.
+    /// Returns a concise summary of the rollout type and percentage.
     /// </summary>
     public override string ToString()
-        => $"RolloutStrategy {{ Id = {Id}, FeatureFlagId = {FeatureFlagId}, Type = {Type}, StartPercentage = {StartPercentage?.ToString() ?? "null"}, EndPercentage = {EndPercentage?.ToString() ?? "null"}, StartDate = {StartDate?.ToString("o") ?? "null"} }}";
+        => $"RolloutStrategy {{ Type = {Type}, Percentage = {StartPercentage?.ToString() ?? "null"} }}";
 
     /// <summary>
     /// Calculates the current percentage allocation based on time and gradual rollout settings.
