@@ -32,8 +32,10 @@ public sealed class RateLimitingMiddleware : IDisposable
     /// <param name="options">The rate limiting options.</param>
     public RateLimitingMiddleware(RequestDelegate next, RateLimitOptions options)
     {
-        _next = next ?? throw new ArgumentNullException(nameof(next));
-        _options = options ?? throw new ArgumentNullException(nameof(options));
+        ArgumentNullException.ThrowIfNull(next);
+        ArgumentNullException.ThrowIfNull(options);
+        _next = next;
+        _options = options;
         _requestHistory = new ConcurrentDictionary<string, RequestHistory>();
         _cleanupCancellationTokenSource = new CancellationTokenSource();
 
