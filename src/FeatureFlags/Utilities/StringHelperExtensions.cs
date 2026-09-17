@@ -9,35 +9,24 @@ using System.Text;
 namespace FeatureFlags.Utilities;
 
 /// <summary>
-/// Additional extension methods for string operations.
+/// Additional helper extension methods for string operations.
 /// </summary>
 public static class StringHelperExtensions
 {
     /// <summary>
-    /// Truncates string to specified length.
+    /// Encodes the input string to a Base64 string.
     /// </summary>
-    /// <param name="input">The string to truncate.</param>
-    /// <param name="maxLength">The maximum length of the resulting string.</param>
-    /// <returns>The truncated string, or the original if it's already short enough.</returns>
+    /// <param name="input">The string to encode.</param>
+    /// <returns>The Base64 encoded string.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="input"/> is <see langword="null"/>.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="maxLength"/> is negative.</exception>
-    public static string Truncate(this string input, int maxLength)
+    public static string ToBase64(this string input)
     {
         if (input is null)
         {
             throw new ArgumentNullException(nameof(input));
         }
 
-        if (maxLength < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(maxLength), "Max length cannot be negative");
-        }
-
-        if (input.Length <= maxLength)
-        {
-            return input;
-        }
-
-        return input[..maxLength];
+        var bytes = Encoding.UTF8.GetBytes(input);
+        return Convert.ToBase64String(bytes);
     }
 }
