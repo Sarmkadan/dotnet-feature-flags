@@ -6,6 +6,50 @@ A feature flag engine for .NET: percentage rollouts with consistent hashing, rul
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the solution layout, evaluation data flow, DI composition, design decisions and known limitations. The sections below are per-type reference docs.
 
+## Background Jobs
+
+Long-running `BackgroundService` workers in `src/FeatureFlags/BackgroundJobs/` that run on a timer to keep the system healthy without blocking request handling.
+
+### AuditLogCleanupWorker
+
+Periodically deletes audit logs older than a configurable retention period. Helps manage database size and comply with data retention regulations.
+
+- Runs every `CleanupIntervalHours` (default `24` hours) and removes logs older than `RetentionDays` (default `90` days) via `IAuditLogService.CleanupOldLogsAsync`.
+- Configuration is held in `AuditLogCleanupOptions` (`RetentionDays`, `CleanupIntervalHours`, `Enabled`).
+- Register with `services.AddAuditLogCleanupWorker()` (defaults) or `services.AddAuditLogCleanupWorker(options => ...)` (custom options), and chain `WithRetentionDays`, `WithCleanupIntervalHours`, `WithEnabled` on the options.
+
+Example usage:
+```csharp
+using FeatureFlags.BackgroundJobs;
+
+// Register with defaults (90-day retention, daily cleanup)
+builder.Services.AddAuditLogCleanupWorker();
+
+// Register with custom retention and interval
+builder.Services.AddAuditLogCleanupWorker(options =>
+{
+    options.RetentionDays = 30;
+    options.CleanupIntervalHours = 12;
+});
+```
+
+### GradualRolloutSchedulerWorker
+
+Periodically evaluates and advances time-based gradual rollout schedules. Iterates over active rollout strategies and updates feature flag percentage allocations according to elapsed days and configured daily increments.
+
+- Runs every `CheckIntervalMinutes` (default `60` minutes) and calls `IGradualRolloutSchedulerService.ProcessScheduledRolloutsAsync`, returning the number of flags updated.
+- Configuration is held in `GradualRolloutSchedulerOptions` (`CheckIntervalMinutes`, `Enabled`), bound from the `GradualRolloutScheduler` configuration section.
+- Register with `services.AddGradualRolloutScheduler(configuration)`; the worker is only hosted when `Enabled` is `true`.
+- `GradualRolloutSchedulerWorkerExtensions` adds introspection helpers (`GetCheckInterval`, `IsEnabled`) and `RunImmediateAsync` to trigger a single advancement cycle on demand.
+
+Example usage:
+```csharp
+using FeatureFlags.BackgroundJobs;
+
+// Register the scheduler, binding options from the "GradualRolloutScheduler" section
+builder.Services.AddGradualRolloutScheduler(builder.Configuration);
+```
+
 ## FeatureFlag
 
 Represents the core feature flag entity, containing configuration, rollout strategy, and targeting rules. Use FeatureFlag to define feature status, manage gradual rollouts, or configure A/B testing variants for controlled feature releases.
