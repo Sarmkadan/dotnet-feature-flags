@@ -19,6 +19,12 @@ public sealed class ErrorHandlingMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly ILogger<ErrorHandlingMiddleware> _logger;
+    private const int BadRequestStatusCode = (int)HttpStatusCode.BadRequest;
+    private const string ResourceNotFoundMessage = "Resource not found";
+    private const string UnexpectedErrorMessage = "An unexpected error occurred";
+    private const string NotFoundErrorCode = "NotFound";
+    private const string ValidationErrorCode = "ValidationError";
+    private const string InternalServerErrorCode = "InternalServerError";
 
     public ErrorHandlingMiddleware(RequestDelegate next, ILogger<ErrorHandlingMiddleware> logger)
     {
@@ -55,8 +61,8 @@ public sealed class ErrorHandlingMiddleware
         // Categorize exceptions to return appropriate status codes
         if (exception is FeatureFlagException ffEx)
         {
-            context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-            response.StatusCode = (int)HttpStatusCode.BadRequest;
+            context.Response.StatusCode = BadRequestStatusCode;
+            response.StatusCode = BadRequestStatusCode;
             response.Message = ffEx.Message;
             response.ErrorCode = ffEx.GetType().Name;
         }
@@ -64,22 +70,22 @@ public sealed class ErrorHandlingMiddleware
         {
             context.Response.StatusCode = (int)HttpStatusCode.NotFound;
             response.StatusCode = (int)HttpStatusCode.NotFound;
-            response.Message = "Resource not found";
-            response.ErrorCode = "NotFound";
+            response.Message = ResourceNotFoundMessage;
+            response.ErrorCode = NotFoundErrorCode;
         }
         else if (exception is ArgumentException argEx)
         {
-            context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-            response.StatusCode = (int)HttpStatusCode.BadRequest;
+            context.Response.StatusCode = BadRequestStatusCode;
+            response.StatusCode = BadRequestStatusCode;
             response.Message = argEx.Message;
-            response.ErrorCode = "ValidationError";
+            response.ErrorCode = ValidationErrorCode;
         }
         else
         {
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            response.Message = "An unexpected error occurred";
-            response.ErrorCode = "InternalServerError";
+            response.Message = UnexpectedErrorMessage;
+            response.ErrorCode = InternalServerErrorCode;
 
             Log.Warning("Unhandled exception fell back to generic InternalServerError response for exception type {ExceptionType}",
                 exception.GetType().Name);
