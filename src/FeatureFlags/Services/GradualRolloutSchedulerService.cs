@@ -120,6 +120,8 @@ public class GradualRolloutSchedulerService : IGradualRolloutSchedulerService {
     /// </summary>
     public async Task<bool> AdvanceRolloutAsync(int featureFlagId, string advancedBy, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(advancedBy);
+
         if (featureFlagId <= 0)
             throw new ArgumentException("Feature flag id must be positive", nameof(featureFlagId));
 
