@@ -26,6 +26,7 @@ public interface IHttpClientFactory
 /// </summary>
 public sealed class DefaultHttpClientFactory : IHttpClientFactory {
     private readonly System.Net.Http.IHttpClientFactory _factory;
+    private static readonly TimeSpan ExternalApiClientTimeout = TimeSpan.FromSeconds(60);
 
     public DefaultHttpClientFactory(System.Net.Http.IHttpClientFactory factory)
     {
@@ -49,7 +50,7 @@ public sealed class DefaultHttpClientFactory : IHttpClientFactory {
     public HttpClient CreateExternalApiClient()
     {
         var client = _factory.CreateClient("ExternalApiClient");
-        client.Timeout = TimeSpan.FromSeconds(60);
+        client.Timeout = ExternalApiClientTimeout;
         client.DefaultRequestHeaders.Add("User-Agent", "FeatureFlagEngine/1.0");
         return client;
     }
