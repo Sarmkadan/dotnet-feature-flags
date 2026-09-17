@@ -22,8 +22,10 @@ public class FeatureFlagRepository : IFeatureFlagRepository {
 
     public FeatureFlagRepository(FeatureFlagDbContext context, ILogger<FeatureFlagRepository> logger)
     {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        ArgumentNullException.ThrowIfNull(context);
+        ArgumentNullException.ThrowIfNull(logger);
+        _context = context;
+        _logger = logger;
     }
 
     /// <summary>
@@ -249,8 +251,7 @@ public class FeatureFlagRepository : IFeatureFlagRepository {
     /// <exception cref="FeatureFlagDataException">Thrown when a database error occurs.</exception>
     public async Task<FeatureFlag> AddAsync(FeatureFlag entity, CancellationToken cancellationToken = default)
     {
-        if (entity is null)
-            throw new ArgumentNullException(nameof(entity));
+        ArgumentNullException.ThrowIfNull(entity);
 
         if (!entity.IsValid())
             throw new InvalidFeatureFlagException("Feature flag configuration is invalid");
@@ -284,8 +285,7 @@ public class FeatureFlagRepository : IFeatureFlagRepository {
     /// <exception cref="FeatureFlagDataException">Thrown when a database error occurs.</exception>
     public async Task UpdateAsync(FeatureFlag entity, CancellationToken cancellationToken = default)
     {
-        if (entity is null)
-            throw new ArgumentNullException(nameof(entity));
+        ArgumentNullException.ThrowIfNull(entity);
 
         if (!entity.IsValid())
             throw new InvalidFeatureFlagException("Feature flag configuration is invalid");
