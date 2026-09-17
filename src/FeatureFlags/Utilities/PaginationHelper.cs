@@ -62,6 +62,7 @@ public static class PaginationHelper
     /// </summary>
     public static IEnumerable<T> PaginateInMemory<T>(IEnumerable<T> source, int pageNumber, int pageSize)
     {
+        ArgumentNullException.ThrowIfNull(source);
         var (validPageNumber, validPageSize) = ValidateAndNormalizePaging(pageNumber, pageSize);
         return source.Skip((validPageNumber - 1) * validPageSize).Take(validPageSize);
     }
