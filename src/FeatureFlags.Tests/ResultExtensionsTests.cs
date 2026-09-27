@@ -10,12 +10,10 @@ public class ResultExtensionsTests
     public void Map_WithSuccessfulResult_TransformsData()
     {
         // Arrange
-        var originalData = 10;
-        var result = Result<int>.Success(originalData);
-        var transform = new Func<int, string>(x => (x * 2).ToString());
+        var result = Result<int>.Success(10);
 
         // Act
-        var mappedResult = result.Map(transform);
+        var mappedResult = result.Map(x => (x * 2).ToString());
 
         // Assert
         Assert.True(mappedResult.IsSuccess);
@@ -28,8 +26,7 @@ public class ResultExtensionsTests
     public void Map_WithFailedResult_ReturnsFailedResultWithSameError()
     {
         // Arrange
-        var errorMessage = "Original error";
-        var result = Result<int>.Failure(errorMessage);
+        var result = Result<int>.Failure("error");
 
         // Act
         var mappedResult = result.Map(x => x.ToString());
@@ -37,7 +34,7 @@ public class ResultExtensionsTests
         // Assert
         Assert.False(mappedResult.IsSuccess);
         Assert.Null(mappedResult.Data);
-        Assert.Equal(errorMessage, mappedResult.Error);
+        Assert.Equal("error", mappedResult.Error);
         Assert.Null(mappedResult.ErrorCode);
     }
 
@@ -69,10 +66,9 @@ public class ResultExtensionsTests
         // Arrange
         var result = Result<int>.Success(42);
         var executed = false;
-        void Action(int data) => executed = true;
 
         // Act
-        var returnedResult = result.OnSuccess(Action);
+        var returnedResult = result.OnSuccess(data => executed = true);
 
         // Assert
         Assert.True(executed);
@@ -85,10 +81,9 @@ public class ResultExtensionsTests
         // Arrange
         var result = Result<int>.Failure("error");
         var executed = false;
-        void Action(int data) => executed = true;
 
         // Act
-        var returnedResult = result.OnSuccess(Action);
+        var returnedResult = result.OnSuccess(data => executed = true);
 
         // Assert
         Assert.False(executed);
@@ -122,21 +117,20 @@ public class ResultExtensionsTests
     {
         // Arrange
         var result = Result<int>.Failure("error message", 404);
-        var executedAction = false;
-        var capturedError = string.Empty;
+        var executed = false;
+        string? capturedError = null;
         int? capturedErrorCode = null;
-        void Action(string error, int? errorCode)
-        {
-            executedAction = true;
-            capturedError = error ?? string.Empty;
-            capturedErrorCode = errorCode;
-        }
 
         // Act
-        var returnedResult = result.OnFailure(Action);
+        var returnedResult = result.OnFailure((error, errorCode) =>
+        {
+            executed = true;
+            capturedError = error;
+            capturedErrorCode = errorCode;
+        });
 
         // Assert
-        Assert.True(executedAction);
+        Assert.True(executed);
         Assert.Equal("error message", capturedError);
         Assert.Equal(404, capturedErrorCode);
         Assert.Same(result, returnedResult);
@@ -148,10 +142,9 @@ public class ResultExtensionsTests
         // Arrange
         var result = Result<int>.Success(42);
         var executed = false;
-        void Action(string error, int? errorCode) => executed = true;
 
         // Act
-        var returnedResult = result.OnFailure(Action);
+        var returnedResult = result.OnFailure((error, errorCode) => executed = true);
 
         // Assert
         Assert.False(executed);
@@ -185,21 +178,20 @@ public class ResultExtensionsTests
     {
         // Arrange
         var result = Result.Failure("error message", 500);
-        var executedAction = false;
-        var capturedError = string.Empty;
+        var executed = false;
+        string? capturedError = null;
         int? capturedErrorCode = null;
-        void Action(string error, int? errorCode)
-        {
-            executedAction = true;
-            capturedError = error ?? string.Empty;
-            capturedErrorCode = errorCode;
-        }
 
         // Act
-        var returnedResult = result.OnFailure(Action);
+        var returnedResult = result.OnFailure((error, errorCode) =>
+        {
+            executed = true;
+            capturedError = error;
+            capturedErrorCode = errorCode;
+        });
 
         // Assert
-        Assert.True(executedAction);
+        Assert.True(executed);
         Assert.Equal("error message", capturedError);
         Assert.Equal(500, capturedErrorCode);
         Assert.Same(result, returnedResult);
@@ -211,10 +203,9 @@ public class ResultExtensionsTests
         // Arrange
         var result = Result.Success();
         var executed = false;
-        void Action(string error, int? errorCode) => executed = true;
 
         // Act
-        var returnedResult = result.OnFailure(Action);
+        var returnedResult = result.OnFailure((error, errorCode) => executed = true);
 
         // Assert
         Assert.False(executed);
