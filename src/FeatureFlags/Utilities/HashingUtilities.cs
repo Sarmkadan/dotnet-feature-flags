@@ -25,7 +25,8 @@ public static class HashingUtilities
     /// </summary>
     public static string ComputeSha256(string input)
     {
-        ArgumentException.ThrowIfNullOrEmpty(input);
+        if (input is null) throw new ArgumentException("Input cannot be null", nameof(input));
+        if (input.Length == 0) throw new ArgumentException("Input cannot be empty", nameof(input));
 
         using var sha256 = SHA256.Create();
         var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(input));
@@ -37,9 +38,10 @@ public static class HashingUtilities
     /// </summary>
     public static string ComputeSha512(string input)
     {
-        ArgumentException.ThrowIfNullOrEmpty(input);
+        if (input is null) throw new ArgumentException("Input cannot be null", nameof(input));
+        if (input.Length == 0) throw new ArgumentException("Input cannot be empty", nameof(input));
 
-        using var sha512 = SHA256.Create();
+        using var sha512 = SHA512.Create();
         var hashBytes = sha512.ComputeHash(Encoding.UTF8.GetBytes(input));
         return Convert.ToHexString(hashBytes).ToLower();
     }
@@ -73,7 +75,8 @@ public static class HashingUtilities
     /// </summary>
     public static string ComputeMd5(string input)
     {
-        ArgumentException.ThrowIfNullOrEmpty(input);
+        if (input is null) throw new ArgumentException("Input cannot be null", nameof(input));
+        if (input.Length == 0) throw new ArgumentException("Input cannot be empty", nameof(input));
 
         using var md5 = MD5.Create();
         var hashBytes = md5.ComputeHash(Encoding.UTF8.GetBytes(input));
@@ -86,7 +89,8 @@ public static class HashingUtilities
     /// </summary>
     public static uint ComputeFnv1aHash(string input)
     {
-        ArgumentException.ThrowIfNullOrEmpty(input);
+        if (input is null) throw new ArgumentException("Input cannot be null", nameof(input));
+        if (input.Length == 0) throw new ArgumentException("Input cannot be empty", nameof(input));
 
         uint hash = FnvOffsetBasis;
 
@@ -105,7 +109,8 @@ public static class HashingUtilities
     /// </summary>
     public static string HashPassword(string password, int iterations = 10000, int saltSize = 16, int hashSize = 20)
     {
-        ArgumentException.ThrowIfNullOrEmpty(password);
+        if (password is null) throw new ArgumentException("Password cannot be null", nameof(password));
+        if (password.Length == 0) throw new ArgumentException("Password cannot be empty", nameof(password));
 
         using var rng = RandomNumberGenerator.Create();
         var salt = new byte[saltSize];

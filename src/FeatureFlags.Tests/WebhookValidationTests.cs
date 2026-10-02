@@ -98,7 +98,7 @@ namespace FeatureFlags.Tests
             Webhook? webhook = null;
 
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => webhook!.IsValid());
+            Assert.Throws<ArgumentNullException>(() => WebhookValidation.IsValid(webhook!));
         }
 
         /// <summary>

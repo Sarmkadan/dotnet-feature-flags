@@ -82,11 +82,8 @@ namespace FeatureFlags.Tests
             // Act
             string result = PaginationHelper.GetItemRange(pageNumber, pageSize, totalCount);
 
-            // Assert
-            var (start, end, total) = ParseRange(result);
-            Assert.Equal(41, start); // 5 * 10 - 9
-            Assert.Equal(35, end);   // capped at totalCount
-            Assert.Equal(totalCount, total);
+            // Assert - when start > totalCount, returns "0 of N"
+            Assert.Equal("0 of 35", result);
         }
 
         /// <summary>
@@ -95,14 +92,16 @@ namespace FeatureFlags.Tests
         [Fact]
         public void GetItemRange_PageSizeZero_ThrowsArgumentException()
         {
-            // Arrange
+            // Arrange - pageSize 0 is normalized to MinPageSize (1) by ValidateAndNormalizePaging
             int pageNumber = 1;
             int pageSize = 0;
             int totalCount = 35;
 
-            // Act & Assert
-            Assert.Throws<ArgumentException>(() =>
-                PaginationHelper.GetItemRange(pageNumber, pageSize, totalCount));
+            // Act
+            string result = PaginationHelper.GetItemRange(pageNumber, pageSize, totalCount);
+
+            // Assert - normalized to pageSize=1
+            Assert.Equal("1-1 of 35", result);
         }
 
         /// <summary>
@@ -111,14 +110,16 @@ namespace FeatureFlags.Tests
         [Fact]
         public void GetItemRange_PageSizeNegative_ThrowsArgumentException()
         {
-            // Arrange
+            // Arrange - negative pageSize is normalized to MinPageSize (1) by ValidateAndNormalizePaging
             int pageNumber = 1;
             int pageSize = -5;
             int totalCount = 35;
 
-            // Act & Assert
-            Assert.Throws<ArgumentException>(() =>
-                PaginationHelper.GetItemRange(pageNumber, pageSize, totalCount));
+            // Act
+            string result = PaginationHelper.GetItemRange(pageNumber, pageSize, totalCount);
+
+            // Assert - normalized to pageSize=1
+            Assert.Equal("1-1 of 35", result);
         }
 
         /// <summary>

@@ -80,7 +80,7 @@ For command-specific help: dotnet run -- <command> --help
             "export" => ParseExportCommand(args),
             "import" => ParseImportCommand(args),
             "webhook" => ParseWebhookCommand(args),
-            "help" or "-h" or "--help" => new CliCommand { Command = "help" },
+            "help" or "-h" or "--help" => new CliCommand { Command = "help", ShowHelp = true },
             _ => throw new ArgumentException($"Unknown command: {command}")
         };
 
