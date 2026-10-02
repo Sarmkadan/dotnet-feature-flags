@@ -26,9 +26,8 @@ public class FeatureFlagException : Exception {
     /// </summary>
     /// <param name="message">The error message that explains the reason for the exception.</param>
     /// <param name="errorCode">The error code associated with the exception.</param>
-    public FeatureFlagException(string message, string errorCode) : base(message)
+    public FeatureFlagException(string message, string errorCode) : base(message ?? "Exception of type 'FeatureFlags.Exceptions.FeatureFlagException' was thrown.")
     {
-        ArgumentNullException.ThrowIfNull(message);
         ArgumentNullException.ThrowIfNull(errorCode);
         ErrorCode = errorCode;
     }

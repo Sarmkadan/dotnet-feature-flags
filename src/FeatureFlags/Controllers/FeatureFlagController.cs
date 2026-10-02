@@ -47,9 +47,7 @@ public class FeatureFlagController : ControllerBase {
     [HttpPost("evaluate")]
     public async Task<IActionResult> EvaluateFeatureFlag([FromBody] EvaluationRequest request, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(request);
-
-        if (request is null || string.IsNullOrEmpty(request.FeatureFlagKey))
+        if (request is null || string.IsNullOrEmpty(request?.FeatureFlagKey))
             return BadRequest("Feature flag key is required");
 
         try

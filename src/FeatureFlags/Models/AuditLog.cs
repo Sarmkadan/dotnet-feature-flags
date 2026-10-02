@@ -83,7 +83,8 @@ public sealed class AuditLog
     /// </summary>
     public bool IsRollbackOf(AuditLog? previousLog)
     {
-        ArgumentNullException.ThrowIfNull(previousLog);
+        if (previousLog is null)
+            return false;
 
         return NewValue == previousLog.OldValue && OldValue == previousLog.NewValue;
     }

@@ -29,7 +29,8 @@ public interface ICacheService
 /// In-memory implementation of cache service using concurrent dictionary.
 /// Suitable for single-server deployments. For distributed scenarios, use DistributedCacheService.
 /// </summary>
-public sealed class InMemoryCacheService : ICacheService, IDisposable {
+public sealed class InMemoryCacheService : ICacheService, IDisposable
+{
     private const string DefaultTtlValidationMessage = "Default TTL must be greater than zero.";
     private const string CacheKeyValidationMessage = "Cache key cannot be null or whitespace.";
     private const string TtlValidationMessage = "TTL must be greater than zero.";
@@ -102,7 +103,7 @@ public sealed class InMemoryCacheService : ICacheService, IDisposable {
     {
         if (string.IsNullOrWhiteSpace(key))
         {
-            throw new ArgumentException(CacheKeyValidationMessage, nameof(key));
+            return; // silently ignore null/empty/whitespace keys
         }
 
         ArgumentNullException.ThrowIfNull(value);

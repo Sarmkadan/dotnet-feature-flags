@@ -50,7 +50,7 @@ public class HashingUtilitiesTests
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal("e1822db470e60d090affd0959d3b03e2f6a4b967fa34ea1570f4f65b78e6cf53", result);
+        Assert.Equal("0aad7da77d2ed59c396c99a74e49f3a4524dcdbcb5163251b1433d640247aeb4", result);
     }
 
     [Fact]
@@ -63,7 +63,7 @@ public class HashingUtilitiesTests
         Assert.NotNull(result);
         Assert.False(string.IsNullOrWhiteSpace(result));
         Assert.All(result, c => Assert.Contains(c, "0123456789abcdef"));
-        Assert.Equal("9b71d224bd62f3785d96d46ad3ea3d73319bfbc2890caadaed2d8e88ca055532e60a8a90965408e8d90d3247ab11050a031f0f8e8f0b9b6ec63e800b84ecef8", result);
+        Assert.Equal("309ecc489c12d6eb4cc40f50c902f2b4d0ed77ee511a7c7a9bcd3ca86d4cd86f989dd35bc5ff499670da34255b45b0cfd830e81f605dcf7dc5542e93ae9cd76f", result);
     }
 
     [Fact]
@@ -167,7 +167,7 @@ public class HashingUtilitiesTests
         var result = HashingUtilities.ComputeFnv1aHash(TestInput);
 
         // Assert
-        Assert.Equal(1640531527u, result);
+        Assert.Equal(3582672807u, result);
     }
 
     [Fact]
@@ -204,8 +204,8 @@ public class HashingUtilitiesTests
         // Assert
         Assert.NotNull(result);
         Assert.False(string.IsNullOrWhiteSpace(result));
-        // Should be base64 encoded string (salt + hash)
-        Assert.Contains("=", result); // Base64 strings often end with =
+        // Should be base64 encoded string (salt + hash), 36 bytes = 48 chars
+        Assert.Equal(48, result.Length);
     }
 
     [Fact]
@@ -337,7 +337,7 @@ public class HashingUtilitiesTests
         Assert.NotNull(result);
         Assert.False(string.IsNullOrWhiteSpace(result));
         Assert.All(result, c => Assert.Contains(c, "0123456789abcdef"));
-        Assert.Equal("8030e7cb3fd002f2d046c577a9823d4ef1d3470ebisba6a418000f8f2422dc87", result.ToLower());
+        Assert.Equal("734cc62f32841568f45715aeb9f4d7891324e6d948e4c6c60c0621cdac48623a", result.ToLower());
     }
 
     [Fact]

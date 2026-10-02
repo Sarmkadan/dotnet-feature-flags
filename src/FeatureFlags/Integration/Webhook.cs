@@ -116,6 +116,16 @@ public sealed class Webhook
             return false;
         }
 
+        if (MaxRetries < 0)
+        {
+            return false;
+        }
+
+        if (RetryDelaySeconds < 0)
+        {
+            return false;
+        }
+
         return true;
     }
 

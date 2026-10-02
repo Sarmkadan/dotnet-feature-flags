@@ -68,7 +68,7 @@ public class AuditLogService : IAuditLogService {
 
     public async Task<IEnumerable<AuditLog>> GetAuditLogsByUserAsync(string changedBy)
     {
-        ArgumentException.ThrowIfNullOrEmpty(changedBy);
+        ArgumentException.ThrowIfNullOrWhiteSpace(changedBy);
 
         try
         {

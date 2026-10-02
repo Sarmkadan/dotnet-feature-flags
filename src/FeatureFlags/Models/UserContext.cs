@@ -82,8 +82,6 @@ public sealed class UserContext
     /// <returns>Bucket number between 0 and 99 inclusive</returns>
     public int GetConsistentHash(string featureFlagKey)
     {
-        if (featureFlagKey == null)
-            throw new ArgumentNullException(nameof(featureFlagKey));
         if (string.IsNullOrWhiteSpace(featureFlagKey))
         {
             throw new ArgumentException("Feature flag key cannot be null or empty", nameof(featureFlagKey));

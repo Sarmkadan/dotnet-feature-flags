@@ -50,7 +50,8 @@ public static class GradualRolloutSchedulerServiceTestsJsonExtensions
     /// <exception cref="JsonException">Thrown when the JSON is malformed and cannot be deserialized.</exception>
     public static GradualRolloutSchedulerServiceTests? FromJson(string json)
     {
-        ArgumentException.ThrowIfNullOrEmpty(json);
+        if (string.IsNullOrEmpty(json))
+            throw new ArgumentException("JSON string cannot be null or empty", nameof(json));
 
         return JsonSerializer.Deserialize<GradualRolloutSchedulerServiceTests>(json, _jsonSerializerOptions);
     }
@@ -64,7 +65,8 @@ public static class GradualRolloutSchedulerServiceTestsJsonExtensions
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="json"/> is null or empty.</exception>
     public static bool TryFromJson(string json, out GradualRolloutSchedulerServiceTests? value)
     {
-        ArgumentException.ThrowIfNullOrEmpty(json);
+        if (string.IsNullOrEmpty(json))
+            throw new ArgumentException("JSON string cannot be null or empty", nameof(json));
 
         try
         {

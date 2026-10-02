@@ -56,8 +56,9 @@ public sealed class GradualRolloutSchedulerServiceTestsJsonExtensionsTests
         string json = GradualRolloutSchedulerServiceTestsJsonExtensions.ToJson(instance, indented: true);
 
         // Assert
-        // Indented JSON contains line‑break characters.
-        Assert.Contains(Environment.NewLine, json);
+        // Indented JSON for an object with no serializable properties is just "{}"
+        Assert.False(string.IsNullOrWhiteSpace(json));
+        Assert.Equal("{}", json);
     }
 
     [Fact]
