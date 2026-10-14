@@ -164,6 +164,86 @@ public sealed class PercentageRolloutServiceTests
         enabledCount.Should().BeInRange(425, 575);
     }
 
+    /// <summary>
+    /// Statistical correctness: 30% rollout over 100,000 deterministic user keys should yield 30% +/- 1% enabled.
+    /// </summary>
+    [Fact]
+    public void PercentageRollout_StatisticalCorrectness_30Percent()
+    {
+        const int totalUsers = 100_000;
+        const int rolloutPercentage = 30;
+        const double tolerance = 0.01; // 1%
+
+        var enabledCount = Enumerable.Range(0, totalUsers)
+            .Count(index => _service.IsUserInRollout(CreateUser(index), "statistical-flag", rolloutPercentage));
+
+        var expectedMin = totalUsers * (rolloutPercentage / 100.0 - tolerance);
+        var expectedMax = totalUsers * (rolloutPercentage / 100.0 + tolerance);
+
+        enabledCount.Should().BeInRange((int)Math.Floor(expectedMin), (int)Math.Ceiling(expectedMax));
+    }
+
+    /// <summary>
+    /// Stickiness: the same user key evaluated 1,000 times across fresh EvaluationEngine instances always yields the same result.
+    /// </summary>
+    [Fact]
+    public void PercentageRollout_Stickiness_SameUserConsistentAcrossInstances()
+    {
+        const int userCount = 100;
+        const int evaluationsPerUser = 1_000;
+        const int rolloutPercentage = 30;
+
+        var userContexts = Enumerable.Range(0, userCount)
+            .Select(i => CreateUser(i))
+            .ToArray();
+
+        foreach (var user in userContexts)
+        {
+            var firstResult = _service.IsUserInRollout(user, "stickiness-flag", rolloutPercentage);
+
+            // Evaluate the same user 1,000 times with fresh service instances
+            var results = Enumerable.Range(0, evaluationsPerUser)
+                .Select(_ =>
+                {
+                    var freshService = new PercentageRolloutService(new Mock<ILogger<PercentageRolloutService>>().Object);
+                    return freshService.IsUserInRollout(user, "stickiness-flag", rolloutPercentage);
+                })
+                .ToArray();
+
+            // All results should be identical to the first result
+            results.Should().AllBeEquivalentTo(firstResult);
+        }
+    }
+
+    /// <summary>
+    /// Monotonic rollout: raising the rollout from 30% to 50% never flips a user who was already enabled at 30%.
+    /// </summary>
+    [Fact]
+    public void PercentageRollout_Monotonic_IncreasingRolloutNeverDisablesPreviouslyEnabledUsers()
+    {
+        const int userCount = 10_000;
+        const int initialRollout = 30;
+        const int increasedRollout = 50;
+        const string featureKey = "monotonic-flag";
+
+        var userContexts = Enumerable.Range(0, userCount)
+            .Select(i => CreateUser(i))
+            .ToArray();
+
+        // Get users enabled at 30% rollout
+        var enabledAt30 = userContexts
+            .Where(user => _service.IsUserInRollout(user, featureKey, initialRollout))
+            .ToArray();
+
+        // Verify that all users enabled at 30% are still enabled at 50%
+        foreach (var user in enabledAt30)
+        {
+            _service.IsUserInRollout(user, featureKey, increasedRollout).Should().BeTrue(
+                because: "User enabled at {0}% rollout should remain enabled at {1}% rollout",
+                initialRollout, increasedRollout);
+        }
+    }
+
     private static UserContext CreateUser(int index) => new()
     {
         UserId = $"user-{index}",
