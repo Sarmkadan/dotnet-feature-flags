@@ -2,6 +2,195 @@
 
 A feature flag engine for .NET: percentage rollouts with consistent hashing, rule-based targeting, A/B variants, and a full audit trail, exposed as an ASP.NET Core REST API backed by EF Core / SQL Server.
 
+## Getting started
+
+Prerequisites: the .NET 10 SDK, a SQL Server instance (`make docker-up` starts one via `docker-compose.yml`), and the EF Core schema applied (`make migrate`).
+
+Add a project reference to `src/FeatureFlags/FeatureFlags.csproj` from a console app. The flag store and evaluator are both behind `IFeatureFlagService`: `CreateFeatureFlagAsync` stores a flag (and its rules), and `IsEnabledAsync` evaluates it for a `UserContext`. Each example below is a complete program; they share the same setup block, so each one repeats it. Replace the connection string with your own.
+
+Every mutation writes an audit log entry, and `IsEnabledAsync` throws if the `UserContext` has no `UserId` or `Email`.
+
+### 1. Boolean flag
+
+A flag with `RolloutType.Full` is on for everyone while `IsEnabled` is `true`. Call `DisableFeatureFlagAsync(flag.Id, "<who>")` to turn it off.
+
+```csharp
+using System;
+using System.Threading.Tasks;
+using FeatureFlags.Configuration;
+using FeatureFlags.Data;
+using FeatureFlags.Enums;
+using FeatureFlags.Models;
+using FeatureFlags.Services;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+public static class Program
+{
+    public static async Task Main()
+    {
+        const string connectionString = "Server=localhost,1433;Database=FeatureFlags;User Id=sa;Password=<your-password>;TrustServerCertificate=True";
+
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddDbContext<FeatureFlagDbContext>(options => options.UseSqlServer(connectionString));
+        services.AddFeatureFlagServices(new ConfigurationBuilder().Build());
+
+        await using var provider = services.BuildServiceProvider();
+        await using var scope = provider.CreateAsyncScope();
+        var flags = scope.ServiceProvider.GetRequiredService<IFeatureFlagService>();
+
+        // Create the flag on the first run; later runs reuse it.
+        var flag = await flags.GetFeatureFlagByKeyAsync("new-checkout")
+            ?? await flags.CreateFeatureFlagAsync(new FeatureFlag
+            {
+                Key = "new-checkout",
+                DisplayName = "New checkout",
+                Description = "Boolean on/off switch for the redesigned checkout",
+                IsEnabled = true,
+                RolloutType = RolloutType.Full
+            }, "getting-started");
+
+        var user = new UserContext { UserId = "user-42", Email = "jane@example.com" };
+        bool enabled = await flags.IsEnabledAsync(flag.Key, user);
+
+        Console.WriteLine($"{flag.Key} enabled for {user.UserId}: {enabled}");
+    }
+}
+```
+
+### 2. Targeting rule on a user attribute
+
+A `RulesBased` flag is on for a user when any active rule matches. Each rule's conditions are checked against `UserContext.GetAttribute(name)`, so `"tier"` reads `UserContext.Tier`. Custom attributes set with `SetCustomAttribute` are also available by name.
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using FeatureFlags.Configuration;
+using FeatureFlags.Data;
+using FeatureFlags.Enums;
+using FeatureFlags.Models;
+using FeatureFlags.Services;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+public static class Program
+{
+    public static async Task Main()
+    {
+        const string connectionString = "Server=localhost,1433;Database=FeatureFlags;User Id=sa;Password=<your-password>;TrustServerCertificate=True";
+
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddDbContext<FeatureFlagDbContext>(options => options.UseSqlServer(connectionString));
+        services.AddFeatureFlagServices(new ConfigurationBuilder().Build());
+
+        await using var provider = services.BuildServiceProvider();
+        await using var scope = provider.CreateAsyncScope();
+        var flags = scope.ServiceProvider.GetRequiredService<IFeatureFlagService>();
+
+        // Create the flag with one targeting rule: tier == "enterprise".
+        var flag = await flags.GetFeatureFlagByKeyAsync("enterprise-reports")
+            ?? await flags.CreateFeatureFlagAsync(new FeatureFlag
+            {
+                Key = "enterprise-reports",
+                DisplayName = "Enterprise reports",
+                Description = "Advanced reporting, limited to enterprise tier accounts",
+                IsEnabled = true,
+                RolloutType = RolloutType.RulesBased,
+                Rules = new List<Rule>
+                {
+                    new Rule
+                    {
+                        Name = "Enterprise tier",
+                        Priority = 10,
+                        ConditionLogic = "AND",
+                        Conditions = new List<Condition>
+                        {
+                            new Condition
+                            {
+                                AttributeName = "tier",
+                                Operator = ConditionOperator.Equals,
+                                ExpectedValue = "enterprise"
+                            }
+                        }
+                    }
+                }
+            }, "getting-started");
+
+        var enterpriseUser = new UserContext { UserId = "acme-1", Email = "ops@acme.example", Tier = "enterprise" };
+        var freeUser = new UserContext { UserId = "user-7", Email = "me@example.com", Tier = "free" };
+
+        Console.WriteLine($"{flag.Key} for {enterpriseUser.UserId}: {await flags.IsEnabledAsync(flag.Key, enterpriseUser)}");
+        Console.WriteLine($"{flag.Key} for {freeUser.UserId}: {await flags.IsEnabledAsync(flag.Key, freeUser)}");
+    }
+}
+```
+
+### 3. Percentage rollout
+
+A `Percentage` flag is on for a stable subset of users. The bucket comes from a hash of `UserId` and the flag key, so a given user gets the same answer on every evaluation.
+
+```csharp
+using System;
+using System.Threading.Tasks;
+using FeatureFlags.Configuration;
+using FeatureFlags.Data;
+using FeatureFlags.Enums;
+using FeatureFlags.Models;
+using FeatureFlags.Services;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+public static class Program
+{
+    public static async Task Main()
+    {
+        const string connectionString = "Server=localhost,1433;Database=FeatureFlags;User Id=sa;Password=<your-password>;TrustServerCertificate=True";
+
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddDbContext<FeatureFlagDbContext>(options => options.UseSqlServer(connectionString));
+        services.AddFeatureFlagServices(new ConfigurationBuilder().Build());
+
+        await using var provider = services.BuildServiceProvider();
+        await using var scope = provider.CreateAsyncScope();
+        var flags = scope.ServiceProvider.GetRequiredService<IFeatureFlagService>();
+
+        // Roll out to 25% of users.
+        var flag = await flags.GetFeatureFlagByKeyAsync("checkout-v2")
+            ?? await flags.CreateFeatureFlagAsync(new FeatureFlag
+            {
+                Key = "checkout-v2",
+                DisplayName = "Checkout v2",
+                Description = "Gradual rollout of the new checkout flow",
+                IsEnabled = true,
+                RolloutType = RolloutType.Percentage,
+                PercentageRollout = 25
+            }, "getting-started");
+
+        const int sampleSize = 200;
+        int enabledCount = 0;
+
+        for (int i = 0; i < sampleSize; i++)
+        {
+            var user = new UserContext { UserId = $"user-{i}", Email = $"user{i}@example.com" };
+
+            if (await flags.IsEnabledAsync(flag.Key, user))
+            {
+                enabledCount++;
+            }
+        }
+
+        Console.WriteLine($"{enabledCount} of {sampleSize} users enabled (target: {flag.PercentageRollout}%)");
+    }
+}
+```
+
 ## Architecture
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the solution layout, evaluation data flow, DI composition, design decisions and known limitations. The sections below are per-type reference docs.
