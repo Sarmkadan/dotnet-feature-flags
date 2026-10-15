@@ -136,6 +136,58 @@ public class FeatureFlagService : IFeatureFlagService {
     }
 
     /// <summary>
+    /// Evaluates a feature flag for the given user context and explains why the value was returned.
+    /// Read-only: unlike <see cref="IsEnabledAsync"/>, it writes no audit or evaluation log entries.
+    /// </summary>
+    /// <param name="featureFlagKey">The key of the feature flag to evaluate.</param>
+    /// <param name="userContext">The user context used for evaluation.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>An <see cref="EvaluationResult"/> with the outcome and its reason.</returns>
+    public async Task<EvaluationResult> ExplainAsync(string featureFlagKey, UserContext userContext, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(featureFlagKey);
+
+        if (string.IsNullOrWhiteSpace(featureFlagKey))
+            throw new ArgumentException("Feature flag key cannot be empty", nameof(featureFlagKey));
+
+        ArgumentNullException.ThrowIfNull(userContext);
+
+        if (!userContext.IsValid())
+            throw new InvalidOperationException("User context is invalid");
+
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var featureFlag = _featureFlagCache != null
+            ? await _featureFlagCache.GetFeatureFlagByKeyAsync(featureFlagKey)
+            : await _featureFlagRepository.GetByKeyAsync(featureFlagKey);
+
+        if (featureFlag is null)
+            return EvaluationResult.FlagNotFound();
+
+        if (!featureFlag.IsEnabled)
+            return EvaluationResult.FlagDisabled();
+
+        return featureFlag.RolloutType switch
+        {
+            RolloutType.Percentage => EvaluatePercentageWithReason(featureFlag, userContext),
+            RolloutType.RulesBased => await _ruleEvaluationService.EvaluateWithReasonAsync(featureFlag, userContext, cancellationToken),
+            RolloutType.ABTest => await _ruleEvaluationService.EvaluateWithReasonAsync(featureFlag, userContext, cancellationToken),
+            RolloutType.Full => EvaluationResult.FullRollout(),
+            _ => EvaluationResult.RolloutNone()
+        };
+    }
+
+    private static EvaluationResult EvaluatePercentageWithReason(FeatureFlag featureFlag, UserContext userContext)
+    {
+        var percentage = featureFlag.PercentageRollout
+            ?? throw new InvalidFeatureFlagException("Feature flag does not have a percentage rollout configured");
+
+        // Same bucket PercentageRolloutService uses: the hash is keyed by user id and flag key.
+        var bucket = userContext.GetConsistentHash(featureFlag.Key);
+        return EvaluationResult.RolloutBucket(bucket, percentage);
+    }
+
+    /// <summary>
     /// Gets a feature flag by its unique identifier.
     /// </summary>
     /// <param name="id">The unique identifier of the feature flag.</param>

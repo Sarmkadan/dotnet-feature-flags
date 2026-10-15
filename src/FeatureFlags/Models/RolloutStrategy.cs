@@ -4,6 +4,7 @@
 // CTO & Software Architect
 // =============================================================================
 
+using System.Diagnostics;
 using FeatureFlags.Enums;
 
 namespace FeatureFlags.Models;
@@ -12,6 +13,7 @@ namespace FeatureFlags.Models;
 /// Defines the strategy for rolling out a feature to users.
 /// Supports percentage-based, rule-based, and A/B test rollout strategies.
 /// </summary>
+[DebuggerDisplay("{ToString(),nq}")]
 public sealed class RolloutStrategy
 {
     /// <summary>
@@ -76,10 +78,18 @@ public sealed class RolloutStrategy
     public FeatureFlag? FeatureFlag { get; set; }
 
     /// <summary>
-    /// Returns a concise summary of the rollout type and percentage.
+    /// Returns a concise diagnostic summary. Percentage rollouts render as, for example,
+    /// "30% of users by userId, salt=checkout-v2", where the salt is the owning flag key
+    /// (the value users are hashed against). Other rollout types render their type and percentage.
     /// </summary>
     public override string ToString()
-        => $"RolloutStrategy {{ Type = {Type}, Percentage = {StartPercentage?.ToString() ?? "null"} }}";
+    {
+        if (Type != RolloutType.Percentage)
+            return $"RolloutStrategy {{ Type = {Type}, Percentage = {StartPercentage?.ToString() ?? "null"} }}";
+
+        var salt = FeatureFlag is null ? string.Empty : $", salt={FeatureFlag.Key}";
+        return $"{StartPercentage ?? 0}% of users by userId{salt}";
+    }
 
     /// <summary>
     /// Calculates the current percentage allocation based on time and gradual rollout settings.
