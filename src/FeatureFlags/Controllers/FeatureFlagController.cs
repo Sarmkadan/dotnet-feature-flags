@@ -4,6 +4,7 @@
 // CTO & Software Architect
 // =============================================================================
 
+using FeatureFlags.Exceptions;
 using FeatureFlags.Models;
 using FeatureFlags.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -170,6 +171,10 @@ public class FeatureFlagController : ControllerBase {
         {
             var created = await _featureFlagService.CreateFeatureFlagAsync(featureFlag, User.Identity?.Name ?? "System");
             return CreatedAtAction(nameof(GetByKey), new { key = created.Key }, created);
+        }
+        catch (InvalidFlagDefinitionException ex)
+        {
+            return BadRequest(ex.Violations);
         }
         catch (Exception ex)
         {

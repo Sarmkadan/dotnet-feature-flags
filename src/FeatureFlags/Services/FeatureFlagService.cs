@@ -232,6 +232,8 @@ public class FeatureFlagService : IFeatureFlagService {
         if (string.IsNullOrWhiteSpace(createdBy))
             throw new ArgumentException("CreatedBy cannot be empty", nameof(createdBy));
 
+        featureFlag.EnsureValid();
+
         if (await _featureFlagRepository.KeyExistsAsync(featureFlag.Key))
             throw new InvalidOperationException($"Feature flag with key '{featureFlag.Key}' already exists");
 
