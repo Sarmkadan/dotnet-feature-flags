@@ -23,6 +23,16 @@ public interface IFeatureFlagService
     Task<bool> IsEnabledAsync(string featureFlagKey, UserContext userContext);
 
     /// <summary>
+    /// Evaluates a feature flag and explains why the value was returned (flag disabled, matched rule,
+    /// rollout bucket, fallthrough). Read-only; writes no audit or evaluation log entries.
+    /// </summary>
+    /// <param name="featureFlagKey">The key of the feature flag.</param>
+    /// <param name="userContext">The context of the user for evaluation.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>The evaluation outcome and its reason.</returns>
+    Task<EvaluationResult> ExplainAsync(string featureFlagKey, UserContext userContext, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Gets a feature flag by its ID.
     /// </summary>
     /// <param name="id">The ID of the feature flag.</param>

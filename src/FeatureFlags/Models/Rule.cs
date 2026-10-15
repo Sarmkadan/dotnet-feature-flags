@@ -4,12 +4,16 @@
 // CTO & Software Architect
 // =============================================================================
 
+using System.Diagnostics;
+using FeatureFlags.Enums;
+
 namespace FeatureFlags.Models;
 
 /// <summary>
 /// Represents a targeting rule that applies conditions to determine if a feature flag should be enabled.
 /// Rules can be combined using AND/OR logic to create complex targeting scenarios.
 /// </summary>
+[DebuggerDisplay("{ToString(),nq}")]
 public sealed class Rule
 {
     /// <summary>
@@ -104,8 +108,39 @@ public sealed class Rule
         return Priority;
     }
 
+    /// <summary>
+    /// Returns a diagnostic summary of the active conditions, for example "country IN [DE, AT]"
+    /// or "country = US AND plan = pro".
+    /// </summary>
     public override string ToString()
     {
-        return $"Rule {{ Id = {Id}, FeatureFlagId = {FeatureFlagId}, Name = {Name}, Description = {Description}, Priority = {Priority}, IsActive = {IsActive} }}";
+        var active = Conditions?.Where(c => c.IsActive).ToList() ?? new List<Condition>();
+        if (active.Count == 0)
+            return "(no active conditions)";
+
+        var separator = ConditionLogic.Equals("OR", StringComparison.OrdinalIgnoreCase) ? " OR " : " AND ";
+        return string.Join(separator, active.Select(FormatCondition));
+    }
+
+    private static string FormatCondition(Condition condition)
+    {
+        var op = condition.Operator switch
+        {
+            ConditionOperator.Equals => "=",
+            ConditionOperator.NotEquals => "!=",
+            ConditionOperator.Contains => "CONTAINS",
+            ConditionOperator.StartsWith => "STARTS WITH",
+            ConditionOperator.EndsWith => "ENDS WITH",
+            ConditionOperator.GreaterThan => ">",
+            ConditionOperator.LessThan => "<",
+            ConditionOperator.In => "IN",
+            _ => condition.Operator.ToString()
+        };
+
+        var value = condition.Operator == ConditionOperator.In
+            ? "[" + string.Join(", ", condition.ExpectedValue.Split(',').Select(v => v.Trim())) + "]"
+            : condition.ExpectedValue;
+
+        return $"{condition.AttributeName} {op} {value}";
     }
 }

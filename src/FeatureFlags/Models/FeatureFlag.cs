@@ -4,6 +4,7 @@
 // CTO & Software Architect
 // =============================================================================
 
+using System.Diagnostics;
 using FeatureFlags.Enums;
 
 namespace FeatureFlags.Models;
@@ -12,6 +13,7 @@ namespace FeatureFlags.Models;
 /// Represents a feature flag with rollout strategies and targeting rules.
 /// Supports percentage-based rollouts, user targeting, and A/B testing variants.
 /// </summary>
+[DebuggerDisplay("{Key,nq} (enabled={IsEnabled}, rollout={RolloutType})")]
 public sealed class FeatureFlag
 {
     /// <summary>Gets or sets the unique identifier of the feature flag.</summary>

@@ -20,6 +20,8 @@ namespace FeatureFlags.Services;
         /// <returns>True if any rule matches, false otherwise.</returns>
         Task<bool> EvaluateAsync(FeatureFlag featureFlag, UserContext userContext);
 
+        Task<EvaluationResult> EvaluateWithReasonAsync(FeatureFlag featureFlag, UserContext userContext, CancellationToken cancellationToken = default);
+
         /// <summary>Evaluates a single rule against the user context.</summary>
         /// <param name="rule">The rule to evaluate.</param>
         /// <param name="userContext">The user context for evaluation.</param>

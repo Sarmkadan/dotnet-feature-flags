@@ -43,6 +43,21 @@ public class RuleEvaluationService : IRuleEvaluationService {
     /// <returns><c>true</c> if the feature flag is enabled for the user; otherwise, <c>false</c>.</returns>
     public async Task<bool> EvaluateAsync(FeatureFlag featureFlag, UserContext userContext, CancellationToken cancellationToken = default)
     {
+        var result = await EvaluateWithReasonAsync(featureFlag, userContext, cancellationToken);
+        return result.Enabled;
+    }
+
+    /// <summary>
+    /// Evaluates the targeting rules for the given feature flag and explains the decision.
+    /// The result names the first matching rule (highest priority first), or reports a fallthrough
+    /// when no active rule matches.
+    /// </summary>
+    /// <param name="featureFlag">The feature flag to evaluate.</param>
+    /// <param name="userContext">The user context to evaluate against.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>An <see cref="EvaluationResult"/> describing the outcome and its reason.</returns>
+    public async Task<EvaluationResult> EvaluateWithReasonAsync(FeatureFlag featureFlag, UserContext userContext, CancellationToken cancellationToken = default)
+    {
         ArgumentNullException.ThrowIfNull(featureFlag);
         ArgumentNullException.ThrowIfNull(userContext);
 
@@ -59,7 +74,7 @@ public class RuleEvaluationService : IRuleEvaluationService {
             if (!flagWithRules.Rules.Any())
             {
                 _logger.LogInformation("Evaluation finished for feature flag {FeatureFlagId}: no rules", featureFlag.Id);
-                return false;
+                return EvaluationResult.Fallthrough();
             }
 
             var applicableRules = flagWithRules.Rules
@@ -70,7 +85,7 @@ public class RuleEvaluationService : IRuleEvaluationService {
             if (!applicableRules.Any())
             {
                 _logger.LogInformation("Evaluation finished for feature flag {FeatureFlagId}: no applicable rules", featureFlag.Id);
-                return false;
+                return EvaluationResult.Fallthrough();
             }
 
             foreach (var rule in applicableRules)
@@ -78,12 +93,12 @@ public class RuleEvaluationService : IRuleEvaluationService {
                 if (await EvaluateRuleAsync(rule, userContext))
                 {
                     _logger.LogInformation("Evaluation finished for feature flag {FeatureFlagId}: rule {RuleId} matched", featureFlag.Id, rule.Id);
-                    return true;
+                    return EvaluationResult.RuleMatched(rule.Id);
                 }
             }
 
             _logger.LogInformation("Evaluation finished for feature flag {FeatureFlagId}: no matching rules", featureFlag.Id);
-            return false;
+            return EvaluationResult.Fallthrough();
         }
         catch (Exception ex)
         {
