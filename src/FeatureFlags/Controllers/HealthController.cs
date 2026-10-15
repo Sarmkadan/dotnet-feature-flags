@@ -36,8 +36,9 @@ public class HealthController : ControllerBase {
 
     /// <summary>
     /// Basic liveness check - returns 200 if the application is running.
+    /// Served at /Health/live so that /health is free for the feature store health checks endpoint.
     /// </summary>
-    [HttpGet]
+    [HttpGet("live")]
     [ProducesResponseType(typeof(HealthResponse), StatusCodes.Status200OK)]
     public IActionResult GetLiveness()
     {

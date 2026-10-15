@@ -8,6 +8,7 @@
 using FeatureFlags.Caching;
 using FeatureFlags.Configuration;
 using FeatureFlags.Events;
+using FeatureFlags.HealthChecks;
 using FeatureFlags.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -24,6 +25,7 @@ public sealed class FeatureFlagCache : IFeatureFlagCache, IEventSubscriber, IDis
     private readonly ICacheService _cacheService;
     private readonly IEventBus _eventBus;
     private readonly FeatureFlagOptions _options;
+    private readonly FeatureStoreRefreshTracker _refreshTracker;
     private readonly ILogger<FeatureFlagCache> _logger;
     private readonly CancellationTokenSource _cleanupCts;
 
@@ -59,18 +61,21 @@ public sealed class FeatureFlagCache : IFeatureFlagCache, IEventSubscriber, IDis
     /// <param name="eventBus">The event bus for subscribing to flag change events.</param>
     /// <param name="options">Feature flag configuration options.</param>
     /// <param name="logger">Logger for diagnostic messages.</param>
+    /// <param name="refreshTracker">Records when flags were last read from the store, for health reporting.</param>
     public FeatureFlagCache(
         IFeatureFlagService featureFlagService,
         ICacheService cacheService,
         IEventBus eventBus,
         IOptions<FeatureFlagOptions> options,
-        ILogger<FeatureFlagCache> logger)
+        ILogger<FeatureFlagCache> logger,
+        FeatureStoreRefreshTracker refreshTracker)
     {
         _featureFlagService = featureFlagService ?? throw new ArgumentNullException(nameof(featureFlagService));
         _cacheService = cacheService ?? throw new ArgumentNullException(nameof(cacheService));
         _eventBus = eventBus ?? throw new ArgumentNullException(nameof(eventBus));
         _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _refreshTracker = refreshTracker ?? throw new ArgumentNullException(nameof(refreshTracker));
 
         // Only enable caching if explicitly configured
         if (_options.EnableCache)
@@ -121,6 +126,7 @@ public sealed class FeatureFlagCache : IFeatureFlagCache, IEventSubscriber, IDis
 
         // Cache miss - fetch from repository
         var featureFlag = await _featureFlagService.GetFeatureFlagByKeyAsync(key);
+        _refreshTracker.MarkRefreshed();
 
         if (featureFlag != null)
         {

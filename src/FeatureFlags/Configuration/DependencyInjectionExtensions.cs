@@ -5,10 +5,12 @@
 // =============================================================================
 
 using FeatureFlags.Caching;
+using FeatureFlags.HealthChecks;
 using FeatureFlags.Repository;
 using FeatureFlags.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -48,6 +50,10 @@ public static class DependencyInjectionExtensions
         services.AddScoped<IPercentageRolloutService, PercentageRolloutService>();
         services.AddScoped<IAuditLogService, AuditLogService>();
         services.AddSingleton<IFlagEvaluationLogService, FlagEvaluationLogService>();
+
+        // Register refresh tracking used by the feature store health check
+        services.TryAddSingleton(TimeProvider.System);
+        services.TryAddSingleton<FeatureStoreRefreshTracker>();
 
         // Register configuration
         services.Configure<FeatureFlagOptions>(configuration.GetSection("FeatureFlags"));

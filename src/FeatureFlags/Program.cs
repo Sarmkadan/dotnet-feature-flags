@@ -7,7 +7,9 @@
 using Microsoft.Extensions.Logging;
 using FeatureFlags.Configuration;
 using FeatureFlags.Data;
+using FeatureFlags.HealthChecks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,11 +36,16 @@ builder.Services.AddFeatureFlags(options => builder.Configuration.GetSection("Fe
 // Register feature flag services
 builder.Services.AddFeatureFlagServices(builder.Configuration);
 
+// Feature store health: GET /health reports store reachability, flag count and last refresh
+builder.Services.AddHealthChecks()
+    .AddFeatureFlagHealthCheck();
+
 var app = builder.Build();
 
-// Ensure database is created
-using (var scope = app.Services.CreateScope())
+// Ensure database is created (skipped in the "Testing" environment, where tests supply their own store)
+if (!app.Environment.IsEnvironment("Testing"))
 {
+    using var scope = app.Services.CreateScope();
     var dbContext = scope.ServiceProvider.GetRequiredService<FeatureFlagDbContext>();
     await dbContext.Database.MigrateAsync();
 }
@@ -52,6 +59,10 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+app.MapHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = HealthReportJsonWriter.WriteAsync
+});
 
 try
 {
@@ -63,3 +74,6 @@ catch (Exception ex)
     app.Logger.LogError(ex, "Application terminated unexpectedly");
     throw;
 }
+
+// Exposes the entry point to WebApplicationFactory<Program> in integration tests.
+public partial class Program { }
