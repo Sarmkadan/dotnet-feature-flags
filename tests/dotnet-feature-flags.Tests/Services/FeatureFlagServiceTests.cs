@@ -6,6 +6,7 @@
 
 using FeatureFlags.Configuration;
 using FeatureFlags.Enums;
+using FeatureFlags.Exceptions;
 using FeatureFlags.Models;
 using FeatureFlags.Repository;
 using FeatureFlags.Services;
@@ -163,6 +164,55 @@ public sealed class FeatureFlagServiceTests
 
         // Act & Assert
         await Assert.ThrowsAsync<InvalidOperationException>(() => _service.CreateFeatureFlagAsync(featureFlag, "admin"));
+    }
+
+    [Fact]
+    public async Task CreateFeatureFlagAsync_WithInvalidDefinition_ThrowsWithAllViolationsAndDoesNotPersist()
+    {
+        // Arrange
+        var featureFlag = new FeatureFlag
+        {
+            Key = "bad key!",
+            DisplayName = "Bad Flag",
+            RolloutType = RolloutType.Percentage,
+            PercentageRollout = 150
+        };
+
+        // Act & Assert
+        var act = () => _service.CreateFeatureFlagAsync(featureFlag, "admin");
+
+        var exception = (await act.Should().ThrowAsync<InvalidFlagDefinitionException>()).Which;
+        exception.Violations.Should().HaveCount(2);
+        exception.Message.Should().Contain("must match ^[a-zA-Z0-9_-]+$");
+        exception.Message.Should().Contain("PercentageRollout must be between 0 and 100 inclusive (was 150).");
+        _featureFlagRepositoryMock.Verify(r => r.KeyExistsAsync(It.IsAny<string>()), Times.Never);
+        _featureFlagRepositoryMock.Verify(r => r.AddAsync(It.IsAny<FeatureFlag>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task CreateFeatureFlagAsync_WithValidDefinition_PersistsFlag()
+    {
+        // Arrange
+        var featureFlag = new FeatureFlag
+        {
+            Key = "valid-flag",
+            DisplayName = "Valid Flag",
+            RolloutType = RolloutType.Percentage,
+            PercentageRollout = 100
+        };
+        _featureFlagRepositoryMock
+            .Setup(r => r.KeyExistsAsync("valid-flag"))
+            .ReturnsAsync(false);
+        _featureFlagRepositoryMock
+            .Setup(r => r.AddAsync(It.IsAny<FeatureFlag>()))
+            .ReturnsAsync((FeatureFlag f) => f);
+
+        // Act
+        var created = await _service.CreateFeatureFlagAsync(featureFlag, "admin");
+
+        // Assert
+        created.Key.Should().Be("valid-flag");
+        _featureFlagRepositoryMock.Verify(r => r.AddAsync(It.IsAny<FeatureFlag>()), Times.Once);
     }
 
     [Fact]
