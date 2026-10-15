@@ -191,6 +191,102 @@ public static class Program
 }
 ```
 
+## ASP.NET Core integration
+
+`AddFeatureFlagServices` is the single registration call. It registers the flag store behind `IFeatureFlagService`, the rule and rollout evaluators it uses (`IRuleEvaluationService` and `IPercentageRolloutService`), and `IAuditLogService` for reading the audit trail. Inject `IFeatureFlagService` wherever a flag is evaluated or changed. The three blocks below are parts of one `Program.cs` that uses minimal hosting.
+
+### Registration in Program.cs
+
+```csharp
+using FeatureFlags.Configuration;
+using FeatureFlags.Data;
+using FeatureFlags.Models;
+using FeatureFlags.Services;
+using Microsoft.EntityFrameworkCore;
+
+var builder = WebApplication.CreateBuilder(args);
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+builder.Services.AddDbContext<FeatureFlagDbContext>(options =>
+    options.UseSqlServer(connectionString));
+
+// Registers the flag store (IFeatureFlagService), the rule and rollout evaluators,
+// and IAuditLogService.
+builder.Services.AddFeatureFlagServices(builder.Configuration);
+
+var app = builder.Build();
+```
+
+### Injecting the engine into a minimal API endpoint
+
+`IsEnabledAsync` throws when the `UserContext` has no `UserId` or `Email`, so the handler validates the body first. Binding is case-insensitive, so `userId` and `UserId` both work.
+
+```csharp
+app.MapPost("/flags/{key}/evaluate", async (string key, UserContext user, IFeatureFlagService flags) =>
+{
+    if (!user.IsValid())
+    {
+        return Results.BadRequest("UserId and Email are required.");
+    }
+
+    bool enabled = await flags.IsEnabledAsync(key, user);
+
+    return Results.Ok(new { key, user.UserId, enabled });
+});
+```
+
+A request to `POST /flags/checkout-v2/evaluate` with the body `{"userId":"user-42","email":"jane@example.com"}` returns:
+
+```json
+{"key":"checkout-v2","userId":"user-42","enabled":false}
+```
+
+`enabled` depends on the user's rollout bucket, so it can be `true` for other users.
+
+### Runtime updates
+
+The `PUT` endpoint changes the rollout percentage of a flag with `RolloutType.Percentage`. `UpdateFeatureFlagAsync` writes an `Updated` audit entry, and `IAuditLogService.GetLastChangeAsync` reads it back. The endpoint has no authentication, so add authorization before exposing admin routes.
+
+```csharp
+app.MapPut("/admin/flags/{key}/rollout", async (string key, int percentage, string changedBy, IFeatureFlagService flags, IAuditLogService audit) =>
+{
+    if (percentage is < 0 or > 100)
+    {
+        return Results.BadRequest("percentage must be between 0 and 100.");
+    }
+
+    var flag = await flags.GetFeatureFlagByKeyAsync(key);
+    if (flag is null)
+    {
+        return Results.NotFound();
+    }
+
+    flag.PercentageRollout = percentage;
+    await flags.UpdateFeatureFlagAsync(flag, changedBy);
+
+    var entry = await audit.GetLastChangeAsync(flag.Id);
+
+    return Results.Ok(new { Summary = entry?.GetSummary(), entry?.NewValue });
+});
+
+app.Run();
+```
+
+```
+PUT /admin/flags/checkout-v2/rollout?percentage=50&changedBy=ops@example.com
+```
+
+```json
+{
+  "summary": "Updated by ops@example.com at 2026-10-15 07:49:58: Feature flag updated",
+  "newValue": "Key:checkout-v2|IsEnabled:True|RolloutType:Percentage|Percentage:50|VariantCount:0"
+}
+```
+
+The summary timestamp is UTC. The endpoint returns `400` for a percentage outside 0 to 100 and `404` for an unknown key.
+
 ## Architecture
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the solution layout, evaluation data flow, DI composition, design decisions and known limitations. The sections below are per-type reference docs.
