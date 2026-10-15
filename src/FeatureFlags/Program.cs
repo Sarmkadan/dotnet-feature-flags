@@ -28,6 +28,9 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<FeatureFlagDbContext>(options =>
     options.UseSqlServer(connectionString));
 
+// Validate feature flag options at startup (fails fast on misconfiguration)
+builder.Services.AddFeatureFlags(options => builder.Configuration.GetSection("FeatureFlags").Bind(options));
+
 // Register feature flag services
 builder.Services.AddFeatureFlagServices(builder.Configuration);
 

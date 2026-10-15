@@ -10,6 +10,7 @@ using FeatureFlags.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace FeatureFlags.Configuration;
 
@@ -50,6 +51,30 @@ public static class DependencyInjectionExtensions
 
         // Register configuration
         services.Configure<FeatureFlagOptions>(configuration.GetSection("FeatureFlags"));
+
+        return services;
+    }
+
+    /// <summary>
+    /// Registers <see cref="FeatureFlagOptions"/> with validation that runs at host startup.
+    /// A misconfigured option makes the host fail to start, with a message naming the property and value.
+    /// </summary>
+    /// <param name="services">The service collection to register options with.</param>
+    /// <param name="configure">Action that configures the feature flag options.</param>
+    /// <returns>The configured service collection.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="services"/> or <paramref name="configure"/> is null.
+    /// </exception>
+    public static IServiceCollection AddFeatureFlags(this IServiceCollection services, Action<FeatureFlagOptions> configure)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configure);
+
+        services.AddOptions<FeatureFlagOptions>()
+            .Configure(configure)
+            .ValidateOnStart();
+
+        services.AddSingleton<IValidateOptions<FeatureFlagOptions>, FeatureFlagOptionsValidator>();
 
         return services;
     }
