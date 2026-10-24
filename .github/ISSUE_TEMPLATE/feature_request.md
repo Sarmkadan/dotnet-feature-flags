@@ -6,7 +6,7 @@ labels: enhancement
 assignees: ''
 ---
 
-## Problem Statement
+## Problem
 A clear description of the problem or limitation.
 
 ## Proposed Solution
