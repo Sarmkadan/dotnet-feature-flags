@@ -4758,3 +4758,7 @@ var ageCondition = new Condition
 };
 bool isAdult = ageCondition.Evaluate("30"); // Returns true
 ```
+
+## License
+
+Licensed under the [MIT License](LICENSE).
