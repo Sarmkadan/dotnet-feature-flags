@@ -57,7 +57,7 @@ public sealed class ApiResponse<T>
     {
         if (result.IsSuccess)
         {
-            return Ok(result.Data);
+            return Ok(result.Data!);
         }
 
         return Fail(result.Error ?? defaultError ?? "Operation failed");

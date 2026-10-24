@@ -1,10 +1,10 @@
 #nullable enable
 
+using System;
+using System.Threading.Tasks;
 using FeatureFlags.Utilities;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace FeatureFlags.Tests;

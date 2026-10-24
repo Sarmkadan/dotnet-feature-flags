@@ -61,7 +61,7 @@ public sealed class CsvFormatterTests
                 Action = AuditAction.Created,
                 ChangedBy = "admin",
                 ChangedAt = DateTime.UtcNow,
-                OldValue = null,
+                OldValue = null!,
                 NewValue = "created"
             }
         };
@@ -157,7 +157,7 @@ public sealed class XmlFormatterTests
                 Action = AuditAction.Created,
                 ChangedBy = "admin",
                 ChangedAt = DateTime.UtcNow,
-                OldValue = null,
+                OldValue = null!,
                 NewValue = "created"
             }
         };

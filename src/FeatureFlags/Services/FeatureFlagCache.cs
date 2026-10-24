@@ -189,7 +189,7 @@ public sealed class FeatureFlagCache : IFeatureFlagCache, IEventSubscriber, IDis
     /// <summary>
     /// Handles feature flag events and invalidates cache when flags are modified.
     /// </summary>
-    /// <param name="@event">The feature flag event.</param>
+    /// <param name="event">The feature flag event.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     public async Task HandleEventAsync(FeatureFlagEvent @event, CancellationToken cancellationToken = default)
     {

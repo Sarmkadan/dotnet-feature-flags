@@ -42,7 +42,7 @@ public class ResultExtensionsTests
     public void Map_WithNullResult_ThrowsArgumentNullException()
     {
         // Arrange
-        Result<int> result = null;
+        Result<int> result = null!;
         Func<int, string> transform = x => x.ToString();
 
         // Act & Assert
@@ -54,7 +54,7 @@ public class ResultExtensionsTests
     {
         // Arrange
         var result = Result<int>.Success(10);
-        Func<int, string> transform = null;
+        Func<int, string> transform = null!;
 
         // Act & Assert
         Assert.Throws<ArgumentNullException>(() => ResultExtensions.Map(result, transform));
@@ -94,7 +94,7 @@ public class ResultExtensionsTests
     public void OnSuccess_WithNullResult_ThrowsArgumentNullException()
     {
         // Arrange
-        Result<int> result = null;
+        Result<int> result = null!;
         Action<int> action = _ => { };
 
         // Act & Assert
@@ -106,7 +106,7 @@ public class ResultExtensionsTests
     {
         // Arrange
         var result = Result<int>.Success(42);
-        Action<int> action = null;
+        Action<int> action = null!;
 
         // Act & Assert
         Assert.Throws<ArgumentNullException>(() => ResultExtensions.OnSuccess(result, action));
@@ -155,7 +155,7 @@ public class ResultExtensionsTests
     public void OnFailure_WithNullResult_ThrowsArgumentNullException()
     {
         // Arrange
-        Result<int> result = null;
+        Result<int> result = null!;
         Action<string?, int?> action = (_, __) => { };
 
         // Act & Assert
@@ -167,7 +167,7 @@ public class ResultExtensionsTests
     {
         // Arrange
         var result = Result<int>.Failure("error");
-        Action<string?, int?> action = null;
+        Action<string?, int?> action = null!;
 
         // Act & Assert
         Assert.Throws<ArgumentNullException>(() => ResultExtensions.OnFailure(result, action));
@@ -216,7 +216,7 @@ public class ResultExtensionsTests
     public void OnFailure_NonGeneric_WithNullResult_ThrowsArgumentNullException()
     {
         // Arrange
-        Result result = null;
+        Result result = null!;
         Action<string?, int?> action = (_, __) => { };
 
         // Act & Assert
@@ -228,7 +228,7 @@ public class ResultExtensionsTests
     {
         // Arrange
         var result = Result.Failure("error");
-        Action<string?, int?> action = null;
+        Action<string?, int?> action = null!;
 
         // Act & Assert
         Assert.Throws<ArgumentNullException>(() => ResultExtensions.OnFailure(result, action));

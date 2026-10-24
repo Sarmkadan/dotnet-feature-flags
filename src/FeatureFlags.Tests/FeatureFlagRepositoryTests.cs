@@ -1,5 +1,6 @@
 #nullable enable
 
+using System.Linq.Expressions;
 using FeatureFlags.Data;
 using FeatureFlags.Models;
 using FeatureFlags.Repository;
@@ -8,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System.Linq.Expressions;
 using Xunit;
 
 namespace FeatureFlags.Tests;

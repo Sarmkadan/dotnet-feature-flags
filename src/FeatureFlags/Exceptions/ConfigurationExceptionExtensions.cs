@@ -1,7 +1,7 @@
 using System;
 
-namespace FeatureFlags.Exceptions
-{
+namespace FeatureFlags.Exceptions;
+
 	/// <summary>
 	/// Provides extension methods for <see cref="ConfigurationException"/> and its derived types.
 	/// </summary>
@@ -64,4 +64,3 @@ namespace FeatureFlags.Exceptions
 				: exception.Message;
 		}
 	}
-}

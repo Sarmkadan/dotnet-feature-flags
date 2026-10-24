@@ -19,10 +19,8 @@ public static class DateTimeExtensions
     /// </summary>
     /// <param name="dateTime">The DateTime to convert.</param>
     /// <returns>Unix timestamp in seconds.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when the dateTime parameter is null.</exception>
     public static long ToUnixTimestamp(this DateTime dateTime)
     {
-        ArgumentNullException.ThrowIfNull(dateTime);
         return (long)(dateTime.ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds;
     }
 
@@ -41,10 +39,8 @@ public static class DateTimeExtensions
     /// </summary>
     /// <param name="dateTime">The DateTime to get the start of day for.</param>
     /// <returns>DateTime representing the start of the day.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when the dateTime parameter is null.</exception>
     public static DateTime StartOfDay(this DateTime dateTime)
     {
-        ArgumentNullException.ThrowIfNull(dateTime);
         return dateTime.Date;
     }
 
@@ -53,10 +49,8 @@ public static class DateTimeExtensions
     /// </summary>
     /// <param name="dateTime">The DateTime to get the end of day for.</param>
     /// <returns>DateTime representing the end of the day.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when the dateTime parameter is null.</exception>
     public static DateTime EndOfDay(this DateTime dateTime)
     {
-        ArgumentNullException.ThrowIfNull(dateTime);
         return dateTime.Date.AddDays(1).AddMilliseconds(-1);
     }
 
@@ -65,10 +59,8 @@ public static class DateTimeExtensions
     /// </summary>
     /// <param name="dateTime">The DateTime to get the start of week for.</param>
     /// <returns>DateTime representing the start of the week (Monday at 00:00:00).</returns>
-    /// <exception cref="ArgumentNullException">Thrown when the dateTime parameter is null.</exception>
     public static DateTime StartOfWeek(this DateTime dateTime)
     {
-        ArgumentNullException.ThrowIfNull(dateTime);
         var daysToSubtract = (int)dateTime.DayOfWeek - (int)DayOfWeek.Monday;
         if (daysToSubtract < 0)
         {
@@ -83,10 +75,8 @@ public static class DateTimeExtensions
     /// </summary>
     /// <param name="dateTime">The DateTime to get the start of month for.</param>
     /// <returns>DateTime representing the first day of the month at 00:00:00.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when the dateTime parameter is null.</exception>
     public static DateTime StartOfMonth(this DateTime dateTime)
     {
-        ArgumentNullException.ThrowIfNull(dateTime);
         return new DateTime(dateTime.Year, dateTime.Month, 1);
     }
 
@@ -95,10 +85,8 @@ public static class DateTimeExtensions
     /// </summary>
     /// <param name="dateTime">The DateTime to get the end of month for.</param>
     /// <returns>DateTime representing the last day of the month at 23:59:59.999.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when the dateTime parameter is null.</exception>
     public static DateTime EndOfMonth(this DateTime dateTime)
     {
-        ArgumentNullException.ThrowIfNull(dateTime);
         return dateTime.StartOfMonth().AddMonths(1).AddDays(-1).EndOfDay();
     }
 
@@ -107,10 +95,8 @@ public static class DateTimeExtensions
     /// </summary>
     /// <param name="dateTime">The DateTime to get the start of year for.</param>
     /// <returns>DateTime representing January 1 of the current year at 00:00:00.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when the dateTime parameter is null.</exception>
     public static DateTime StartOfYear(this DateTime dateTime)
     {
-        ArgumentNullException.ThrowIfNull(dateTime);
         return new DateTime(dateTime.Year, 1, 1);
     }
 
@@ -121,10 +107,8 @@ public static class DateTimeExtensions
     /// <param name="startDate">The start of the range.</param>
     /// <param name="endDate">The end of the range.</param>
     /// <returns>True if the dateTime falls within the range; otherwise false.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when the dateTime parameter is null.</exception>
     public static bool IsBetween(this DateTime dateTime, DateTime startDate, DateTime endDate)
     {
-        ArgumentNullException.ThrowIfNull(dateTime);
         return dateTime >= startDate && dateTime <= endDate;
     }
 
@@ -134,10 +118,8 @@ public static class DateTimeExtensions
     /// <param name="startDate">The start date of the range.</param>
     /// <param name="endDate">The end date of the range.</param>
     /// <returns>The number of business days between the two dates.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when the startDate parameter is null.</exception>
     public static int GetBusinessDaysBetween(this DateTime startDate, DateTime endDate)
     {
-        ArgumentNullException.ThrowIfNull(startDate);
 
         var count = 0;
         var current = startDate;
@@ -160,10 +142,8 @@ public static class DateTimeExtensions
     /// </summary>
     /// <param name="dateTime">The DateTime to get the relative time for.</param>
     /// <returns>A human-readable string representing the time difference.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when the dateTime parameter is null.</exception>
     public static string ToRelativeTime(this DateTime dateTime)
     {
-        ArgumentNullException.ThrowIfNull(dateTime);
         var span = DateTime.UtcNow - dateTime;
 
         return span.TotalSeconds < 60
@@ -182,10 +162,8 @@ public static class DateTimeExtensions
     /// </summary>
     /// <param name="dateTime">The DateTime to check.</param>
     /// <returns>True if the date is today; otherwise false.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when the dateTime parameter is null.</exception>
     public static bool IsToday(this DateTime dateTime)
     {
-        ArgumentNullException.ThrowIfNull(dateTime);
         return dateTime.Date == DateTime.Today;
     }
 
@@ -194,10 +172,8 @@ public static class DateTimeExtensions
     /// </summary>
     /// <param name="dateTime">The DateTime to check.</param>
     /// <returns>True if the date is in the past; otherwise false.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when the dateTime parameter is null.</exception>
     public static bool IsPast(this DateTime dateTime)
     {
-        ArgumentNullException.ThrowIfNull(dateTime);
         return dateTime < DateTime.UtcNow;
     }
 
@@ -206,10 +182,8 @@ public static class DateTimeExtensions
     /// </summary>
     /// <param name="dateTime">The DateTime to check.</param>
     /// <returns>True if the date is in the future; otherwise false.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when the dateTime parameter is null.</exception>
     public static bool IsFuture(this DateTime dateTime)
     {
-        ArgumentNullException.ThrowIfNull(dateTime);
         return dateTime > DateTime.UtcNow;
     }
 
@@ -219,11 +193,9 @@ public static class DateTimeExtensions
     /// <param name="dateTime">The DateTime to round.</param>
     /// <param name="span">The TimeSpan interval to round to.</param>
     /// <returns>DateTime rounded to the nearest specified interval.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when the dateTime parameter is null.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when the span parameter is zero or negative.</exception>
     public static DateTime RoundTo(this DateTime dateTime, TimeSpan span)
     {
-        ArgumentNullException.ThrowIfNull(dateTime);
         ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(span, TimeSpan.Zero);
 
         var delta = (dateTime.Ticks % span.Ticks + span.Ticks / 2) / span.Ticks;

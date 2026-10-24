@@ -45,7 +45,8 @@ public class WebhookController : ControllerBase
     /// Receives and validates an incoming webhook payload from an external system.
     /// Validates the payload size BEFORE reading the full body to prevent DoS via excessive memory allocation.
     /// </summary>
-    /// <param name="request">The incoming webhook request.</param>
+    /// <param name="webhookId">The identifier of the webhook receiving the payload.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>200 OK if validation succeeds, 413 Payload Too Large if payload exceeds limit.</returns>
     /// <remarks>
     /// This endpoint accepts webhook payloads from external systems that need to notify this application

@@ -1,10 +1,10 @@
+using System.Net;
+using System.Security.Claims;
 using FeatureFlags.Middleware;
+using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using Xunit;
-using FluentAssertions;
-using System.Security.Claims;
-using System.Net;
 
 namespace FeatureFlags.Tests;
 

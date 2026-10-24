@@ -1,6 +1,6 @@
 using System;
-using FeatureFlags.Models;
 using FeatureFlags.Enums;
+using FeatureFlags.Models;
 using Xunit;
 
 namespace FeatureFlags.Tests;

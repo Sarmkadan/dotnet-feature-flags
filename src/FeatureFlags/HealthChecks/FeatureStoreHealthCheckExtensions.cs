@@ -45,6 +45,6 @@ public static class FeatureStoreHealthCheckExtensions
         builder.Services.TryAddSingleton(TimeProvider.System);
         builder.Services.TryAddSingleton<FeatureStoreRefreshTracker>();
 
-        return builder.AddCheck<FeatureStoreHealthCheck>(name, failureStatus, tags);
+        return builder.AddCheck<FeatureStoreHealthCheck>(name, failureStatus, tags ?? Enumerable.Empty<string>());
     }
 }

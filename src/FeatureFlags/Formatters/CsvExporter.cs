@@ -21,7 +21,7 @@ public static class CsvExporter
     /// </summary>
     public static string ExportFeatureFlags(IEnumerable<FeatureFlag> flags, bool includeRules = false)
     {
-        ArgumentNullException.ThrowIfNull(nameof(flags));
+        ArgumentNullException.ThrowIfNull(flags);
         var sb = new StringBuilder();
 
         // Write header
@@ -66,7 +66,7 @@ public static class CsvExporter
     /// </summary>
     public static string ExportAuditLogs(IEnumerable<AuditLog> logs)
     {
-        ArgumentNullException.ThrowIfNull(nameof(logs));
+        ArgumentNullException.ThrowIfNull(logs);
         var sb = new StringBuilder();
 
         // Write header
@@ -123,7 +123,7 @@ public static class CsvParser
     /// </summary>
     public static List<FeatureFlag> ParseFeatureFlags(string csvContent)
     {
-        ArgumentException.ThrowIfNullOrEmpty(nameof(csvContent));
+        ArgumentException.ThrowIfNullOrEmpty(csvContent);
         var flags = new List<FeatureFlag>();
         var lines = csvContent.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
 

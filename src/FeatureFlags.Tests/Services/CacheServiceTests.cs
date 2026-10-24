@@ -150,7 +150,7 @@ public sealed class CacheServiceTests
         var cache = new InMemoryCacheService(_logger);
 
         // Act & Assert - Should not throw
-        cache.Set(null, "value");
+        cache.Set(null!, "value");
         cache.Set(string.Empty, "value");
     }
 
