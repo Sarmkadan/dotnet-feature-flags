@@ -3,144 +3,143 @@ using System.Text.RegularExpressions;
 using FeatureFlags.Utilities;
 using Xunit;
 
-namespace FeatureFlags.Tests
+namespace FeatureFlags.Tests;
+
+/// <summary>
+/// Test class for the PaginationHelper.GetItemRange method.
+/// </summary>
+public class PaginationHelperTests
 {
-    /// <summary>
-    /// Test class for the PaginationHelper.GetItemRange method.
-    /// </summary>
-    public class PaginationHelperTests
+    private static (int start, int end, int total) ParseRange(string range)
     {
-        private static (int start, int end, int total) ParseRange(string range)
+        // Expected format: "X-Y of Z"
+        var match = Regex.Match(range, @"^\s*(\d+)-(\d+)\s+of\s+(\d+)\s*$", RegexOptions.IgnoreCase);
+        if (!match.Success)
         {
-            // Expected format: "X-Y of Z"
-            var match = Regex.Match(range, @"^\s*(\d+)-(\d+)\s+of\s+(\d+)\s*$", RegexOptions.IgnoreCase);
-            if (!match.Success)
-            {
-                throw new FormatException($"Unexpected range format: '{range}'");
-            }
-
-            return (
-                int.Parse(match.Groups[1].Value),
-                int.Parse(match.Groups[2].Value),
-                int.Parse(match.Groups[3].Value)
-            );
+            throw new FormatException($"Unexpected range format: '{range}'");
         }
 
-        /// <summary>
-        /// Tests that GetItemRange returns the correct range for a normal page (not first or last).
-        /// </summary>
-        [Fact]
-        public void GetItemRange_NormalPage_ReturnsCorrectRange()
-        {
-            // Arrange
-            int pageNumber = 2;
-            int pageSize = 10;
-            int totalCount = 35;
+        return (
+            int.Parse(match.Groups[1].Value),
+            int.Parse(match.Groups[2].Value),
+            int.Parse(match.Groups[3].Value)
+        );
+    }
 
-            // Act
-            string result = PaginationHelper.GetItemRange(pageNumber, pageSize, totalCount);
+    /// <summary>
+    /// Tests that GetItemRange returns the correct range for a normal page (not first or last).
+    /// </summary>
+    [Fact]
+    public void GetItemRange_NormalPage_ReturnsCorrectRange()
+    {
+        // Arrange
+        int pageNumber = 2;
+        int pageSize = 10;
+        int totalCount = 35;
 
-            // Assert
-            var (start, end, total) = ParseRange(result);
-            Assert.Equal(11, start);
-            Assert.Equal(20, end);
-            Assert.Equal(totalCount, total);
-        }
+        // Act
+        string result = PaginationHelper.GetItemRange(pageNumber, pageSize, totalCount);
 
-        /// <summary>
-        /// Tests that GetItemRange returns the correct range for the last page when the total count is not a multiple of page size.
-        /// </summary>
-        [Fact]
-        public void GetItemRange_LastPartialPage_ReturnsCorrectRange()
-        {
-            // Arrange
-            int pageNumber = 4;
-            int pageSize = 10;
-            int totalCount = 35;
+        // Assert
+        var (start, end, total) = ParseRange(result);
+        Assert.Equal(11, start);
+        Assert.Equal(20, end);
+        Assert.Equal(totalCount, total);
+    }
 
-            // Act
-            string result = PaginationHelper.GetItemRange(pageNumber, pageSize, totalCount);
+    /// <summary>
+    /// Tests that GetItemRange returns the correct range for the last page when the total count is not a multiple of page size.
+    /// </summary>
+    [Fact]
+    public void GetItemRange_LastPartialPage_ReturnsCorrectRange()
+    {
+        // Arrange
+        int pageNumber = 4;
+        int pageSize = 10;
+        int totalCount = 35;
 
-            // Assert
-            var (start, end, total) = ParseRange(result);
-            Assert.Equal(31, start);
-            Assert.Equal(35, end);
-            Assert.Equal(totalCount, total);
-        }
+        // Act
+        string result = PaginationHelper.GetItemRange(pageNumber, pageSize, totalCount);
 
-        /// <summary>
-        /// Tests that GetItemRange returns a range where start is greater than end when the page number is beyond the last page.
-        /// </summary>
-        [Fact]
-        public void GetItemRange_PageBeyondRange_ReturnsRangeWithStartGreaterThanEnd()
-        {
-            // Arrange
-            int pageNumber = 5; // beyond the last page (only 4 pages exist)
-            int pageSize = 10;
-            int totalCount = 35;
+        // Assert
+        var (start, end, total) = ParseRange(result);
+        Assert.Equal(31, start);
+        Assert.Equal(35, end);
+        Assert.Equal(totalCount, total);
+    }
 
-            // Act
-            string result = PaginationHelper.GetItemRange(pageNumber, pageSize, totalCount);
+    /// <summary>
+    /// Tests that GetItemRange returns a range where start is greater than end when the page number is beyond the last page.
+    /// </summary>
+    [Fact]
+    public void GetItemRange_PageBeyondRange_ReturnsRangeWithStartGreaterThanEnd()
+    {
+        // Arrange
+        int pageNumber = 5; // beyond the last page (only 4 pages exist)
+        int pageSize = 10;
+        int totalCount = 35;
 
-            // Assert - when start > totalCount, returns "0 of N"
-            Assert.Equal("0 of 35", result);
-        }
+        // Act
+        string result = PaginationHelper.GetItemRange(pageNumber, pageSize, totalCount);
 
-        /// <summary>
-        /// Tests that GetItemRange throws an ArgumentException when pageSize is zero.
-        /// </summary>
-        [Fact]
-        public void GetItemRange_PageSizeZero_ThrowsArgumentException()
-        {
-            // Arrange - pageSize 0 is normalized to MinPageSize (1) by ValidateAndNormalizePaging
-            int pageNumber = 1;
-            int pageSize = 0;
-            int totalCount = 35;
+        // Assert - when start > totalCount, returns "0 of N"
+        Assert.Equal("0 of 35", result);
+    }
 
-            // Act
-            string result = PaginationHelper.GetItemRange(pageNumber, pageSize, totalCount);
+    /// <summary>
+    /// Tests that GetItemRange throws an ArgumentException when pageSize is zero.
+    /// </summary>
+    [Fact]
+    public void GetItemRange_PageSizeZero_ThrowsArgumentException()
+    {
+        // Arrange - pageSize 0 is normalized to MinPageSize (1) by ValidateAndNormalizePaging
+        int pageNumber = 1;
+        int pageSize = 0;
+        int totalCount = 35;
 
-            // Assert - normalized to pageSize=1
-            Assert.Equal("1-1 of 35", result);
-        }
+        // Act
+        string result = PaginationHelper.GetItemRange(pageNumber, pageSize, totalCount);
 
-        /// <summary>
-        /// Tests that GetItemRange throws an ArgumentException when pageSize is negative.
-        /// </summary>
-        [Fact]
-        public void GetItemRange_PageSizeNegative_ThrowsArgumentException()
-        {
-            // Arrange - negative pageSize is normalized to MinPageSize (1) by ValidateAndNormalizePaging
-            int pageNumber = 1;
-            int pageSize = -5;
-            int totalCount = 35;
+        // Assert - normalized to pageSize=1
+        Assert.Equal("1-1 of 35", result);
+    }
 
-            // Act
-            string result = PaginationHelper.GetItemRange(pageNumber, pageSize, totalCount);
+    /// <summary>
+    /// Tests that GetItemRange throws an ArgumentException when pageSize is negative.
+    /// </summary>
+    [Fact]
+    public void GetItemRange_PageSizeNegative_ThrowsArgumentException()
+    {
+        // Arrange - negative pageSize is normalized to MinPageSize (1) by ValidateAndNormalizePaging
+        int pageNumber = 1;
+        int pageSize = -5;
+        int totalCount = 35;
 
-            // Assert - normalized to pageSize=1
-            Assert.Equal("1-1 of 35", result);
-        }
+        // Act
+        string result = PaginationHelper.GetItemRange(pageNumber, pageSize, totalCount);
 
-        /// <summary>
-        /// Tests that GetItemRange calculates the correct range and total count for given parameters.
-        /// </summary>
-        [Fact]
-        public void GetItemRange_TotalCountMath_CalculatesCorrectly()
-        {
-            // Arrange
-            int pageNumber = 3;
-            int pageSize = 7;
-            int totalCount = 20;
+        // Assert - normalized to pageSize=1
+        Assert.Equal("1-1 of 35", result);
+    }
 
-            // Act
-            string result = PaginationHelper.GetItemRange(pageNumber, pageSize, totalCount);
+    /// <summary>
+    /// Tests that GetItemRange calculates the correct range and total count for given parameters.
+    /// </summary>
+    [Fact]
+    public void GetItemRange_TotalCountMath_CalculatesCorrectly()
+    {
+        // Arrange
+        int pageNumber = 3;
+        int pageSize = 7;
+        int totalCount = 20;
 
-            // Assert
-            var (start, end, total) = ParseRange(result);
-            Assert.Equal(15, start); // (3-1)*7 + 1
-            Assert.Equal(20, end);   // capped at totalCount
-            Assert.Equal(totalCount, total);
-        }
+        // Act
+        string result = PaginationHelper.GetItemRange(pageNumber, pageSize, totalCount);
+
+        // Assert
+        var (start, end, total) = ParseRange(result);
+        Assert.Equal(15, start); // (3-1)*7 + 1
+        Assert.Equal(20, end);   // capped at totalCount
+        Assert.Equal(totalCount, total);
     }
 }

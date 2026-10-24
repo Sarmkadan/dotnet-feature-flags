@@ -151,10 +151,10 @@ public sealed class GradualRolloutSchedulerWorkerTests
     }
 
     [Theory]
-    [InlineData(15, 60)]
-    [InlineData(30, 30)]
-    [InlineData(1440, 60)] // 24 hours
-    public void GradualRolloutSchedulerWorker_CheckIntervalMinutes_FromOptions(int setInterval, int defaultInterval)
+    [InlineData(15)]
+    [InlineData(30)]
+    [InlineData(1440)] // 24 hours
+    public void GradualRolloutSchedulerWorker_CheckIntervalMinutes_FromOptions(int setInterval)
     {
         // Arrange
         var options = new GradualRolloutSchedulerOptions { CheckIntervalMinutes = setInterval };

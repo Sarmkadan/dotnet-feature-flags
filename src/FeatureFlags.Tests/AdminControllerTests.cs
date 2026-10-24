@@ -5,15 +5,15 @@
 // =============================================================================
 
 using System.Security.Claims;
+using FeatureFlags.Caching;
 using FeatureFlags.Controllers;
 using FeatureFlags.Integration;
 using FeatureFlags.Services;
-using FeatureFlags.Caching;
+using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
-using FluentAssertions;
 using Xunit;
 
 namespace FeatureFlags.Tests.Controllers;

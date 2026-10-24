@@ -37,7 +37,7 @@ public interface IEventSubscriber
     /// <summary>
     /// Handles the event when it occurs.
     /// </summary>
-    /// <param name="@event">The event to handle</param>
+    /// <param name="event">The event to handle</param>
     /// <param name="cancellationToken">Cancellation token</param>
     Task HandleEventAsync(FeatureFlagEvent @event, CancellationToken cancellationToken = default);
 }
@@ -257,9 +257,9 @@ public sealed class EventBus : IEventBus
         await PublishAsync(@event, cancellationToken);
     }
 
-    Task IEventBus.PublishAsync(FeatureFlagEvent @event, CancellationToken cancellationToken = default) => PublishAsync(@event, cancellationToken);
+    Task IEventBus.PublishAsync(FeatureFlagEvent @event, CancellationToken cancellationToken) => PublishAsync(@event, cancellationToken);
 
-    Task IEventBus.PublishAsync(string eventType, int featureFlagId, string featureFlagKey, string triggeredBy, Dictionary<string, object?>? metadata, CancellationToken cancellationToken = default)
+    Task IEventBus.PublishAsync(string eventType, int featureFlagId, string featureFlagKey, string triggeredBy, Dictionary<string, object?>? metadata, CancellationToken cancellationToken)
         => PublishAsync(eventType, featureFlagId, featureFlagKey, triggeredBy, metadata, cancellationToken);
 }
 

@@ -137,7 +137,7 @@ public static class DatabaseSeeder
             FeatureFlagId = 0,
             Action = AuditAction.Created,
             ChangedBy = "system",
-            OldValue = null,
+            OldValue = string.Empty,
             NewValue = "payment-v2 created",
             ChangedAt = now.AddDays(-30),
             Description = "Feature flag created with 0% rollout"

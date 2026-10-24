@@ -21,7 +21,7 @@ public static class ResultHelperExtensions
         ArgumentNullException.ThrowIfNull(binder);
 
         return result.IsSuccess
-            ? binder(result.Data)
-            : Result<TOut>.Failure(result.Error, result.ErrorCode);
+            ? binder(result.Data!)
+            : Result<TOut>.Failure(result.Error ?? "Unknown error", result.ErrorCode);
     }
 }

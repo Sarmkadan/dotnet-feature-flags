@@ -6,10 +6,10 @@
 
 using FeatureFlags.Models;
 using FeatureFlags.Services;
+using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
-using FluentAssertions;
 
 namespace FeatureFlags.Tests.Services;
 

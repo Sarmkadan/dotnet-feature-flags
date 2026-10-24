@@ -5,8 +5,8 @@
 // =====================================================================
 
 using FeatureFlags.Models;
-using Xunit;
 using FluentAssertions;
+using Xunit;
 
 namespace FeatureFlags.Tests.Models;
 

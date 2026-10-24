@@ -3,7 +3,13 @@
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <!-- Backlog, still reported as warnings: CS1591 (public members without XML docs) and IDE0073
+         (file header; .editorconfig expects a copyright line, the code uses the author block). -->
+    <WarningsNotAsErrors>CS1591;IDE0073</WarningsNotAsErrors>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <Deterministic>true</Deterministic>
     <Authors>Vladyslav Zaiets</Authors>
     <PackageProjectUrl>https://github.com/sarmkadan/dotnet-feature-flags</PackageProjectUrl>
   </PropertyGroup>

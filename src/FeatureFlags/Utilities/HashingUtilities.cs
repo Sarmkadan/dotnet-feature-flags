@@ -116,8 +116,7 @@ public static class HashingUtilities
         var salt = new byte[saltSize];
         rng.GetBytes(salt);
 
-        using var pbkdf2 = new Rfc2898DeriveBytes(password, salt, iterations, HashAlgorithmName.SHA256);
-        var hash = pbkdf2.GetBytes(hashSize);
+        var hash = Rfc2898DeriveBytes.Pbkdf2(password, salt, iterations, HashAlgorithmName.SHA256, hashSize);
 
         var hashBytes = new byte[saltSize + hashSize];
         Array.Copy(salt, 0, hashBytes, 0, saltSize);
@@ -148,8 +147,7 @@ public static class HashingUtilities
             var salt = new byte[saltSize];
             Array.Copy(hashBytes, 0, salt, 0, saltSize);
 
-            using var pbkdf2 = new Rfc2898DeriveBytes(password, salt, iterations, HashAlgorithmName.SHA256);
-            var computedHash = pbkdf2.GetBytes(hashSize);
+            var computedHash = Rfc2898DeriveBytes.Pbkdf2(password, salt, iterations, HashAlgorithmName.SHA256, hashSize);
 
             // Constant-time comparison to prevent timing attacks
             for (int i = 0; i < hashSize; i++)

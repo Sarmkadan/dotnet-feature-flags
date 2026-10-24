@@ -21,8 +21,8 @@ public static class ResultExtensions
         ArgumentNullException.ThrowIfNull(selector);
 
         return result.IsSuccess
-            ? Result<TOut>.Success(selector(result.Data))
-            : Result<TOut>.Failure(result.Error, result.ErrorCode);
+            ? Result<TOut>.Success(selector(result.Data!))
+            : Result<TOut>.Failure(result.Error ?? "Unknown error", result.ErrorCode);
     }
 
     /// <summary>
@@ -40,7 +40,7 @@ public static class ResultExtensions
 
         if (result.IsSuccess)
         {
-            action(result.Data);
+            action(result.Data!);
         }
 
         return result;

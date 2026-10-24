@@ -1,11 +1,11 @@
-using FeatureFlags.Middleware;
+using System.Net;
 using FeatureFlags.Exceptions;
+using FeatureFlags.Middleware;
+using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
-using FluentAssertions;
-using System.Net;
 
 namespace FeatureFlags.Tests;
 
