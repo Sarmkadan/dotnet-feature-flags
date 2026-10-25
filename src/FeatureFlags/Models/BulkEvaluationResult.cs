@@ -36,4 +36,9 @@ public sealed class BulkEvaluationResult
     /// Only populated if Reason indicates percentage-based evaluation.
     /// </summary>
     public int? Percentage { get; set; }
+
+    /// <summary>
+    /// Returns a one-line summary of the evaluation result.
+    /// </summary>
+    public override string ToString() => $"BulkEvaluationResult {{ Enabled = {Enabled}, Variant = {Variant}, Reason = {Reason}, Percentage = {Percentage} }}";
 }
