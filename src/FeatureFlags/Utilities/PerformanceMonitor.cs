@@ -12,7 +12,8 @@ namespace FeatureFlags.Utilities;
 /// Performance monitoring utility for measuring operation execution time and tracking metrics.
 /// Helps identify performance bottlenecks and track service performance over time.
 /// </summary>
-public sealed class PerformanceMonitor : IDisposable {
+public sealed class PerformanceMonitor : IDisposable
+{
     private readonly Stopwatch _stopwatch;
     private readonly string _operationName;
     private readonly ILogger<PerformanceMonitor> _logger;
@@ -23,7 +24,7 @@ public sealed class PerformanceMonitor : IDisposable {
     {
         _operationName = operationName ?? throw new ArgumentNullException(nameof(operationName));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _logger.LogInformation("Starting {OperationName}", operationName);
+        _logger.LogInformation("Starting {OperationName}", operationName);
         _warningThresholdMs = warningThresholdMs;
         _stopwatch = Stopwatch.StartNew();
     }
