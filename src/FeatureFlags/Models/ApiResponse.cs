@@ -62,6 +62,8 @@ public sealed class ApiResponse<T>
 
         return Fail(result.Error ?? defaultError ?? "Operation failed");
     }
+
+    public override string ToString() => $"ApiResponse<{typeof(T).Name}> {{ Success = {Success}, Message = {Message} }}";
 }
 
 /// <summary>
