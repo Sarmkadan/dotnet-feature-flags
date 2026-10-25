@@ -25,7 +25,19 @@ public static class CsvExporter
         var sb = new StringBuilder();
 
         // Write header
-        var headers = new[] { "Id", "Key", "DisplayName", "Description", "IsEnabled", "RolloutType", "PercentageRollout", "CreatedAt", "UpdatedAt", "CreatedBy" };
+        var headers = new[]
+        {
+            "Id",
+            "Key",
+            "DisplayName",
+            "Description",
+            "IsEnabled",
+            "RolloutType",
+            "PercentageRollout",
+            "CreatedAt",
+            "UpdatedAt",
+            "CreatedBy"
+        };
         if (includeRules)
         {
             headers = headers.Append("RulesCount").ToArray();
@@ -207,7 +219,10 @@ public static class CsvParser
             switch (header)
             {
                 case "id":
-                    if (int.TryParse(value, out var id)) flag.Id = id;
+                    if (int.TryParse(value, out var id))
+                    {
+                        flag.Id = id;
+                    }
                     break;
                 case "key":
                     flag.Key = value;
@@ -228,7 +243,10 @@ public static class CsvParser
                     }
                     break;
                 case "percentagerollout":
-                    if (int.TryParse(value, out var percentage)) flag.PercentageRollout = percentage;
+                    if (int.TryParse(value, out var percentage))
+                    {
+                        flag.PercentageRollout = percentage;
+                    }
                     break;
             }
         }
