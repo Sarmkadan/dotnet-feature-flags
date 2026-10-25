@@ -427,6 +427,53 @@ public class FeatureFlagService : IFeatureFlagService
 }
 ```
 
+## Export Formats
+
+The `src/FeatureFlags/Formatters/` folder contains two static exporters that turn feature flags and audit logs into flat text formats for reporting, backup, and integration with other systems. Both exporters return the document as a `string`; the admin endpoints wrap that string in a file download.
+
+### CsvExporter
+
+`CsvExporter` writes CSV with a header row. Values that contain a comma, a double quote, or a `\n` are wrapped in quotes, and embedded quotes are doubled. Other values are written as-is. Timestamps use the ISO 8601 round-trip format (`"O"`).
+
+- `ExportFeatureFlags(IEnumerable<FeatureFlag> flags, bool includeRules = false)` writes the columns `Id, Key, DisplayName, Description, IsEnabled, RolloutType, PercentageRollout, CreatedAt, UpdatedAt, CreatedBy`. When `includeRules` is `true`, a trailing `RulesCount` column is added. A null `PercentageRollout` is written as an empty cell.
+- `ExportAuditLogs(IEnumerable<AuditLog> logs)` writes the columns `Id, FeatureFlagId, Action, ChangedBy, Timestamp, OldValue, NewValue`.
+
+```csharp
+using FeatureFlags.Formatters;
+
+string csv = CsvExporter.ExportFeatureFlags(flags, includeRules: true);
+string auditCsv = CsvExporter.ExportAuditLogs(auditLogs);
+```
+
+`CsvParser.ParseFeatureFlags(string)` reads the same flag layout back into `FeatureFlag` objects. It matches columns by header name, so column order does not matter, and it skips rows that fail `FeatureFlag.IsValid()`.
+
+### XmlExporter
+
+`XmlExporter` builds the output with `XDocument` and writes it as UTF-8 with an XML declaration. Pass `pretty: true` to indent the output; the default is compact.
+
+- `ExportFeatureFlags(IEnumerable<FeatureFlag> flags, bool pretty = false)` produces a `<FeatureFlags>` root with one `<FeatureFlag id="..." key="...">` element per flag. Child elements are `DisplayName`, `Description`, `IsEnabled`, `RolloutType`, `PercentageRollout` (written as `-1` when unset), `CreatedAt`, `UpdatedAt`, `CreatedBy`, `RulesCount`, and `VariantsCount`.
+- `ExportAuditLogs(IEnumerable<AuditLog> logs, bool pretty = false)` produces an `<AuditLogs>` root with `<AuditLog id="...">` elements holding `FeatureFlagId`, `Action`, `ChangedBy`, `Timestamp`, `OldValue`, and `NewValue`.
+- `ExportRules(IEnumerable<Rule> rules, bool pretty = false)` produces a `<Rules>` root with `<Rule id="...">` elements holding `Name`, `Priority`, `IsActive`, `ConditionLogic`, and `ConditionCount`.
+
+```csharp
+using FeatureFlags.Formatters;
+
+string xml = XmlExporter.ExportFeatureFlags(flags, pretty: true);
+```
+
+`XmlParser.ParseFeatureFlags(string)` reads the flag document back into `FeatureFlag` objects. Invalid XML produces an empty list rather than an exception. For JSON round-trips of these documents, see `XmlExporterJsonExtensions` below.
+
+### HTTP endpoints
+
+`AdminController` exposes the flag exporters as file downloads:
+
+| Endpoint | Exporter | Response |
+|----------|----------|----------|
+| `GET /api/admin/export/csv?includeRules=false` | `CsvExporter.ExportFeatureFlags` | `text/csv`, named `feature-flags-<UTC timestamp>.csv` |
+| `GET /api/admin/export/xml` | `XmlExporter.ExportFeatureFlags` | `application/xml`, named `feature-flags-<UTC timestamp>.xml` |
+
+`AuditController` exposes the audit log CSV export through `CsvExporter.ExportAuditLogs`.
+
 ## FeatureFlag
 
 Represents the core feature flag entity, containing configuration, rollout strategy, and targeting rules. Use FeatureFlag to define feature status, manage gradual rollouts, or configure A/B testing variants for controlled feature releases.
