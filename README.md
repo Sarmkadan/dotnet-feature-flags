@@ -474,6 +474,105 @@ string xml = XmlExporter.ExportFeatureFlags(flags, pretty: true);
 
 `AuditController` exposes the audit log CSV export through `CsvExporter.ExportAuditLogs`.
 
+## CLI Argument Parsing
+
+`src/FeatureFlags/CLI/CliArgumentParser.cs` turns a `string[]` of command-line arguments into a `CliCommand`. It only parses; it does not run anything. The caller decides what to do with the command. `CliArgumentParserExtensions.cs` in the same folder adds validation and help helpers. The per-method reference is in the [CliArgumentParser](#cliargumentparser) section below.
+
+### Command shape
+
+The first argument is the command name, matched case-insensitively. Options follow as `--name value` pairs. `CliCommand` exposes:
+
+- `Command`: the lowercased command name, such as `"evaluate"`.
+- `Arguments`: a `Dictionary<string, string>` of option values.
+- `ShowHelp`: `true` when the command is `help`, `-h`, or `--help`, or when `--help` follows `evaluate` or `create`. The other commands do not read `--help`, so it is ignored for them.
+
+```csharp
+using FeatureFlags.CLI;
+
+var command = CliArgumentParser.Parse(new[] { "create", "--key", "new-checkout", "--name", "New Checkout", "--percentage", "25" });
+
+Console.WriteLine(command.Command);                  // "create"
+Console.WriteLine(command.GetArgument("key"));       // "new-checkout"
+Console.WriteLine(command.GetArgument("percentage")); // "25"
+Console.WriteLine(command.GetArgument("description")); // null
+```
+
+Option values are kept exactly as typed. Only the option names are matched case-insensitively, so `--KEY` and `--key` are the same option, but the value after it is not changed.
+
+### Supported commands
+
+| Command | Options stored in `Arguments` |
+|---------|-------------------------------|
+| `evaluate` | `--key`, `--user`, `--context` |
+| `create` | `--key`, `--name`, `--description`, `--rollout-type` (stored as `rolloutType`), `--percentage` |
+| `update` | `--id`, `--name`, `--description`, `--percentage` |
+| `list` | `--page`, `--size`, `--filter` |
+| `get` | `--key`, `--id` |
+| `enable`, `disable` | `--key` |
+| `audit` | `--key`, `--days` |
+| `export` | `--format`, `--output` |
+| `import` | `--file`, `--format` |
+| `webhook` | `action` (the word right after `webhook`, lowercased), `--url`, `--event` |
+
+`webhook` uses a sub-action rather than a flag, so `webhook add --url https://example.com/hook --event flag-updated` gives `Arguments["action"] == "add"`, `Arguments["url"]`, and `Arguments["event"]`.
+
+Values are stored as strings. Parse numbers and booleans in your code, for example `int.Parse(command.GetArgument("page") ?? "1")`.
+
+### Parsing rules
+
+- **No arguments:** `Parse` prints the global help text and returns a command named `help`.
+- **Unknown command:** `Parse` throws `ArgumentException` with the message `Unknown command: <name>`.
+- **Unknown options are ignored.** A misspelled option such as `--keyy` is dropped without an error, so use `ParseWithValidation` (below) when a missing value must fail.
+- **An option with no value is ignored.** `--key` at the end of the list, or followed by nothing, does not add a key.
+- **Later values win.** A repeated option overwrites the earlier value.
+
+### Help output
+
+`CliArgumentParser.PrintHelp()` writes the global command list and examples to the console. `GetCommandHelp` returns per-command help as a string, with examples and options for each command:
+
+```csharp
+var parser = new CliArgumentParser();
+
+if (command.ShowHelp)
+{
+    Console.WriteLine(parser.GetCommandHelp(command.Command));
+}
+```
+
+`GetCommandHelp` returns only the header when the command name is not one of the supported commands.
+
+### Validation
+
+Two extension methods parse and then check required options. Both return the command unchanged when `ShowHelp` is set, so `--help` never fails validation.
+
+- `ParseWithValidation(args, params string[] requiredArguments)` requires every listed key to be present.
+- `ParseWithGroupValidation(args, params string[][] requiredGroups)` requires at least one key from each group to be present.
+
+Both throw `ArgumentException` with `Missing required arguments: ...` when a requirement is not met.
+
+```csharp
+var parser = new CliArgumentParser();
+
+// Fails unless --key and --user are both present
+var evaluate = parser.ParseWithValidation(args, "key", "user");
+
+// Fails unless there is an --id or a --key
+var get = parser.ParseWithGroupValidation(args, new[] { "id" }, new[] { "key" });
+```
+
+The group version reports all keys in the message, joined with `or`, even though a group may have several keys.
+
+### Other helpers
+
+- `GetCommand(args)` returns the lowercased first argument, or an empty string when there are no arguments.
+- `HasAnyArguments(command)` and `GetArgumentCount(command)` report whether any options were parsed and how many.
+- `GetAllArguments(command, key)` returns a collection, but it holds at most one value, because `Arguments` is a dictionary and a repeated option overwrites the earlier value.
+
+### Limitations
+
+- `Parse` builds the command structure only. The entry point in `Program.cs` does not call it, so the `dotnet run -- <command>` examples in the help text need a caller that you wire up yourself.
+- Parsing is lenient by design: it does not check types, value ranges, or whether an option is valid for the command. Those checks belong in the code that runs the command.
+
 ## FeatureFlag
 
 Represents the core feature flag entity, containing configuration, rollout strategy, and targeting rules. Use FeatureFlag to define feature status, manage gradual rollouts, or configure A/B testing variants for controlled feature releases.
