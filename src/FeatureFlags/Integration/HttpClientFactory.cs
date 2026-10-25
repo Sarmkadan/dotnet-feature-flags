@@ -153,43 +153,62 @@ public sealed class WebhookHostCircuit
     /// once the open duration has elapsed, admitting exactly one probe request.
     /// </summary>
     /// <param name="openDuration">Configured duration a trip stays open before probing.</param>
+    /// <param name="isProbe"><see langword="true"/> when the admitted request is the single half-open probe and must
+    /// settle the circuit through <see cref="RecordSuccess"/>, <see cref="RecordFailure"/> or <see cref="AbandonProbe"/>.</param>
     /// <returns><see langword="true"/> if the request may proceed; otherwise <see langword="false"/>.</returns>
-    public bool TryAcquire(TimeSpan openDuration)
+    public bool TryAcquire(TimeSpan openDuration, out bool isProbe)
     {
         lock (_syncLock)
         {
-            switch (Phase)
+            isProbe = Phase == WebhookCircuitPhase.Open && DateTimeOffset.UtcNow - _openedAt >= openDuration && !_probeInFlight;
+            if (Phase == WebhookCircuitPhase.Closed)
             {
-                case WebhookCircuitPhase.Closed:
-                    return true;
-
-                case WebhookCircuitPhase.Open when DateTimeOffset.UtcNow - _openedAt >= openDuration && !_probeInFlight:
-                    Phase = WebhookCircuitPhase.HalfOpen;
-                    _probeInFlight = true;
-                    return true;
-
-                case WebhookCircuitPhase.Open:
-                    return false;
-
-                case WebhookCircuitPhase.HalfOpen:
-                    return false;
-
-                default:
-                    return false;
+                return true;
             }
+
+            if (!isProbe)
+            {
+                return false;
+            }
+
+            Phase = WebhookCircuitPhase.HalfOpen;
+            _probeInFlight = true;
+            return true;
         }
     }
 
     /// <summary>
     /// Records a successful delivery attempt, closing the circuit and resetting the failure count.
     /// </summary>
-    public void RecordSuccess()
+    /// <returns><see langword="true"/> if this success closed a circuit that was half-open; otherwise <see langword="false"/>.</returns>
+    public bool RecordSuccess()
     {
         lock (_syncLock)
         {
+            var recovered = Phase == WebhookCircuitPhase.HalfOpen;
             _consecutiveFailures = 0;
             _probeInFlight = false;
             Phase = WebhookCircuitPhase.Closed;
+            return recovered;
+        }
+    }
+
+    /// <summary>
+    /// Releases a half-open probe that ended without a verdict on the endpoint (for example, the caller cancelled it).
+    /// The circuit goes back to <see cref="WebhookCircuitPhase.Open"/> with its original open timestamp, so the next
+    /// request can probe immediately instead of the circuit staying half-open forever.
+    /// </summary>
+    public void AbandonProbe()
+    {
+        lock (_syncLock)
+        {
+            if (!_probeInFlight)
+            {
+                return;
+            }
+
+            _probeInFlight = false;
+            Phase = WebhookCircuitPhase.Open;
         }
     }
 
@@ -307,12 +326,56 @@ public sealed class WebhookResilienceHandler : DelegatingHandler
         var host = request.RequestUri?.Host ?? "unknown";
         var circuit = _registry.GetCircuit(host);
 
-        if (!circuit.TryAcquire(_options.OpenDuration))
+        if (!circuit.TryAcquire(_options.OpenDuration, out var isProbe))
         {
             await PublishCircuitEventAsync("webhook.circuit_breaker.rejected", host, cancellationToken).ConfigureAwait(false);
             throw new WebhookCircuitOpenException(host);
         }
 
+        try
+        {
+            var response = await SendWithRetriesAsync(request, host, cancellationToken).ConfigureAwait(false);
+
+            if (circuit.RecordSuccess())
+            {
+                _logger.LogInformation("Circuit breaker closed for webhook host {Host} after a successful probe", host);
+                await PublishCircuitEventAsync("webhook.circuit_breaker.closed", host, cancellationToken).ConfigureAwait(false);
+            }
+
+            return response;
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            // The caller gave up, which says nothing about the endpoint: release the probe slot without counting a failure.
+            if (isProbe)
+            {
+                circuit.AbandonProbe();
+            }
+
+            throw;
+        }
+        catch (Exception)
+        {
+            if (circuit.RecordFailure(_options.FailureThreshold))
+            {
+                _logger.LogWarning("Circuit breaker tripped open for webhook host {Host} after repeated failures", host);
+                await PublishCircuitEventAsync("webhook.circuit_breaker.opened", host, cancellationToken).ConfigureAwait(false);
+            }
+
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Sends the request, retrying transient failures (408, 5xx, transport errors and per-attempt timeouts)
+    /// up to <see cref="WebhookResilienceOptions.MaxRetryAttempts"/> times with jittered backoff.
+    /// </summary>
+    /// <returns>The first non-transient response.</returns>
+    /// <exception cref="TimeoutException">Thrown when the final attempt exceeded <see cref="WebhookResilienceOptions.RequestTimeout"/>.</exception>
+    /// <exception cref="HttpRequestException">Thrown when the final attempt failed with a transient status or transport error.</exception>
+    /// <exception cref="OperationCanceledException">Thrown when the caller's <paramref name="cancellationToken"/> is cancelled.</exception>
+    private async Task<HttpResponseMessage> SendWithRetriesAsync(HttpRequestMessage request, string host, CancellationToken cancellationToken)
+    {
         Exception? lastFailure = null;
         var maxAttempts = _options.MaxRetryAttempts + 1;
 
@@ -328,11 +391,10 @@ public sealed class WebhookResilienceHandler : DelegatingHandler
 
                 if (!IsTransientFailure(response.StatusCode))
                 {
-                    circuit.RecordSuccess();
                     return response;
                 }
 
-                lastFailure = new HttpRequestException($"Webhook host '{host}' responded with transient status {(int)response.StatusCode}");
+                lastFailure = new HttpRequestException($"Webhook host '{host}' responded with transient status {(int)response.StatusCode}", null, response.StatusCode);
                 response.Dispose();
             }
             catch (OperationCanceledException ex) when (!cancellationToken.IsCancellationRequested)
@@ -354,15 +416,7 @@ public sealed class WebhookResilienceHandler : DelegatingHandler
             if (attempt < maxAttempts)
             {
                 await Task.Delay(ComputeJitteredBackoff(attempt), cancellationToken).ConfigureAwait(false);
-                continue;
             }
-        }
-
-        var tripped = circuit.RecordFailure(_options.FailureThreshold);
-        if (tripped)
-        {
-            _logger.LogWarning("Circuit breaker tripped open for webhook host {Host} after repeated failures", host);
-            await PublishCircuitEventAsync("webhook.circuit_breaker.opened", host, cancellationToken).ConfigureAwait(false);
         }
 
         throw lastFailure switch
@@ -415,14 +469,27 @@ public sealed class WebhookResilienceHandler : DelegatingHandler
         return clone;
     }
 
-    private Task PublishCircuitEventAsync(string eventType, string host, CancellationToken cancellationToken) =>
-        _eventBus.PublishAsync(
-            eventType,
-            featureFlagId: 0,
-            featureFlagKey: string.Empty,
-            triggeredBy: "webhook-resilience-handler",
-            metadata: new Dictionary<string, object?> { ["host"] = host },
-            cancellationToken: cancellationToken);
+    /// <summary>
+    /// Publishes a circuit state transition to the event bus. A publish failure is logged rather than rethrown,
+    /// so that it cannot replace the delivery outcome the caller is waiting for.
+    /// </summary>
+    private async Task PublishCircuitEventAsync(string eventType, string host, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await _eventBus.PublishAsync(
+                eventType,
+                featureFlagId: 0,
+                featureFlagKey: string.Empty,
+                triggeredBy: "webhook-resilience-handler",
+                metadata: new Dictionary<string, object?> { ["host"] = host },
+                cancellationToken: cancellationToken).ConfigureAwait(false);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            _logger.LogWarning(ex, "Failed to publish {EventType} event for webhook host {Host}", eventType, host);
+        }
+    }
 }
 
 /// <summary>
