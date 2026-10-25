@@ -122,6 +122,7 @@ public sealed class FeatureFlagSearchBuilder
     public IQueryable<FeatureFlag> Build(IQueryable<FeatureFlag> source)
     {
         ArgumentNullException.ThrowIfNull(source);
+
         // Apply filters
         if (!string.IsNullOrEmpty(_keyFilter))
         {
@@ -193,19 +194,39 @@ public sealed class FeatureFlagSearchBuilder
         var parts = new List<string>();
 
         if (!string.IsNullOrEmpty(_keyFilter))
+        {
             parts.Add($"Key contains '{_keyFilter}'");
+        }
+
         if (!string.IsNullOrEmpty(_nameFilter))
+        {
             parts.Add($"Name contains '{_nameFilter}'");
+        }
+
         if (_enabledFilter.HasValue)
+        {
             parts.Add($"IsEnabled = {_enabledFilter.Value}");
+        }
+
         if (_rolloutTypeFilter.HasValue)
+        {
             parts.Add($"RolloutType = {_rolloutTypeFilter.Value}");
+        }
+
         if (!string.IsNullOrEmpty(_createdByFilter))
+        {
             parts.Add($"CreatedBy = '{_createdByFilter}'");
+        }
+
         if (_createdAfter.HasValue)
+        {
             parts.Add($"CreatedAfter = {_createdAfter:O}");
+        }
+
         if (_createdBefore.HasValue)
+        {
             parts.Add($"CreatedBefore = {_createdBefore:O}");
+        }
 
         parts.Add($"Sort: {_sortBy} {(_sortDescending ? "DESC" : "ASC")}");
         parts.Add($"Paging: Skip {_skip}, Take {_take}");
